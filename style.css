@@ -1,32 +1,37 @@
-/* ==========================================================================
-   HIGH-SPECIFICITY OVERLAP MATRIX FOR THE TARGET 4 ELEMENTS
-   ========================================================================== */
+/* =========================================================
+   CLEAN ISOLATED OVERRIDES FOR THE TARGET 4 ELEMENTS
+   ========================================================= */
 
-/* 1. Diagnostic Title Val Override */
-main:nth-of-type(1) div:nth-of-type(2) div:nth-of-type(2) div:nth-of-type(3) h4#diagnostic-title-val,
-html body main h4#diagnostic-title-val {
+/* 1. Diagnostic Title Val -> Isolated Fix */
+#diagnostic-title-val {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
 }
 
-/* 2. Diagnostic Text Val Override */
-main:nth-of-type(1) div:nth-of-type(2) div:nth-of-type(2) div:nth-of-type(3) p#diagnostic-text-val,
-html body main p#diagnostic-text-val {
+/* 2. Diagnostic Text Val -> Isolated Fix */
+#diagnostic-text-val {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
 }
 
-/* 3. Verdict Badge Val Override */
-main:nth-of-type(1) div:nth-of-type(2) div:nth-of-type(1) div#verdict-badge-val,
-html body main .verdict-badge-val {
+/* 3. Verdict Badge Val -> Isolated Fix */
+#verdict-badge-val, 
+.verdict-badge-val {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
 }
 
-/* 4. Master Ring Card Override (Forces Background to Aqua) */
-main:nth-of-type(1) div:nth-of-type(2) div:nth-of-type(1).master-ring-card,
-html body main .master-ring-card {
-  background: #00FFFF !important;
-  background-color: #00FFFF !important;
+/* 4. Master Ring Card -> Isolated Fix */
+.master-ring-card {
+  background: aqua !important;
+  background-color: aqua !important;
   forced-color-adjust: none !important;
+}
+
+/* 5. Kept separate so table cells and charts don't break the rules above */
+tbody#compiler-latency-tbody tr td,
+tbody#compiler-latency-tbody tr td:nth-child(2),
+.ring-score-center .ring-score-num,
+.ring-score-center .ring-score-sub {
+  color: #FFFFFF !important;
 }
