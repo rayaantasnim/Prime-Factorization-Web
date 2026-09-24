@@ -3533,18 +3533,3 @@ input:checked + .slider-round:before {
 
 
 
-#diagnostic-title-val{
-  color: #FFFFFF !important;
-}
-
-#diagnostic-text-val{
-  color: #FFFFFF !important; 
-}
-
-.master-ring-card{
-  background-color: aqua !important;
-}
-
-.verdict-badge-val{
-  color: #ffffff !important;
-}

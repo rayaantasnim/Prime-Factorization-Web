@@ -1,0 +1,44 @@
+:root {
+  color-scheme: dark light !important;
+}
+
+/* Section 1: High Specificity Blocks (Fixed Syntax Error) */
+html body #diagnostic-title-val {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  mix-blend-mode: normal !important;
+}
+
+html body #diagnostic-text-val {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  mix-blend-mode: normal !important;
+}
+
+html body .verdict-badge-val {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  mix-blend-mode: normal !important;
+}
+
+html body .master-ring-card {
+  background: aqua !important;
+  background-color: aqua !important;
+  forced-color-adjust: none !important;
+}
+
+/* Section 2: Universal Screen Override */
+@media screen and (min-width: 0px) {
+  html body #diagnostic-title-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+  html body #diagnostic-text-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+  html body .verdict-badge-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+  html body .master-ring-card { background: aqua !important; background-color: aqua !important; }
+}
+
+/* Section 3: Forceful System Dark Mode Override */
+@media (prefers-color-scheme: dark) {
+  html body #diagnostic-title-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+  html body #diagnostic-text-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+  html body .verdict-badge-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+  html body .master-ring-card { background: aqua !important; background-color: aqua !important; }
+}
