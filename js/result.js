@@ -1,8 +1,8 @@
 /**
  * PrimeFactor.app — Final Result Analytics Dashboard Controller
  * Implements Circular Master Score Ring, 4-Bracket Diagnostic Engine with Typographic Matrix,
- * Failure Audit Stack with Nested Mistake Analysis Tables, Redemption Track,
- * and Compiler Latency Audit Table (Sub-Second Pollard's Rho Logs).
+ * Telemetry Character Typing System, Failure Audit Stack with Nested Mistake Analysis Tables,
+ * Redemption Track, and Compiler Latency Audit Table (Sub-Second Pollard's Rho Logs).
  */
 
 import { getLastExamResult, setActiveExamParams, getSettings } from './storage.js';
@@ -57,12 +57,12 @@ function renderResultDashboard() {
     diagnosticQuote = "Critical tactical thresholds breached. Your arithmetic processing speeds are dropping under timer constraints, leading to penalty vectors. Increase potentials by reviewing fundamental prime components at smaller bounds.";
   }
 
-  // Master Score Ring Animation
+  // Master Score Ring Animation & DOM References
   const ringScoreNum = document.getElementById('ring-score-val');
-  const verdictBadge = document.getElementById('verdict-badge-val');
+  const verdictBadge = document.getElementById('verdict-badge-val') || document.getElementById('quantum-score-badge-node');
   const ringProgressCircle = document.getElementById('ring-svg-progress');
-  const diagnosticTextEl = document.getElementById('diagnostic-text-val');
-  const diagnosticTitleEl = document.getElementById('diagnostic-title-val');
+  const diagnosticTextEl = document.getElementById('diagnostic-text-val') || document.getElementById('quantum-verdict-quote-node');
+  const diagnosticTitleEl = document.getElementById('diagnostic-title-val') || document.getElementById('quantum-verdict-title-node');
 
   if (ringScoreNum) ringScoreNum.textContent = result.score;
   if (verdictBadge) {
@@ -70,7 +70,20 @@ function renderResultDashboard() {
     verdictBadge.className = `verdict-tier-badge ${bracketFontClass}`;
   }
   if (diagnosticTitleEl) diagnosticTitleEl.textContent = `Verdict Evaluation: ${bracketTitle}`;
-  if (diagnosticTextEl) diagnosticTextEl.textContent = diagnosticQuote;
+
+  // Advanced Text-Typing / Telemetry Animation System
+  if (diagnosticTextEl) {
+    diagnosticTextEl.textContent = '';
+    let charIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (charIndex < diagnosticQuote.length) {
+        diagnosticTextEl.textContent += diagnosticQuote.charAt(charIndex);
+        charIndex++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 18);
+  }
 
   if (ringProgressCircle) {
     const radius = 70;
@@ -131,33 +144,32 @@ function renderResultDashboard() {
 
         return `
           <div class="audit-item" style="padding: 1.25rem;">
-            <div class="audit-q" style="font-size: 1.3rem; margin-bottom: 0.75rem;">Target Integer: ${f.number.toLocaleString()}</div>
+            <div class="audit-q" style="font-size: 1.1rem; margin-bottom: 0.75rem; font-weight: 700; color: #FFFFFF;">Target Integer: ${f.number.toLocaleString()}</div>
             
-            <!-- Custom Nested Mistake Analysis Table -->
             <div class="latency-table-wrap" style="margin-top: 0.5rem; margin-bottom: 0.75rem;">
-              <table class="audit-nested-table latency-table" style="background: rgba(255, 255, 255, 0.95); border: 1.5px solid #CBD5E1; border-radius: 0.65rem; overflow: hidden; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);">
+              <table class="audit-nested-table latency-table" style="background: rgba(17, 24, 39, 0.8); border: 1px solid var(--card-border); border-radius: 0.5rem; overflow: hidden;">
                 <thead>
-                  <tr style="background: #F1F5F9; border-bottom: 2px solid #CBD5E1;">
-                    <th style="color: #0F172A; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Attempt Phase</th>
-                    <th style="color: #0F172A; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">User String Input</th>
-                    <th style="color: #0F172A; font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Diagnostic Evaluation</th>
+                  <tr>
+                    <th>Attempt Phase</th>
+                    <th>User String Input</th>
+                    <th>Diagnostic Evaluation</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="border-bottom: 1px solid #E2E8F0;">
-                    <td class="font-bold" style="color: #B91C1C; font-weight: 800;">1st Attempt</td>
-                    <td><code class="audit-user-code" style="background: #F8FAFC; color: #0F172A; border: 1px solid #CBD5E1; font-weight: 800; padding: 0.25rem 0.55rem; border-radius: 0.3rem;">${escapeHtml(f.attempt1)}</code></td>
-                    <td style="color: #0F172A; font-weight: 700;">${escapeHtml(diagnosis1)}</td>
+                  <tr>
+                    <td style="color: #F87171; font-weight: 700;">1st Attempt</td>
+                    <td><code style="background: rgba(31, 41, 55, 0.8); color: #FFFFFF; padding: 0.2rem 0.4rem; border-radius: 0.25rem;">${escapeHtml(f.attempt1)}</code></td>
+                    <td style="color: #FFFFFF; font-weight: 600;">${escapeHtml(diagnosis1)}</td>
                   </tr>
-                  <tr style="border-bottom: 1px solid #E2E8F0;">
-                    <td class="font-bold" style="color: #B45309; font-weight: 800;">Overtime Retry</td>
-                    <td><code class="audit-user-code" style="background: #F8FAFC; color: #0F172A; border: 1px solid #CBD5E1; font-weight: 800; padding: 0.25rem 0.55rem; border-radius: 0.3rem;">${escapeHtml(f.attempt2)}</code></td>
-                    <td style="color: #0F172A; font-weight: 700;">${escapeHtml(diagnosis2)}</td>
+                  <tr>
+                    <td style="color: #FBBF24; font-weight: 700;">Overtime Retry</td>
+                    <td><code style="background: rgba(31, 41, 55, 0.8); color: #FFFFFF; padding: 0.2rem 0.4rem; border-radius: 0.25rem;">${escapeHtml(f.attempt2)}</code></td>
+                    <td style="color: #FFFFFF; font-weight: 600;">${escapeHtml(diagnosis2)}</td>
                   </tr>
-                  <tr class="canonical-banner-row" style="background: #DCFCE7; border-top: 1.5px solid #86EFAC;">
-                    <td class="font-bold" style="color: #15803D; font-weight: 800;">Canonical Factors</td>
-                    <td colspan="2" class="font-bold font-math" style="font-size: 1.05rem; color: #0F172A;">
-                      ${expStr} &nbsp; <span style="color: #0F172A; font-weight: 700;">(${f.trueFactors.join(' &times; ')})</span>
+                  <tr style="background: rgba(16, 185, 129, 0.1);">
+                    <td style="color: #34D399; font-weight: 700;">Canonical Factors</td>
+                    <td colspan="2" style="font-size: 1rem; color: #FFFFFF; font-weight: 700;">
+                      ${expStr} &nbsp; <span style="color: var(--text-muted); font-weight: 600;">(${f.trueFactors.join(' &times; ')})</span>
                     </td>
                   </tr>
                 </tbody>
@@ -180,11 +192,11 @@ function renderResultDashboard() {
         const expStr = formatExponentialString(exp);
         return `
           <div class="audit-item">
-            <div class="audit-q">Target Integer: ${r.number.toLocaleString()}</div>
-            <div class="audit-line text-crimson"><span>Initial Error:</span> <span>${escapeHtml(r.attempt1)}</span></div>
-            <div class="audit-line text-amber" style="font-weight: 700;"><span>Redeemed Correction:</span> <span>${escapeHtml(r.attempt2)}</span></div>
-            <div class="audit-line text-mint" style="font-size: 0.95rem; font-weight: 700; margin-top: 0.35rem;">
-              <span>Canonical Form:</span> <span>${expStr}</span>
+            <div class="audit-q" style="font-weight: 700; color: #FFFFFF; margin-bottom: 0.35rem;">Target Integer: ${r.number.toLocaleString()}</div>
+            <div class="text-crimson" style="font-size: 0.875rem;">Initial Error: <span>${escapeHtml(r.attempt1)}</span></div>
+            <div class="text-amber" style="font-weight: 700; font-size: 0.875rem;">Redeemed Correction: <span>${escapeHtml(r.attempt2)}</span></div>
+            <div class="text-mint" style="font-size: 0.9rem; font-weight: 700; margin-top: 0.35rem;">
+              Canonical Form: <span>${expStr}</span>
             </div>
           </div>
         `;
@@ -228,11 +240,32 @@ function renderResultDashboard() {
     }
   }
 
-  // Action Buttons
+  // Action Buttons & Report Card Copy Action
   const btnRetake = document.getElementById('result-retake-btn');
   const btnNewRange = document.getElementById('result-new-range-btn');
   const btnShare = document.getElementById('result-share-btn');
+  const btnCardShare = document.getElementById('card-share-btn');
   const shareToast = document.getElementById('share-verdict-toast');
+
+  const executeShareAction = () => {
+    playSound('click');
+    const shareText = `[PrimeFactor.app Analytics Report Card]\n` +
+      `Verdict Tier: ${bracketTitle}\n` +
+      `Total Score: ${result.score} pts (${result.rangeTitle})\n` +
+      `Accuracy: ${accuracyPct}% (${totalSolved}/10 Cleared)\n` +
+      `Time Expended: ${result.timeSpent}s\n` +
+      `Lifelines Consumed: ${result.lifelinesUsedCount}\n` +
+      `Authorized By Rayaan Tasnim · Olympiad Edge`;
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(() => {
+        if (shareToast) {
+          shareToast.style.display = 'block';
+          setTimeout(() => { shareToast.style.display = 'none'; }, 2500);
+        }
+      });
+    }
+  };
 
   if (btnRetake) {
     btnRetake.addEventListener('click', () => {
@@ -254,26 +287,8 @@ function renderResultDashboard() {
     });
   }
 
-  if (btnShare) {
-    btnShare.addEventListener('click', () => {
-      playSound('click');
-      const shareText = `PrimeFactor.app Verdict:\n` +
-        `Category: ${bracketTitle}\n` +
-        `Score: ${result.score} pts in ${result.rangeTitle}\n` +
-        `Accuracy: ${accuracyPct}% (${totalSolved}/10)\n` +
-        `Time: ${result.timeSpent}s\n` +
-        `Authorized By Rayaan Tasnim · Olympiad Edge`;
-
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareText).then(() => {
-          if (shareToast) {
-            shareToast.style.display = 'block';
-            setTimeout(() => { shareToast.style.display = 'none'; }, 2500);
-          }
-        });
-      }
-    });
-  }
+  if (btnShare) btnShare.addEventListener('click', executeShareAction);
+  if (btnCardShare) btnCardShare.addEventListener('click', executeShareAction);
 }
 
 function escapeHtml(str) {
@@ -284,3 +299,43 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
+
+/* ==========================================================================
+   MUTATION OBSERVER SAFETY NET FOR RUNTIME COLOR PROTECTION
+   ========================================================================== */
+const enforceWhiteTextLock = () => {
+  const targets = [
+    'diagnostic-title-val',
+    'diagnostic-text-val',
+    'verdict-badge-val',
+    'quantum-score-badge-node',
+    'quantum-verdict-title-node',
+    'quantum-verdict-quote-node'
+  ];
+
+  targets.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.setProperty('color', '#FFFFFF', 'important');
+      el.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+    }
+  });
+
+  document.querySelectorAll('.master-ring-card').forEach(card => {
+    card.style.setProperty('background', '#111827', 'important');
+    card.style.setProperty('border', '1px solid #1F2937', 'important');
+  });
+};
+
+const observer = new MutationObserver(() => {
+  enforceWhiteTextLock();
+});
+
+observer.observe(document.body, {
+  childList: true,
+  subtree: true,
+  characterData: true,
+  attributes: true
+});
+
+enforceWhiteTextLock();

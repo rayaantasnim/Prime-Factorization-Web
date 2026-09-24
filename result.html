@@ -9,21 +9,517 @@
   <meta property="og:description" content="Exam performance analytics, compiler latency audit, and failure stack." />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* ==========================================================================
+       COMPLETE EMBEDDED DASHBOARD STYLESHEET & DARK THEME HARDENING
+       ========================================================================== */
+
+    :root {
+      --bg-dark: #0B0F17;
+      --card-bg: #111827;
+      --card-border: #1F2937;
+      --text-main: #FFFFFF;
+      --text-muted: #9CA3AF;
+      --accent-primary: #2563EB;
+      --accent-success: #10B981;
+      --accent-warning: #F59E0B;
+      --accent-danger: #EF4444;
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-heading: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark) !important;
+      color: var(--text-main) !important;
+      font-family: var(--font-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Fixed Header Styles */
+    .fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: rgba(17, 24, 39, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--card-border);
+      z-index: 1000;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .brand-symbol {
+      color: var(--accent-primary);
+      font-size: 1.5rem;
+    }
+
+    .dot-app {
+      color: var(--accent-primary);
+    }
+
+    .nav-hamburger-btn {
+      background: rgba(31, 41, 55, 0.6);
+      border: 1px solid var(--card-border);
+      color: #FFFFFF;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+    }
+
+    .hamburger-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .hamburger-bar {
+      width: 14px;
+      height: 2px;
+      background-color: #FFFFFF;
+    }
+
+    .nav-dropdown-glass-container {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-width: 220px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-dropdown-glass-container.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(5px);
+    }
+
+    .dropdown-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0.85rem;
+      color: #CBD5E1;
+      text-decoration: none;
+      border-radius: 0.5rem;
+      transition: background 0.2s ease;
+    }
+
+    .dropdown-link-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #FFFFFF;
+    }
+
+    .dropdown-link-content {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .link-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    .dropdown-badge {
+      font-size: 0.7rem;
+      background: rgba(37, 99, 235, 0.2);
+      color: #60A5FA;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.25rem;
+    }
+
+    .icon-btn {
+      background: rgba(31, 41, 55, 0.6);
+      border: 1px solid var(--card-border);
+      color: #FFFFFF;
+      width: 36px;
+      height: 36px;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Main Content Layout */
+    .main-wrapper {
+      margin-top: 64px;
+      padding: 2.5rem 1.5rem;
+      flex: 1;
+    }
+
+    .content-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-kicker {
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      color: var(--accent-primary);
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin: 0.25rem 0 0.5rem 0;
+      color: #FFFFFF;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      max-width: 700px;
+      font-size: 1rem;
+    }
+
+    /* Hero Grid System */
+    .results-hero-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 850px) {
+      .results-hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Target Elements Forced Styling Overrides */
+    .master-ring-card {
+      background: #111827 !important;
+      border: 1px solid #1F2937 !important;
+      border-radius: 1rem;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #diagnostic-title-val, #quantum-verdict-title-node {
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+      font-weight: 700;
+    }
+
+    #diagnostic-text-val, #quantum-verdict-quote-node {
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+      line-height: 1.6;
+    }
+
+    #verdict-badge-val, #quantum-score-badge-node, .verdict-tier-badge {
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-top: 1.25rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      text-align: center;
+    }
+
+    #ring-score-val {
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .ring-score-sub {
+      color: #FFFFFF !important;
+      -webkit-text-fill-color: #FFFFFF !important;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.25rem;
+      opacity: 0.8;
+    }
+
+    /* SVG Ring Architecture */
+    .svg-ring-wrapper {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ring-score-center {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .section-bg-image-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.05;
+      pointer-events: none;
+    }
+
+    .section-bg-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Metrics Deck */
+    .metrics-audit-deck {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .stats-counter-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .counter-box {
+      background: rgba(31, 41, 55, 0.4);
+      border: 1px solid var(--card-border);
+      padding: 0.85rem;
+      border-radius: 0.65rem;
+    }
+
+    .cb-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .cb-val {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .diagnostic-panel {
+      background: rgba(31, 41, 55, 0.3);
+      border: 1px solid var(--card-border);
+      padding: 1.25rem;
+      border-radius: 0.75rem;
+    }
+
+    .diagnostic-panel h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .diagnostic-panel p {
+      font-size: 0.95rem;
+    }
+
+    /* Action Buttons */
+    .btn-primary {
+      background: var(--accent-primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: #1D4ED8;
+    }
+
+    .btn-secondary {
+      background: rgba(31, 41, 55, 0.8);
+      color: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 0.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #374151;
+    }
+
+    /* Audit Grids and Cards */
+    .audit-sections-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 850px) {
+      .audit-sections-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .audit-stack-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+
+    .audit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .audit-item {
+      background: rgba(31, 41, 55, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 0.65rem;
+      padding: 1rem;
+    }
+
+    .empty-audit-notice {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-style: italic;
+      padding: 0.5rem 0;
+    }
+
+    /* Latency Audit Table */
+    .latency-table-wrap {
+      overflow-x: auto;
+    }
+
+    .latency-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .latency-table th, .latency-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .latency-table th {
+      background: rgba(31, 41, 55, 0.6);
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .text-accent { color: #60A5FA; }
+    .text-mint { color: #34D399; }
+    .text-amber { color: #FBBF24; }
+    .text-crimson { color: #F87171; }
+
+    /* Footer */
+    .site-footer {
+      border-top: 1px solid var(--card-border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      background: rgba(17, 24, 39, 0.5);
+    }
+
+    .footer-line {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .footer-line.highlight {
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+  </style>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./styles.css" />
-  
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
+
   <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
   <div id="flash-overlay" aria-hidden="true"></div>
 
-  <!-- Persistent Global Header with Dropdown Navigation (Hardcoded for local file:// support) -->
+  <!-- Persistent Global Header with Dropdown Navigation -->
   <header class="fixed-header">
     <div class="header-container">
       <!-- Left: Minimalist Logo + Brand Text -->
@@ -43,7 +539,7 @@
           <span>Navigation</span>
         </button>
 
-        <!-- Dropdown Box (Frosted Glass with 5 links + mobile System link) -->
+        <!-- Dropdown Box -->
         <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
           <a href="./index.html" class="dropdown-link-item">
             <div class="dropdown-link-content">
@@ -148,10 +644,9 @@
       <!-- Hero Data Panel: Circular Master Score Ring & Metrics -->
       <div class="results-hero-grid">
         <!-- Master Score Ring Card -->
-        <div class="master-ring-card" style="background-color: aqua !important;">
+        <div class="master-ring-card">
           <div class="section-bg-image-wrap">
             <img class="section-bg-image" src="https://images.pexels.com/photos/3747481/pexels-photo-3747481.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Calculus and statistical analytical board" loading="lazy" />
-            <div class="section-bg-overlay"></div>
           </div>
           <div class="svg-ring-wrapper">
             <svg width="180" height="180" viewBox="0 0 180 180">
@@ -159,7 +654,7 @@
                 cx="90" 
                 cy="90" 
                 r="70" 
-                stroke="#E2E8F0" 
+                stroke="#1F2937" 
                 stroke-width="12" 
                 fill="none"
               />
@@ -176,13 +671,13 @@
               />
             </svg>
             <div class="ring-score-center">
-              <span id="ring-score-val" class="ring-score-num tabular-nums">0</span>
+              <span id="ring-score-val" class="tabular-nums">0</span>
               <span class="ring-score-sub">Total Points</span>
             </div>
           </div>
 
-          <div id="verdict-badge-val" class="verdict-tier-badge" style="color: #FFFFFF !important;">
-            Calculating...
+          <div id="verdict-badge-val" class="verdict-tier-badge">
+            <span id="quantum-score-badge-node">Calculating...</span>
           </div>
         </div>
 
@@ -190,7 +685,6 @@
         <div class="metrics-audit-deck">
           <div class="section-bg-image-wrap">
             <img class="section-bg-image" src="https://images.pexels.com/photos/1323712/pexels-photo-1323712.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Geometric parametric architecture ribs" loading="lazy" />
-            <div class="section-bg-overlay"></div>
           </div>
           <div class="stats-counter-strip">
             <div class="counter-box">
@@ -219,16 +713,29 @@
             </div>
           </div>
 
-          <!-- 4-Line Dynamic Diagnostic Suggestion Engine -->
+          <!-- Diagnostic Suggestion Engine -->
           <div class="diagnostic-panel">
-            <h4 id="diagnostic-title-val" style = "color: #FFFFFF !important;">Verdict Evaluation</h4>
-            <p id="diagnostic-text-val" style = "color: #FFFFFF !important;">
-              Analyzing cognitive trajectory and calculation telemetry...
+            <h4 id="diagnostic-title-val">
+              <span id="quantum-verdict-title-node">Verdict Evaluation</span>
+            </h4>
+            <p id="diagnostic-text-val">
+              <span id="quantum-verdict-quote-node">Initializing telemetry stream...</span>
             </p>
           </div>
 
+          <!-- Share Report Card Widget -->
+          <div class="report-card-widget" style="background: rgba(31, 41, 55, 0.4); border: 1px solid var(--card-border); border-radius: 0.75rem; padding: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+            <div>
+              <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">Report Card Widget</div>
+              <div style="font-size: 0.95rem; color: #FFFFFF; font-weight: 600;">Shareable Performance Telemetry</div>
+            </div>
+            <button id="card-share-btn" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.825rem;">
+              <span>Copy Shareable Report Card</span>
+            </button>
+          </div>
+
           <!-- Actions Bar -->
-          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <button id="result-retake-btn" class="btn-primary" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">
               <span>Retake Range</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -242,7 +749,7 @@
             <button id="result-share-btn" class="btn-secondary" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">
               <span>Copy Verdict Audit</span>
             </button>
-            <div id="share-verdict-toast" style="display: none; align-self: center; font-size: 0.85rem; font-weight: 600; color: var(--success-mint);">
+            <div id="share-verdict-toast" style="display: none; align-self: center; font-size: 0.85rem; font-weight: 600; color: #10B981 !important;">
               ✓ Summary copied to clipboard!
             </div>
           </div>
@@ -250,30 +757,26 @@
       </div>
 
       <!-- Audit Sections Grid: Failure Stack & Redemption Track -->
-      <div class="audit-sections-grid" style="position: relative; overflow: hidden; border-radius: 1.25rem;">
-        <div class="section-bg-image-wrap">
-          <img class="section-bg-image" src="https://images.pexels.com/photos/3747485/pexels-photo-3747485.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Intricate mathematical step-by-step audit derivation" loading="lazy" />
-          <div class="section-bg-overlay"></div>
-        </div>
-        <!-- ❌ Failure Audit Stack (with Nested Mistake Analysis Tables) -->
+      <div class="audit-sections-grid">
+        <!-- Failure Audit Stack -->
         <div class="audit-stack-card">
-          <h3 style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem;">
-            <span style="color: #F87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.5);">❌</span> Failure Audit Stack
+          <h3 style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem; margin-bottom: 0.25rem;">
+            <span style="color: #F87171;">❌</span> Failure Audit Stack
           </h3>
-          <p style="font-size: 0.85rem; margin-bottom: 1rem; color: #CBD5E1; font-weight: 500;">
+          <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-muted);">
             Full telemetry for uncorrected calculations, skipped numbers, and timeout misses with nested mistake analyses.
           </p>
           <div id="failure-audit-list" class="audit-list">
-            <!-- Dynamically populated with nested mistake tables -->
+            <!-- Dynamically populated -->
           </div>
         </div>
 
-        <!-- 🔄 Redemption Track -->
+        <!-- Redemption Track -->
         <div class="audit-stack-card">
-          <h3 style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem;">
-            <span style="color: #FBBF24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);">🔄</span> Redemption Track
+          <h3 style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem; margin-bottom: 0.25rem;">
+            <span style="color: #FBBF24;">🔄</span> Redemption Track
           </h3>
-          <p style="font-size: 0.85rem; margin-bottom: 1rem; color: #CBD5E1; font-weight: 500;">
+          <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-muted);">
             Questions missed on the initial pass but successfully recovered during overtime.
           </p>
           <div id="redemption-audit-list" class="audit-list">
@@ -282,17 +785,17 @@
         </div>
       </div>
 
-      <!-- Upgrade 8: Compiler Latency Audit Table Sub-Card -->
+      <!-- Compiler Latency Audit Table Sub-Card -->
       <section class="audit-stack-card" style="margin-bottom: 3rem;">
         <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
           <h3 style="color: #FFFFFF;">
             <span>⚡</span> Compiler Latency Audit Table
           </h3>
-          <div style="font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700; color: var(--accent-primary);">
+          <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-primary);">
             Mean Solve Latency: <span id="avg-compiler-latency" class="tabular-nums">0.042 ms</span>
           </div>
         </div>
-        <p class="text-muted" style="font-size: 0.825rem; margin-bottom: 1rem;">
+        <p style="font-size: 0.825rem; color: var(--text-muted); margin-bottom: 1rem;">
           Sub-second execution logs of the browser-native Pollard's Rho factorization and Miller-Rabin primality verification engine.
         </p>
 
@@ -327,7 +830,7 @@
     </footer>
   </div>
 
-  <!-- Hardcoded Navbar Toggle Script Block -->
+  <!-- Navbar Toggle Script Block -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
@@ -338,12 +841,10 @@
         menuToggle.addEventListener('click', (e) => {
           e.stopPropagation();
           dropdownMenu.classList.toggle('active');
-          // Smoothly transition aria attributes for universal accessibility updates
           const isExpanded = dropdownMenu.classList.contains('active');
           menuToggle.setAttribute('aria-expanded', isExpanded);
         });
         
-        // Force close the overlay dropdown if the user clicks anywhere outside of it
         document.addEventListener('click', (e) => {
           if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
             dropdownMenu.classList.remove('active');
