@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Competition Range Matrix — PrimeFactor.app</title>
+  <meta name="description" content="Select from 10 competitive Math Olympiad prime factorization tiers, custom bounds, or the boundless Omega range." />
+  <meta property="og:title" content="Competition Range Matrix — PrimeFactor.app" />
+  <meta property="og:description" content="Choose your Olympiad prime factorization tier from 1-200 up to the infinite Omega manifold." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Persistent Global Header with Dropdown Navigation (Hardcoded for local file:// support) -->
+  <header class="fixed-header">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass with 5 links + mobile System link) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./ranges.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Range Selections</span>
+            </div>
+            <span class="dropdown-badge">10 Tiers</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./exam.html?min=1&max=200&title=Standard%20Exam" id="dropdown-random-exam" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3"></line>
+                <polyline points="21 16 21 21 16 21"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21"></line>
+                <line x1="4" y1="4" x2="9" y2="9"></line>
+              </svg>
+              <span>Random Exam</span>
+            </div>
+            <span class="dropdown-badge">Instant</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="#" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Standalone Settings Gear Icon -->
+      <div class="header-actions">
+        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Settings Modal Slot -->
+  <div id="settings-modal-slot"></div>
+
+  <main class="main-wrapper">
+    <div class="content-container">
+      <div class="section-head" style="margin-bottom: 2.5rem;">
+        <span class="section-kicker">Competitive Divisions</span>
+        <h1 class="section-title">Range Selection Matrix</h1>
+        <p class="section-desc">
+          Choose your competitive zone. Each 10-question exam dynamically synthesizes composite targets within your designated boundaries.
+        </p>
+      </div>
+
+      <div class="ranges-matrix-grid">
+        <!-- Tier 1 -->
+        <a href="./exam.html?min=1&max=200&title=Tier%201%3A%201%20-%20200" class="range-tilt-card" data-min="1" data-max="200" data-tier="Tier 1: 1 - 200">
+          <div class="range-card-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 1 backdrop" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label">Tier 1 · Foundations</div>
+            <div class="range-bounds-text">1 — 200</div>
+            <p class="range-desc-text">
+              Elementary primes {2, 3, 5, 7, 11, 13}. Ideal for cadence calibration and mental warming.
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
+            <span style="color: #FFFFFF; font-weight: 700;">→</span>
+          </div>
+        </a>
+
+        <!-- Tier 2 -->
+        <a href="./exam.html?min=201&max=500&title=Tier%202%3A%20201%20-%20500" class="range-tilt-card" data-min="201" data-max="500" data-tier="Tier 2: 201 - 500">
+          <div class="range-card-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/7422160/pexels-photo-7422160.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 2 backdrop" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label">Tier 2 · Intermediate</div>
+            <div class="range-bounds-text">201 — 500</div>
+            <p class="range-desc-text">
+              Tests multi-prime mixtures including squares and cubes up to 19².
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
+            <span style="color: #FFFFFF; font-weight: 700;">→</span>
+          </div>
+        </a>
+
+        <!-- Tier 3 -->
+        <a href="./exam.html?min=501&max=1000&title=Tier%203%3A%20501%20-%201%2C000" class="range-tilt-card" data-min="501" data-max="1000" data-tier="Tier 3: 501 - 1,000">
+          <div class="range-card-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/355938/pexels-photo-355938.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 3 backdrop" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label">Tier 3 · Olympiad Standard</div>
+            <div class="range-bounds-text">501 — 1,000</div>
+            <p class="range-desc-text">
+              Standard national qualifier division. Involves primes up to 31.
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
+            <span style="color: #FFFFFF; font-weight: 700;">→</span>
+          </div>
+        </a>
+
+        <!-- Tier 4 -->
+        <a href="./exam.html?min=1001&max=2000&title=Tier%204%3A%201%2C001%20-%202%2C000" class="range-tilt-card" data-min="1001" data-max="2000" data-tier="Tier 4: 1,001 - 2,000">
+          <div class="range-card-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/247791/pexels-photo-247791.png?auto=compress&cs=tinysrgb&w=600" alt="Tier 4 backdrop" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label">Tier 4 · Advanced</div>
+            <div class="range-bounds-text">1,001 — 2,000</div>
+            <p class="range-desc-text">
+              4-digit entry range. Demands rapid divisibility shortcuts for 7, 11, and 13.
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
+            <span style="color: #FFFFFF; font-weight: 700;">→</span>
+          </div>
+        </a>
+
+        <!-- Tier 5 -->
+        <a href="./exam.html?min=2001&max=5000&title=Tier%205%3A%202%2C001%20-%205%2C000" class="range-tilt-card" data-min="2001" data-max="5000" data-tier="Tier 5: 2,001 - 5,000">
+          <div class="range-card-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 5 backdrop" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label">Tier 5 · Senior League</div>
+            <div class="range-bounds-text">2,001 — 5,000</div>
+            <p class="range-desc-text">
+              High composite complexity requiring multi-step tree decomposition.
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
+            <span style="color: #FFFFFF; font-weight: 700;">→</span>
+          </div>
+        </a>
+
+        <!-- Tier 6 -->
+        <a href="./exam.html?min=5001&max=10000&title=Tier%206%3A%205%2C001%20-%2010%2C000" class="range-tilt-card" data-min="5001" data-max="10000" data-tier="Tier 6: 5,001 - 10,000">
+          <div class="range-card-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/6238048/pexels-photo-6238048.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 6 backdrop" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label">Tier 6 · Invitational</div>
+            <div class="range-bounds-text">5,001 — 10,000</div>
+            <p class="range-desc-text">
+              Primes up to 97. High-stress mental calculations under timer pressure.
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
+            <span style="color: #FFFFFF; font-weight: 700;">→</span>
+          </div>
+        </a>
+
+        <!-- Tier 7 -->
+        <a href="./exam.html?min=10001&max=20000&title=Tier%207%3A%2010%2C001%20-%2020%2C000" class="range-tilt-card" data-min="10001" data-max="20000" data-tier="Tier 7: 10,001 - 20,000">
+          <div class="range-card-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/414860/pexels-photo-414860.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 7 backdrop" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label">Tier 7 · Grandmaster</div>
+            <div class="range-bounds-text">10,001 — 20,000</div>
+            <p class="range-desc-text">
+              5-digit composite scale. Tests deep algebraic number theory intuition.
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
+            <span style="color: #FFFFFF; font-weight: 700;">→</span>
+          </div>
+        </a>
+
+        <!-- Tier 8 (20,000+ capped at 35,000) -->
+        <a href="./exam.html?min=20001&max=35000&title=Tier%208%3A%2020%2C000%2B%20(Elite)" class="range-tilt-card" data-min="20001" data-max="35000" data-tier="Tier 8: 20,000+ (Elite)">
+          <div class="range-card-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/3779409/pexels-photo-3779409.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 8 backdrop" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label">Tier 8 · Elite Cap</div>
+            <div class="range-bounds-text">20,000+</div>
+            <p class="range-desc-text">
+              Programmatically capped at 35,000 for competitive balance and response precision.
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
+            <span style="color: #FFFFFF; font-weight: 700;">→</span>
+          </div>
+        </a>
+
+        <!-- Tier 9: Custom Range Portal (Mechanical Engineering Blueprint) -->
+        <a href="./custom.html" class="range-tilt-card tier-9-blueprint-card" data-is-custom="true" id="tier-9-custom-card">
+          <div class="range-card-img-wrap blueprint-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Mathematical architecture blueprint grid" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label tier-9-label">Tier 9 · Parameterized</div>
+            <div class="range-bounds-text">Custom Bounds</div>
+            <p class="range-desc-text">
+              Define tailored minimum and maximum integers with customized lifeline rules.
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold">Configure Range</span>
+            <span class="footer-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Tier 10: 1 to Infinity (Olympian Infinite Cosmic Manifold) -->
+        <a href="./exam.html?min=1&max=50000&title=Omega%3A%201%20to%20Infinity" class="range-tilt-card tier-10-cosmic-card card-neon-loop" data-min="1" data-max="50000" data-tier="Omega: 1 to Infinity" id="tier-10-omega-card">
+          <div class="range-card-img-wrap cosmic-img-wrap">
+            <img class="range-card-img" src="https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Cosmic deep space nebula constellation" loading="lazy" />
+          </div>
+          <div class="range-card-body">
+            <div class="range-tier-label tier-10-label">Tier 10 · Cosmic Manifold</div>
+            <div class="range-bounds-text">1 to <span class="infinity-symbol">∞</span> (50,000)</div>
+            <p class="range-desc-text">
+              The ultimate unbounded trial. Random composites spanning the full spectrum of integers.
+            </p>
+          </div>
+          <div class="range-card-footer">
+            <span class="font-bold">Enter the Manifold</span>
+            <span class="footer-arrow">→</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer-slot">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">© Olympiad Edge</p>
+        <p class="footer-line">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Hardcoded Navbar Toggle Script Block -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
+      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
+      
+      if (menuToggle && dropdownMenu) {
+        menuToggle._hasToggleListener = true;
+        menuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('active');
+          // Smoothly transition aria attributes for universal accessibility updates
+          const isExpanded = dropdownMenu.classList.contains('active');
+          menuToggle.setAttribute('aria-expanded', isExpanded);
+        });
+        
+        // Force close the overlay dropdown if the user clicks anywhere outside of it
+        document.addEventListener('click', (e) => {
+          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+            dropdownMenu.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    });
+  </script>
+
+  <script type="module" src="./js/ranges.js"></script>
+</body>
+</html>

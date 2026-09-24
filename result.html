@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Verdict & Analytics — PrimeFactor.app</title>
+  <meta name="description" content="Detailed Math Olympiad prime factorization exam performance analytics, failure audit stack, redemption ledger, and compiler latency telemetry." />
+  <meta property="og:title" content="Exam Verdict & Analytics — PrimeFactor.app" />
+  <meta property="og:description" content="Exam performance analytics, compiler latency audit, and failure stack." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Persistent Global Header with Dropdown Navigation (Hardcoded for local file:// support) -->
+  <header class="fixed-header">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass with 5 links + mobile System link) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./ranges.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Range Selections</span>
+            </div>
+            <span class="dropdown-badge">10 Tiers</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./exam.html?min=1&max=200&title=Standard%20Exam" id="dropdown-random-exam" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3"></line>
+                <polyline points="21 16 21 21 16 21"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21"></line>
+                <line x1="4" y1="4" x2="9" y2="9"></line>
+              </svg>
+              <span>Random Exam</span>
+            </div>
+            <span class="dropdown-badge">Instant</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="#" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Standalone Settings Gear Icon -->
+      <div class="header-actions">
+        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Settings Modal Slot -->
+  <div id="settings-modal-slot"></div>
+
+  <main class="main-wrapper">
+    <div class="content-container">
+      <div class="section-head" style="margin-bottom: 2rem;">
+        <span class="section-kicker">Diagnostic Assessment</span>
+        <h1 class="section-title">Final Verdict &amp; Analytics</h1>
+        <p class="section-desc">
+          Complete session audit breakdown, cognitive speed telemetry, compiler latency logs, and mathematical failure analysis.
+        </p>
+      </div>
+
+      <!-- Hero Data Panel: Circular Master Score Ring & Metrics -->
+      <div class="results-hero-grid">
+        <!-- Master Score Ring Card -->
+        <div class="master-ring-card">
+          <div class="section-bg-image-wrap">
+            <img class="section-bg-image" src="https://images.pexels.com/photos/3747481/pexels-photo-3747481.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Calculus and statistical analytical board" loading="lazy" />
+            <div class="section-bg-overlay"></div>
+          </div>
+          <div class="svg-ring-wrapper">
+            <svg width="180" height="180" viewBox="0 0 180 180">
+              <circle 
+                cx="90" 
+                cy="90" 
+                r="70" 
+                stroke="#E2E8F0" 
+                stroke-width="12" 
+                fill="none"
+              />
+              <circle 
+                id="ring-svg-progress" 
+                cx="90" 
+                cy="90" 
+                r="70" 
+                stroke="#10B981" 
+                stroke-width="12" 
+                stroke-linecap="round" 
+                fill="none" 
+                style="stroke-dasharray: 440; stroke-dashoffset: 440; transition: stroke 0.3s ease;"
+              />
+            </svg>
+            <div class="ring-score-center">
+              <span id="ring-score-val" class="ring-score-num tabular-nums">0</span>
+              <span class="ring-score-sub">Total Points</span>
+            </div>
+          </div>
+
+          <div id="verdict-badge-val" class="verdict-tier-badge">
+            Calculating...
+          </div>
+        </div>
+
+        <!-- Metrics Audit Deck -->
+        <div class="metrics-audit-deck">
+          <div class="section-bg-image-wrap">
+            <img class="section-bg-image" src="https://images.pexels.com/photos/1323712/pexels-photo-1323712.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Geometric parametric architecture ribs" loading="lazy" />
+            <div class="section-bg-overlay"></div>
+          </div>
+          <div class="stats-counter-strip">
+            <div class="counter-box">
+              <div class="cb-label">1st Attempt Clears</div>
+              <div id="cb-first-attempt" class="cb-val tabular-nums">0 / 10</div>
+            </div>
+
+            <div class="counter-box">
+              <div class="cb-label">2nd Attempt Retries</div>
+              <div id="cb-second-attempt" class="cb-val tabular-nums">0</div>
+            </div>
+
+            <div class="counter-box">
+              <div class="cb-label">Net Accuracy</div>
+              <div id="cb-accuracy" class="cb-val tabular-nums">0%</div>
+            </div>
+
+            <div class="counter-box">
+              <div class="cb-label">Time Expended</div>
+              <div id="cb-time-spent" class="cb-val tabular-nums">0s</div>
+            </div>
+
+            <div class="counter-box">
+              <div class="cb-label">Lifelines Used</div>
+              <div id="cb-lifelines" class="cb-val tabular-nums">0</div>
+            </div>
+          </div>
+
+          <!-- 4-Line Dynamic Diagnostic Suggestion Engine -->
+          <div class="diagnostic-panel">
+            <h4 id="diagnostic-title-val">Verdict Evaluation</h4>
+            <p id="diagnostic-text-val">
+              Analyzing cognitive trajectory and calculation telemetry...
+            </p>
+          </div>
+
+          <!-- Actions Bar -->
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
+            <button id="result-retake-btn" class="btn-primary" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">
+              <span>Retake Range</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+              </svg>
+            </button>
+            <button id="result-new-range-btn" class="btn-secondary" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">
+              <span>Choose New Tier</span>
+            </button>
+            <button id="result-share-btn" class="btn-secondary" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">
+              <span>Copy Verdict Audit</span>
+            </button>
+            <div id="share-verdict-toast" style="display: none; align-self: center; font-size: 0.85rem; font-weight: 600; color: var(--success-mint);">
+              ✓ Summary copied to clipboard!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Sections Grid: Failure Stack & Redemption Track -->
+      <div class="audit-sections-grid" style="position: relative; overflow: hidden; border-radius: 1.25rem;">
+        <div class="section-bg-image-wrap">
+          <img class="section-bg-image" src="https://images.pexels.com/photos/3747485/pexels-photo-3747485.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Intricate mathematical step-by-step audit derivation" loading="lazy" />
+          <div class="section-bg-overlay"></div>
+        </div>
+        <!-- ❌ Failure Audit Stack (with Nested Mistake Analysis Tables) -->
+        <div class="audit-stack-card">
+          <h3 style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem;">
+            <span style="color: #F87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.5);">❌</span> Failure Audit Stack
+          </h3>
+          <p style="font-size: 0.85rem; margin-bottom: 1rem; color: #CBD5E1; font-weight: 500;">
+            Full telemetry for uncorrected calculations, skipped numbers, and timeout misses with nested mistake analyses.
+          </p>
+          <div id="failure-audit-list" class="audit-list">
+            <!-- Dynamically populated with nested mistake tables -->
+          </div>
+        </div>
+
+        <!-- 🔄 Redemption Track -->
+        <div class="audit-stack-card">
+          <h3 style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem;">
+            <span style="color: #FBBF24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);">🔄</span> Redemption Track
+          </h3>
+          <p style="font-size: 0.85rem; margin-bottom: 1rem; color: #CBD5E1; font-weight: 500;">
+            Questions missed on the initial pass but successfully recovered during overtime.
+          </p>
+          <div id="redemption-audit-list" class="audit-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Upgrade 8: Compiler Latency Audit Table Sub-Card -->
+      <section class="audit-stack-card" style="margin-bottom: 3rem;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+          <h3 style="color: #FFFFFF;">
+            <span>⚡</span> Compiler Latency Audit Table
+          </h3>
+          <div style="font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700; color: var(--accent-primary);">
+            Mean Solve Latency: <span id="avg-compiler-latency" class="tabular-nums">0.042 ms</span>
+          </div>
+        </div>
+        <p class="text-muted" style="font-size: 0.825rem; margin-bottom: 1rem;">
+          Sub-second execution logs of the browser-native Pollard's Rho factorization and Miller-Rabin primality verification engine.
+        </p>
+
+        <div class="latency-table-wrap">
+          <table class="latency-table">
+            <thead>
+              <tr>
+                <th>Index</th>
+                <th>Target Integer (N)</th>
+                <th>Decomposition Latency</th>
+                <th>Factorization Engine</th>
+                <th>Verification State</th>
+              </tr>
+            </thead>
+            <tbody id="compiler-latency-tbody">
+              <!-- Dynamically populated by result.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <div id="site-footer-slot">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">© Olympiad Edge</p>
+        <p class="footer-line">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Hardcoded Navbar Toggle Script Block -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
+      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
+      
+      if (menuToggle && dropdownMenu) {
+        menuToggle._hasToggleListener = true;
+        menuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('active');
+          // Smoothly transition aria attributes for universal accessibility updates
+          const isExpanded = dropdownMenu.classList.contains('active');
+          menuToggle.setAttribute('aria-expanded', isExpanded);
+        });
+        
+        // Force close the overlay dropdown if the user clicks anywhere outside of it
+        document.addEventListener('click', (e) => {
+          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+            dropdownMenu.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    });
+  </script>
+
+  <script type="module" src="./js/result.js"></script>
+</body>
+</html>

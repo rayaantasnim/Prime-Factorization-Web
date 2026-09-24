@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Arena — PrimeFactor.app</title>
+  <meta name="description" content="High-velocity Math Olympiad prime factorization exam arena with live 180-second countdown and 3-strike evaluation." />
+  <meta property="og:title" content="Exam Arena — PrimeFactor.app" />
+  <meta property="og:description" content="Math Olympiad prime factorization speed exam." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body class="in-exam">
+  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Fixed Top Panel (Hidden during active exam via Visibility Lock and .hidden utility class) -->
+  <header class="fixed-header hidden" style="display: none !important;">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass with 5 links + mobile System link) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./ranges.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Range Selections</span>
+            </div>
+            <span class="dropdown-badge">10 Tiers</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./exam.html?min=1&max=200&title=Standard%20Exam" id="dropdown-random-exam" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3"></line>
+                <polyline points="21 16 21 21 16 21"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21"></line>
+                <line x1="4" y1="4" x2="9" y2="9"></line>
+              </svg>
+              <span>Random Exam</span>
+            </div>
+            <span class="dropdown-badge">Instant</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="#" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Standalone Settings Gear Icon -->
+      <div class="header-actions">
+        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <div class="content-container">
+      <!-- Live Focused Exam Dashboard HUD (Isolated from global header) -->
+      <div class="exam-arena-hud" role="region" aria-label="Live Exam Dashboard">
+        <div class="brand-lockup" style="font-size: 1.15rem;">
+          <span class="brand-symbol" style="width: 1.85rem; height: 1.85rem; font-size: 1.1rem;">Π</span>
+          <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+        </div>
+
+        <div class="header-exam-hud">
+          <div class="hud-item hud-points">
+            <span>Points</span>
+            <span id="hud-marks-val" class="hud-val tabular-nums">0</span>
+          </div>
+
+          <div class="hud-item">
+            <span>Question</span>
+            <span id="hud-question-val" class="hud-val tabular-nums">1 / 10</span>
+          </div>
+
+          <div class="hud-item hud-errors">
+            <span>Errors</span>
+            <span id="hud-errors-val" class="hud-val tabular-nums">0</span>
+          </div>
+
+          <div id="hud-timer-item" class="hud-item hud-timer">
+            <span>Time</span>
+            <span id="hud-timer-val" class="hud-val tabular-nums">03:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-arena-card">
+        <div class="section-bg-image-wrap">
+          <img class="section-bg-image" src="https://images.pexels.com/photos/3747470/pexels-photo-3747470.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Olympiad mathematical challenge theorem board" loading="lazy" />
+          <div class="section-bg-overlay"></div>
+        </div>
+        <!-- 1-Second Transition Freeze Indicator -->
+        <span id="timer-freeze-banner" class="timer-freeze-banner">
+          ⏸ Transition Freeze (1s)
+        </span>
+
+        <!-- Question Status -->
+        <div id="question-status-subtext" class="arena-status-subtext">
+          Question 1 of 10 · Decompose completely
+        </div>
+
+        <!-- Target Number -->
+        <div id="target-number-val" class="target-number-display tabular-nums">
+          ---
+        </div>
+
+        <!-- Unlock Hint Box (GSAP Animated) -->
+        <div id="target-hint-box" class="target-hint-box">
+          <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+            Conceptual Clue (Reward Halved)
+          </div>
+          <div id="target-hint-text"></div>
+        </div>
+
+        <!-- Input Deck -->
+        <div class="exam-input-deck">
+          <input 
+            id="exam-factor-input" 
+            class="exam-factor-input" 
+            type="text" 
+            placeholder="e.g. 2*2*3, 2 2 3, or 2^2*3" 
+            autocomplete="off" 
+            autofocus 
+            aria-label="Prime factor decomposition input"
+          />
+          <div class="exam-input-hint">
+            Accepts: <span class="font-mono">2*2*3</span>, <span class="font-mono">2 2 3</span>, <span class="font-mono">2,2,3</span>, <span class="font-mono">2^2*3</span>, <span class="font-mono">2**2*3</span>, or <span class="font-mono">2 × 2 × 3</span>
+          </div>
+          <div id="exam-input-feedback" style="min-height: 1.5rem; margin-top: 0.75rem; font-size: 0.9rem; font-weight: 600;"></div>
+        </div>
+
+        <!-- Submit Button -->
+        <button id="exam-submit-btn" class="btn-primary" style="padding: 0.9rem 2.5rem; font-size: 1rem; margin-bottom: 2rem;">
+          <span>Submit Decomposition</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </button>
+
+        <!-- 6 Lifeline Controls Matrix -->
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.15); padding-top: 1.5rem;">
+          <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700; margin-bottom: 0.75rem;">
+            Tactical Lifelines
+          </div>
+          <div class="lifelines-matrix">
+            <!-- 1. Pause Timer -->
+            <button id="lifeline-pause" class="lifeline-btn" title="Pauses the 180s clock for 5 seconds">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+              <span>Pause Clock</span>
+              <span class="lifeline-uses">2 left</span>
+            </button>
+
+            <!-- 2. End Exam -->
+            <button id="lifeline-end" class="lifeline-btn" title="Terminates exam immediately and scores current performance">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <rect x="9" y="9" width="6" height="6"></rect>
+              </svg>
+              <span>End Exam</span>
+              <span class="lifeline-uses">Terminal</span>
+            </button>
+
+            <!-- 3. Skip -->
+            <button id="lifeline-skip" class="lifeline-btn" title="Skips number (-2 points penalty)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+              <span>Skip (-2)</span>
+              <span class="lifeline-uses">&infin;</span>
+            </button>
+
+            <!-- 4. Regenerate -->
+            <button id="lifeline-regen" class="lifeline-btn" title="Discards number, rolls new composite, bypasses freeze (-2 points)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+              </svg>
+              <span>Regen (-2)</span>
+              <span class="lifeline-uses">1 left</span>
+            </button>
+
+            <!-- 5. Restart -->
+            <button id="lifeline-restart" class="lifeline-btn" title="Flushes points, resets clock, generates 10 fresh questions">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+              </svg>
+              <span>Restart</span>
+              <span class="lifeline-uses">Full Reset</span>
+            </button>
+
+            <!-- 6. Unlock Hints -->
+            <button id="lifeline-hint" class="lifeline-btn" title="Reveals conceptual hint (Halves question points)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>Unlock Hint</span>
+              <span class="lifeline-uses">1 left</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer-slot">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">© Olympiad Edge</p>
+        <p class="footer-line">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Hardcoded Navbar Toggle Script Block -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
+      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
+      
+      if (menuToggle && dropdownMenu) {
+        menuToggle._hasToggleListener = true;
+        menuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('active');
+          // Smoothly transition aria attributes for universal accessibility updates
+          const isExpanded = dropdownMenu.classList.contains('active');
+          menuToggle.setAttribute('aria-expanded', isExpanded);
+        });
+        
+        // Force close the overlay dropdown if the user clicks anywhere outside of it
+        document.addEventListener('click', (e) => {
+          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+            dropdownMenu.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    });
+  </script>
+
+  <script type="module" src="./js/exam.js"></script>
+</body>
+</html>

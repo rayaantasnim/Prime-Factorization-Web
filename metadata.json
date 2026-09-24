@@ -1,0 +1,6 @@
+{
+  "name": "PrimeFactor.app",
+  "description": "Interactive Math Olympiad prime factorization speed laboratory and training arena with real-time Pollard's Rho engine.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
