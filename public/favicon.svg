@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#0F172A"/>
+  <rect x="2" y="2" width="60" height="60" rx="12" fill="none" stroke="#0EA5E9" stroke-width="2" stroke-opacity="0.6"/>
+  <!-- Mathematical Pi/Prime Symbol Π with Cyan Glow -->
+  <path d="M18 20h28v6H38v22h-6V26H24v22h-6V20z" fill="#38BDF8"/>
+  <circle cx="46" cy="18" r="3" fill="#34D399"/>
+</svg>
