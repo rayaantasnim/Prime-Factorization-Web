@@ -1,44 +1,32 @@
-:root {
-  color-scheme: dark light !important;
-}
+/* ==========================================================================
+   HIGH-SPECIFICITY OVERLAP MATRIX FOR THE TARGET 4 ELEMENTS
+   ========================================================================== */
 
-/* Section 1: High Specificity Blocks (Fixed Syntax Error) */
-html body #diagnostic-title-val {
+/* 1. Diagnostic Title Val Override */
+main:nth-of-type(1) div:nth-of-type(2) div:nth-of-type(2) div:nth-of-type(3) h4#diagnostic-title-val,
+html body main h4#diagnostic-title-val {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
-  mix-blend-mode: normal !important;
 }
 
-html body #diagnostic-text-val {
+/* 2. Diagnostic Text Val Override */
+main:nth-of-type(1) div:nth-of-type(2) div:nth-of-type(2) div:nth-of-type(3) p#diagnostic-text-val,
+html body main p#diagnostic-text-val {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
-  mix-blend-mode: normal !important;
 }
 
-html body .verdict-badge-val {
+/* 3. Verdict Badge Val Override */
+main:nth-of-type(1) div:nth-of-type(2) div:nth-of-type(1) div#verdict-badge-val,
+html body main .verdict-badge-val {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
-  mix-blend-mode: normal !important;
 }
 
-html body .master-ring-card {
-  background: aqua !important;
-  background-color: aqua !important;
+/* 4. Master Ring Card Override (Forces Background to Aqua) */
+main:nth-of-type(1) div:nth-of-type(2) div:nth-of-type(1).master-ring-card,
+html body main .master-ring-card {
+  background: #00FFFF !important;
+  background-color: #00FFFF !important;
   forced-color-adjust: none !important;
-}
-
-/* Section 2: Universal Screen Override */
-@media screen and (min-width: 0px) {
-  html body #diagnostic-title-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
-  html body #diagnostic-text-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
-  html body .verdict-badge-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
-  html body .master-ring-card { background: aqua !important; background-color: aqua !important; }
-}
-
-/* Section 3: Forceful System Dark Mode Override */
-@media (prefers-color-scheme: dark) {
-  html body #diagnostic-title-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
-  html body #diagnostic-text-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
-  html body .verdict-badge-val { color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
-  html body .master-ring-card { background: aqua !important; background-color: aqua !important; }
 }
