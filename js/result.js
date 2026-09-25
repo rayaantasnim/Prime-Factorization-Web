@@ -249,17 +249,17 @@ function renderResultDashboard() {
 
   const executeShareAction = () => {
     playSound('click');
-    const shareText = `Prime-Factor.app Analytics Report Card\n\n\n` +
-      `Verdict Tier: ${bracketTitle}\n` +
-      `Total Score: ${result.score}/100 pts \n`+
-      `Range: (${result.rangeTitle}) Tier\n` +
-      `Accuracy: ${accuracyPct}% \n`+
-      `Solved: (${totalSolved}/10 Cleared)\n\n` +
-      `Time Expended: ${result.timeSpent}s\n` +
-      `Lifelines Consumed: ${result.lifelinesUsedCount}\n\n` +
-      `Authorized By Rayaan Tasnim\n`+
+    const shareText = `Prime-Factor.app Performance Report\n\n\n` +
+      `Rank Tier: ${bracketTitle}\n` +
+      `Final Score: ${result.score}/100 points\n`+
+      `Category: ${result.rangeTitle} Tier\n` +
+      `Accuracy: ${accuracyPct}%\n`+
+      `Progress: ${totalSolved}/10 Completed\n\n` +
+      `Time Spent: ${result.timeSpent}s\n` +
+      `Lifelines Used: ${result.lifelinesUsedCount}\n\n` +
+      `Certified By Rayaan Tasnim\n`+
       `Powered by Olympiad Edge\n`+
-      `All rights reserved!`;
+      `All rights reserved.`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText).then(() => {
