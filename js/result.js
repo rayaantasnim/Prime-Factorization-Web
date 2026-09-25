@@ -251,14 +251,15 @@ function renderResultDashboard() {
     playSound('click');
     const shareText = `Prime-Factor.app Analytics Report Card\n\n\n` +
       `Verdict Tier: ${bracketTitle}\n` +
-      `Total Score: ${result.score} pts \n`+
-      `Range: (${result.rangeTitle})\n` +
+      `Total Score: ${result.score}/100 pts \n`+
+      `Range: (${result.rangeTitle}) Tier\n` +
       `Accuracy: ${accuracyPct}% \n`+
       `Solved: (${totalSolved}/10 Cleared)\n\n` +
       `Time Expended: ${result.timeSpent}s\n` +
       `Lifelines Consumed: ${result.lifelinesUsedCount}\n\n` +
       `Authorized By Rayaan Tasnim\n`+
-      `Powered by Olympiad Edge`;
+      `Powered by Olympiad Edge\n`+
+      `All rights reserved!`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText).then(() => {
