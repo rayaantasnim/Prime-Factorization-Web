@@ -211,6 +211,37 @@ export function rollCompositeNumber(min, max) {
 }
 
 /**
+ * Failsafe Input Sanitizer
+ * Automatically strips syntax mistakes, duplicate spaces, or accidental trailing multiplier symbols
+ * (e.g. '2*2*3*' -> '2*2*3', '2 *  3' -> '2*3', '2 * 2 * 3 *' -> '2*2*3', '2, 3,' -> '2*3')
+ */
+export function sanitizeFactorInput(inputStr) {
+  if (!inputStr || typeof inputStr !== 'string') return '';
+  let s = inputStr.trim();
+  if (s.length === 0) return '';
+
+  // 1. Convert common multiplier alternatives, commas, semicolons to '*'
+  s = s.replace(/[×Xx·;,]/g, '*');
+
+  // 2. Normalize exponent notations ('**' or '^') and strip inner whitespace
+  s = s.replace(/\s*(\*\*|\^)\s*/g, '^');
+
+  // 3. Normalize spaces around '*'
+  s = s.replace(/\s*\*\s*/g, '*');
+
+  // 4. Transform leftover whitespace between numbers into '*'
+  s = s.replace(/\s+/g, '*');
+
+  // 5. Deduplicate multiple consecutive '*'
+  s = s.replace(/\*+/g, '*');
+
+  // 6. Strip accidental leading and trailing multipliers or exponents
+  s = s.replace(/^[\s*^]+|[\s*^]+$/g, '');
+
+  return s;
+}
+
+/**
  * Flexible String Parsing Engine
  * Instantly normalizes, parses, and evaluates user inputs formatted as:
  * 2*2*3, 2,2,3, 2^2*3, 2**2*3, 2 × 2 × 3, 2 2 3, 2.2.3, etc.
@@ -224,7 +255,7 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
     };
   }
 
-  let cleaned = inputStr.trim();
+  const cleaned = sanitizeFactorInput(inputStr);
   if (cleaned.length === 0) {
     return {
       isValid: false,
@@ -233,26 +264,6 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
       reason: 'Input cannot be blank.'
     };
   }
-
-  // 1. Normalize exponent notations: convert '**' to '^' and strip whitespace around exponent operators:
-  // e.g. '2 ^ 3' -> '2^3', '2 ** 3' -> '2^3'
-  cleaned = cleaned.replace(/\s*(\*\*|\^)\s*/g, '^');
-
-  // 2. Normalize multiplication variations, punctuation, and separators:
-  // '×', 'X', 'x', '·', ',', ';'
-  cleaned = cleaned.replace(/[×Xx·;,]/g, '*');
-
-  // 3. Normalize whitespace around existing multiplication operators:
-  // '2 * 3' -> '2*3'
-  cleaned = cleaned.replace(/\s*\*\s*/g, '*');
-
-  // 4. Input Engine Expansion - Space Separation Multiplier:
-  // Automatically convert individual numerical values separated by blank spaces
-  // (e.g. '2 2 3' or '2  2  3' with multiple space indices) into multiplication factors '*'
-  cleaned = cleaned.replace(/\s+/g, '*');
-
-  // 5. Clean leading/trailing or duplicate multiplication operators:
-  cleaned = cleaned.replace(/^\*+|\*+$/g, '').replace(/\*+/g, '*');
 
   // Split by multiplication operator '*'
   const tokens = cleaned.split('*').map(t => t.trim()).filter(Boolean);

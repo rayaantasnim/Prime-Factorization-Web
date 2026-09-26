@@ -32,13 +32,46 @@ function initExamArena() {
     soundEnabled: true
   };
 
+  // Progressive Time Limit Scale Calculator
+  function resolveTimeLimit(min, max, explicitTime, paramsTime) {
+    if (explicitTime && !isNaN(explicitTime) && explicitTime > 0) return explicitTime;
+    if (paramsTime && !isNaN(paramsTime) && paramsTime > 0) return paramsTime;
+    
+    // Progressive scale for standard tiers
+    if (max <= 200) return 180;        // Tier 1: 3 min (180s)
+    if (max <= 500) return 300;        // Tier 2: 5 min (300s)
+    if (max <= 1000) return 480;       // Tier 3: 8 min (480s)
+    if (max <= 2000) return 720;       // Tier 4: 12 min (720s)
+    if (max <= 5000) return 1080;      // Tier 5: 18 min (1080s)
+    if (max <= 10000) return 1500;     // Tier 6: 25 min (1500s)
+    if (max <= 20000) return 2100;     // Tier 7: 35 min (2100s)
+    if (max <= 35000) return 2700;     // Tier 8: 45 min (2700s)
+    return 3600;                       // Tier 10: 60 min (3600s)
+  }
+
+  // Parse direct URL Search Parameters (Highest precedence)
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlMin = urlParams.get('min') ? Number(urlParams.get('min')) : null;
+  const urlMax = urlParams.get('max') ? Number(urlParams.get('max')) : null;
+  const urlTitle = urlParams.get('title') || null;
+  const urlTime = urlParams.get('time') ? Number(urlParams.get('time')) : null;
+  const urlStrikePenalty = urlParams.has('strikePenalty') ? urlParams.get('strikePenalty') === 'true' : null;
+
+  const resolvedMin = (urlMin && !isNaN(urlMin)) ? urlMin : (params.min || 1);
+  const resolvedMax = (urlMax && !isNaN(urlMax)) ? urlMax : (params.max || 200);
+  const resolvedTitle = urlTitle || params.title || `Division: ${resolvedMin} - ${resolvedMax}`;
+  const totalDuration = resolveTimeLimit(resolvedMin, resolvedMax, urlTime, params.timeLimit);
+  const allowStrikePenalty = urlStrikePenalty !== null ? urlStrikePenalty : (rules.allowStrikePenalty !== undefined ? rules.allowStrikePenalty : true);
+
   // State Management
   const state = {
-    min: params.min || 1,
-    max: params.max || 200,
-    title: params.title || 'Standard Arena',
+    min: resolvedMin,
+    max: resolvedMax,
+    title: resolvedTitle,
     score: 0,
-    timeRemaining: 180,
+    totalTimeLimit: totalDuration,
+    timeRemaining: totalDuration,
+    allowStrikePenalty,
     timerInterval: null,
     isFrozen: false,
     freezeTimeout: null,
@@ -69,7 +102,13 @@ function initExamArena() {
     },
 
     activeHintForCurrentQuestion: false,
-    examEnded: false
+    examEnded: false,
+
+    // Anti-Cheat & 10-Second Temporary Window State
+    bypassActive: false,
+    bypassTimeRemaining: 0,
+    bypassInterval: null,
+    antiCheatViolationsCount: 0
   };
 
   // Generate 10 unique composite numbers
@@ -111,6 +150,12 @@ function initExamArena() {
   const submitBtn = document.getElementById('exam-submit-btn');
   const freezeNoticeEl = document.getElementById('timer-freeze-banner');
   const inputFeedbackEl = document.getElementById('exam-input-feedback');
+
+  // Anti-Cheat DOM Elements
+  const btnBypass = document.getElementById('btn-anticheat-bypass');
+  const bypassBadge = document.getElementById('bypass-countdown-badge');
+  const bypassTimerVal = document.getElementById('bypass-timer-val');
+  const antiCheatStatusText = document.getElementById('anticheat-status-text');
 
   // Lifeline Button Elements
   const btnPause = document.getElementById('lifeline-pause');
@@ -236,13 +281,13 @@ function initExamArena() {
     state.incorrectSubmissionsCount++;
     playSound('error');
 
-    // 🚨 3-Strike Rule: Flat -10 point penalty upon hitting exactly 3 errors
-    if (state.incorrectSubmissionsCount === 3) {
+    // 🚨 3-Strike Rule: Flat -10 point penalty upon hitting multiples of 3 cumulative errors/skips
+    if (state.allowStrikePenalty && state.incorrectSubmissionsCount % 3 === 0) {
       state.score -= 10;
       state.threeStrikePenaltiesApplied++;
       triggerFlash('penalty');
       if (inputFeedbackEl) {
-        inputFeedbackEl.textContent = '🚨 3-STRIKE PENALTY TRIGGERED: -10 POINTS APPLIED!';
+        inputFeedbackEl.textContent = `🚨 3-STRIKE PENALTY TRIGGERED (${state.incorrectSubmissionsCount} strikes): -10 POINTS APPLIED!`;
         inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
       }
     } else {
@@ -283,7 +328,11 @@ function initExamArena() {
         state.score += pts;
 
         playSound('correct');
-        triggerFlash('success');
+        if (state.activeHintForCurrentQuestion) {
+          triggerFlash('warning'); // Orange for hint-assisted
+        } else {
+          triggerFlash('success'); // Green for positive
+        }
 
         if (inputFeedbackEl) {
           inputFeedbackEl.textContent = `Correct! +${pts} points`;
@@ -295,9 +344,9 @@ function initExamArena() {
           advanceToNextQuestion();
         });
       } else {
-        // Incorrect on first attempt
+        // Incorrect on first attempt (-5 pts standard error)
         currentItem.attempt1Correct = false;
-        const penalty = state.activeHintForCurrentQuestion ? 5 : 2;
+        const penalty = 5;
         state.score -= penalty;
 
         registerError();
@@ -335,9 +384,9 @@ function initExamArena() {
           advanceToNextQuestion();
         });
       } else {
-        // Incorrect on second attempt
+        // Incorrect on second attempt (-5 pts)
         currentItem.attempt2Correct = false;
-        const penalty = currentItem.hintActive ? 5 : 2;
+        const penalty = 5;
         state.score -= penalty;
 
         registerError();
@@ -397,17 +446,18 @@ function initExamArena() {
     }
   }
 
-  // Lifeline: Pause Timer (Pauses for exactly 5s, max 2 uses)
+  // Lifeline: Pause Timer (Pauses for exactly 5s, -2 pts, max 2 uses)
   function handleLifelinePause() {
     if (state.lifelines.pauseUsed >= state.lifelines.maxPause || state.isPausedByLifeline || state.isFrozen) return;
 
     state.lifelines.pauseUsed++;
+    state.score -= 2;
     state.isPausedByLifeline = true;
     playSound('alert');
     triggerFlash('warning');
 
     if (inputFeedbackEl) {
-      inputFeedbackEl.textContent = '⏸ Timer paused for 5 seconds...';
+      inputFeedbackEl.textContent = '⏸ Timer paused for 5 seconds (-2 pts)...';
       inputFeedbackEl.className = 'exam-feedback text-amber';
     }
     updateHUD();
@@ -420,7 +470,7 @@ function initExamArena() {
     }, 5000);
   }
 
-  // Lifeline: Skip (Applies -2 penalty, moves to next index)
+  // Lifeline: Skip (Applies -5 penalty, moves to next index, counts as error)
   function handleLifelineSkip() {
     if (state.isFrozen || state.examEnded) return;
 
@@ -431,7 +481,7 @@ function initExamArena() {
 
     if (!currentItem) return;
 
-    const penalty = state.activeHintForCurrentQuestion ? 5 : 2;
+    const penalty = 5;
     state.score -= penalty;
 
     if (!state.isSecondChanceLoop) {
@@ -442,8 +492,7 @@ function initExamArena() {
       currentItem.attempt2Correct = false;
     }
 
-    playSound('error');
-    triggerFlash('penalty');
+    registerError();
 
     if (inputFeedbackEl) {
       inputFeedbackEl.textContent = `Question skipped (-${penalty} pts)`;
@@ -544,6 +593,123 @@ function initExamArena() {
     updateHUD();
   }
 
+  // Anti-Cheat: 10-Second Temporary Exemption Request (-5 pts tactical fee)
+  function handleRequestBypass() {
+    if (state.examEnded || state.bypassActive || state.isFrozen) return;
+
+    // Immediately penalize user by deducting -5 points
+    state.score -= 5;
+    state.bypassActive = true;
+    state.bypassTimeRemaining = 10;
+    playSound('alert');
+    triggerFlash('warning');
+
+    if (inputFeedbackEl) {
+      inputFeedbackEl.textContent = '🛡️ Temporary 10s External Bypass Granted (-5 pts fee). Window isolation suspended.';
+      inputFeedbackEl.className = 'exam-feedback text-amber font-bold';
+    }
+
+    if (btnBypass) {
+      btnBypass.disabled = true;
+      btnBypass.classList.add('bypassing');
+    }
+    if (bypassBadge) {
+      bypassBadge.classList.remove('hidden');
+      bypassBadge.classList.add('flashing');
+    }
+    if (bypassTimerVal) {
+      bypassTimerVal.textContent = '10s';
+    }
+    if (antiCheatStatusText) {
+      antiCheatStatusText.textContent = 'EXEMPTION PROTOCOL ENGAGED (10s)';
+      antiCheatStatusText.style.color = '#F59E0B';
+    }
+
+    updateHUD();
+
+    clearInterval(state.bypassInterval);
+    state.bypassInterval = setInterval(() => {
+      state.bypassTimeRemaining--;
+      if (bypassTimerVal) {
+        bypassTimerVal.textContent = `${state.bypassTimeRemaining}s`;
+      }
+
+      if (state.bypassTimeRemaining <= 0) {
+        clearInterval(state.bypassInterval);
+        state.bypassActive = false;
+        
+        if (bypassBadge) {
+          bypassBadge.classList.add('hidden');
+          bypassBadge.classList.remove('flashing');
+        }
+        if (btnBypass) {
+          btnBypass.disabled = false;
+          btnBypass.classList.remove('bypassing');
+        }
+        if (antiCheatStatusText) {
+          antiCheatStatusText.textContent = 'ANTI-CHEAT ENFORCEMENT: ACTIVE';
+          antiCheatStatusText.style.color = '#10B981';
+        }
+
+        playSound('error');
+        triggerFlash('penalty');
+
+        if (inputFeedbackEl) {
+          inputFeedbackEl.textContent = '🔒 Bypass window expired! Strict window isolation reactivated.';
+          inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+        }
+      }
+    }, 1000);
+  }
+
+  // Anti-Cheat: Focus Lost & Tab Switch Monitoring
+  function handleIntegrityViolation(reason) {
+    if (state.examEnded || state.bypassActive || state.isFrozen) return;
+
+    state.antiCheatViolationsCount++;
+    const penalty = 5;
+    state.score -= penalty;
+
+    registerError();
+
+    if (inputFeedbackEl) {
+      inputFeedbackEl.textContent = `🚨 ANTI-CHEAT VIOLATION (${reason}): Window focus lost! Strike recorded (-${penalty} pts).`;
+      inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+    }
+
+    triggerFlash('penalty');
+    updateHUD();
+  }
+
+  const onVisibilityChange = () => {
+    if (document.hidden) {
+      handleIntegrityViolation('Tab switch or app minimized');
+    }
+  };
+
+  const onWindowBlur = () => {
+    // Only trigger if not already hidden to avoid double penalty in same blur event
+    if (!document.hidden) {
+      handleIntegrityViolation('Window focus lost');
+    }
+  };
+
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  window.addEventListener('blur', onWindowBlur);
+
+  // Global document listener for hotkeys during active exam
+  const onDocKeyDown = (e) => {
+    if (state.examEnded || state.isFrozen) return;
+    if ((e.code === 'Space' || e.key === ' ') && document.activeElement !== inputEl && !document.activeElement?.matches('button, a, input')) {
+      e.preventDefault();
+      if (inputEl) {
+        inputEl.focus();
+        inputEl.value += '*';
+      }
+    }
+  };
+  document.addEventListener('keydown', onDocKeyDown);
+
   // Countdown Timer
   state.timerInterval = setInterval(() => {
     if (state.isFrozen || state.isPausedByLifeline || state.examEnded) return;
@@ -562,8 +728,13 @@ function initExamArena() {
     if (state.examEnded) return;
     state.examEnded = true;
     clearInterval(state.timerInterval);
+    clearInterval(state.bypassInterval);
     clearTimeout(state.freezeTimeout);
     clearTimeout(state.pauseTimeout);
+
+    document.removeEventListener('visibilitychange', onVisibilityChange);
+    window.removeEventListener('blur', onWindowBlur);
+    document.removeEventListener('keydown', onDocKeyDown);
 
     // Audit Calculations
     const firstTryCorrect = state.questionAudits.filter(q => q.attempt1Correct === true).length;
@@ -604,12 +775,13 @@ function initExamArena() {
     const resultPayload = {
       score: state.score,
       timeRemaining: Math.max(0, state.timeRemaining),
-      timeSpent: 180 - Math.max(0, state.timeRemaining),
+      timeSpent: state.totalTimeLimit - Math.max(0, state.timeRemaining),
       totalQuestions: 10,
       correctFirstAttempt: firstTryCorrect,
       correctSecondAttempt: secondTryCorrect,
       incorrectTotal: state.incorrectSubmissionsCount,
       threeStrikeTriggered: state.threeStrikePenaltiesApplied > 0,
+      antiCheatViolationsCount: state.antiCheatViolationsCount,
       lifelinesUsedCount: lifelinesUsedTotal,
       lifelines: { ...state.lifelines },
       failureStack,
@@ -644,6 +816,17 @@ function initExamArena() {
 
   if (inputEl) {
     inputEl.addEventListener('keydown', (e) => {
+      // Spacebar hotkey: automatically inject '*' into factor string
+      if (e.code === 'Space' || e.key === ' ') {
+        e.preventDefault();
+        const start = inputEl.selectionStart ?? inputEl.value.length;
+        const end = inputEl.selectionEnd ?? inputEl.value.length;
+        const cur = inputEl.value;
+        inputEl.value = cur.substring(0, start) + '*' + cur.substring(end);
+        inputEl.setSelectionRange(start + 1, start + 1);
+        return;
+      }
+
       if (e.key === 'Enter') {
         e.preventDefault();
         handleSubmission();
@@ -651,10 +834,12 @@ function initExamArena() {
     });
   }
 
+  if (btnBypass) btnBypass.addEventListener('click', handleRequestBypass);
   if (btnPause) btnPause.addEventListener('click', handleLifelinePause);
   if (btnEnd) {
     btnEnd.addEventListener('click', () => {
       playSound('alert');
+      state.score -= 5; // -5 pts early termination penalty
       finishExam();
     });
   }

@@ -24,37 +24,49 @@ function renderResultDashboard() {
     return;
   }
 
-  // Bracket Diagnostic Classification
-  const isGrandMaster = (result.correctFirstAttempt === 10 && result.lifelinesUsedCount === 0);
-  const isMasterCompetitor = (!isGrandMaster && (result.correctFirstAttempt + result.correctSecondAttempt === 10));
-  const isBaselineRebuild = (result.threeStrikeTriggered || result.score <= 10 || result.incorrectTotal >= 4);
-  const isRecoverySpecialist = (!isGrandMaster && !isMasterCompetitor && !isBaselineRebuild);
+  // 6-Tier Olympiad Verdict Matrix
+  const totalSolved = (result.correctFirstAttempt || 0) + (result.correctSecondAttempt || 0);
+  const isQuantumDecomposer = (result.correctFirstAttempt === 10 && (result.lifelinesUsedCount || 0) === 0);
+  const isAlgorithmicStrategist = (!isQuantumDecomposer && totalSolved === 10);
+  const isCadenceAnalyst = (!isQuantumDecomposer && !isAlgorithmicStrategist && result.score > 75);
+  const isModularOperator = (!isQuantumDecomposer && !isAlgorithmicStrategist && !isCadenceAnalyst && result.score > 45);
+  const isFactorInitiate = (!isQuantumDecomposer && !isAlgorithmicStrategist && !isCadenceAnalyst && !isModularOperator && result.score >= 1);
 
-  let bracketTitle = 'Grand Master';
-  let bracketFontClass = 'verdict-grandmaster';
-  let bracketGlowColor = '#D97706';
+  let bracketTitle = 'Quantum Decomposer';
+  let bracketFontClass = 'verdict-quantum';
+  let bracketGlowColor = '#10B981';
   let diagnosticQuote = '';
 
-  if (isGrandMaster) {
-    bracketTitle = 'Grand Master';
-    bracketFontClass = 'verdict-grandmaster';
-    bracketGlowColor = '#D97706';
-    diagnosticQuote = "Flawless structural execution. Your prime factorization calculations are operating at peak Olympiad speeds. Mental decomposition accuracy achieved an absolute 100%. Check the next range immediately.";
-  } else if (isMasterCompetitor) {
-    bracketTitle = 'Master Competitor';
-    bracketFontClass = 'verdict-master';
+  if (isQuantumDecomposer) {
+    bracketTitle = 'Quantum Decomposer';
+    bracketFontClass = 'verdict-quantum';
+    bracketGlowColor = '#10B981';
+    diagnosticQuote = "Absolute mastery. Achieved perfect factorization under the strict initial clock with zero assistance, running at sub-second cognitive speeds.";
+  } else if (isAlgorithmicStrategist) {
+    bracketTitle = 'Algorithmic Strategist';
+    bracketFontClass = 'verdict-algorithmic';
+    bracketGlowColor = '#10B981';
+    diagnosticQuote = "Elite problem solver. Cleared the board by tactically deploying pauses, hints, or navigating the high-pressure second chance overtime loop.";
+  } else if (isCadenceAnalyst) {
+    bracketTitle = 'Cadence Analyst';
+    bracketFontClass = 'verdict-cadence';
+    bracketGlowColor = '#F59E0B';
+    diagnosticQuote = "Strong competitor. Demonstrates high mental cadence and calculation accuracy, successfully neutralizing mistakes.";
+  } else if (isModularOperator) {
+    bracketTitle = 'Modular Operator';
+    bracketFontClass = 'verdict-modular';
     bracketGlowColor = '#0284C7';
-    diagnosticQuote = "Objective complete with high analytical accuracy. While your numerical target values are completely correct, your pipeline relied on secondary lifelines or retry states. Focus more on refining speed and initial execution bounds.";
-  } else if (isRecoverySpecialist) {
-    bracketTitle = 'Recovery Specialist';
-    bracketFontClass = 'verdict-recovery';
-    bracketGlowColor = '#D97706';
-    diagnosticQuote = "Solid baseline performance, but mechanical faults detected. Calculation errors or premature skips dropped your point potential. Try again to isolate and correct these mathematical errors.";
+    diagnosticQuote = "Capable practitioner. Comfortably navigates textbook ranges and standard number fields, actively improving speed.";
+  } else if (isFactorInitiate) {
+    bracketTitle = 'Factor Initiate';
+    bracketFontClass = 'verdict-initiate';
+    bracketGlowColor = '#F87171';
+    diagnosticQuote = "Developing foundation. Actively building basic divisibility intuition and mental heuristics inside the system.";
   } else {
-    bracketTitle = 'Baseline Rebuild';
-    bracketFontClass = 'verdict-baseline';
-    bracketGlowColor = '#DC2626';
-    diagnosticQuote = "Critical tactical thresholds breached. Your arithmetic processing speeds are dropping under timer constraints, leading to penalty vectors. Increase potentials by reviewing fundamental prime components at smaller bounds.";
+    bracketTitle = 'Matrix Reset';
+    bracketFontClass = 'verdict-reset';
+    bracketGlowColor = '#EF4444';
+    diagnosticQuote = "Tactical calibration required. Breached basic bounds. The engine recommends reviewing the edu.html sandbox before relaunching.";
   }
 
   // Master Score Ring Animation & DOM References
@@ -107,7 +119,6 @@ function renderResultDashboard() {
   }
 
   // Populate absolute counter strip
-  const totalSolved = (result.correctFirstAttempt || 0) + (result.correctSecondAttempt || 0);
   const accuracyPct = Math.round((totalSolved / (result.totalQuestions || 10)) * 100);
 
   const elFirst = document.getElementById('cb-first-attempt');
@@ -249,17 +260,18 @@ function renderResultDashboard() {
 
   const executeShareAction = () => {
     playSound('click');
-    const shareText = `Prime-Factor.app Performance Report\n\n\n` +
-      `Rank Tier: ${bracketTitle}\n` +
-      `Final Score: ${result.score}/100 points\n`+
-      `Category: ${result.rangeTitle} Tier\n` +
-      `Accuracy: ${accuracyPct}%\n`+
-      `Progress: ${totalSolved}/10 Completed\n\n` +
-      `Time Spent: ${result.timeSpent}s\n` +
-      `Lifelines Used: ${result.lifelinesUsedCount}\n\n` +
-      `Certified By Rayaan Tasnim\n`+
-      `Powered by Olympiad Edge\n`+
-      `All rights reserved.`;
+    const shareText = `⚡ Prime-Factor.app Performance Report ⚡\n\n` +
+      `🏆 Rank Tier: ${bracketTitle}\n` +
+      `📊 Final Score: ${result.score}/100 points\n` +
+      `🛡️ Category: ${result.rangeTitle} Tier\n` +
+      `🎯 Accuracy: ${accuracyPct}%\n` +
+      `🧩 Progress: ${totalSolved}/10 Completed\n\n` +
+      `⏱️ Time Spent: ${result.timeSpent}s\n` +
+      `🧪 Lifelines Used: ${result.lifelinesUsedCount}\n\n` +
+      `✨ Certified By Rayaan Tasnim\n` +
+      `🚀 Powered by Olympiad Edge\n` +
+      `© All rights reserved.`;
+
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText).then(() => {

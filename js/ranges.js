@@ -68,14 +68,18 @@ function initTiltCards() {
 
       const min = Number(card.getAttribute('data-min'));
       const max = Number(card.getAttribute('data-max'));
+      const time = Number(card.getAttribute('data-time')) || 180;
       const label = card.getAttribute('data-label') || `${min} - ${max}`;
 
       setActiveExamParams({
         min,
         max,
         title: label,
+        timeLimit: time,
         rules: getSettings()
       });
+
+      const targetUrl = `./contract.html?min=${min}&max=${max}&title=${encodeURIComponent(label)}&time=${time}`;
 
       if (window.gsap) {
         window.gsap.to(card, {
@@ -84,11 +88,11 @@ function initTiltCards() {
           yoyo: true,
           repeat: 1,
           onComplete: () => {
-            window.location.href = `./exam.html?min=${min}&max=${max}&title=${encodeURIComponent(label)}`;
+            window.location.href = targetUrl;
           }
         });
       } else {
-        window.location.href = `./exam.html?min=${min}&max=${max}&title=${encodeURIComponent(label)}`;
+        window.location.href = targetUrl;
       }
     });
   });
