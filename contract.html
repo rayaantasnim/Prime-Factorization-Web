@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examination Contract &amp; Pre-Flight Protocol — PrimeFactor.app</title>
+  <meta name="description" content="Pre-exam regulatory gatekeeper: operational scoring matrices, anti-cheat isolation rules, and target parameter verification." />
+  <meta property="og:title" content="Examination Contract — PrimeFactor.app" />
+  <meta property="og:description" content="Review Math Olympiad competitive rules and anti-cheat constraints before active examination." />
+  <meta property="author" content="Rayaan Tasnim" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+
+  <!-- GSAP for spatial interactions -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <!-- Full-Viewport GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Persistent Global Top Header with Dropdown Navigation -->
+  <header class="fixed-header">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass with 6 links + mobile System link) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./ranges.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Range Selections</span>
+            </div>
+            <span class="dropdown-badge">10 Tiers</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
+          </a>
+
+          <a href="./contract.html?min=1&max=200&title=Standard%20Exam&time=180" id="dropdown-random-exam" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="4" y1="20" x2="21" y2="3"></line>
+                <polyline points="21 16 21 21 16 21"></polyline>
+                <line x1="15" y1="15" x2="21" y2="21"></line>
+                <line x1="4" y1="4" x2="9" y2="9"></line>
+              </svg>
+              <span>Random Exam</span>
+            </div>
+            <span class="dropdown-badge">Instant</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="#" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Standalone Settings Gear Icon -->
+      <div class="header-actions">
+        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Settings Modal Slot -->
+  <div id="settings-modal-slot"></div>
+
+  <!-- Main Presentation Matrix -->
+  <main class="main-wrapper" style="padding-top: 5.5rem; padding-bottom: 4rem;">
+    <div class="content-container" style="max-width: 58rem;">
+      
+      <!-- Section Header -->
+      <div class="section-head" style="margin-bottom: 2rem; text-align: left;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+          <span class="badge-lock" style="background: rgba(14, 165, 233, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38BDF8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; padding: 0.25rem 0.65rem; border-radius: 9999px;">
+            Pre-Flight Gatekeeper
+          </span>
+          <span style="font-size: 0.85rem; color: #10B981; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+            Security Gate Active
+          </span>
+        </div>
+        <h1 class="section-title" style="font-size: clamp(1.85rem, 3.5vw, 2.6rem); margin-bottom: 0.75rem;">
+          Math Olympiad Examination Contract
+        </h1>
+        <p class="section-desc" style="max-width: 52rem; margin: 0; font-size: 1rem;">
+          You are preparing to enter an active competitive evaluation. Before your session countdown timer is ignited, review the target continuity parameters, scoring matrices, 3-strike rules, and strict browser containment anti-cheat protocols.
+        </p>
+      </div>
+
+      <!-- 1. Target Continuity Deck (Selected Division & Parameters) -->
+      <div class="contract-card" style="margin-bottom: 1.5rem;">
+        <div class="section-bg-image-wrap">
+          <img class="section-bg-image" src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Technical computer interface" loading="lazy" />
+          <div class="section-bg-overlay"></div>
+        </div>
+        <div style="position: relative; z-index: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700;">
+              Deployment Specification
+            </span>
+            <span id="contract-tier-name" style="font-family: var(--font-heading); font-weight: 800; font-size: 1.15rem; color: #FFFFFF;">
+              Division Loading...
+            </span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 1rem;">
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; padding: 1rem;">
+              <div style="font-size: 0.75rem; color: #FFFFFF; text-transform: uppercase; margin-bottom: 0.25rem;">Target Bounds</div>
+              <div id="contract-bounds-val" style="font-family: var(--font-math); font-size: 1.35rem; font-weight: 800; color: #FFFFFF;">—</div>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; padding: 1rem;">
+              <div style="font-size: 0.75rem; color: #FFFFFF; text-transform: uppercase; margin-bottom: 0.25rem;">Allocated Duration</div>
+              <div id="contract-time-val" style="font-family: var(--font-math); font-size: 1.35rem; font-weight: 800; color: #38BDF8;">—</div>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; padding: 1rem;">
+              <div style="font-size: 0.75rem; color: #FFFFFF; text-transform: uppercase; margin-bottom: 0.25rem;">3-Strike Penalty</div> 
+              <div id="contract-strike-val" style="font-family: var(--font-heading); font-size: 0.95rem; font-weight: 800; color: #FFFFFF; line-height: 1.4;">ACTIVE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. The Operational Scoring & Deduction Matrix -->
+      <div class="contract-card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: #000000; margin: 0;">Operational Scoring &amp; Penalty Matrix</h3>
+        </div>
+        <p style="font-size: 0.9rem; color: #000000; margin-bottom: 1rem;">
+          Net session points determine your final Olympiad Verdict. All actions carry definitive point consequences:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 0.85rem;">
+          <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 0.65rem; padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 700; color: #000000; font-size: 0.85rem;">Pure 1st-Attempt Clear</span>
+              <span style="font-family: var(--font-math); font-weight: 800; color: #10B981; font-size: 1.1rem;">+10 pts</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #000000;">Clean canonical prime decomposition without hint assistance</div>
+          </div>
+
+          <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 0.65rem; padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 700; color: #000000; font-size: 0.85rem;">Hint / Overtime Clear</span>
+              <span style="font-family: var(--font-math); font-weight: 800; color: #F59E0B; font-size: 1.1rem;">+5 pts</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #000000;">Solved with conceptual hint assistance or in 2nd-chance loop</div>
+          </div>
+
+          <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 0.65rem; padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 700; color: #000000; font-size: 0.85rem;">Standard Error or Skip</span>
+              <span style="font-family: var(--font-math); font-weight: 800; color: #EF4444; font-size: 1.1rem;">-5 pts</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #000000;">Incorrect factor entry or question skip (+1 error towards 3 strikes)</div>
+          </div>
+
+          <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid rgba(2, 132, 199, 0.3); border-radius: 0.65rem; padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 700; color: #000000; font-size: 0.85rem;">Pause or Regeneration</span>
+              <span style="font-family: var(--font-math); font-weight: 800; color: #38BDF8; font-size: 1.1rem;">-2 pts</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #000000;">Tactical 5s clock halt (max 2) or question re-roll (max 1)</div>
+          </div>
+
+          <div style="background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.4); border-radius: 0.65rem; padding: 0.85rem; grid-column: 1 / -1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 800; color: #000000; font-size: 0.95rem;">🚨 3-Strike Penalty &amp; Early Exit</span>
+              <span style="font-family: var(--font-math); font-weight: 800; color: #EF4444; font-size: 1.15rem;">-10 pts / -5 pts</span>
+            </div>
+            <div style="font-size: 0.825rem; color: #000000;">
+              Accumulating every 3 cumulative errors or skips incurs an immediate flat <strong>-10 point penalty</strong>. Terminating the session voluntarily prior to question 10 imposes an additional <strong>-5 point deduction</strong>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Cryptographic Anti-Cheat & Containment Protocol -->
+      <div class="contract-card" style="margin-bottom: 2rem; border-color: rgba(239, 68, 68, 0.4);">
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+          <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #EF4444;">
+            🛡️
+          </div>
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: #000000; margin: 0;">Anti-Cheat Engine &amp; Focus Isolation Rules</h3>
+        </div>
+        
+        <p style="font-size: 0.9rem; color: #000000; line-height: 1.6; margin-bottom: 1rem;">
+          To guarantee absolute Math Olympiad integrity, the evaluation engine enforces hardware-level window focus monitoring:
+        </p>
+
+        <ul style="display: flex; flex-direction: column; gap: 0.6rem; margin: 0 0 1.25rem 0; padding: 0; list-style: none;">
+          <li style="display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.875rem; color: #000000;">
+            <span style="color: #EF4444; font-weight: 700;">✕</span>
+            <span><strong>Strict Tab Isolation:</strong> Leaving the active browser tab, minimizing the window, or switching applications triggers an immediate automated strike and <strong>-5 point penalty</strong>.</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.875rem; color: #000000;">
+            <span style="color: #F59E0B; font-weight: 700;">⚠</span>
+            <span><strong>10-Second Temporary Exemption Window:</strong> In extreme emergencies, you may click the <em>"Request External Access Bypass"</em> button inside the arena. This incurs an immediate <strong>-5 point tactical fee</strong> in exchange for a strict 10-second temporary exemption.</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.875rem; color: #000000;">
+            <span style="color: #38BDF8; font-weight: 700;">⌨</span>
+            <span><strong>Keyboard Traversal:</strong> Spacebar automatically injects the multiplication operator (<code style="background: rgba(0,0,0,0.4); padding: 0.1rem 0.3rem; border-radius: 4px; color: #38BDF8;">*</code>), and Enter fires submission instantly. Trailing operators and accidental spaces are automatically sanitized.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 4. Automated 30-Second Escalation & Authorization Actions -->
+      <div class="contract-card" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%); border: 1px solid rgba(56, 189, 248, 0.4); padding: 1.75rem;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700;">
+            Automated Escalation Sequence
+          </span>
+          <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(14, 165, 233, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.3rem 0.85rem; border-radius: 9999px;">
+            <span style="font-size: 0.8rem; color: white;">Auto-forward in:</span>
+            <span id="contract-countdown-num" style="font-family: var(--font-math); font-size: 1rem; font-weight: 800; color: #38BDF8;">30s</span>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 9999px; overflow: hidden; margin-bottom: 1.5rem;">
+          <div id="contract-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #0284C7 0%, #38BDF8 100%); transition: width 1s linear;"></div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+          <button id="contract-enter-btn" class="btn-primary" style="flex: 1; min-width: 240px; padding: 0.85rem 1.75rem; font-size: 1.05rem; justify-content: center; background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); border: 1px solid rgba(56, 189, 248, 0.5); box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);">
+            <span>Authorize &amp; Enter Arena</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+
+          <button id="contract-cancel-btn" class="btn-secondary" style="padding: 0.85rem 1.5rem; font-size: 0.95rem;">
+            <span>Abort &amp; Choose New Tier</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <div id="global-footer-slot">
+      <!-- Persistent Baseline Footer Matrix -->
+  <div id="site-footer-slot">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">© Olympiad Edge</p>
+        <p class="footer-line">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
+      </div>
+    </footer>
+  </div>
+  </div>
+
+  <!-- Contract Controller -->
+  <script type="module" src="./js/contract.js"></script>
+</body>
+</html>

@@ -17,6 +17,115 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css" />
 
+<style>
+
+section{
+  margin-bottom: 30px !important;
+}
+
+/* ================= OFFICIAL CONTRACT GRID LAYOUT MECHANICS ================= */
+
+/* 1. Base Framework Container Wrapper */
+.content-container {
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Overhaul Parent Grid Layout to exact 3-Column matrix on desktop */
+.contract-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important; /* Forces clean 3 columns */
+  gap: 20px !important; /* Prevents card borders from smashing together */
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 3. The Isolated Responsive Card Component */
+.contract-card {
+  background-color: #1e293b !important; /* Dark premium slate card fill */
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 12px !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  justify-content: flex-start !important;
+  min-height: 180px !important;
+  height: auto !important; /* Critical: Lets card body scale dynamically to avoid text-clipping */
+  box-sizing: border-box !important;
+}
+
+/* 4. Score Adjustments Display Headers */
+.contract-pts {
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 8px !important;
+  font-family: monospace, sans-serif !important;
+}
+
+/* Highly saturated, readable text contrast metrics */
+.contract-pts.pts-positive { color: #10b981 !important; } /* Emerald Green */
+.contract-pts.pts-neutral { color: #3b82f6 !important; }  /* Royal Blue */
+.contract-pts.pts-negative { color: #ef4444 !important; } /* Crimson Red */
+
+/* 5. Core Content Label Typography */
+.contract-label {
+  color: #ffffff !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  margin: 4px 0 12px 0 !important;
+  line-height: 1.3 !important;
+}
+
+/* 6. Context Paragraph Content */
+.contract-subtext {
+  color: #94a3b8 !important; /* Slate gray styling for clean visibility */
+  font-size: 0.85rem !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+/* ================= AIRTIGHT LAYOUT CONSTRAINTS FOR RESPONSIVENESS ================= */
+
+/* Tablet Optimization Layout (Gracefully morphs from 3 columns into 2 columns) */
+@media (max-width: 1024px) {
+  .contract-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+
+  .contract-card{
+    margin-right: 15px !important;
+  }
+}
+
+/* Mobile Screen Layout Optimization (Flattens completely into a solid 1-column stack) */
+@media (max-width: 640px) {
+  #sec-randomizer{
+    padding-right: 5px !important;
+  }
+  
+  body{
+    margin-right: 5px !important;
+  }
+
+  .contract-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .contract-card {
+    padding: 16px !important;
+    min-height: auto !important; /* Allows layout to compress and stretch naturally */
+  }
+}
+
+</style>
+
   <!-- GSAP with ScrollToPlugin for smooth spatial animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
@@ -81,6 +190,18 @@
               <span>Edu</span>
             </div>
             <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
           </a>
 
           <a href="./exam.html?min=1&max=200&title=Standard%20Exam" id="dropdown-random-exam" class="dropdown-link-item">
@@ -161,7 +282,7 @@
       <div class="overlay-nav-card" data-target="sec-verdict">
         <span class="overlay-card-num">02</span>
         <div class="overlay-card-info">
-          <h4>The 4 Ranks of Verdict</h4>
+          <h4>The 6 Ranks of Verdict</h4>
           <p>Performance tiers and mathematical benchmarks</p>
         </div>
       </div>
@@ -294,58 +415,88 @@
       <div class="content-container">
         <div class="section-head">
           <span class="section-kicker">Performance Hierarchy</span>
-          <h2 class="section-title">The 4 Ranks of the Verdict</h2>
+          <h2 class="section-title">The 6 Ranks of the Verdict</h2>
           <p class="section-desc">
-            Competitive outcomes are analyzed across four mathematical tiers based on initial precision, lifeline utilization, and error management.
+            Competitive outcomes are analyzed across six standardized Math Olympiad tiers based on initial precision, lifeline reliance, overtime recovery, and net session points.
           </p>
         </div>
 
-        <div class="ranks-grid">
+        <div class="ranks-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));">
+          <!-- Tier 1: Quantum Decomposer -->
           <div class="rank-card rank-grandmaster">
             <div class="rank-card-header">
-              <span class="rank-badge-tag">Tier 1 · Flawless</span>
+              <span class="rank-badge-tag" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4);">Tier 1 · Flawless</span>
               <span class="text-mint font-mono font-bold">10/10 First Try</span>
             </div>
-            <h3 class="rank-title">Grand Master</h3>
-            <div class="rank-condition">Condition: 10/10 on First Attempt · 0 Lifelines Expended</div>
+            <h3 class="rank-title" style="color: #10B981;">Quantum Decomposer</h3>
+            <div class="rank-condition">Condition: Score of 10/10 on the first attempt for all questions</div>
             <p class="rank-quote">
-              "Flawless structural execution. Your prime factorization calculations are operating at peak Olympiad speeds. Mental decomposition accuracy achieved an absolute 100%."
+              "Absolute mastery. Achieved perfect factorization under the strict initial clock with zero assistance, running at sub-second cognitive speeds."
             </p>
           </div>
 
+          <!-- Tier 2: Algorithmic Strategist -->
           <div class="rank-card rank-master">
             <div class="rank-card-header">
-              <span class="rank-badge-tag">Tier 2 · Analytical</span>
+              <span class="rank-badge-tag" style="background: rgba(14, 165, 233, 0.2); color: #38BDF8; border: 1px solid rgba(14, 165, 233, 0.4);">Tier 2 · Tactical</span>
               <span class="text-accent font-mono font-bold">10/10 Overall</span>
             </div>
-            <h3 class="rank-title">Master Competitor</h3>
-            <div class="rank-condition">Condition: 10/10 Total Solved · Lifelines or Overtime Used</div>
+            <h3 class="rank-title" style="color: #38BDF8;">Algorithmic Strategist</h3>
+            <div class="rank-condition">Condition: Total final score of 10/10 solved, but relied on secondary Lifelines, Hints, or overtime loop</div>
             <p class="rank-quote">
-              "Objective complete with high analytical accuracy. While your numerical target values are completely correct, your pipeline relied on secondary lifelines or retry states."
+              "Elite problem solver. Cleared the board by tactically deploying pauses, hints, or navigating the high-pressure second chance overtime loop."
             </p>
           </div>
 
+          <!-- Tier 3: Cadence Analyst -->
           <div class="rank-card rank-recovery">
             <div class="rank-card-header">
-              <span class="rank-badge-tag">Tier 3 · Resilient</span>
-              <span class="text-amber font-mono font-bold">Positive Score</span>
+              <span class="rank-badge-tag" style="background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.4);">Tier 3 · Cadence</span>
+              <span class="text-amber font-mono font-bold">&gt; 75 Points</span>
             </div>
-            <h3 class="rank-title">Recovery Specialist</h3>
-            <div class="rank-condition">Condition: Mild Calculation Faults · Net Score &gt; 0</div>
+            <h3 class="rank-title" style="color: #F59E0B;">Cadence Analyst</h3>
+            <div class="rank-condition">Condition: Net session score strictly greater than 75 points (&gt; 75 / 100 points)</div>
             <p class="rank-quote">
-              "Solid baseline performance, but mechanical faults detected. Calculation errors or premature skips dropped your point potential. Try again to isolate and correct these mathematical errors."
+              "Strong competitor. Demonstrates high mental cadence and calculation accuracy, successfully neutralizing mistakes."
             </p>
           </div>
 
+          <!-- Tier 4: Modular Operator -->
+          <div class="rank-card" style="background: var(--card-dark-gradient); border: 1px solid var(--card-dark-border); border-radius: 1rem; padding: 1.5rem;">
+            <div class="rank-card-header">
+              <span class="rank-badge-tag" style="background: rgba(2, 132, 199, 0.2); color: #0284C7; border: 1px solid rgba(2, 132, 199, 0.4);">Tier 4 · Operator</span>
+              <span class="font-mono font-bold" style="color: #0284C7;">&gt; 45 Points</span>
+            </div>
+            <h3 class="rank-title" style="color: #0284C7;">Modular Operator</h3>
+            <div class="rank-condition">Condition: Net session score strictly greater than 45 points (&gt; 45 / 100 points)</div>
+            <p class="rank-quote">
+              "Capable practitioner. Comfortably navigates textbook ranges and standard number fields, actively improving speed."
+            </p>
+          </div>
+
+          <!-- Tier 5: Factor Initiate -->
+          <div class="rank-card" style="background: var(--card-dark-gradient); border: 1px solid var(--card-dark-border); border-radius: 1rem; padding: 1.5rem;">
+            <div class="rank-card-header">
+              <span class="rank-badge-tag" style="background: rgba(248, 113, 113, 0.2); color: #F87171; border: 1px solid rgba(248, 113, 113, 0.4);">Tier 5 · Initiate</span>
+              <span class="font-mono font-bold" style="color: #F87171;">1 — 45 Points</span>
+            </div>
+            <h3 class="rank-title" style="color: #F87171;">Factor Initiate</h3>
+            <div class="rank-condition">Condition: A positive net score anywhere between 1 and 45 points (1 – 45)</div>
+            <p class="rank-quote">
+              "Developing foundation. Actively building basic divisibility intuition and mental heuristics inside the system."
+            </p>
+          </div>
+
+          <!-- Tier 6: Matrix Reset -->
           <div class="rank-card rank-baseline">
             <div class="rank-card-header">
-              <span class="rank-badge-tag">Tier 4 · Critical</span>
-              <span class="text-crimson font-mono font-bold">Strike Breached</span>
+              <span class="rank-badge-tag" style="background: rgba(220, 38, 38, 0.2); color: #DC2626; border: 1px solid rgba(220, 38, 38, 0.4);">Tier 6 · Recalibrate</span>
+              <span class="text-crimson font-mono font-bold">&le; 0 Marks</span>
             </div>
-            <h3 class="rank-title">Baseline Rebuild</h3>
-            <div class="rank-condition">Condition: 3-Strike Penalty Hit or Net Marks &le; 10</div>
+            <h3 class="rank-title" style="color: #DC2626;">Matrix Reset</h3>
+            <div class="rank-condition">Condition: Negative net marks (below 0 points)</div>
             <p class="rank-quote">
-              "Critical tactical thresholds breached. Your arithmetic processing speeds are dropping under timer constraints, leading to penalty vectors. Increase potentials by reviewing fundamental prime components."
+              "Tactical calibration required. Breached basic bounds. The engine recommends reviewing the edu.html sandbox before relaunching."
             </p>
           </div>
         </div>
@@ -367,45 +518,71 @@
       <div class="content-container">
         <div class="section-head">
           <span class="section-kicker">Scoring Protocol</span>
-          <h2 class="section-title">The Exam Contract</h2>
+          <h2 class="section-title">The Official 8-Point Scoring Matrix</h2>
           <p class="section-desc">
-            A transparent risk-reward matrix. Speed and initial accuracy maximize reward, while careless submissions trigger compounding penalties.
+            A transparent risk-reward engine. Speed and unassisted accuracy maximize marks, while tactical lifelines, retries, and errors carry strictly audited point adjustments.
           </p>
         </div>
 
-        <div class="contract-grid">
+        <div class="contract-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));">
+          <!-- 1. First Attempt Success -->
           <div class="contract-card">
             <div class="contract-pts pts-positive">+10</div>
-            <h4 class="contract-label">First Attempt Correct</h4>
-            <p class="contract-subtext">Clean standard submission without hint activation</p>
+            <h4 class="contract-label">1. First Attempt Success</h4>
+            <p class="contract-subtext">Clean, unassisted submission on the first pass adds +10 points to net score.</p>
           </div>
 
+          <!-- 2. Second Chance Overtime Loop Success -->
           <div class="contract-card">
             <div class="contract-pts pts-neutral">+5</div>
-            <h4 class="contract-label">Second Attempt Correct</h4>
-            <p class="contract-subtext">Redeemed during the overtime second chance loop</p>
+            <h4 class="contract-label">2. Second Chance Success</h4>
+            <p class="contract-subtext">Retrying first-attempt errors or skips during the redemption loop adds +5 points.</p>
           </div>
 
+          <!-- 3. Standard Errors & Skips -->
+          <div class="contract-card">
+            <div class="contract-pts pts-negative">-2 / -5</div>
+            <h4 class="contract-label">3. Standard Errors &amp; Skips</h4>
+            <p class="contract-subtext">-2 points for first-attempt misses; -5 points for second chance overtime misses.</p>
+          </div>
+
+          <!-- 4. Hint-Assisted Submissions -->
+          <div class="contract-card">
+            <div class="contract-pts pts-neutral">+5 / +2 / -5</div>
+            <h4 class="contract-label">4. Hint-Assisted Submissions</h4>
+            <p class="contract-subtext">+5 on 1st attempt solve; +2 on 2nd attempt solve; -5 points for any error or skip with hint active.</p>
+          </div>
+
+          <!-- 5. Timer Pauses -->
           <div class="contract-card">
             <div class="contract-pts pts-negative">-2</div>
-            <h4 class="contract-label">Standard Error / Skip</h4>
-            <p class="contract-subtext">Applied immediately on first attempt and retry misses</p>
+            <h4 class="contract-label">5. Tactical Timer Pauses</h4>
+            <p class="contract-subtext">Activating a 5-second countdown halt lifeline deducts -2 points (max 2 per exam).</p>
           </div>
 
+          <!-- 6. Question Regeneration -->
           <div class="contract-card">
-            <div class="contract-pts pts-neutral">+5 / +2</div>
-            <h4 class="contract-label">Hint-Activated Solve</h4>
-            <p class="contract-subtext">+5 on 1st attempt, +2 on 2nd attempt; -5 for misses</p>
+            <div class="contract-pts pts-negative">-2</div>
+            <h4 class="contract-label">6. Question Regeneration</h4>
+            <p class="contract-subtext">Rerolling a composite integer deducts -2 points (max 1; strictly locked during overtime).</p>
           </div>
 
+          <!-- 7. The 3-Strike Penalty -->
           <div class="contract-card">
             <div class="contract-pts pts-negative">-10</div>
-            <h4 class="contract-label">🚨 The 3-Strike Penalty</h4>
-            <p class="contract-subtext">Triggered automatically upon reaching 3 total incorrect submissions</p>
+            <h4 class="contract-label">7. The 3-Strike Penalty</h4>
+            <p class="contract-subtext">Deducts an additional -10 points for every cumulative triplet (at 3, 6, 9 mistakes/skips).</p>
+          </div>
+
+          <!-- 8. Early Termination -->
+          <div class="contract-card">
+            <div class="contract-pts pts-negative">-5</div>
+            <h4 class="contract-label">8. Early Termination</h4>
+            <p class="contract-subtext">Voluntarily exiting before completion via "End Exam" inflicts an immediate -5 point penalty.</p>
           </div>
         </div>
       </div>
-    </section>
+    </section><br><br><br>
 
     <!-- Section 4: The Instant Randomizer -->
     <section id="sec-randomizer" class="home-section">

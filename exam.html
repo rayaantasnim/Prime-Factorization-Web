@@ -15,6 +15,69 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css" />
 
+  <style>
+/* ================= HIGH-VISIBILITY BYPASS BUTTON FIX ================= */
+
+.anticheat-bypass-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  
+  /* Layout Background & High-Contrast Crimson Edge */
+  background: #1e1b4b !important; /* Deep midnight navy/slate background */
+  border: 1px solid #ef4444 !important; /* Sharp solid neon-red border */
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  margin: 16px 0 !important;
+  
+  /* CRITICAL CONTRAST FIX: Pure white text for absolute readability */
+  color: #ffffff !important; 
+  font-family: inherit !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Hover State: Fills background with red and keeps text pure white */
+.anticheat-bypass-btn:hover {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.5) !important;
+}
+
+/* Embedded Shield Icon Fix */
+.anticheat-bypass-btn svg {
+  flex-shrink: 0 !important;
+  stroke: #ef4444 !important; /* Solid red vector icon lines */
+  transition: stroke 0.2s ease !important;
+}
+.anticheat-bypass-btn:hover svg {
+  stroke: #ffffff !important; /* Icon turns white on hover */
+}
+
+/* High-Intensity Penalty Tag Fix */
+.bypass-penalty-tag {
+  background: #b91c1c !important; /* Rich solid crimson background pill */
+  color: #ffffff !important; /* Bold white text so it can NEVER blend into dark backgrounds */
+  font-family: monospace !important;
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  margin-left: 8px !important;
+  display: inline-block !important;
+  transition: all 0.2s ease !important;
+}
+
+.anticheat-bypass-btn:hover .bypass-penalty-tag {
+  background: #ffffff !important;
+  color: #ef4444 !important;
+}
+
+  </style>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body class="in-exam">
@@ -77,6 +140,18 @@
               <span>Edu</span>
             </div>
             <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
           </a>
 
           <a href="./exam.html?min=1&max=200&title=Standard%20Exam" id="dropdown-random-exam" class="dropdown-link-item">
@@ -162,6 +237,32 @@
         </div>
       </div>
 
+      <!-- Anti-Cheat Competitive Boundary & Emergency Bypass Strip -->
+      <div class="anticheat-boundary-strip">
+        <div class="anticheat-status-indicator" id="anticheat-status-indicator">
+          <span class="shield-pulse-dot"></span>
+          <span id="anticheat-status-text">ANTI-CHEAT ENFORCEMENT: ACTIVE</span>
+        </div>
+
+        <div class="anticheat-actions-group">
+          <!-- 10-Second Temporary Window Countdown Badge (Flashes when active) -->
+          <div id="bypass-countdown-badge" class="bypass-countdown-badge hidden">
+            <span class="bypass-live-dot"></span>
+            <span class="bypass-label">BYPASS WINDOW:</span>
+            <span id="bypass-timer-val" class="tabular-nums">10s</span>
+          </div>
+
+          <!-- Restricted Emergency Request Button -->
+          <button id="btn-anticheat-bypass" class="anticheat-bypass-btn" type="button" title="Deducts -5 points to grant a strict 10-second temporary exemption window">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Request External Access Bypass</span>
+            <span class="bypass-penalty-tag">-5 pts</span>
+          </button>
+        </div>
+      </div>
+
       <div class="exam-arena-card">
         <div class="section-bg-image-wrap">
           <img class="section-bg-image" src="https://images.pexels.com/photos/3747470/pexels-photo-3747470.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Olympiad mathematical challenge theorem board" loading="lazy" />
@@ -203,6 +304,10 @@
           />
           <div class="exam-input-hint">
             Accepts: <span class="font-mono">2*2*3</span>, <span class="font-mono">2 2 3</span>, <span class="font-mono">2,2,3</span>, <span class="font-mono">2^2*3</span>, <span class="font-mono">2**2*3</span>, or <span class="font-mono">2 × 2 × 3</span>
+          </div><br><br>
+
+          <div class="exam-keyboard-hotkeys">
+            <span>⌨ Hotkeys: <kbd class="kbd-badge">Space</kbd> = <code style="color:#38BDF8;">*</code> (multiply) · <kbd class="kbd-badge">Enter</kbd> = Submit Decomposition · Auto-sanitizes syntax</span>
           </div>
           <div id="exam-input-feedback" style="min-height: 1.5rem; margin-top: 0.75rem; font-size: 0.9rem; font-weight: 600;"></div>
         </div>
@@ -222,32 +327,32 @@
           </div>
           <div class="lifelines-matrix">
             <!-- 1. Pause Timer -->
-            <button id="lifeline-pause" class="lifeline-btn" title="Pauses the 180s clock for 5 seconds">
+            <button id="lifeline-pause" class="lifeline-btn" title="Pauses the clock for 5 seconds (-2 points)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="6" y="4" width="4" height="16"></rect>
                 <rect x="14" y="4" width="4" height="16"></rect>
               </svg>
-              <span>Pause Clock</span>
+              <span>Pause Clock (-2)</span>
               <span class="lifeline-uses">2 left</span>
             </button>
 
             <!-- 2. End Exam -->
-            <button id="lifeline-end" class="lifeline-btn" title="Terminates exam immediately and scores current performance">
+            <button id="lifeline-end" class="lifeline-btn" title="Terminates exam immediately (-5 points penalty)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <rect x="9" y="9" width="6" height="6"></rect>
               </svg>
-              <span>End Exam</span>
+              <span>End Exam (-5)</span>
               <span class="lifeline-uses">Terminal</span>
             </button>
 
             <!-- 3. Skip -->
-            <button id="lifeline-skip" class="lifeline-btn" title="Skips number (-2 points penalty)">
+            <button id="lifeline-skip" class="lifeline-btn" title="Skips number (-5 points penalty, registers error)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="5 4 15 12 5 20 5 4"></polygon>
                 <line x1="19" y1="5" x2="19" y2="19"></line>
               </svg>
-              <span>Skip (-2)</span>
+              <span>Skip (-5)</span>
               <span class="lifeline-uses">&infin;</span>
             </button>
 

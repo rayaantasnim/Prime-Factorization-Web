@@ -2014,27 +2014,6 @@ input:checked + .slider-round:before {
   transform: translateX(22px);
 }
 
-/* Personal Ledger */
-.ledger-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
-  gap: clamp(0.75rem, 2vw, 1.25rem);
-  max-width: 64rem;
-  margin: 0 auto;
-}
-
-.ledger-box {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: clamp(0.75rem, 1.8vw, 1.15rem);
-  padding: clamp(1rem, 2.5vw, 1.5rem);
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  color: #FFFFFF;
-}
-
 .ledger-box h5 {
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -3548,6 +3527,340 @@ input:checked + .slider-round:before {
     gap: 0.5rem !important;
   }
 }
+
+/* =========================================================
+   SERVICES MODULE: 8 VERTICAL FACILITY CARDS GRID
+   ========================================================= */
+.services-facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: clamp(1.25rem, 3vw, 2rem);
+  width: 100%;
+  max-width: 82rem;
+  margin: 0 auto;
+}
+
+.service-facility-card {
+  background: var(--card-dark-gradient);
+  border: 1px solid var(--card-dark-border);
+  border-radius: clamp(1rem, 2vw, 1.5rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.35);
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+              border-color 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, box-shadow;
+  position: relative;
+}
+
+.service-facility-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(14, 165, 233, 0.6);
+  box-shadow: var(--glow-cyan);
+}
+
+.service-card-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: #0F172A;
+}
+
+.service-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+  filter: saturate(1.15) contrast(1.1);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.service-facility-card:hover .service-card-img {
+  transform: scale(1.06);
+  opacity: 0.6;
+}
+
+.service-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%);
+  pointer-events: none;
+}
+
+.service-card-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38BDF8;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.service-card-body {
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.service-card-kicker {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #38BDF8;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.service-card-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 0.75rem;
+  line-height: 1.25;
+}
+
+.service-card-desc {
+  font-size: 0.925rem;
+  color: #CBD5E1;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  flex: 1;
+}
+
+.service-card-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.service-card-features li {
+  font-size: 0.825rem;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.service-card-features li::before {
+  content: '✓';
+  color: #10B981;
+  font-weight: 800;
+}
+
+.service-card-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.75rem 1.15rem;
+  background: rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(14, 165, 233, 0.35);
+  border-radius: 0.75rem;
+  color: #38BDF8;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.service-card-action:hover {
+  background: #0284C7;
+  border-color: #38BDF8;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.45);
+}
+
+/* =========================================================
+   RANGE SELECTION TIME LIMIT BADGE
+   ========================================================= */
+.range-time-limit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.5rem;
+  padding: 0.2rem 0.65rem;
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 9999px;
+  font-family: var(--font-math);
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #38BDF8;
+  letter-spacing: 0.02em;
+}
+
+.range-time-limit::before {
+  content: '⏱';
+  font-size: 0.85em;
+}
+
+/* =========================================================
+   COUNTDOWN TIMER INTENSIFIED NEON SIREN ALERTS
+   ========================================================= */
+#hud-timer-item.urgent-warning,
+.hud-timer.urgent-warning {
+  border-color: #F59E0B !important;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.5), inset 0 0 8px rgba(245, 158, 11, 0.2) !important;
+}
+
+#hud-timer-item.urgent-warning #hud-timer-val,
+.hud-timer.urgent-warning .hud-val {
+  color: #F59E0B !important;
+  text-shadow: 0 0 14px rgba(245, 158, 11, 0.8) !important;
+}
+
+#hud-timer-item.urgent-siren,
+.hud-timer.urgent-siren {
+  border-color: #EF4444 !important;
+  animation: neon-siren-border 0.5s ease-in-out infinite alternate !important;
+}
+
+#hud-timer-item.urgent-siren #hud-timer-val,
+.hud-timer.urgent-siren .hud-val {
+  color: #EF4444 !important;
+  animation: neon-siren-text 0.5s ease-in-out infinite alternate !important;
+}
+
+@keyframes neon-siren-border {
+  0% {
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6), inset 0 0 10px rgba(239, 68, 68, 0.3);
+    background-color: rgba(239, 68, 68, 0.15);
+  }
+  100% {
+    box-shadow: 0 0 35px rgba(239, 68, 68, 1), 0 0 50px rgba(220, 38, 38, 0.7), inset 0 0 20px rgba(239, 68, 68, 0.6);
+    background-color: rgba(239, 68, 68, 0.35);
+  }
+}
+
+@keyframes neon-siren-text {
+  0% {
+    text-shadow: 0 0 12px rgba(239, 68, 68, 0.7);
+    opacity: 0.85;
+  }
+  100% {
+    text-shadow: 0 0 25px rgba(239, 68, 68, 1), 0 0 45px rgba(255, 0, 0, 0.9);
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* =========================================================
+   6-TIER MATH OLYMPIAD VERDICT MATRIX STYLING
+   ========================================================= */
+.verdict-quantum {
+  font-family: 'Algerian', var(--font-heading) !important;
+  color: #10B981 !important;
+  text-shadow: 0 0 18px rgba(16, 185, 129, 0.6);
+}
+
+.verdict-algorithmic {
+  font-family: var(--font-heading) !important;
+  color: #10B981 !important;
+  text-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+}
+
+.verdict-cadence {
+  font-family: var(--font-heading) !important;
+  color: #F59E0B !important;
+  text-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+}
+
+.verdict-modular {
+  font-family: var(--font-heading) !important;
+  color: #0284C7 !important;
+  text-shadow: 0 0 15px rgba(2, 132, 199, 0.5);
+}
+
+.verdict-initiate {
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+  color: #F87171 !important;
+}
+
+.verdict-reset {
+  font-family: var(--font-math) !important;
+  font-weight: 700 !important;
+  color: #EF4444 !important;
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+}
+
+/* =========================================================
+   EXEMPTIONS FROM GLOBAL CARD SKEWS
+   Failure Audit Stack & Redemption Track remain flat and stable
+   ========================================================= */
+.audit-stack-card,
+.failure-audit-stack,
+.redemption-track-card,
+#failure-audit-list,
+#redemption-audit-list,
+.audit-sections-grid .audit-stack-card {
+  transform: none !important;
+  perspective: none !important;
+  will-change: auto !important;
+  transition: border-color 0.25s ease !important;
+}
+
+.audit-stack-card:hover,
+.failure-audit-stack:hover,
+.redemption-track-card:hover,
+.audit-sections-grid .audit-stack-card:hover {
+  transform: none !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
+}
+
+
+
+
+
+.ledger-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+.ledger-box {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-height: 120px !important;
+  height: auto !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 900px) {
+  .ledger-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .ledger-box {
+    min-height: auto !important;
+  }
+}
+
+
+
 
 
 

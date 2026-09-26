@@ -83,6 +83,18 @@
             <span class="dropdown-badge">Training</span>
           </a>
 
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
+          </a>
+
           <a href="./exam.html?min=1&max=200&title=Standard%20Exam" id="dropdown-random-exam" class="dropdown-link-item">
             <div class="dropdown-link-content">
               <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -194,8 +206,51 @@
         </div>
       </div>
 
+      <!-- Interactive Time Limit Selection (3 to 60 Minutes) -->
+      <div class="custom-time-card" style="position: relative; background: var(--card-dark-gradient); border: 1px solid var(--card-dark-border); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 1.5rem; overflow: hidden;">
+        <div class="section-bg-image-wrap">
+          <img class="section-bg-image" src="https://images.pexels.com/photos/2832382/pexels-photo-2832382.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Chronometer timer speed dynamics" loading="lazy" />
+          <div class="section-bg-overlay"></div>
+        </div>
+        <div style="position: relative; z-index: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+            <label for="custom-time-slider" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700;">
+              SESSION TIME LIMIT (3 – 60 MINUTES):
+            </label>
+            <div style="font-family: var(--font-math); font-size: 1.6rem; font-weight: 800; color: #FFFFFF;">
+              <span id="custom-time-val" style="color: #38BDF8;">10</span> <span style="font-size: 0.95rem; color: #94A3B8;">min (<span id="custom-time-sec">600</span>s)</span>
+            </div>
+          </div>
+          <p style="font-size: 0.85rem; color: #CBD5E1; margin-bottom: 1rem;">
+            Set your duration constraint for the 10-question sequence. Minimum allowance of 3 minutes (180s), Maximum allowance of 60 minutes (3,600s).
+          </p>
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+            <span style="font-family: var(--font-math); font-size: 0.85rem; font-weight: 700; color: #94A3B8;">3m</span>
+            <input 
+              id="custom-time-slider" 
+              type="range" 
+              min="3" 
+              max="60" 
+              value="10" 
+              step="1" 
+              style="flex: 1; height: 8px; accent-color: #0EA5E9; cursor: pointer; border-radius: 4px;"
+              aria-label="Session Duration Constraint"
+            />
+            <span style="font-family: var(--font-math); font-size: 0.85rem; font-weight: 700; color: #94A3B8;">60m</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="btn-secondary time-preset-btn" data-time="3" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">3 min (Sprint)</button>
+            <button type="button" class="btn-secondary time-preset-btn" data-time="5" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">5 min (Standard)</button>
+            <button type="button" class="btn-secondary time-preset-btn" data-time="10" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">10 min (Paced)</button>
+            <button type="button" class="btn-secondary time-preset-btn" data-time="20" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">20 min (Senior)</button>
+            <button type="button" class="btn-secondary time-preset-btn" data-time="45" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">45 min (Elite)</button>
+            <button type="button" class="btn-secondary time-preset-btn" data-time="60" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">60 min (Cosmic)</button>
+          </div>
+        </div>
+      </div>
+
       <!-- 3. SESSION-SPECIFIC RULE TOGGLES:
-           Dedicated column segment featuring 4 elegant linear-gradient toggle switch elements.
+           Dedicated column segment featuring 5 elegant linear-gradient toggle switch elements.
            These switches allow the user to completely override global rules specifically for this individual custom run. -->
       <div class="custom-rules-segment">
         <div class="section-bg-image-wrap">
@@ -208,7 +263,7 @@
           </div>
           <h3 class="custom-rules-title">Session-Specific Rule Toggles</h3>
           <p class="custom-rules-desc">
-            These switches allow you to completely override global rules specifically for this individual custom run without affecting your stored defaults.
+            These switches allow you to completely override rules specifically for this individual custom run without affecting stored system defaults.
           </p>
         </div>
 
@@ -233,7 +288,7 @@
               <label for="custom-toggle-pause" class="custom-toggle-label">
                 Enable Timer Pauses (Max 2 per Exam)
               </label>
-              <span class="custom-toggle-desc">Permits 5-second tactical countdown halts during active exams</span>
+              <span class="custom-toggle-desc">Permits 5-second tactical countdown halts during active exams (-2 pts each)</span>
             </div>
             <label class="custom-switch" aria-label="Enable Timer Pauses (Max 2 per Exam)">
               <input type="checkbox" id="custom-toggle-pause" checked>
@@ -261,10 +316,24 @@
               <label for="custom-toggle-hint" class="custom-toggle-label">
                 Enable Conceptual Hints (Max 1 per Exam)
               </label>
-              <span class="custom-toggle-desc">Reveals mathematical number theory clues (-50% point reward)</span>
+              <span class="custom-toggle-desc">Reveals mathematical number theory clues (-50% point reward; -5 pts on miss)</span>
             </div>
             <label class="custom-switch" aria-label="Enable Conceptual Hints (Max 1 per Exam)">
               <input type="checkbox" id="custom-toggle-hint" checked>
+              <span class="custom-slider-gradient"></span>
+            </label>
+          </div>
+
+          <!-- Toggle 5: Standalone 3 Strike Penalty Toggle (Localized exclusively to Custom Arena) -->
+          <div class="custom-toggle-row">
+            <div class="custom-toggle-info">
+              <label for="custom-toggle-strike" class="custom-toggle-label">
+                3 Strike Penalty
+              </label>
+              <span class="custom-toggle-desc">Explicitly toggle the 3-strike disqualification rule ON or OFF (-10 pts per 3 cumulative errors/skips)</span>
+            </div>
+            <label class="custom-switch" aria-label="3 Strike Penalty">
+              <input type="checkbox" id="custom-toggle-strike" checked>
               <span class="custom-slider-gradient"></span>
             </label>
           </div>
