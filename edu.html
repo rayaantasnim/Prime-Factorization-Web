@@ -16,6 +16,52 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="stylesheet" href="./styles.css" />
 
+  <style>
+/* মোবাইল এবং ছোট স্ক্রিনের জন্য প্রিসাইজ ভার্টিক্যাল লেআউট */
+@media screen and (max-width: 768px) {
+  
+  /* প্যারেন্ট কন্টেইনারকে জোরপূর্বক সিঙ্গেল কলাম ভার্টিক্যাল গ্রিডে রূপান্তর */
+  .edu-subcards-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important; 
+    grid-template-rows: auto !important;
+    gap: 20px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* প্রতিটি কার্ডের হাইট অটো করা হলো যেন ভেতরের টেক্সট অনুযায়ী হাইট বাড়ে এবং ওভারল্যাপ না হয় */
+  .edu-subcard {
+    width: 100% !important;
+    height: auto !important; 
+    min-height: min-content !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important; /* ভেতরের উপাদান বাইরে ছিটকে যাওয়া রোধ করতে */
+  }
+
+  /* ম্যাথ ইকুয়েশন যেন কার্ডের বর্ডার ভেঙে বাইরে না যায় */
+  .edu-math-example {
+    width: 100% !important;
+    white-space: nowrap !important;
+    overflow-x: auto !important; /* ইকুয়েশন বড় হলে কার্ডের ভেতরেই স্ক্রল হবে, লেআউট ভাঙবে না */
+    font-size: 1.2rem !important;
+    margin: 10px 0 !important;
+  }
+
+  /* প্যারাগ্রাফের টেক্সট র‍্যাপ নিশ্চিত করা */
+  .edu-subcard p {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    margin: 0 !important;
+  }
+}
+
+  </style>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
@@ -163,7 +209,8 @@
            ========================================================= -->
       <div style="margin-bottom: 3.5rem;">
         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
-          <span style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #FFFFFF; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; letter-spacing: 0.06em;">SECTION A</span>
+          <span style="background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color: #FFFFFF; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; letter-spacing: 0.06em; white-space: nowrap !important;">SECTION A</span>
+
           <h2 style="font-size: 1.65rem; color: #FFFFFF; font-weight: 800; margin: 0;">Absolute Basics · Foundational Axioms</h2>
         </div>
         <p style="color: #00000; font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 54rem;">
@@ -259,7 +306,8 @@
            ========================================================= -->
       <div style="margin-bottom: 3.5rem;">
         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
-          <span style="background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color: #FFFFFF; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; letter-spacing: 0.06em;">SECTION B</span>
+          <span style="background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color: #FFFFFF; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; letter-spacing: 0.06em; white-space: nowrap !important;">SECTION B</span>
+
           <h2 style="font-size: 1.65rem; color: #FFFFFF; font-weight: 800; margin: 0;">Core Divisibility Rules · Case Studies (2 through 10)</h2>
         </div>
         <p style="color: #000000; font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 54rem;">
@@ -380,7 +428,8 @@
            ========================================================= -->
       <div style="margin-bottom: 3.5rem;">
         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
-          <span style="background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%); color: #FFFFFF; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; letter-spacing: 0.06em;">SECTION C</span>
+          <span style="background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color: #FFFFFF; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; letter-spacing: 0.06em; white-space: nowrap !important;">SECTION C</span>
+
           <h2 style="font-size: 1.65rem; color: #FFFFFF; font-weight: 800; margin: 0;">Advanced Cognitive Strategy · Olympiad Peak Speed Mechanisms</h2>
         </div>
         <p style="color: #000000; font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 54rem;">
