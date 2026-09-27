@@ -27,6 +27,17 @@
   background-color: aqua !important;
 }
 
+.exam-arena-hud {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100vw !important;
+  height: auto !important;
+  z-index: 9999 !important;
+  background-color: #0f172a !important; /* Fully opaque background to cover underlying text */
+}
+
   </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -158,7 +169,7 @@
       <div class="exam-arena-hud" role="region" aria-label="Live Exam Dashboard">
        
 
-        <div class="header-exam-hud">
+        <div class="header-exam-hud background-system">
           <div class="hud-item hud-points">
             <span>Points</span>
             <span id="hud-marks-val" class="hud-val tabular-nums">0</span>
