@@ -1,0 +1,59 @@
+/* ================= HIGH-VISIBILITY BYPASS BUTTON FIX ================= */
+
+.anticheat-bypass-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  
+  /* Layout Background & High-Contrast Crimson Edge */
+  background: #1e1b4b !important; /* Deep midnight navy/slate background */
+  border: 1px solid #ef4444 !important; /* Sharp solid neon-red border */
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  margin: 16px 0 !important;
+  
+  /* CRITICAL CONTRAST FIX: Pure white text for absolute readability */
+  color: #ffffff !important; 
+  font-family: inherit !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Hover State: Fills background with red and keeps text pure white */
+.anticheat-bypass-btn:hover {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.5) !important;
+}
+
+/* Embedded Shield Icon Fix */
+.anticheat-bypass-btn svg {
+  flex-shrink: 0 !important;
+  stroke: #ef4444 !important; /* Solid red vector icon lines */
+  transition: stroke 0.2s ease !important;
+}
+.anticheat-bypass-btn:hover svg {
+  stroke: #ffffff !important; /* Icon turns white on hover */
+}
+
+/* High-Intensity Penalty Tag Fix */
+.bypass-penalty-tag {
+  background: #b91c1c !important; /* Rich solid crimson background pill */
+  color: #ffffff !important; /* Bold white text so it can NEVER blend into dark backgrounds */
+  font-family: monospace !important;
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  margin-left: 8px !important;
+  display: inline-block !important;
+  transition: all 0.2s ease !important;
+}
+
+.anticheat-bypass-btn:hover .bypass-penalty-tag {
+  background: #ffffff !important;
+  color: #ef4444 !important;
+}
