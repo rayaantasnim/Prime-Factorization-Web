@@ -149,38 +149,39 @@
   </header>
 
   <main class="main-wrapper">
-    <div class="content-container">
-      <!-- Live Focused Exam Dashboard HUD (Isolated from global header) -->
-      <div class="exam-arena-hud" role="region" aria-label="Live Exam Dashboard">
-       
-
-        <div class="header-exam-hud background-system">
-          <div class="hud-item hud-points">
-            <span>Points</span>
-            <span id="hud-marks-val" class="hud-val tabular-nums">0</span>
-          </div>
-
-          <div class="hud-item hud-expected">
-            <span>Expected</span>
-            <span id="hud-expected-val" class="hud-val tabular-nums">85</span>
-          </div>
-
-          <div class="hud-item hud-question">
-            <span>Question</span>
-            <span id="hud-question-val" class="hud-val tabular-nums">1 / 10</span>
-          </div>
-
-          <div class="hud-item hud-errors">
-            <span>Errors</span>
-            <span id="hud-errors-val" class="hud-val tabular-nums">0</span>
-          </div>
-
-          <div id="hud-timer-item" class="hud-item hud-timer">
-            <span>Time</span>
-            <span id="hud-timer-val" class="hud-val tabular-nums">03:00</span>
-          </div>
-        </div>
+<div class="content-container">
+  <!-- Live Focused Exam Dashboard HUD (Isolated from global header) -->
+  <div class="exam-arena-hud" role="region" aria-label="Live Exam Dashboard">
+    <div class="header-exam-hud background-system">
+      
+      <div class="hud-item hud-points">
+        <span class="hud-label">Points</span>
+        <span id="hud-marks-val" class="hud-val tabular-nums">0</span>
       </div>
+
+      <div class="hud-item hud-expected">
+        <span class="hud-label">Expected</span>
+        <span id="hud-expected-val" class="hud-val tabular-nums">85</span>
+      </div>
+
+      <div class="hud-item hud-question">
+        <span class="hud-label">Question</span>
+        <span id="hud-question-val" class="hud-val tabular-nums">1 / 10</span>
+      </div>
+
+      <div class="hud-item hud-errors">
+        <span class="hud-label">Errors</span>
+        <span id="hud-errors-val" class="hud-val tabular-nums">0</span>
+      </div>
+
+      <div id="hud-timer-item" class="hud-item hud-timer">
+        <span class="hud-label">Time</span>
+        <span id="hud-timer-val" class="hud-val tabular-nums">03:00</span>
+      </div>
+
+    </div>
+  </div>
+</div><br><br><br><br><br>
 
       <!-- Anti-Cheat Competitive Boundary & Emergency Bypass Strip -->
       <div class="anticheat-boundary-strip">
@@ -407,7 +408,6 @@
     <footer class="site-footer">
       <div class="footer-container">
         <!-- Slate Legacy Footer: Low-brightness neon slate style -->
-        <p class="footer-legacy-slate-text">Prime factor.app : high-speed, browser-based training portal and cognitive speed laboratory engineered for Math Olympiad competitors to master integer prime factorization.</p>
         <p class="footer-line highlight">© Prime-Factor.app by Olympiad Edge</p>
         <p class="footer-line">Authorized By Rayaan Tasnim</p>
         <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
@@ -443,9 +443,9 @@
   </script>
 
   <!-- Subtle Soft Deterrent Toast Notification (Anti-Cheat Anomaly Feedback) -->
-  <div id="anticheat-deterrent-toast" class="soft-deterrent-toast" role="status" aria-live="polite">
+  <div id="anticheat-deterrent-toast" style="color:transparent;" class="soft-deterrent-toast" role="status" aria-live="polite">
     <span class="toast-icon">😉</span>
-    <span id="anticheat-toast-text">Are you a human calculator or using a sidekick device? 😉</span>
+    <span id="anticheat-toast-text" >Are you a human calculator or using a sidekick device? 😉</span>
   </div>
 
   <script type="module" src="./js/exam.js"></script>
