@@ -3,7 +3,29 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. MAIN GLASS BAR CONTAINER
+   1. BRANDING LOCKDOWN ON EXAM VIEW
+   -------------------------------------------------------------------------- */
+body.in-exam .fixed-header,
+body.in-exam header.fixed-header,
+body.in-exam .brand-lockup,
+body.in-exam .header-container {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+body.in-exam .main-wrapper {
+  margin-top: clamp(2.5rem, 5vh, 4rem) !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. MAIN GLASS BAR CONTAINER
    -------------------------------------------------------------------------- */
 
 /* Fixed HUD Position & Top Spacing */
@@ -44,7 +66,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. SLEEK CAPSULE DESIGNS
+   3. SLEEK CAPSULE DESIGNS
    -------------------------------------------------------------------------- */
 
 .hud-item {
@@ -87,7 +109,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. TYPOGRAPHY & PER-ITEM NEON GLOWS
+   4. TYPOGRAPHY & PER-ITEM NEON GLOWS
    -------------------------------------------------------------------------- */
 
 /* Shared Algerian Font Balancing */
@@ -121,7 +143,9 @@
 
 /* Points & Question: Electric Cyan (Default) */
 .hud-points .hud-val,
-.hud-question .hud-val {
+#hud-marks-val,
+.hud-question .hud-val,
+#hud-question-val {
   color: #00f0ff;
   text-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 18px rgba(0, 240, 255, 0.4);
 }
@@ -131,7 +155,8 @@
   border-color: rgba(16, 185, 129, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(16, 185, 129, 0.05);
 }
-.hud-expected .hud-val {
+.hud-expected .hud-val,
+#hud-expected-val {
   color: #10b981;
   text-shadow: 0 0 8px rgba(16, 185, 129, 0.8), 0 0 18px rgba(16, 185, 129, 0.4);
 }
@@ -148,7 +173,8 @@
   border-color: rgba(239, 68, 68, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(239, 68, 68, 0.05);
 }
-.hud-errors .hud-val {
+.hud-errors .hud-val,
+#hud-errors-val {
   color: #ef4444;
   text-shadow: 0 0 8px rgba(239, 68, 68, 0.8), 0 0 18px rgba(239, 68, 68, 0.4);
 }
@@ -165,7 +191,8 @@
   border-color: rgba(244, 63, 94, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(244, 63, 94, 0.05);
 }
-.hud-timer .hud-val {
+.hud-timer .hud-val,
+#hud-timer-val {
   color: #f43f5e;
   text-shadow: 0 0 8px rgba(244, 63, 94, 0.8), 0 0 18px rgba(244, 63, 94, 0.4);
 }
@@ -177,8 +204,16 @@
     inset 0 0 12px rgba(244, 63, 94, 0.2);
 }
 
+/* Urgent Timer State */
+.hud-timer.urgent .hud-val,
+#hud-timer-item.urgent #hud-timer-val {
+  color: #EF4444 !important;
+  animation: pulse-urgent 1s infinite;
+  text-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+}
+
 /* --------------------------------------------------------------------------
-   4. HIGH RESPONSIVENESS & MOBILE LAYOUT ADJUSTMENTS
+   5. HIGH RESPONSIVENESS & MOBILE LAYOUT ADJUSTMENTS
    -------------------------------------------------------------------------- */
 
 @media (max-width: 900px) {
@@ -207,10 +242,9 @@
   }
 }
 
-
-/* ==========================================================================
-   5. HIGH-VISIBILITY BYPASS BUTTON STYLES
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   6. HIGH-VISIBILITY BYPASS BUTTON STYLES
+   -------------------------------------------------------------------------- */
 
 .anticheat-bypass-btn {
   display: inline-flex !important;
@@ -268,4 +302,355 @@
 .anticheat-bypass-btn:hover .bypass-penalty-tag {
   background: #ffffff !important;
   color: #ef4444 !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. SLATE LEGACY FOOTER
+   -------------------------------------------------------------------------- */
+.footer-legacy-slate-text {
+  font-family: var(--font-heading);
+  font-size: clamp(0.72rem, 1.4vw, 0.82rem);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: #64748b !important; /* Subtle slate */
+  text-shadow: 0 0 10px rgba(100, 116, 139, 0.4), 0 0 2px rgba(148, 163, 184, 0.3); /* Ultra-subtle low-brightness neon slate glow */
+  margin: 0 auto 0.75rem auto;
+  line-height: 1.5;
+  text-align: center;
+  max-width: 60rem;
+  padding: 0 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   8. LIFELINE CONTROLS & NEON VARIANTS
+   -------------------------------------------------------------------------- */
+.lifeline-btn.lifeline-btn-neon {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-width: 1.5px !important;
+  color: #F8FAFC !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.35) !important;
+  backdrop-filter: blur(8px);
+}
+
+.lifeline-extend-btn {
+  border-color: rgba(56, 189, 248, 0.45) !important;
+}
+.lifeline-extend-btn svg {
+  color: #38BDF8 !important;
+  stroke: #38BDF8 !important;
+}
+.lifeline-extend-btn span {
+  color: #F0F9FF !important;
+}
+.lifeline-extend-btn:hover:not(:disabled) {
+  background: rgba(14, 165, 233, 0.22) !important;
+  border-color: #38BDF8 !important;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.5) !important;
+}
+
+.lifeline-noise-btn {
+  border-color: rgba(168, 85, 247, 0.45) !important;
+}
+.lifeline-noise-btn svg {
+  color: #C084FC !important;
+  stroke: #C084FC !important;
+}
+.lifeline-noise-btn span {
+  color: #FAF5FF !important;
+}
+.lifeline-noise-btn:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.22) !important;
+  border-color: #C084FC !important;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.5) !important;
+}
+
+.lifeline-sandbox-btn {
+  border-color: rgba(52, 211, 153, 0.45) !important;
+}
+.lifeline-sandbox-btn svg {
+  color: #34D399 !important;
+  stroke: #34D399 !important;
+}
+.lifeline-sandbox-btn span {
+  color: #ECFDF5 !important;
+}
+.lifeline-sandbox-btn:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.22) !important;
+  border-color: #34D399 !important;
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.5) !important;
+}
+
+/* Grayscale disabled state for Button A / extended items */
+.lifeline-extend-btn.is-disabled-grayscale,
+.lifeline-extend-btn:disabled {
+  filter: grayscale(100%) brightness(0.65) contrast(80%) !important;
+  opacity: 0.38 !important;
+  cursor: not-allowed !important;
+  border-color: rgba(148, 163, 184, 0.25) !important;
+  box-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. INLINE NEON WARNING CONTAINER
+   -------------------------------------------------------------------------- */
+.inline-neon-warning-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: rgba(139, 92, 246, 0.15) !important;
+  border: 1.5px solid #A855F7 !important;
+  border-radius: 0.75rem;
+  padding: 0.65rem 1rem;
+  margin-top: 0.85rem;
+  color: #F3E8FF !important;
+  font-family: var(--font-heading);
+  font-size: clamp(0.82rem, 1.6vw, 0.94rem);
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.45), inset 0 0 12px rgba(168, 85, 247, 0.15);
+  animation: neon-pulse 1.6s infinite alternate;
+  text-align: center;
+}
+
+.inline-neon-warning-box.warning-blocked {
+  background: rgba(239, 68, 68, 0.18) !important;
+  border-color: #EF4444 !important;
+  color: #FEE2E2 !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.5), inset 0 0 10px rgba(239, 68, 68, 0.15);
+  animation: none;
+}
+
+.inline-neon-warning-box.hidden {
+  display: none !important;
+}
+
+@keyframes neon-pulse {
+  from { box-shadow: 0 0 10px rgba(168, 85, 247, 0.35); }
+  to { box-shadow: 0 0 24px rgba(168, 85, 247, 0.7); }
+}
+
+/* --------------------------------------------------------------------------
+   10. FACTOR SANDBOX OVERLAY
+   -------------------------------------------------------------------------- */
+.factor-sandbox-overlay {
+  background: rgba(15, 23, 42, 0.96) !important;
+  border: 1.5px solid #10B981 !important;
+  border-radius: 1rem;
+  padding: 1.15rem 1.35rem;
+  margin: 1.25rem 0;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.4), inset 0 0 15px rgba(16, 185, 129, 0.12);
+  backdrop-filter: blur(14px);
+  position: relative;
+  z-index: 20;
+}
+
+.factor-sandbox-overlay.hidden {
+  display: none !important;
+}
+
+.sandbox-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+
+.sandbox-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #34D399;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sandbox-countdown-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-radius: 9999px;
+  padding: 0.2rem 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sandbox-target-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.sandbox-label {
+  font-size: 0.85rem;
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+.sandbox-target-num {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+}
+
+.sandbox-calc-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.sandbox-calc-input {
+  width: 100%;
+  max-width: 19rem;
+  padding: 0.5rem 0.85rem;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1.5px solid #334155;
+  border-radius: 0.6rem;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  text-align: center;
+  font-family: monospace;
+  transition: all 0.2s ease;
+}
+
+.sandbox-calc-input:focus {
+  outline: none;
+  border-color: #10B981;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+}
+
+.sandbox-calc-result {
+  font-size: 0.88rem;
+  color: #CBD5E1;
+  font-family: monospace;
+  min-height: 1.3rem;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   11. 1-SECOND DYNAMIC TRANSITION FEEDBACK ENGINE STYLES
+   -------------------------------------------------------------------------- */
+.transition-feedback-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  margin: 0.25rem 0 0.5rem 0;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.96);
+  transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.transition-feedback-overlay.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Condition A: Vibrant Cyber-Cyan (< 1.5s fast clear) */
+.transition-feedback-overlay.feedback-cyber-cyan {
+  color: #00F5FF !important;
+  font-family: inherit;
+  font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 14px rgba(0, 245, 255, 0.9), 0 0 28px rgba(6, 182, 212, 0.65), 0 0 42px rgba(14, 165, 233, 0.4);
+  filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.7));
+}
+
+/* Condition B: Glowing Mint-Green / Amber (medium speed clear) */
+.transition-feedback-overlay.feedback-mint-amber {
+  color: #10B981 !important;
+  font-family: inherit;
+  font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 14px rgba(16, 185, 129, 0.9), 0 0 28px rgba(5, 150, 105, 0.65), 0 0 40px rgba(16, 185, 129, 0.35);
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.7));
+}
+
+/* Condition C: Low-Brightness Platinum Gray (slow clear / slack triggered) */
+.transition-feedback-overlay.feedback-platinum-gray {
+  color: #CBD5E1 !important;
+  font-family: inherit;
+  font-size: clamp(1.05rem, 2.5vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  opacity: 0.85;
+  text-shadow: 0 0 8px rgba(203, 213, 225, 0.4);
+}
+
+/* Condition D: Aggressive Neon Crimson Scarlet Shake (incorrect or skip) */
+.transition-feedback-overlay.feedback-scarlet-shake {
+  color: #EF4444 !important;
+  font-family: inherit;
+  font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 16px rgba(239, 68, 68, 0.95), 0 0 32px rgba(220, 38, 38, 0.7), 0 0 45px rgba(185, 28, 28, 0.5);
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));
+  animation: scarlet-shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes scarlet-shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-8px) rotate(-1.5deg); }
+  30% { transform: translateX(7px) rotate(1.2deg); }
+  45% { transform: translateX(-6px) rotate(-1deg); }
+  60% { transform: translateX(5px) rotate(0.8deg); }
+  75% { transform: translateX(-3px) rotate(-0.5deg); }
+  90% { transform: translateX(2px); }
+}
+
+/* --------------------------------------------------------------------------
+   12. BEHAVIORAL ANTI-CHEAT SOFT DETERRENT TOAST
+   -------------------------------------------------------------------------- */
+.soft-deterrent-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(24px);
+  background: rgba(15, 23, 42, 0.96);
+  border: 1.5px solid #38BDF8;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.45);
+  color: #F8FAFC;
+  padding: 0.85rem 1.6rem;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  white-space: nowrap;
+}
+
+.soft-deterrent-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.soft-deterrent-toast .toast-icon {
+  font-size: 1.1rem;
 }
