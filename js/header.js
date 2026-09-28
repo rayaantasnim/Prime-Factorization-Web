@@ -115,18 +115,19 @@ export function initGlobalHeader(options = {}) {
                 <span class="dropdown-badge">Facilities</span>
               </a>
 
-              <a href="./exam.html?min=1&max=200&title=Standard%20Exam" id="dropdown-random-exam" class="dropdown-link-item">
+              <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
                 <div class="dropdown-link-content">
                   <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="16 3 21 3 21 8"></polyline>
-                    <line x1="4" y1="20" x2="21" y2="3"></line>
-                    <polyline points="21 16 21 21 16 21"></polyline>
-                    <line x1="15" y1="15" x2="21" y2="21"></line>
-                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                    <path d="M4 22h16"></path>
+                    <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                    <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
                   </svg>
-                  <span>Random Exam</span>
+                  <span>Contest</span>
                 </div>
-                <span class="dropdown-badge">Instant</span>
+                <span class="dropdown-badge">Arena</span>
               </a>
 
               <!-- Mobile-only System link -->
@@ -215,18 +216,19 @@ export function initGlobalHeader(options = {}) {
                 <span class="dropdown-badge">Facilities</span>
               </a>
 
-              <a href="./exam.html?min=1&max=200&title=Standard%20Exam" id="dropdown-random-exam" class="dropdown-link-item">
+              <a href="./contest.html" id="dropdown-contest-main" class="dropdown-link-item">
                 <div class="dropdown-link-content">
                   <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="16 3 21 3 21 8"></polyline>
-                    <line x1="4" y1="20" x2="21" y2="3"></line>
-                    <polyline points="21 16 21 21 16 21"></polyline>
-                    <line x1="15" y1="15" x2="21" y2="21"></line>
-                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                    <path d="M4 22h16"></path>
+                    <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                    <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
                   </svg>
-                  <span>Random Exam</span>
+                  <span>Contest</span>
                 </div>
-                <span class="dropdown-badge">Instant</span>
+                <span class="dropdown-badge">Arena</span>
               </a>
 
               <!-- Desktop Settings Link -->
@@ -309,34 +311,14 @@ export function initGlobalHeader(options = {}) {
       if (e.key === 'Escape') closeDropdown();
     });
 
-    // Wire Random Exam Link in dropdown
-    const randomExamLink = document.getElementById('dropdown-random-exam');
-    if (randomExamLink) {
-      randomExamLink.addEventListener('click', (e) => {
-        e.preventDefault();
+    // Wire Contest link click audio
+    const contestLinks = document.querySelectorAll('#dropdown-contest, #dropdown-contest-main, a[href="./contest.html"], a[href="contest.html"]');
+    contestLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        playSound('click');
         closeDropdown();
-        playSound('alert');
-
-        const ranges = [
-          { min: 1, max: 200, label: 'Tier 1: 1 - 200' },
-          { min: 201, max: 500, label: 'Tier 2: 201 - 500' },
-          { min: 501, max: 1000, label: 'Tier 3: 501 - 1,000' },
-          { min: 1001, max: 2000, label: 'Tier 4: 1,001 - 2,000' },
-          { min: 2001, max: 5000, label: 'Tier 5: 2,001 - 5,000' },
-          { min: 5001, max: 10000, label: 'Tier 6: 5,001 - 10,000' },
-          { min: 10001, max: 20000, label: 'Tier 7: 10,001 - 20,000' },
-          { min: 1, max: 50000, label: 'Omega: 1 to Infinity' }
-        ];
-        const chosen = ranges[Math.floor(Math.random() * ranges.length)];
-        setActiveExamParams({
-          min: chosen.min,
-          max: chosen.max,
-          title: chosen.label,
-          rules: getSettings()
-        });
-        window.location.href = `./exam.html?min=${chosen.min}&max=${chosen.max}&title=${encodeURIComponent(chosen.label)}`;
       });
-    }
+    });
 
     // Wire Settings Links in dropdown (both desktop Settings and mobile System options)
     const settingsTriggers = document.querySelectorAll('.dropdown-open-settings-trigger, #dropdown-open-settings, #dropdown-mobile-system');

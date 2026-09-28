@@ -382,6 +382,16 @@
       background: #1D4ED8;
     }
 
+    /* Vibrant Neon Green Glow Feedback on Share Execution */
+    .btn-share-copied-glow {
+      background: #059669 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.9), 0 0 28px rgba(52, 211, 153, 0.6) !important;
+      border: 1px solid #10B981 !important;
+      transform: scale(1.02);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
     .btn-secondary {
       background: rgba(31, 41, 55, 0.8);
       color: #FFFFFF;

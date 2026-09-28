@@ -15,13 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initExamArena() {
-  // Lock Settings gear icon and dynamically apply hidden utility class to the hardcoded navbar
+  // Logo & Branding Lockdown: The absolute microsecond exam page initializes,
+  // completely hide/remove the global nav-brand logo and branding headers
   document.body.classList.add('in-exam');
   const fixedHeader = document.querySelector('.fixed-header');
   if (fixedHeader) {
     fixedHeader.classList.add('hidden');
     fixedHeader.style.display = 'none';
+    fixedHeader.setAttribute('aria-hidden', 'true');
   }
+  document.querySelectorAll('.brand-lockup, header.fixed-header, .header-container').forEach(el => {
+    el.style.display = 'none';
+  });
 
   const params = getActiveExamParams();
   const rules = params.rules || {
@@ -56,6 +61,20 @@ function initExamArena() {
   const urlTitle = urlParams.get('title') || null;
   const urlTime = urlParams.get('time') ? Number(urlParams.get('time')) : null;
   const urlStrikePenalty = urlParams.has('strikePenalty') ? urlParams.get('strikePenalty') === 'true' : null;
+  const urlQuestions = urlParams.get('questions') ? Number(urlParams.get('questions')) : null;
+
+  // Security overrides: Track Focus & Penalty
+  const urlTrackFocus = urlParams.has('trackFocus') ? urlParams.get('trackFocus') === 'true' : null;
+  const trackFocus = urlTrackFocus !== null 
+    ? urlTrackFocus 
+    : (rules.trackFocus !== undefined ? rules.trackFocus : (sessionStorage.getItem('primefactor_focus_tracking') === 'false' ? false : true));
+
+  const urlInitialPenalty = urlParams.get('initialPenalty') ? Number(urlParams.get('initialPenalty')) : null;
+  const storedInitialPenalty = rules.initialPenalty !== undefined ? Number(rules.initialPenalty) : null;
+  const isFocusTrackingDisabled = (!trackFocus) || (urlInitialPenalty === -10) || (storedInitialPenalty === -10) || (sessionStorage.getItem('primefactor_focus_tracking_off_penalty') === '10');
+  const initialStartingScore = isFocusTrackingDisabled ? -10 : 0;
+
+  const participationMode = urlParams.get('mode') || rules.participationMode || 'rated';
 
   const resolvedMin = (urlMin && !isNaN(urlMin)) ? urlMin : (params.min || 1);
   const resolvedMax = (urlMax && !isNaN(urlMax)) ? urlMax : (params.max || 200);
@@ -63,15 +82,30 @@ function initExamArena() {
   const totalDuration = resolveTimeLimit(resolvedMin, resolvedMax, urlTime, params.timeLimit);
   const allowStrikePenalty = urlStrikePenalty !== null ? urlStrikePenalty : (rules.allowStrikePenalty !== undefined ? rules.allowStrikePenalty : true);
 
+  const totalQuestionsTarget = (urlQuestions && !isNaN(urlQuestions) && urlQuestions >= 5) 
+    ? urlQuestions 
+    : (params.questions || params.questionsCount || params.totalQuestions || 10);
+
+  // The Expected Target Node: live score tracker target that users chase (fallback 85 points)
+  const urlExpected = urlParams.get('expected') ? Number(urlParams.get('expected')) : null;
+  const resolvedExpectedScore = (urlExpected && !isNaN(urlExpected)) 
+    ? urlExpected 
+    : (params.expectedScore || 85);
+
   // State Management
   const state = {
     min: resolvedMin,
     max: resolvedMax,
     title: resolvedTitle,
-    score: 0,
+    score: initialStartingScore,
+    expectedScore: resolvedExpectedScore,
     totalTimeLimit: totalDuration,
     timeRemaining: totalDuration,
     allowStrikePenalty,
+    trackFocus,
+    isFocusTrackingDisabled,
+    participationMode,
+    totalQuestions: totalQuestionsTarget,
     timerInterval: null,
     isFrozen: false,
     freezeTimeout: null,
@@ -79,7 +113,7 @@ function initExamArena() {
     pauseTimeout: null,
     
     // Questions
-    questions: [], // 10 composite integers
+    questions: [], // composite integers
     currentIndex: 0,
     isSecondChanceLoop: false,
     secondChanceQueue: [], // question items to retry
@@ -98,8 +132,18 @@ function initExamArena() {
       maxRegen: rules.allowRegenerate ? 1 : 0,
       hintUsed: 0,
       maxHint: rules.allowHint ? 1 : 0,
-      skipsUsed: 0
+      skipsUsed: 0,
+      extendUsed: 0,
+      maxExtend: 1,
+      noiseUsed: 0,
+      maxNoise: 2,
+      sandboxUsed: 0,
+      maxSandbox: 1
     },
+
+    multiplierDampened: false,
+    noiseUsedForQuestionIndex: null, // Hardened single-question noise tracking flag
+    sandboxInterval: null,
 
     activeHintForCurrentQuestion: false,
     examEnded: false,
@@ -108,12 +152,15 @@ function initExamArena() {
     bypassActive: false,
     bypassTimeRemaining: 0,
     bypassInterval: null,
-    antiCheatViolationsCount: 0
+    antiCheatViolationsCount: 0,
+    suspicionScore: 0,
+    questionStartTime: performance.now(),
+    slackTriggeredForCurrentQuestion: false
   };
 
-  // Generate 10 unique composite numbers
+  // Generate unique composite numbers
   const usedSet = new Set();
-  while (state.questions.length < 10) {
+  while (state.questions.length < state.totalQuestions) {
     const num = rollCompositeNumber(state.min, state.max);
     if (!usedSet.has(num)) {
       usedSet.add(num);
@@ -137,6 +184,7 @@ function initExamArena() {
 
   // DOM Elements
   const hudScoreEl = document.getElementById('hud-marks-val');
+  const hudExpectedEl = document.getElementById('hud-expected-val');
   const hudQuestionEl = document.getElementById('hud-question-val');
   const hudErrorsEl = document.getElementById('hud-errors-val');
   const hudTimerEl = document.getElementById('hud-timer-val');
@@ -161,17 +209,112 @@ function initExamArena() {
   const btnPause = document.getElementById('lifeline-pause');
   const btnEnd = document.getElementById('lifeline-end');
   const btnSkip = document.getElementById('lifeline-skip');
+  const btnExtend = document.getElementById('lifeline-extend');
+  const btnNoise = document.getElementById('lifeline-noise');
+  const btnSandbox = document.getElementById('lifeline-sandbox');
   const btnRegen = document.getElementById('lifeline-regen');
   const btnRestart = document.getElementById('lifeline-restart');
   const btnHint = document.getElementById('lifeline-hint');
 
+  // Noise Elimination & Factor Sandbox DOM Elements
+  const inlineNoiseWarning = document.getElementById('inline-noise-warning');
+  const inlineNoiseText = document.getElementById('inline-noise-text');
+  const sandboxOverlay = document.getElementById('factor-sandbox-overlay');
+  const sandboxCountdownVal = document.getElementById('sandbox-countdown-val');
+  const sandboxTargetVal = document.getElementById('sandbox-target-val');
+  const sandboxCalcInput = document.getElementById('sandbox-calc-input');
+  const sandboxCalcResult = document.getElementById('sandbox-calc-result');
+
+  // Dynamic Transition Feedback & Behavioral Anti-Cheat Elements
+  const transitionFeedbackOverlay = document.getElementById('transition-feedback-overlay');
+  const anticheatToast = document.getElementById('anticheat-deterrent-toast');
+  const anticheatToastText = document.getElementById('anticheat-toast-text');
+
+  // Behavioral Anti-Cheat Telemetry Tracker state
+  let keystrokeDeltas = [];
+  let lastKeydownTime = null;
+  let deterrentToastTimeout = null;
+
+  function showSoftDeterrentToast(message = "Are you a human calculator or using a sidekick device? 😉") {
+    if (!anticheatToast) return;
+    if (anticheatToastText) anticheatToastText.textContent = message;
+    anticheatToast.classList.add('show');
+    clearTimeout(deterrentToastTimeout);
+    deterrentToastTimeout = setTimeout(() => {
+      anticheatToast.classList.remove('show');
+    }, 3500);
+  }
+
+  function evaluateAntiCheatTelemetry(isCorrect, targetNumber, responseDuration) {
+    let isAnomaly = false;
+    let isOrganic = false;
+
+    // Keystroke Variance Audit across manual factorization typing sequence
+    if (keystrokeDeltas.length >= 3) {
+      const mean = keystrokeDeltas.reduce((a, b) => a + b, 0) / keystrokeDeltas.length;
+      const variance = keystrokeDeltas.reduce((acc, d) => acc + Math.pow(d - mean, 2), 0) / keystrokeDeltas.length;
+
+      // Variance near zero across factorization typing sequence (< 15 ms^2)
+      if (variance < 15) {
+        isAnomaly = true;
+      } else if (variance > 200) {
+        isOrganic = true;
+      }
+    }
+
+    // Impossible Response Time (IRT) limit violation:
+    // Multi-digit number (>= 10) cleared flawlessly in under 2.5 seconds
+    if (isCorrect && targetNumber >= 10 && responseDuration < 2.5) {
+      isAnomaly = true;
+    }
+
+    // Anomaly Calculation Matrix & Suspicion Score Adjustments
+    if (isAnomaly) {
+      state.suspicionScore += 1.0;
+    } else if (isOrganic && !isAnomaly) {
+      state.suspicionScore = Math.max(0, state.suspicionScore - 0.5);
+    }
+
+    // Soft Deterrent Toast: fires the moment suspicionScore hits >= 2.0
+    if (state.suspicionScore >= 2.0) {
+      showSoftDeterrentToast("Are you a human calculator or using a sidekick device? 😉");
+    }
+  }
+
+  // 1-Second Dynamic Transition Feedback Engine
+  function triggerTransitionFeedback(condition) {
+    if (!transitionFeedbackOverlay) return;
+    let pool = [];
+    let className = '';
+
+    if (condition === 'A') {
+      pool = ["⚡ Brilliant!", "👑 Flawless Speed!", "🚀 Supersonic Solver!"];
+      className = 'feedback-cyber-cyan';
+    } else if (condition === 'B') {
+      pool = ["✔️ Excellent!", "🎯 Precise Target!", "🧠 Great Breakdown!"];
+      className = 'feedback-mint-amber';
+    } else if (condition === 'C') {
+      pool = ["🔍 Good (Speed Slump)", "🐢 Pace Cleared", "⏸️ Safe Factor."];
+      className = 'feedback-platinum-gray';
+    } else {
+      // Condition D
+      pool = ["🚨 Not Expected!", "⚠️ Miscalculated!", "🪵 Try Later!"];
+      className = 'feedback-scarlet-shake';
+    }
+
+    const text = pool[Math.floor(Math.random() * pool.length)];
+    transitionFeedbackOverlay.className = `transition-feedback-overlay active ${className}`;
+    transitionFeedbackOverlay.textContent = text;
+  }
+
   // HUD Update Helper
   function updateHUD() {
     if (hudScoreEl) hudScoreEl.textContent = state.score;
+    if (hudExpectedEl) hudExpectedEl.textContent = state.expectedScore;
     
     if (hudQuestionEl) {
       if (!state.isSecondChanceLoop) {
-        hudQuestionEl.textContent = `${state.currentIndex + 1} / 10`;
+        hudQuestionEl.textContent = `${state.currentIndex + 1} / ${state.totalQuestions}`;
       } else {
         hudQuestionEl.textContent = `2nd: ${state.secondChanceIndex + 1} / ${state.secondChanceQueue.length}`;
       }
@@ -197,6 +340,36 @@ function initExamArena() {
       btnPause.disabled = remaining <= 0 || state.isPausedByLifeline || state.isFrozen;
       const countEl = btnPause.querySelector('.lifeline-uses');
       if (countEl) countEl.textContent = `${remaining} left`;
+    }
+
+    // Button A: Extend Clock (Max 1 use, grayscale disabled)
+    if (btnExtend) {
+      const remaining = state.lifelines.maxExtend - state.lifelines.extendUsed;
+      const isExhausted = remaining <= 0;
+      btnExtend.disabled = isExhausted || state.isFrozen || state.examEnded;
+      if (isExhausted) {
+        btnExtend.classList.add('is-disabled-grayscale');
+      }
+      const countEl = btnExtend.querySelector('.lifeline-uses');
+      if (countEl) countEl.textContent = isExhausted ? 'Used (0 left)' : '1 left (-3)';
+    }
+
+    // Button B: Eliminate Noise (Max 2 total usages)
+    if (btnNoise) {
+      const remaining = state.lifelines.maxNoise - state.lifelines.noiseUsed;
+      const isExhausted = remaining <= 0;
+      btnNoise.disabled = isExhausted || state.isFrozen || state.examEnded;
+      const countEl = btnNoise.querySelector('.lifeline-uses');
+      if (countEl) countEl.textContent = isExhausted ? '0 left (-4)' : `${remaining} left (-4)`;
+    }
+
+    // Button C: Launch Sandbox (Max 1 use)
+    if (btnSandbox) {
+      const remaining = state.lifelines.maxSandbox - state.lifelines.sandboxUsed;
+      const isExhausted = remaining <= 0;
+      btnSandbox.disabled = isExhausted || state.isFrozen || state.examEnded;
+      const countEl = btnSandbox.querySelector('.lifeline-uses');
+      if (countEl) countEl.textContent = isExhausted ? 'Used (0 left)' : '1 left (-5)';
     }
 
     if (btnRegen) {
@@ -241,7 +414,24 @@ function initExamArena() {
   function renderActiveQuestion() {
     if (state.examEnded) return;
 
+    if (transitionFeedbackOverlay) {
+      transitionFeedbackOverlay.className = 'transition-feedback-overlay';
+      transitionFeedbackOverlay.textContent = '';
+    }
+    keystrokeDeltas = [];
+    lastKeydownTime = null;
+    state.questionStartTime = performance.now();
+    state.slackTriggeredForCurrentQuestion = false;
+
     state.activeHintForCurrentQuestion = false;
+    // Reset the single-question usage flag immediately when session loops or advances to next question node
+    state.noiseUsedForQuestionIndex = null;
+    if (inlineNoiseWarning) {
+      inlineNoiseWarning.classList.add('hidden');
+      inlineNoiseWarning.classList.remove('warning-blocked');
+    }
+    if (inlineNoiseText) inlineNoiseText.textContent = '';
+
     if (targetHintBox) targetHintBox.style.display = 'none';
     if (inputFeedbackEl) inputFeedbackEl.textContent = '';
 
@@ -249,7 +439,7 @@ function initExamArena() {
     if (!state.isSecondChanceLoop) {
       currentItem = state.questionAudits[state.currentIndex];
       if (questionStatusText) {
-        questionStatusText.textContent = `Question ${state.currentIndex + 1} of 10 · Decompose completely`;
+        questionStatusText.textContent = `Question ${state.currentIndex + 1} of ${state.totalQuestions} · Decompose completely`;
       }
     } else {
       currentItem = state.secondChanceQueue[state.secondChanceIndex];
@@ -316,6 +506,24 @@ function initExamArena() {
 
     // Flexible String Parsing Engine
     const evalResult = parseAndValidateFactorInput(userInput, currentItem.number);
+    const responseDuration = (performance.now() - state.questionStartTime) / 1000;
+    const isCorrect = evalResult.isValid;
+
+    // Behavioral Anti-Cheat Telemetry Tracker Audit
+    evaluateAntiCheatTelemetry(isCorrect, currentItem.number, responseDuration);
+
+    // 1-Second Dynamic Transition Feedback Engine condition evaluation
+    if (isCorrect) {
+      if (responseDuration < 1.5) {
+        triggerTransitionFeedback('A');
+      } else if (responseDuration <= 5.5 && !state.slackTriggeredForCurrentQuestion && !state.activeHintForCurrentQuestion) {
+        triggerTransitionFeedback('B');
+      } else {
+        triggerTransitionFeedback('C');
+      }
+    } else {
+      triggerTransitionFeedback('D');
+    }
 
     if (!state.isSecondChanceLoop) {
       // FIRST ATTEMPT
@@ -324,7 +532,11 @@ function initExamArena() {
       if (evalResult.isValid) {
         // Correct on first attempt
         currentItem.attempt1Correct = true;
-        const pts = state.activeHintForCurrentQuestion ? 5 : 10;
+        let pts = state.activeHintForCurrentQuestion ? 5 : 10;
+        if (state.multiplierDampened) {
+          pts = Math.max(1, Math.round(pts * 0.7)); // Temporary multiplier dampener applied
+          state.multiplierDampened = false;
+        }
         state.score += pts;
 
         playSound('correct');
@@ -368,7 +580,11 @@ function initExamArena() {
       if (evalResult.isValid) {
         // Correct on second attempt
         currentItem.attempt2Correct = true;
-        const pts = currentItem.hintActive ? 2 : 5;
+        let pts = currentItem.hintActive ? 2 : 5;
+        if (state.multiplierDampened) {
+          pts = Math.max(1, Math.round(pts * 0.7));
+          state.multiplierDampened = false;
+        }
         state.score += pts;
 
         playSound('correct');
@@ -408,10 +624,10 @@ function initExamArena() {
   function advanceToNextQuestion() {
     if (!state.isSecondChanceLoop) {
       state.currentIndex++;
-      if (state.currentIndex < 10) {
+      if (state.currentIndex < state.totalQuestions) {
         renderActiveQuestion();
       } else {
-        // First 10 questions done! Check if eligible for Second Chance Loop
+        // Initial questions done! Check if eligible for Second Chance Loop
         checkSecondChanceTransition();
       }
     } else {
@@ -450,6 +666,7 @@ function initExamArena() {
   function handleLifelinePause() {
     if (state.lifelines.pauseUsed >= state.lifelines.maxPause || state.isPausedByLifeline || state.isFrozen) return;
 
+    state.slackTriggeredForCurrentQuestion = true;
     state.lifelines.pauseUsed++;
     state.score -= 2;
     state.isPausedByLifeline = true;
@@ -492,6 +709,7 @@ function initExamArena() {
       currentItem.attempt2Correct = false;
     }
 
+    triggerTransitionFeedback('D');
     registerError();
 
     if (inputFeedbackEl) {
@@ -593,6 +811,203 @@ function initExamArena() {
     updateHUD();
   }
 
+  // Lifeline A: Extend Clock (+30s to countdown, -3 points, temporary multiplier dampener, grayscale state)
+  function handleLifelineExtend() {
+    if (state.lifelines.extendUsed >= state.lifelines.maxExtend || state.examEnded || state.isFrozen) return;
+
+    state.lifelines.extendUsed++;
+    state.timeRemaining += 30; // Appends exactly 30 seconds
+    state.score -= 3; // Deducts -3 points instantly from live POINTS element
+    state.multiplierDampened = true; // Flags temporary multiplier dampener
+
+    playSound('alert');
+    triggerFlash('warning');
+
+    if (btnExtend) {
+      btnExtend.disabled = true;
+      btnExtend.classList.add('is-disabled-grayscale');
+    }
+
+    if (inputFeedbackEl) {
+      inputFeedbackEl.textContent = '⏱️ Clock Extended (+30s). -3 points deducted. Multiplier dampener active.';
+      inputFeedbackEl.className = 'exam-feedback text-amber font-bold';
+    }
+
+    updateHUD();
+  }
+
+  // Lifeline B: Eliminate Noise - Hardened (Max 2 usages per session, strictly max 1 per question, -4 pts)
+  function handleLifelineNoise() {
+    if (state.examEnded || state.isFrozen) return;
+
+    if (state.lifelines.noiseUsed >= state.lifelines.maxNoise) {
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '⚠️ Eliminate Noise: Maximum 2 usages per total exam session reached.';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+      return;
+    }
+
+    const activeQuestionKey = state.isSecondChanceLoop 
+      ? `second_${state.secondChanceIndex}` 
+      : `primary_${state.currentIndex}`;
+
+    // Hardened check: clicking more than ONCE for the exact same active question index/number is strictly prohibited
+    if (state.noiseUsedForQuestionIndex === activeQuestionKey) {
+      playSound('error');
+      triggerFlash('penalty');
+
+      const blockMsg = '⚠️ Noise already eliminated for this number. Maximum 1 usage per question allowed.';
+      
+      if (inlineNoiseWarning && inlineNoiseText) {
+        inlineNoiseText.textContent = blockMsg;
+        inlineNoiseWarning.classList.remove('hidden');
+        inlineNoiseWarning.classList.add('warning-blocked');
+        if (window.gsap) {
+          window.gsap.fromTo(inlineNoiseWarning,
+            { x: -8 },
+            { x: 0, duration: 0.08, repeat: 5, yoyo: true, ease: 'power1.inOut' }
+          );
+        }
+      }
+
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = blockMsg;
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+
+      // Block execution, do NOT deduct points or expend second session allocation
+      return;
+    }
+
+    // First time for this question:
+    state.lifelines.noiseUsed++;
+    state.noiseUsedForQuestionIndex = activeQuestionKey;
+    state.score -= 4; // Deducts -4 points instantly from live POINTS element
+
+    const currentItem = !state.isSecondChanceLoop 
+      ? state.questionAudits[state.currentIndex] 
+      : state.secondChanceQueue[state.secondChanceIndex];
+
+    const currentNum = currentItem ? currentItem.number : 100;
+    
+    // Candidate primes that do NOT divide currentNum
+    const commonPrimes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+    const invalidPrimes = commonPrimes.filter(p => p < currentNum && currentNum % p !== 0).slice(0, 3);
+    const invalidListStr = invalidPrimes.length > 0 ? invalidPrimes.join(', ') : '13, 17, 19';
+
+    playSound('alert');
+    triggerFlash('warning');
+
+    const noticeText = `🚫 Noise Eliminated: Primes {${invalidListStr}} do NOT divide ${currentNum.toLocaleString()} (-4 pts).`;
+
+    if (inlineNoiseWarning && inlineNoiseText) {
+      inlineNoiseText.textContent = noticeText;
+      inlineNoiseWarning.classList.remove('hidden');
+      inlineNoiseWarning.classList.remove('warning-blocked');
+      if (window.gsap) {
+        window.gsap.fromTo(inlineNoiseWarning,
+          { opacity: 0, scale: 0.95 },
+          { opacity: 1, scale: 1, duration: 0.25, ease: 'back.out(1.5)' }
+        );
+      }
+    }
+
+    if (inputFeedbackEl) {
+      inputFeedbackEl.textContent = noticeText;
+      inputFeedbackEl.className = 'exam-feedback text-amber font-bold';
+    }
+
+    updateHUD();
+  }
+
+  // Lifeline C: Factor Sandbox (Max 1 use, 5s mental division scratchpad overlay, auto 5s fade-out, -5 pts)
+  function handleLifelineSandbox() {
+    if (state.lifelines.sandboxUsed >= state.lifelines.maxSandbox || state.examEnded || state.isFrozen) return;
+
+    state.lifelines.sandboxUsed++;
+    state.score -= 5; // Deducts -5 points instantly from live POINTS element
+
+    playSound('alert');
+    triggerFlash('warning');
+
+    const currentItem = !state.isSecondChanceLoop 
+      ? state.questionAudits[state.currentIndex] 
+      : state.secondChanceQueue[state.secondChanceIndex];
+    const targetVal = currentItem ? currentItem.number : '---';
+
+    if (sandboxTargetVal) {
+      sandboxTargetVal.textContent = typeof targetVal === 'number' ? targetVal.toLocaleString() : targetVal;
+    }
+    if (sandboxCalcInput) {
+      sandboxCalcInput.value = '';
+    }
+    if (sandboxCalcResult) {
+      sandboxCalcResult.textContent = 'Type a test divisor above to check remainder';
+      sandboxCalcResult.style.color = '#CBD5E1';
+    }
+
+    if (sandboxOverlay) {
+      sandboxOverlay.classList.remove('hidden');
+      sandboxOverlay.style.opacity = '1';
+      if (window.gsap) {
+        window.gsap.fromTo(sandboxOverlay,
+          { opacity: 0, y: -10 },
+          { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }
+        );
+      }
+      if (sandboxCalcInput) {
+        setTimeout(() => sandboxCalcInput.focus(), 100);
+      }
+    }
+
+    if (inputFeedbackEl) {
+      inputFeedbackEl.textContent = '🧮 Factor Sandbox activated for 5s (-5 pts).';
+      inputFeedbackEl.className = 'exam-feedback text-mint font-bold';
+    }
+
+    // Automatic 5-second fade-out loop
+    let remainingMs = 5000;
+    clearInterval(state.sandboxInterval);
+    state.sandboxInterval = setInterval(() => {
+      remainingMs -= 100;
+      if (sandboxCountdownVal) {
+        sandboxCountdownVal.textContent = (Math.max(0, remainingMs) / 1000).toFixed(1) + 's';
+      }
+
+      if (remainingMs <= 500 && sandboxOverlay && !sandboxOverlay._fading) {
+        sandboxOverlay._fading = true;
+        if (window.gsap) {
+          window.gsap.to(sandboxOverlay, {
+            opacity: 0,
+            duration: 0.5,
+            onComplete: () => {
+              sandboxOverlay.classList.add('hidden');
+              sandboxOverlay._fading = false;
+              if (inputEl) inputEl.focus();
+            }
+          });
+        } else {
+          sandboxOverlay.style.transition = 'opacity 0.5s ease';
+          sandboxOverlay.style.opacity = '0';
+          setTimeout(() => {
+            sandboxOverlay.classList.add('hidden');
+            sandboxOverlay._fading = false;
+            if (inputEl) inputEl.focus();
+          }, 500);
+        }
+      }
+
+      if (remainingMs <= 0) {
+        clearInterval(state.sandboxInterval);
+        state.sandboxInterval = null;
+        if (sandboxOverlay) sandboxOverlay.classList.add('hidden');
+      }
+    }, 100);
+
+    updateHUD();
+  }
+
   // Anti-Cheat: 10-Second Temporary Exemption Request (-5 pts tactical fee)
   function handleRequestBypass() {
     if (state.examEnded || state.bypassActive || state.isFrozen) return;
@@ -664,7 +1079,7 @@ function initExamArena() {
 
   // Anti-Cheat: Focus Lost & Tab Switch Monitoring
   function handleIntegrityViolation(reason) {
-    if (state.examEnded || state.bypassActive || state.isFrozen) return;
+    if (state.examEnded || state.bypassActive || state.isFrozen || !state.trackFocus) return;
 
     state.antiCheatViolationsCount++;
     const penalty = 5;
@@ -710,6 +1125,17 @@ function initExamArena() {
   };
   document.addEventListener('keydown', onDocKeyDown);
 
+  // Microsecond countdown sequence initialization trigger:
+  // If target tracking was disabled, apply strict -10 raw score points deduction
+  if (state.isFocusTrackingDisabled) {
+    if (inputFeedbackEl) {
+      inputFeedbackEl.textContent = '⚠️ Focus Tracking Off: Disabling target tracking inflicts an immediate -10 Points Penalty upon launching this arena.';
+      inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+    }
+    triggerFlash('penalty');
+    sessionStorage.removeItem('primefactor_focus_tracking_off_penalty');
+  }
+
   // Countdown Timer
   state.timerInterval = setInterval(() => {
     if (state.isFrozen || state.isPausedByLifeline || state.examEnded) return;
@@ -729,6 +1155,7 @@ function initExamArena() {
     state.examEnded = true;
     clearInterval(state.timerInterval);
     clearInterval(state.bypassInterval);
+    clearInterval(state.sandboxInterval);
     clearTimeout(state.freezeTimeout);
     clearTimeout(state.pauseTimeout);
 
@@ -770,13 +1197,15 @@ function initExamArena() {
       }
     });
 
-    const lifelinesUsedTotal = state.lifelines.pauseUsed + state.lifelines.regenUsed + state.lifelines.hintUsed;
+    const lifelinesUsedTotal = state.lifelines.pauseUsed + state.lifelines.regenUsed + state.lifelines.hintUsed + state.lifelines.extendUsed + state.lifelines.noiseUsed + state.lifelines.sandboxUsed;
 
     const resultPayload = {
       score: state.score,
       timeRemaining: Math.max(0, state.timeRemaining),
       timeSpent: state.totalTimeLimit - Math.max(0, state.timeRemaining),
-      totalQuestions: 10,
+      totalQuestions: state.totalQuestions,
+      participationMode: state.participationMode,
+      mode: state.participationMode,
       correctFirstAttempt: firstTryCorrect,
       correctSecondAttempt: secondTryCorrect,
       incorrectTotal: state.incorrectSubmissionsCount,
@@ -816,6 +1245,16 @@ function initExamArena() {
 
   if (inputEl) {
     inputEl.addEventListener('keydown', (e) => {
+      // Keystroke Variance Audit: log precise millisecond delta between consecutive keydowns
+      const now = performance.now();
+      if (lastKeydownTime !== null) {
+        const delta = now - lastKeydownTime;
+        if (delta >= 0 && delta < 10000) {
+          keystrokeDeltas.push(delta);
+        }
+      }
+      lastKeydownTime = now;
+
       // Spacebar hotkey: automatically inject '*' into factor string
       if (e.code === 'Space' || e.key === ' ') {
         e.preventDefault();
@@ -844,9 +1283,44 @@ function initExamArena() {
     });
   }
   if (btnSkip) btnSkip.addEventListener('click', handleLifelineSkip);
+  if (btnExtend) btnExtend.addEventListener('click', handleLifelineExtend);
+  if (btnNoise) btnNoise.addEventListener('click', handleLifelineNoise);
+  if (btnSandbox) btnSandbox.addEventListener('click', handleLifelineSandbox);
   if (btnRegen) btnRegen.addEventListener('click', handleLifelineRegenerate);
   if (btnRestart) btnRestart.addEventListener('click', handleLifelineRestart);
   if (btnHint) btnHint.addEventListener('click', handleLifelineHint);
+
+  // Scratchpad Real-time Division Testing
+  if (sandboxCalcInput) {
+    sandboxCalcInput.addEventListener('input', () => {
+      const divisor = parseInt(sandboxCalcInput.value, 10);
+      const currentItem = !state.isSecondChanceLoop 
+        ? state.questionAudits[state.currentIndex] 
+        : state.secondChanceQueue[state.secondChanceIndex];
+      const target = currentItem ? currentItem.number : null;
+
+      if (!target || isNaN(divisor) || divisor <= 1) {
+        if (sandboxCalcResult) {
+          sandboxCalcResult.textContent = 'Type an integer > 1 to check';
+          sandboxCalcResult.style.color = '#CBD5E1';
+        }
+        return;
+      }
+
+      const quotient = Math.floor(target / divisor);
+      const remainder = target % divisor;
+
+      if (sandboxCalcResult) {
+        if (remainder === 0) {
+          sandboxCalcResult.textContent = `✅ ${target} ÷ ${divisor} = ${quotient} (Exact Factor! R=0)`;
+          sandboxCalcResult.style.color = '#34D399';
+        } else {
+          sandboxCalcResult.textContent = `❌ ${target} ÷ ${divisor} = ${quotient} (Remainder ${remainder})`;
+          sandboxCalcResult.style.color = '#F87171';
+        }
+      }
+    });
+  }
 
   // Initial render
   renderActiveQuestion();

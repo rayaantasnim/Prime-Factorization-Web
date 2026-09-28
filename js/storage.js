@@ -65,6 +65,11 @@ export function getLedger() {
 }
 
 export function recordExamCompletion(resultPayload) {
+  // If in unrated practice mode, bypass permanent ledger updates and ELO alterations
+  if (resultPayload.participationMode === 'unrated' || resultPayload.mode === 'unrated') {
+    return getLedger();
+  }
+
   const ledger = getLedger();
   ledger.examsCompleted += 1;
   ledger.totalSolved += (resultPayload.correctFirstAttempt || 0) + (resultPayload.correctSecondAttempt || 0);

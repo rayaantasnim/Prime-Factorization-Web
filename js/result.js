@@ -258,30 +258,101 @@ function renderResultDashboard() {
   const btnCardShare = document.getElementById('card-share-btn');
   const shareToast = document.getElementById('share-verdict-toast');
 
-  const executeShareAction = () => {
-    playSound('click');
-    const shareText = `⚡ Prime-Factor.app Performance Report ⚡\n\n` +
-      `🏆 Rank Tier: ${bracketTitle}\n` +
-      `📊 Final Score: ${result.score}/100 points\n` +
-      `🛡️ Category: ${result.rangeTitle} Tier\n` +
+  const copyTextToClipboard = async (text) => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (err) {
+        console.warn('Async clipboard write failed, using fallback', err);
+      }
+    }
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return successful;
+    } catch (err) {
+      return false;
+    }
+  };
+
+  const getShareTelemetryText = () => {
+    const firstAttemptClears = (result.correctFirstAttempt !== undefined) ? result.correctFirstAttempt : totalSolved;
+    const totalQuestionsTarget = result.totalQuestions || 10;
+    const rankTitle = bracketTitle || 'Active Competitor';
+    const categoryTitle = result.rangeTitle || 'Custom';
+    const eloDeltaStr = result.eloDelta !== undefined 
+      ? (result.eloDelta > 0 ? `+${result.eloDelta} ELO` : `${result.eloDelta} ELO`) 
+      : '0 ELO (Practice Run)';
+    const currentEloStr = result.currentElo || '1000 ELO (Base Track)';
+    const lifelinesUsed = result.lifelinesUsedCount !== undefined ? result.lifelinesUsedCount : 0;
+    const secondsSpent = result.timeSpent !== undefined ? result.timeSpent : 0;
+
+    return `⚡ Prime-Factor.app Performance Report ⚡\n\n` +
+      `🏆 Rank Tier: ${rankTitle}\n` +
+      `📊 Final Score: ${result.score ?? 0}/100 points\n` +
+      `🛡️ Category: ${categoryTitle} Tier\n` +
       `🎯 Accuracy: ${accuracyPct}%\n` +
-      `🧩 Progress: ${totalSolved}/10 Completed\n\n` +
-      `⏱️ Time Spent: ${result.timeSpent}s\n` +
-      `🧪 Lifelines Used: ${result.lifelinesUsedCount}\n\n` +
+      `🧩 Progress: ${firstAttemptClears}/${totalQuestionsTarget} Completed\n\n` +
+      `📈 ELO Changed: ${eloDeltaStr}\n` +
+      `📡 Current ELO: ${currentEloStr}\n\n` +
+      `⏱ *Time Spent: ${secondsSpent}s\n` +
+      `🧪 Lifelines Used: ${lifelinesUsed}\n\n` +
       `✨ Certified By Rayaan Tasnim\n` +
       `🚀 Powered by Olympiad Edge\n` +
       `© All rights reserved.`;
+  };
 
+  const executeShareFeedback = async (buttonEl) => {
+    playSound('click');
+    const shareText = getShareTelemetryText();
+    await copyTextToClipboard(shareText);
 
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(shareText).then(() => {
-        if (shareToast) {
-          shareToast.style.display = 'block';
-          setTimeout(() => { shareToast.style.display = 'none'; }, 2500);
-        }
-      });
+    if (buttonEl) {
+      const originalHTML = buttonEl.innerHTML;
+      buttonEl.textContent = '✔️ Performance Report Copied!';
+      buttonEl.classList.add('btn-share-copied-glow');
+
+      setTimeout(() => {
+        buttonEl.innerHTML = originalHTML;
+        buttonEl.classList.remove('btn-share-copied-glow');
+      }, 2000);
+    }
+
+    if (shareToast) {
+      shareToast.style.display = 'block';
+      setTimeout(() => { shareToast.style.display = 'none'; }, 2000);
     }
   };
+
+  if (btnCardShare) {
+    btnCardShare.addEventListener('click', () => executeShareFeedback(btnCardShare));
+  }
+
+  if (btnShare) {
+    btnShare.addEventListener('click', () => executeShareFeedback(btnShare));
+  }
+
+  // Explicitly ensure settings gear icon triggers scrollable Engine Configuration modal
+  const settingsToggleBtn = document.getElementById('settings-toggle-btn');
+  if (settingsToggleBtn) {
+    settingsToggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      playSound('click');
+      const modal = document.getElementById('settings-modal');
+      if (modal) {
+        modal.classList.add('open');
+      }
+    });
+  }
 
   if (btnRetake) {
     btnRetake.addEventListener('click', () => {
@@ -302,9 +373,6 @@ function renderResultDashboard() {
       window.location.href = './ranges.html';
     });
   }
-
-  if (btnShare) btnShare.addEventListener('click', executeShareAction);
-  if (btnCardShare) btnCardShare.addEventListener('click', executeShareAction);
 }
 
 function escapeHtml(str) {

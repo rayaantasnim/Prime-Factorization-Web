@@ -46,6 +46,21 @@ export function playSound(type) {
         break;
       }
 
+      case 'wheelTick': {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1400, now);
+        osc.frequency.exponentialRampToValueAtTime(500, now + 0.02);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.02);
+        break;
+      }
+
       case 'correct': {
         // Harmonic major third / fifth chime
         [523.25, 659.25, 783.99].forEach((freq, idx) => {

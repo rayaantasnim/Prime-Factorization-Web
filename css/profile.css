@@ -1,0 +1,583 @@
+/* ==========================================================================
+   PRIME-FACTOR.APP — CANDIDATE PROFILE & TELEMETRY REGISTRY STYLES
+   ========================================================================== */
+
+:root {
+  --profile-bg: #0B0F17;
+  --profile-card: #111827;
+  --profile-card-subtle: #161F30;
+  --profile-border: rgba(255, 255, 255, 0.08);
+  --profile-border-glow: rgba(56, 189, 248, 0.35);
+  --neon-cyan: #38BDF8;
+  --neon-emerald: #10B981;
+  --neon-amber: #F59E0B;
+  --neon-rose: #F43F5E;
+}
+
+body.profile-view {
+  background-color: var(--profile-bg) !important;
+  color: #FFFFFF !important;
+  min-height: 100vh;
+}
+
+/* ================= 1. FLOATING PROFILE COMMAND MATRIX TRIGGER ================= */
+.profile-matrix-trigger {
+  position: fixed;
+  top: 5.25rem;
+  left: clamp(0.75rem, 2vw, 1.75rem);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45), 0 0 15px rgba(56, 189, 248, 0.18);
+  padding: 0.6rem 1.15rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.profile-matrix-trigger svg {
+  stroke: var(--neon-cyan);
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.profile-matrix-trigger:hover {
+  transform: translateY(-2px) scale(1.03);
+  border-color: #00F0FF;
+  box-shadow: 0 0 22px rgba(6, 182, 212, 0.5);
+  color: #00F0FF;
+}
+
+.profile-matrix-trigger:hover svg {
+  transform: rotate(90deg);
+}
+
+/* ================= 2. FULLSCREEN BLURRED GLASS-MORPHISM OVERLAY ================= */
+.profile-matrix-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 15, 23, 0.94);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  overflow-y: auto;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  box-sizing: border-box;
+}
+
+.profile-matrix-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.matrix-overlay-container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+}
+
+.matrix-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.matrix-overlay-title-group h3 {
+  font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 0.35rem;
+}
+
+.matrix-overlay-title-group p {
+  color: #94A3B8;
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.matrix-overlay-close-btn {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.matrix-overlay-close-btn:hover {
+  background: #EF4444;
+  border-color: #EF4444;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+  transform: rotate(90deg);
+}
+
+/* Responsive Column Alignment Grid: Symmetrical 2 Columns on Desktop/Tablet, Single Column on Mobile */
+.matrix-topology-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .matrix-topology-grid {
+    grid-template-columns: 1fr;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+}
+
+.matrix-routing-card {
+  background: rgba(17, 24, 39, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.35rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  text-decoration: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.matrix-routing-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: transparent;
+  transition: background 0.25s ease;
+}
+
+.matrix-routing-card:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(56, 189, 248, 0.2);
+}
+
+.matrix-routing-card:hover::before {
+  background: var(--neon-cyan);
+}
+
+.routing-card-index {
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--neon-cyan);
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+}
+
+.routing-card-body h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: #FFFFFF;
+}
+
+.routing-card-body p {
+  font-size: 0.84rem;
+  color: #94A3B8;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ================= 3. PROFILE DASHBOARD HERO & IDENTITY ================= */
+.profile-content-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5.5rem 1.5rem 3rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.profile-identity-card {
+  background: radial-gradient(circle at top right, rgba(30, 58, 138, 0.25), rgba(17, 24, 39, 0.95) 70%);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(56, 189, 248, 0.12);
+  margin-bottom: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  box-sizing: border-box;
+}
+
+.identity-main-group {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.identity-avatar-hex {
+  width: 76px;
+  height: 76px;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, #0284C7 0%, #1E1B4B 100%);
+  border: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.identity-meta h1 {
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.identity-token-badge {
+  font-family: monospace;
+  font-size: 0.75rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--neon-cyan);
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+.identity-sub-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #CBD5E1;
+}
+
+.identity-rank-tag {
+  color: var(--neon-emerald);
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Low-Intensity Neon Border Clipboard Buttons */
+.btn-clipboard-neon {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  color: #FFFFFF;
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.65rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+  white-space: nowrap;
+}
+
+.btn-clipboard-neon:hover {
+  border-color: #00F0FF;
+  color: #00F0FF;
+  box-shadow: 0 0 18px rgba(6, 182, 212, 0.45);
+  transform: translateY(-1px);
+}
+
+/* UX Vibrant Green Neon Glow Feedback Transition */
+.btn-neon-copied-glow {
+  background: #059669 !important;
+  color: #FFFFFF !important;
+  border-color: #10B981 !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.95), 0 0 35px rgba(52, 211, 153, 0.6) !important;
+  transform: scale(1.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* ================= 4. PERSONAL BEST (PB) MILESTONES (6 CARDS) ================= */
+.section-banner-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.section-banner-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pb-milestone-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 1024px) {
+  .pb-milestone-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .pb-milestone-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pb-card {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 180px;
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pb-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(56, 189, 248, 0.15);
+  transform: translateY(-2px);
+}
+
+.pb-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.pb-card-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: #94A3B8;
+}
+
+.pb-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.4rem;
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--neon-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.pb-val-primary {
+  font-family: inherit;
+  font-size: clamp(1.6rem, 2.5vw, 2.1rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 0.35rem;
+}
+
+.pb-val-sub {
+  font-size: 0.85rem;
+  color: #94A3B8;
+}
+
+/* Card 3: 3-Layer Layout Widget for Lowest Time Consumption */
+.pb-widget-3layer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  margin-top: 0.35rem;
+}
+
+.pb-layer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.pb-layer-key {
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+.pb-layer-val {
+  font-weight: 700;
+  color: #FFFFFF;
+  font-family: monospace;
+}
+
+.pb-layer-val.highlight-time {
+  color: var(--neon-emerald);
+  font-size: 0.95rem;
+}
+
+/* Card 6: Neon Color-Coded Rank */
+.pb-rank-quantum {
+  color: #10B981 !important;
+  text-shadow: 0 0 15px rgba(16, 185, 129, 0.8), 0 0 25px rgba(16, 185, 129, 0.4);
+}
+
+/* ================= 5. STREAK RECORDS & CADENCE SUMMARY ================= */
+.streak-telemetry-strip {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-sizing: border-box;
+}
+
+.streak-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 850px) {
+  .streak-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .streak-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.streak-metric-box {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.smb-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94A3B8;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.smb-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+/* ================= 6. LAST 10 PERFORMANCES TRACKER TABLE ================= */
+.ledger-table-card {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-sizing: border-box;
+}
+
+.ledger-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.ledger-table th {
+  background: rgba(30, 41, 59, 0.6);
+  color: #94A3B8;
+  padding: 0.85rem 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ledger-table td {
+  padding: 0.95rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #E2E8F0;
+}
+
+.ledger-table tr:hover td {
+  background: rgba(30, 41, 59, 0.4);
+}
+
+.ledger-table .score-elo-tag {
+  font-family: monospace;
+  font-weight: 800;
+  color: #10B981;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.ledger-table .score-elo-tag.neutral {
+  color: #38BDF8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
