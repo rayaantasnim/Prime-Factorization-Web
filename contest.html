@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contest Hub — PrimeFactor.app Competitive Arena</title>
+  <meta name="description" content="Competitive Math Olympiad contest arena with Sudden Death Lightning Roll spin wheel, algorithmic High-ELO lockout filter, and live tournament routing." />
+  <meta property="og:title" content="Contest Hub — PrimeFactor.app Competitive Arena" />
+  <meta property="og:description" content="Competitive Math Olympiad contest arena with Sudden Death Lightning Roll spin wheel, algorithmic High-ELO lockout filter, and live tournament routing." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css" />
+
+  <style>
+    /* ================= CONTEST HUB EXCLUSIVE NEON ARCHITECTURE ================= */
+    .contest-hero-wrapper {
+      width: 100%;
+      max-width: 78rem;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: clamp(1rem, 3vw, 2rem) 1rem;
+    }
+
+    .contest-wheel-stage {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin: 1.5rem 0 3rem;
+    }
+
+    .wheel-container-frame {
+      position: relative;
+      width: min(92vw, 480px);
+      height: min(92vw, 480px);
+      border-radius: 50%;
+      background: radial-gradient(circle, #0f172a 40%, #020617 100%);
+      padding: 12px;
+      box-shadow: 
+        0 0 50px rgba(14, 165, 233, 0.25),
+        0 25px 60px -15px rgba(0, 0, 0, 0.8),
+        inset 0 0 25px rgba(14, 165, 233, 0.2);
+      border: 3px solid rgba(56, 189, 248, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    /* Floating Pointer Pin (Indicator) at 12 o'clock */
+    .wheel-pointer-pin {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+      width: 32px;
+      height: 42px;
+      filter: drop-shadow(0 0 12px #EF4444) drop-shadow(0 0 24px rgba(220, 38, 38, 0.85));
+      pointer-events: none;
+      transform-origin: 50% 10px;
+      transition: transform 0.08s ease-out;
+    }
+
+    .wheel-pointer-pin.pin-flick {
+      transform: translateX(-50%) rotate(-14deg) scale(1.08);
+    }
+
+    .wheel-pointer-pin svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Wheel Canvas */
+    #wheel-canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: block;
+      cursor: pointer;
+    }
+
+    /* Centered Activation Trigger Hub */
+    .wheel-center-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(110px, 26vw, 136px);
+      height: clamp(110px, 26vw, 136px);
+      border-radius: 50%;
+      background: radial-gradient(circle, #1e293b 0%, #090d16 100%);
+      border: 3px solid #38BDF8;
+      box-shadow: 
+        0 0 25px rgba(14, 165, 233, 0.6),
+        inset 0 0 15px rgba(14, 165, 233, 0.5);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      box-sizing: border-box;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .wheel-center-core:hover:not(:disabled) {
+      transform: translate(-50%, -50%) scale(1.06);
+      border-color: #00F0FF;
+      box-shadow: 
+        0 0 35px rgba(6, 182, 212, 0.85),
+        inset 0 0 22px rgba(6, 182, 212, 0.6);
+    }
+
+    .wheel-center-core:active:not(:disabled) {
+      transform: translate(-50%, -50%) scale(0.96);
+    }
+
+    .wheel-center-core:disabled {
+      opacity: 0.85;
+      cursor: not-allowed;
+      border-color: #64748B;
+      box-shadow: 0 0 15px rgba(100, 116, 139, 0.4);
+    }
+
+    .roll-btn-label {
+      font-family: var(--font-heading);
+      font-size: clamp(0.95rem, 2.5vw, 1.25rem);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+      line-height: 1.1;
+    }
+
+    .roll-btn-sub {
+      font-size: 0.68rem;
+      font-family: var(--font-body);
+      color: #38BDF8;
+      letter-spacing: 0.05em;
+      margin-top: 3px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* Navigation Junctions Grid */
+    .junctions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 72rem;
+      margin: 1.5rem auto 2.5rem;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 900px) {
+      .junctions-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+
+    .junction-card {
+      position: relative;
+      background: var(--card-dark-gradient);
+      border: 1px solid var(--card-dark-border);
+      border-radius: 1.25rem;
+      padding: 1.75rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.4);
+    }
+
+    .junction-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: rgba(14, 165, 233, 0.6) !important;
+      box-shadow: 0 20px 35px -10px rgba(6, 182, 212, 0.35), 0 0 20px rgba(2, 132, 199, 0.25);
+    }
+
+    .junction-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .junction-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #38BDF8;
+    }
+
+    .junction-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.12);
+      color: #38BDF8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .junction-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.02em;
+    }
+
+    .junction-desc {
+      font-size: 0.88rem;
+      color: #94A3B8;
+      line-height: 1.55;
+      margin-bottom: 1.25rem;
+    }
+
+    .junction-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-heading);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #38BDF8;
+      transition: color 0.2s ease;
+    }
+
+    .junction-card:hover .junction-action {
+      color: #00F0FF;
+    }
+
+    /* Live Roll Banner & Announcement */
+    .roll-status-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.6rem 1.25rem;
+      border-radius: 9999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #FFFFFF;
+      font-size: 0.9rem;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      margin-top: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .roll-status-banner.winner-glow {
+      border-color: #10B981;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10B981;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
+      animation: pulse-winner 1s infinite alternate;
+    }
+
+    @keyframes pulse-winner {
+      from { transform: scale(1); filter: brightness(1); }
+      to { transform: scale(1.03); filter: brightness(1.2); }
+    }
+
+    /* User ELO Rating pill */
+    .user-elo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.5rem 1.15rem;
+      border-radius: 9999px;
+      background: rgba(14, 165, 233, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      margin-bottom: 1.5rem;
+      font-size: 0.88rem;
+      color: #CBD5E1;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .user-elo-val {
+      font-family: var(--font-math);
+      font-weight: 800;
+      color: #38BDF8;
+      font-size: 1.1rem;
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
+  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Persistent Global Top Header with Dropdown Navigation & Engine Settings Gear Icon -->
+  <header class="fixed-header">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass with links) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./ranges.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Range Selections</span>
+            </div>
+            <span class="dropdown-badge">10 Tiers</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
+          </a>
+
+          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item" style="background: rgba(14, 165, 233, 0.15); border-left: 3px solid #38BDF8;">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+              </svg>
+              <span>Contest</span>
+            </div>
+            <span class="dropdown-badge" style="background: #0284C7; color: #FFFFFF;">Arena</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="#" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" id="dropdown-mobile-system" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Standalone Settings Gear Icon -->
+      <div class="header-actions">
+        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Settings Modal Slot -->
+  <div id="settings-modal-slot"></div>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper" style="flex: 1 0 auto; padding-top: 5.5rem; padding-bottom: 3.5rem;">
+    <div class="contest-hero-wrapper">
+      
+      <!-- Section Header -->
+      <div class="section-head" style="text-align: center; margin-bottom: 1rem;">
+        <span class="section-kicker">Olympiad Edge Tournament Circuit</span>
+        <h1 class="section-title">Contest Hub</h1>
+        <p class="section-desc" style="max-width: 44rem; margin: 0.5rem auto 0;">
+          Sudden Death Lightning Roll arena with real-time physics spin, algorithmic high-ELO lockout prevention, and official tournament routing.
+        </p>
+      </div>
+
+      <!-- User ELO Rating & Lockout Status Badge -->
+      <div class="user-elo-badge" id="user-elo-badge-node" style="background-color:black;">
+        <span>Competitor Rating: <span class="user-elo-val" id="competitor-elo-val">1200</span> ELO</span>
+        <span style="color: #64748B;">•</span>
+        <span id="elo-lockout-summary" style="color: #38BDF8; font-weight: 700;">9 / 9 Divisions Unlocked</span>
+        <button type="button" id="edit-elo-btn" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38BDF8; font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 4px; cursor: pointer; margin-left: 6px;">Adjust Rating</button>
+      </div>
+
+      <!-- Sudden Death Lightning Roll Real-Time Spin Wheel Stage -->
+      <div class="contest-wheel-stage">
+        <div class="wheel-container-frame" id="wheel-frame">
+          
+          <!-- Floating Pointer Pin (Indicator) at 12 o'clock -->
+          <div class="wheel-pointer-pin" id="wheel-pointer" aria-hidden="true">
+            <svg viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 42L0 12C0 5.37258 7.16344 0 16 0C24.8366 0 32 5.37258 32 12L16 42Z" fill="#DC2626"/>
+              <path d="M16 36L4 12C4 7 9.5 3 16 3C22.5 3 28 7 28 12L16 36Z" fill="#EF4444"/>
+              <circle cx="16" cy="11" r="4" fill="#FFFFFF"/>
+            </svg>
+          </div>
+
+          <!-- Circular Spin Wheel Canvas (9 Segments) -->
+          <canvas id="wheel-canvas" width="600" height="600"></canvas>
+
+          <!-- Centered Activation Trigger Hub ("ROLL ARENA") -->
+          <button type="button" class="wheel-center-core" id="roll-arena-btn" aria-label="Roll Arena Sudden Death Selector">
+            <span class="roll-btn-label">ROLL<br/>ARENA</span>
+            <span class="roll-btn-sub">Instant</span>
+          </button>
+        </div>
+
+        <!-- Real-Time Roll Status / Winner Banner -->
+        <div class="roll-status-banner" id="roll-status-banner">
+          <span id="roll-status-icon">⚡</span>
+          <span id="roll-status-text">Click "ROLL ARENA" to spin the Sudden Death selector wheel.</span>
+        </div>
+      </div>
+
+      <!-- Modular Navigation Junctions (3 Distinct Actions) -->
+      <div class="junctions-grid">
+        
+        <!-- Junction 1: Rated Contests -->
+        <a href="./ranges.html" class="junction-card" id="junction-rated">
+          <div>
+            <div class="junction-card-header">
+              <div class="junction-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                  <path d="M4 22h16"></path>
+                  <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                  <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                </svg>
+              </div>
+              <span class="junction-badge">Official ELO</span>
+            </div>
+            <h3 class="junction-title">Rated Contests</h3>
+            <p class="junction-desc">
+              Select directly from the 10 standardized competitive tiers ranging from Foundations (1-200) to the Olympian Cosmic Manifold.
+            </p>
+          </div>
+          <div class="junction-action">
+            <span>Explore 10 Tier Matrix</span>
+            <span>→</span>
+          </div>
+        </a>
+
+        <!-- Junction 2: Virtual Unrated Contests -->
+        <a href="./custom.html?unrated=true" class="junction-card" id="junction-unrated">
+          <div>
+            <div class="junction-card-header">
+              <div class="junction-icon-wrap" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #10B981;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <circle cx="12" cy="11" r="3"></circle>
+                </svg>
+              </div>
+              <span class="junction-badge" style="background: rgba(16, 185, 129, 0.12); color: #10B981; border-color: rgba(16, 185, 129, 0.3);">Practice Sandbox</span>
+            </div>
+            <h3 class="junction-title">Virtual Unrated Contests</h3>
+            <p class="junction-desc">
+              Practice under personalized duration bounds up to 180 minutes and zero rating penalty risk. Calibrate mental heuristics freely.
+            </p>
+          </div>
+          <div class="junction-action" style="color: #10B981;">
+            <span>Configure Practice Arena</span>
+            <span>→</span>
+          </div>
+        </a>
+
+        <!-- Junction 3: Previous Contests -->
+        <a href="./index.html#sec-ledger" class="junction-card" id="junction-previous">
+          <div>
+            <div class="junction-card-header">
+              <div class="junction-icon-wrap" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #F59E0B;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <span class="junction-badge" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B; border-color: rgba(245, 158, 11, 0.3);">Audit Records</span>
+            </div>
+            <h3 class="junction-title">Previous Contests</h3>
+            <p class="junction-desc">
+              Jump directly to your personal ledger matrix to audit historical trials, grandmaster flawless solves, and cumulative accuracy.
+            </p>
+          </div>
+          <div class="junction-action" style="color: #F59E0B;">
+            <span>View Historical Ledger</span>
+            <span>→</span>
+          </div>
+        </a>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Persistent Global Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="footer-line highlight">© Olympiad Edge</p>
+      <p class="footer-line">Authorized By Rayaan Tasnim</p>
+      <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/contest.js"></script>
+</body>
+</html>

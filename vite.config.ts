@@ -9,20 +9,21 @@ export default defineConfig(() => {
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(import.meta.dirname, '.'),
       },
     },
     build: {
       rollupOptions: {
         input: {
-          main: path.resolve(__dirname, 'index.html'),
-          ranges: path.resolve(__dirname, 'ranges.html'),
-          custom: path.resolve(__dirname, 'custom.html'),
-          edu: path.resolve(__dirname, 'edu.html'),
-          services: path.resolve(__dirname, 'services.html'),
-          contract: path.resolve(__dirname, 'contract.html'),
-          exam: path.resolve(__dirname, 'exam.html'),
-          result: path.resolve(__dirname, 'result.html'),
+          main: path.resolve(import.meta.dirname, 'index.html'),
+          ranges: path.resolve(import.meta.dirname, 'ranges.html'),
+          custom: path.resolve(import.meta.dirname, 'custom.html'),
+          edu: path.resolve(import.meta.dirname, 'edu.html'),
+          services: path.resolve(import.meta.dirname, 'services.html'),
+          contract: path.resolve(import.meta.dirname, 'contract.html'),
+          exam: path.resolve(import.meta.dirname, 'exam.html'),
+          result: path.resolve(import.meta.dirname, 'result.html'),
+          contest: path.resolve(import.meta.dirname, 'contest.html'),
         },
       },
     },

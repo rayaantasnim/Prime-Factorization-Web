@@ -16,25 +16,95 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css" />
 
+  <style>
+    .preset-badge-btn{
+      background-color: lightcoral !important;
+      color:white !important;
+      margin-bottom: 20px !important;
+    }
+
+    /* ================= SIDE-BY-SIDE RESPONSIVE GRID INJECTION ================= */
+    .custom-bounds-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px !important;
+      align-items: center !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+      overflow: visible !important;
+      margin-bottom: clamp(1.25rem, 3vh, 1.75rem) !important;
+    }
+
+    .custom-bound-card {
+      box-sizing: border-box !important;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      position: relative !important;
+      z-index: 1 !important;
+      overflow: visible !important;
+      margin: 0 !important;
+    }
+
+    @media (min-width: 768px) {
+      .custom-bounds-grid {
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 24px !important;
+        width: 100% !important;
+        max-width: 800px !important;
+        margin: 0 auto clamp(1.25rem, 3vh, 1.75rem) !important;
+      }
+
+      .custom-bound-card {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+      }
+    }
+
+    @keyframes pulse-aggressive {
+      0%, 100% {
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
+        border-color: rgba(239, 68, 68, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 25px rgba(239, 68, 68, 0.55);
+        border-color: rgba(239, 68, 68, 0.9);
+      }
+    }
+
+    @keyframes pulse-slack {
+      0%, 100% {
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+        border-color: rgba(245, 158, 11, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 25px rgba(245, 158, 11, 0.55);
+        border-color: rgba(245, 158, 11, 0.9);
+      }
+    }
+  </style>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
-<body class="hide-settings-gear" style="min-height: 100vh; display: flex; flex-direction: column;">
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
   <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
   <div id="flash-overlay" aria-hidden="true"></div>
 
-  <!-- 1. TOP PANEL HEADER: Persistent top header panel matching 'PrimeFactor.app' style with glass background overlay.
-       Left side displays the brand logo and name 'Prime Factor.app'.
-       Right side features the hamburger dropdown toggle navigation menu.
-       The settings gear icon is strictly hidden on this setup screen. -->
+  <!-- Persistent Global Top Header with Dropdown Navigation & Engine Settings Gear Icon -->
   <header class="fixed-header">
-    <div class="header-container" style="justify-content: space-between;">
+    <div class="header-container">
       <!-- Left: Minimalist Logo + Brand Text -->
       <a href="./index.html" class="brand-lockup">
         <span class="brand-symbol">Π</span>
         <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
       </a>
 
-      <!-- Right: Hamburger Dropdown Toggle Navigation Menu -->
+      <!-- Center: Hamburger Dropdown Toggle Navigation Menu -->
       <div style="position: relative;">
         <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
           <div class="hamburger-bars">
@@ -95,18 +165,31 @@
             <span class="dropdown-badge">Facilities</span>
           </a>
 
-          <a href="./exam.html?min=1&max=200&title=Standard%20Exam" id="dropdown-random-exam" class="dropdown-link-item">
+          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
             <div class="dropdown-link-content">
               <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="16 3 21 3 21 8"></polyline>
-                <line x1="4" y1="20" x2="21" y2="3"></line>
-                <polyline points="21 16 21 21 16 21"></polyline>
-                <line x1="15" y1="15" x2="21" y2="21"></line>
-                <line x1="4" y1="4" x2="9" y2="9"></line>
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
               </svg>
-              <span>Random Exam</span>
+              <span>Contest</span>
             </div>
-            <span class="dropdown-badge">Instant</span>
+            <span class="dropdown-badge">Arena</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
           </a>
 
           <!-- Mobile-only System link -->
@@ -122,14 +205,23 @@
           </a>
         </nav>
       </div>
+
+      <!-- Right: Standalone Settings Gear Icon -->
+      <div class="header-actions">
+        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 
   <!-- Global Settings Modal Slot -->
   <div id="settings-modal-slot"></div>
 
-  <main class="main-wrapper" style="flex: 1 0 auto; padding-top: 6rem; padding-bottom: 3.5rem;">
-    <div class="content-container custom-setup-wrapper">
+  <main class="main-wrapper" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; min-height: calc(100vh - var(--header-height, 4.25rem)); padding-top: 5.5rem; padding-bottom: 3.5rem; width: 100%;">
+    <div class="content-container custom-setup-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 58rem; margin: 0 auto;">
       
       <!-- Section Header -->
       <div class="section-head" style="margin-bottom: 2rem;">
@@ -140,14 +232,40 @@
         </p>
       </div>
 
+      <!-- Participation Selector Radio Matrix: ⚪ Rated Contest vs ⚪ Unrated Practice -->
+      <div class="custom-participation-card" style="position: relative; background: var(--card-dark-gradient); border: 1px solid var(--card-dark-border); border-radius: 1.25rem; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; width: 100%; box-sizing: border-box; overflow: hidden;">
+        <div style="position: relative; z-index: 1;">
+          <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700; margin-bottom: 0.65rem;">
+            Participation Mode Configuration
+          </div>
+          <div class="participation-radio-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 1rem;">
+            <label id="label-mode-rated" class="participation-mode-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.15rem; border-radius: 0.75rem; background: rgba(14, 165, 233, 0.12); border: 1.5px solid #0EA5E9; cursor: pointer; transition: all 0.25s ease;">
+              <input type="radio" name="participationMode" id="radio-mode-rated" value="rated" checked style="accent-color: #0EA5E9; width: 18px; height: 18px; cursor: pointer;" />
+              <div style="display: flex; flex-direction: column;">
+                <span style="font-weight: 800; font-size: 0.95rem; color: #FFFFFF; letter-spacing: 0.02em;">⚪ Rated Contest</span>
+                <span style="font-size: 0.75rem; color: #94A3B8;">Official ELO rating gains and leaderboard updates active</span>
+              </div>
+            </label>
+
+            <label id="label-mode-unrated" class="participation-mode-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.15rem; border-radius: 0.75rem; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.12); cursor: pointer; transition: all 0.25s ease;">
+              <input type="radio" name="participationMode" id="radio-mode-unrated" value="unrated" style="accent-color: #10B981; width: 18px; height: 18px; cursor: pointer;" />
+              <div style="display: flex; flex-direction: column;">
+                <span style="font-weight: 800; font-size: 0.95rem; color: #FFFFFF; letter-spacing: 0.02em;">⚪ Unrated Practice</span>
+                <span style="font-size: 0.75rem; color: #94A3B8;">Zero ELO penalty risk · Sandbox heuristics testing</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
       <!-- Quick Presets Strip -->
       <div class="custom-presets-strip">
         <div class="section-bg-image-wrap">
           <img class="section-bg-image" src="https://images.pexels.com/photos/3747474/pexels-photo-3747474.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Algebraic matrix coordinate grid" loading="lazy" />
           <div class="section-bg-overlay"></div>
         </div>
-        <div style="position: relative; z-index: 1;">
-          <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; display: block; margin-bottom: 0.5rem; font-weight: 700;">
+        <div style="position: relative; z-index: 1; background-color: #0284C7; padding: 20px !important; padding-bottom: 0px !important; margin-bottom: 5px !important;">
+          <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: black; display: block; margin-bottom: 0.5rem; font-weight: 700;">
             Quick Bounds Presets
           </label>
           <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
@@ -206,8 +324,8 @@
         </div>
       </div>
 
-      <!-- Interactive Time Limit Selection (3 to 60 Minutes) -->
-      <div class="custom-time-card" style="position: relative; background: var(--card-dark-gradient); border: 1px solid var(--card-dark-border); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 1.5rem; overflow: hidden;">
+      <!-- Interactive Time Limit Selection (3 to 180 Minutes) -->
+      <div class="custom-time-card" style="position: relative; background: var(--card-dark-gradient); border: 1px solid var(--card-dark-border); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 1.5rem; overflow: hidden; width: 100%; box-sizing: border-box;">
         <div class="section-bg-image-wrap">
           <img class="section-bg-image" src="https://images.pexels.com/photos/2832382/pexels-photo-2832382.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Chronometer timer speed dynamics" loading="lazy" />
           <div class="section-bg-overlay"></div>
@@ -215,14 +333,14 @@
         <div style="position: relative; z-index: 1;">
           <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
             <label for="custom-time-slider" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700;">
-              SESSION TIME LIMIT (3 – 60 MINUTES):
+              SESSION TIME LIMIT (3 – 180 MINUTES):
             </label>
             <div style="font-family: var(--font-math); font-size: 1.6rem; font-weight: 800; color: #FFFFFF;">
               <span id="custom-time-val" style="color: #38BDF8;">10</span> <span style="font-size: 0.95rem; color: #94A3B8;">min (<span id="custom-time-sec">600</span>s)</span>
             </div>
           </div>
           <p style="font-size: 0.85rem; color: #CBD5E1; margin-bottom: 1rem;">
-            Set your duration constraint for the 10-question sequence. Minimum allowance of 3 minutes (180s), Maximum allowance of 60 minutes (3,600s).
+            Set your duration constraint for the question sequence. Minimum allowance of 3 minutes (180s), Maximum allowance of 180 minutes (10,800s / 3 hours).
           </p>
           <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
             <span style="font-family: var(--font-math); font-size: 0.85rem; font-weight: 700; color: #94A3B8;">3m</span>
@@ -230,13 +348,13 @@
               id="custom-time-slider" 
               type="range" 
               min="3" 
-              max="60" 
+              max="180" 
               value="10" 
               step="1" 
               style="flex: 1; height: 8px; accent-color: #0EA5E9; cursor: pointer; border-radius: 4px;"
               aria-label="Session Duration Constraint"
             />
-            <span style="font-family: var(--font-math); font-size: 0.85rem; font-weight: 700; color: #94A3B8;">60m</span>
+            <span style="font-family: var(--font-math); font-size: 0.85rem; font-weight: 700; color: #94A3B8;">180m</span>
           </div>
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button type="button" class="btn-secondary time-preset-btn" data-time="3" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">3 min (Sprint)</button>
@@ -245,6 +363,48 @@
             <button type="button" class="btn-secondary time-preset-btn" data-time="20" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">20 min (Senior)</button>
             <button type="button" class="btn-secondary time-preset-btn" data-time="45" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">45 min (Elite)</button>
             <button type="button" class="btn-secondary time-preset-btn" data-time="60" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">60 min (Cosmic)</button>
+            <button type="button" class="btn-secondary time-preset-btn" data-time="180" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">180 min (3 Hours)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions Quantity Selector Card (10 to 50 Questions) -->
+      <div class="custom-quantity-card" style="position: relative; background: var(--card-dark-gradient); border: 1px solid var(--card-dark-border); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 1.5rem; overflow: hidden; width: 100%; box-sizing: border-box;">
+        <div class="section-bg-image-wrap">
+          <img class="section-bg-image" src="https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Mathematical quantum particle array" loading="lazy" />
+          <div class="section-bg-overlay"></div>
+        </div>
+        <div style="position: relative; z-index: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+            <label for="custom-quantity-slider" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700;">
+              Questions Quantity
+            </label>
+            <div style="font-family: var(--font-math); font-size: 1.6rem; font-weight: 800; color: #FFFFFF;">
+              <span id="custom-quantity-val" style="color: #38BDF8;">10</span> <span style="font-size: 0.95rem; color: #94A3B8;">questions</span>
+            </div>
+          </div>
+          <p style="font-size: 0.85rem; color: #CBD5E1; margin-bottom: 1rem;">
+            Calibrate sequence volume for this customized arena run. Functional sliding scope from 10 to 50 questions.
+          </p>
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+            <span style="font-family: var(--font-math); font-size: 0.85rem; font-weight: 700; color: #94A3B8;">10</span>
+            <input 
+              id="custom-quantity-slider" 
+              type="range" 
+              min="10" 
+              max="50" 
+              value="10" 
+              step="1" 
+              style="flex: 1; height: 8px; accent-color: #0EA5E9; cursor: pointer; border-radius: 4px;"
+              aria-label="Questions Quantity"
+            />
+            <span style="font-family: var(--font-math); font-size: 0.85rem; font-weight: 700; color: #94A3B8;">50</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="btn-secondary quantity-preset-btn" data-quantity="10" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">10 Questions (Default)</button>
+            <button type="button" class="btn-secondary quantity-preset-btn" data-quantity="20" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">20 Questions (Extended)</button>
+            <button type="button" class="btn-secondary quantity-preset-btn" data-quantity="30" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">30 Questions (Endurance)</button>
+            <button type="button" class="btn-secondary quantity-preset-btn" data-quantity="50" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700;">50 Questions (Gauntlet)</button>
           </div>
         </div>
       </div>
@@ -337,8 +497,28 @@
               <span class="custom-slider-gradient"></span>
             </label>
           </div>
+
+          <!-- Toggle 6: Track Browser Focus & Tab Switches -->
+          <div class="custom-toggle-row" id="focus-tracking-toggle-row">
+            <div class="custom-toggle-info">
+              <label for="custom-toggle-focus" class="custom-toggle-label">
+                Track Browser Focus &amp; Tab Switches
+              </label>
+              <span class="custom-toggle-desc">Enforces anti-cheat containment. Focus lost or tab switch inflicts -5 raw points.</span>
+              <div id="focus-tracking-caution-msg" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.6); padding: 0.5rem 0.85rem; border-radius: 0.5rem; color: #EF4444; font-size: 0.825rem; font-weight: 700; margin-top: 0.5rem; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6); box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); line-height: 1.4;">
+                ⚠️ Focus Tracking Off: Disabling target tracking inflicts an immediate -10 Points Penalty upon launching this arena.
+              </div>
+            </div>
+            <label class="custom-switch" aria-label="Track Browser Focus & Tab Switches">
+              <input type="checkbox" id="custom-toggle-focus" checked>
+              <span class="custom-slider-gradient"></span>
+            </label>
+          </div>
         </div>
       </div>
+
+      <!-- Non-Breaking Warning Container -->
+      <div id="custom-warning-container" style="display: flex; flex-wrap: nowrap; gap: 8px; font-size: clamp(11px, 2vw, 14px); align-items: center; justify-content: center; width: 100%; min-height: 2.25rem; margin-bottom: 1.25rem; white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; box-sizing: border-box; text-align: center;"></div>
 
       <!-- 4. "ENTER ARENA" ACTION BUTTON:
            Prominent, beautiful linear-gradient capsule button at the base labeled "Launch Custom Arena".

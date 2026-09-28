@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Candidate Academic Profile &amp; Telemetry — PrimeFactor.app</title>
+  <meta name="description" content="Personal best prime factorization milestones, verified Olympiad solve speeds, cadence audit, and competitive contest performance ledger." />
+  <meta property="og:title" content="Candidate Academic Profile &amp; Telemetry — PrimeFactor.app" />
+  <meta property="og:description" content="Personal best prime factorization milestones, verified Olympiad solve speeds, and competitive contest performance ledger." />
+  <meta property="og:type" content="website" />
+  <meta property="author" content="Rayaan Tasnim" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./css/profile.css" />
+
+  <!-- GSAP Animation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body class="profile-view">
+
+  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Persistent Global Top Header with Dropdown Navigation (Cloned perfectly from index.html) -->
+  <header class="fixed-header">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass with 5 links + mobile System link) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./ranges.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Range Selections</span>
+            </div>
+            <span class="dropdown-badge">10 Tiers</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
+          </a>
+
+          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+              </svg>
+              <span>Contest</span>
+            </div>
+            <span class="dropdown-badge">Arena</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="./profile-settings.html" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="./profile-settings.html" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Standalone Settings Gear Icon (Redirects on profile.html to profile-settings.html) -->
+      <div class="header-actions">
+        <button id="settings-toggle-btn" class="icon-btn" aria-label="Profile Engine Settings Redirection">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 1. Floating Left-Corner Option Button: "Profile Command Matrix" -->
+  <button id="profile-matrix-trigger" class="profile-matrix-trigger" aria-label="Open Profile Command Matrix">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"></rect>
+      <rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect>
+      <rect x="3" y="14" width="7" height="7"></rect>
+    </svg>
+    <span>Profile Command Matrix</span>
+  </button>
+
+  <!-- Full-Screen Blurred Glass-Morphism Backdrop Layer Overlay -->
+  <div id="profile-matrix-overlay" class="profile-matrix-overlay" role="dialog" aria-modal="true" aria-label="Profile Command Matrix Overlay">
+    <div class="matrix-overlay-container">
+      <div class="matrix-overlay-header">
+        <div class="matrix-overlay-title-group">
+          <h3>Profile Command Matrix</h3>
+          <p>Strategic topology grid across 7 core Olympiad system portals</p>
+        </div>
+        <button id="close-matrix-overlay-btn" class="matrix-overlay-close-btn" aria-label="Close Command Matrix">✕</button>
+      </div>
+
+      <!-- Responsive Topology Grid (Symmetrical 2 Columns on Desktop/Tablet, Single Column on Mobile) -->
+      <div class="matrix-topology-grid">
+        <!-- Portal 1 -->
+        <a href="#sec-profile-overview" class="matrix-routing-card" data-matrix-nav="true">
+          <span class="routing-card-index">01</span>
+          <div class="routing-card-body">
+            <h4>Profile Overview</h4>
+            <p>Candidate credentials, academic badges, token authentication &amp; primary ELO division.</p>
+          </div>
+        </a>
+
+        <!-- Portal 2 -->
+        <a href="#sec-records" class="matrix-routing-card" data-matrix-nav="true">
+          <span class="routing-card-index">02</span>
+          <div class="routing-card-body">
+            <h4>Records</h4>
+            <p>Lifetime active streaks, peak streaks, slump indices, and first-attempt consistency.</p>
+          </div>
+        </a>
+
+        <!-- Portal 3 -->
+        <a href="#sec-last-performances" class="matrix-routing-card" data-matrix-nav="true">
+          <span class="routing-card-index">03</span>
+          <div class="routing-card-body">
+            <h4>Last Performances</h4>
+            <p>10-match telemetry audit ledger detailing accuracy, solve duration, and net score track.</p>
+          </div>
+        </a>
+
+        <!-- Portal 4 -->
+        <a href="#sec-telemetry-speed" class="matrix-routing-card" data-matrix-nav="true">
+          <span class="routing-card-index">04</span>
+          <div class="routing-card-body">
+            <h4>Telemetry &amp; Speed</h4>
+            <p>Sub-second Pollard's Rho verification latencies and average factorization velocity metrics.</p>
+          </div>
+        </a>
+
+        <!-- Portal 5 -->
+        <a href="#sec-medals-vault" class="matrix-routing-card" data-matrix-nav="true">
+          <span class="routing-card-index">05</span>
+          <div class="routing-card-body">
+            <h4>Medals Vault</h4>
+            <p>Verified Math Olympiad accolades, Quantum Decomposer tier insignias &amp; arena certificates.</p>
+          </div>
+        </a>
+
+        <!-- Portal 6 -->
+        <a href="./profile-settings.html" class="matrix-routing-card">
+          <span class="routing-card-index">06</span>
+          <div class="routing-card-body">
+            <h4>Profile System Settings</h4>
+            <p>Direct asset portal link for contestant handle configuration, sound chimes &amp; privacy controls.</p>
+          </div>
+        </a>
+
+        <!-- Portal 7 -->
+        <div id="matrix-portal-diagnostics" class="matrix-routing-card" role="button" tabindex="0">
+          <span class="routing-card-index">07</span>
+          <div class="routing-card-body">
+            <h4>Data Diagnostics Backup</h4>
+            <p>Export authenticated JSON state backup of client-side ledger and local performance audit caches.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Profile Page Wrapper -->
+  <main class="profile-content-container">
+    
+    <!-- Profile Identity Hero Card -->
+    <section id="sec-profile-overview" class="profile-identity-card">
+      <div class="identity-main-group">
+        <div class="identity-avatar-hex">
+          <span>Π</span>
+        </div>
+        <div class="identity-meta">
+          <h1>
+            <span id="profile-display-name">Rayaan Tasnim</span>
+            <span class="identity-token-badge">OLY-PF-746525000545</span>
+          </h1>
+          <div class="identity-sub-details">
+            <span class="identity-rank-tag">🏆 Quantum Decomposer</span>
+            <span>•</span>
+            <span id="profile-elo-tag" style="color: #38BDF8; font-weight: 700;">1000 ELO (Base Track)</span>
+            <span>•</span>
+            <span style="color: #94A3B8;">Division: Tier 1 (1 - 200)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Precision Clipboard Button 1 [Copy Academic Profile] -->
+      <button id="btn-copy-academic-profile" class="btn-clipboard-neon" aria-label="Copy Academic Profile Credentials">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span>Copy Academic Profile</span>
+      </button>
+    </section>
+
+    <!-- 2. Historical PB Milestones (6 Cards) -->
+    <section id="sec-records">
+      <div class="section-banner-head">
+        <div class="section-banner-title">
+          <span>⭐</span> Historical Personal Best (PB) Milestones
+        </div>
+        <!-- Precision Clipboard Button 3 [Copy Lifetime Milestones] -->
+        <button id="btn-copy-milestones" class="btn-clipboard-neon" aria-label="Copy Lifetime PB Milestones">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy Lifetime Milestones</span>
+        </button>
+      </div>
+
+      <div class="pb-milestone-grid">
+        <!-- Card 1: Highest Tier Performed -->
+        <div class="pb-card">
+          <div class="pb-card-top">
+            <span class="pb-card-label">Tier Horizon</span>
+            <span class="pb-badge">Active</span>
+          </div>
+          <div>
+            <div id="pb-highest-tier" class="pb-val-primary">Tier 1: 1 - 200</div>
+            <div class="pb-val-sub">Highest Competition Tier Performed</div>
+          </div>
+        </div>
+
+        <!-- Card 2: Highest Speed Tracked -->
+        <div class="pb-card">
+          <div class="pb-card-top">
+            <span class="pb-card-label">Factor Velocity</span>
+            <span class="pb-badge" style="color: #34D399; border-color: rgba(52, 211, 153, 0.4); background: rgba(16, 185, 129, 0.15);">Sub-Second</span>
+          </div>
+          <div>
+            <div id="pb-highest-speed" class="pb-val-primary tabular-nums">0.038 ms</div>
+            <div class="pb-val-sub">Average solve speed velocity per factor</div>
+          </div>
+        </div>
+
+        <!-- Card 3: [3-Layer Layout Widget] Lowest Time Consumption -->
+        <div class="pb-card" style="grid-row: span 1;">
+          <div class="pb-card-top">
+            <span class="pb-card-label">Lowest Time Consumption</span>
+            <span class="pb-badge">3-Layer Audit</span>
+          </div>
+          <!-- 3 distinct rows -->
+          <div class="pb-widget-3layer">
+            <div class="pb-layer-row">
+              <span class="pb-layer-key">Date of Performance:</span>
+              <span id="pb-widget-date" class="pb-layer-val">Sep 28, 2026</span>
+            </div>
+            <div class="pb-layer-row">
+              <span class="pb-layer-key">Total Time Expended:</span>
+              <span id="pb-widget-time" class="pb-layer-val highlight-time tabular-nums">24.6s Elapsed</span>
+            </div>
+            <div class="pb-layer-row">
+              <span class="pb-layer-key">Tier Title Achieved:</span>
+              <span id="pb-widget-tier" class="pb-layer-val">Tier 1: 1 - 200 Division</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Maximum Rating Achieved -->
+        <div class="pb-card">
+          <div class="pb-card-top">
+            <span class="pb-card-label">ELO Scale Rating</span>
+            <span class="pb-badge">Olympiad Metric</span>
+          </div>
+          <div>
+            <div id="pb-max-rating" class="pb-val-primary tabular-nums">1,000 ELO</div>
+            <div class="pb-val-sub">Maximum Rating Achieved (Base Track)</div>
+          </div>
+        </div>
+
+        <!-- Card 5: Maximum Streak Tracked -->
+        <div class="pb-card">
+          <div class="pb-card-top">
+            <span class="pb-card-label">Streak Record</span>
+            <span class="pb-badge" style="color: #F59E0B; border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.15);">Consistency</span>
+          </div>
+          <div>
+            <div id="pb-max-streak" class="pb-val-primary tabular-nums">12 Matches</div>
+            <div class="pb-val-sub">Maximum Streak Tracked (Zero Failure Rate)</div>
+          </div>
+        </div>
+
+        <!-- Card 6: Maximum Rank Achieved (Neon color-coded framework mapping) -->
+        <div class="pb-card" style="border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 16px rgba(16, 185, 129, 0.12);">
+          <div class="pb-card-top">
+            <span class="pb-card-label">Verdict Tier</span>
+            <span class="pb-badge" style="color: #10B981; border-color: #10B981; background: rgba(16, 185, 129, 0.2);">Mastery</span>
+          </div>
+          <div>
+            <div id="pb-max-rank" class="pb-val-primary pb-rank-quantum">Quantum Decomposer</div>
+            <div class="pb-val-sub">Maximum Rank Achieved (Neon Framework)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Streak Telemetry & Cadence Stability -->
+    <section class="streak-telemetry-strip">
+      <div class="section-banner-head">
+        <div class="section-banner-title" style="font-size: 1.15rem;">
+          <span>🔥</span> Cadence Stability &amp; Streak Telemetry
+        </div>
+        <!-- Precision Clipboard Button 2 [Copy Streak Records] -->
+        <button id="btn-copy-streak-records" class="btn-clipboard-neon" aria-label="Copy Streak Records">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy Streak Records</span>
+        </button>
+      </div>
+
+      <div class="streak-metrics-grid">
+        <div class="streak-metric-box">
+          <div class="smb-label">Active Streak</div>
+          <div id="streak-active-val" class="smb-val tabular-nums" style="color: #38BDF8;">3 Matches</div>
+        </div>
+        <div class="streak-metric-box">
+          <div class="smb-label">Lifetime Peak Streak</div>
+          <div id="streak-peak-val" class="smb-val tabular-nums" style="color: #F59E0B;">12 Clears</div>
+        </div>
+        <div class="streak-metric-box">
+          <div class="smb-label">Slump Index</div>
+          <div id="streak-slump-val" class="smb-val tabular-nums" style="color: #34D399;">0.00%</div>
+        </div>
+        <div class="streak-metric-box">
+          <div class="smb-label">Lifetime Cleared Composites</div>
+          <div id="streak-composites-val" class="smb-val tabular-nums" style="color: #FFFFFF;">140 Solved</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Last 10 Performances Tracker Table Matrix -->
+    <section id="sec-last-performances" class="ledger-table-card">
+      <div class="section-banner-head">
+        <div class="section-banner-title">
+          <span>📊</span> Last 10 Performances Tracker
+        </div>
+        <!-- Precision Clipboard Button 4 [Copy Last 10 Contests Ledger] -->
+        <button id="btn-copy-contests-ledger" class="btn-clipboard-neon" aria-label="Copy Last 10 Contests Ledger">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy Last 10 Contests Ledger</span>
+        </button>
+      </div>
+
+      <div class="ledger-table-wrap">
+        <table class="ledger-table" aria-label="Last 10 Matches Registry">
+          <thead>
+            <tr>
+              <th>Tier / Mode</th>
+              <th>Accuracy %</th>
+              <th>Time Expended</th>
+              <th>Net Score</th>
+              <th>Local Date / Timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="last-10-tbody">
+            <!-- Dynamically populated by js/profile.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Ancillary Section Anchors for Topology Navigation Map -->
+    <div id="sec-telemetry-speed" style="height: 1px; visibility: hidden;"></div>
+    <div id="sec-medals-vault" style="height: 1px; visibility: hidden;"></div>
+    <div id="sec-diagnostics" style="height: 1px; visibility: hidden;"></div>
+
+  </main>
+
+  <!-- Persistent Baseline Footer Matrix (Cloned perfectly from index.html) -->
+  <div id="site-footer-slot">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">© Olympiad Edge</p>
+        <p class="footer-line">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Standard Navbar Dropdown Toggle Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
+      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
+      
+      if (menuToggle && dropdownMenu) {
+        menuToggle._hasToggleListener = true;
+        menuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('active');
+          const isExpanded = dropdownMenu.classList.contains('active');
+          menuToggle.setAttribute('aria-expanded', isExpanded);
+        });
+        
+        document.addEventListener('click', (e) => {
+          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+            dropdownMenu.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    });
+  </script>
+
+  <!-- Dedicated Profile Controller Layer -->
+  <script type="module" src="./js/profile.js"></script>
+</body>
+</html>
