@@ -4,6 +4,10 @@
 
 import { getSettings, updateSettings, setActiveExamParams } from './storage.js';
 import { playSound } from './audio.js';
+import { initServerlessOnboarding } from './elo-engine.js';
+
+// Immediate Root Initialization Hook (within 1ms of module evaluation)
+initServerlessOnboarding();
 
 // GSAP Full-Page Interaction Flushes
 export function triggerFlash(type) {
@@ -130,6 +134,17 @@ export function initGlobalHeader(options = {}) {
                 <span class="dropdown-badge">Arena</span>
               </a>
 
+              <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
+                <div class="dropdown-link-content">
+                  <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <span>Profile</span>
+                </div>
+                <span class="dropdown-badge">Overview</span>
+              </a>
+
               <!-- Mobile-only System link -->
               <a href="#" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" id="dropdown-mobile-system" aria-label="System Configuration">
                 <div class="dropdown-link-content">
@@ -229,6 +244,17 @@ export function initGlobalHeader(options = {}) {
                   <span>Contest</span>
                 </div>
                 <span class="dropdown-badge">Arena</span>
+              </a>
+
+              <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
+                <div class="dropdown-link-content">
+                  <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <span>Profile</span>
+                </div>
+                <span class="dropdown-badge">Overview</span>
               </a>
 
               <!-- Desktop Settings Link -->
@@ -439,7 +465,17 @@ export function initSettingsModal() {
   }
 
   if (triggerBtn) {
-    triggerBtn.addEventListener('click', openModal);
+    triggerBtn.addEventListener('click', (e) => {
+      const isProfilePage = window.location.pathname.endsWith('profile.html') || window.location.pathname.includes('/profile.html');
+      if (isProfilePage) {
+        e.preventDefault();
+        e.stopPropagation();
+        playSound('click');
+        window.location.href = './profile-settings.html';
+        return;
+      }
+      openModal();
+    });
   }
   if (closeBtn) {
     closeBtn.addEventListener('click', closeModal);

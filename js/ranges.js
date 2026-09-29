@@ -6,6 +6,7 @@
 import { initGlobalHeader, renderFooter } from './header.js';
 import { setActiveExamParams, getSettings } from './storage.js';
 import { playSound } from './audio.js';
+import { getUserElo, isRangeBannedForElo, getTierByElo } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initGlobalHeader();
@@ -15,8 +16,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initTiltCards() {
   const cards = document.querySelectorAll('.range-tilt-card');
+  const userElo = getUserElo();
+  const userTier = getTierByElo(userElo);
 
   cards.forEach(card => {
+    const maxVal = Number(card.getAttribute('data-max'));
+    if (maxVal && isRangeBannedForElo(userElo, maxVal)) {
+      card.setAttribute('data-forced-unrated', 'true');
+      const badge = document.createElement('div');
+      badge.className = 'range-firewall-badge';
+      badge.innerHTML = `🛡️ Practice Mode · ELO Ceiling (${userTier.title})`;
+      badge.style.cssText = 'background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #F59E0B; font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 4px; margin-top: 0.65rem; display: inline-block;';
+      card.appendChild(badge);
+    }
+
     // Parallax 3D tilt tracking with GSAP
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
@@ -71,15 +84,22 @@ function initTiltCards() {
       const time = Number(card.getAttribute('data-time')) || 180;
       const label = card.getAttribute('data-label') || `${min} - ${max}`;
 
+      const isForcedUnrated = card.getAttribute('data-forced-unrated') === 'true' || isRangeBannedForElo(userElo, max);
+      const participationMode = isForcedUnrated ? 'unrated' : 'rated';
+
       setActiveExamParams({
         min,
         max,
         title: label,
         timeLimit: time,
-        rules: getSettings()
+        rules: {
+          ...getSettings(),
+          participationMode,
+          isForcedUnrated
+        }
       });
 
-      const targetUrl = `./contract.html?min=${min}&max=${max}&title=${encodeURIComponent(label)}&time=${time}`;
+      const targetUrl = `./contract.html?min=${min}&max=${max}&title=${encodeURIComponent(label)}&time=${time}&mode=${participationMode}${isForcedUnrated ? '&forcedUnrated=true' : ''}`;
 
       if (window.gsap) {
         window.gsap.to(card, {

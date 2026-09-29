@@ -109,6 +109,17 @@
             <span class="dropdown-badge">Arena</span>
           </a>
 
+          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Profile</span>
+            </div>
+            <span class="dropdown-badge">Overview</span>
+          </a>
+
           <!-- Desktop Settings Link -->
           <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
             <div class="dropdown-link-content">
@@ -179,6 +190,7 @@
           <div class="section-bg-overlay"></div>
         </div>
         <div style="position: relative; z-index: 1;">
+          <div id="firewall-advisory-banner" style="display: none; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.5); border-radius: 0.75rem; padding: 0.85rem 1.25rem; margin-bottom: 1.25rem; color: #FDE68A; font-size: 0.88rem; line-height: 1.5;"></div>
           <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
             <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700;">
               Deployment Specification
@@ -212,8 +224,48 @@
         </div>
       </div>
 
+      <!-- Asymmetric Mode Selector: Rated Contest vs Unrated Practice -->
+      <div class="contract-card mode-selector-card" id="mode-selector-block" style="margin-bottom: 1.5rem; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 1rem; padding: 1.25rem 1.5rem; backdrop-filter: blur(8px);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700;">Contest Mode Selection</span>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #FFFFFF; margin: 0.25rem 0 0 0;">Evaluation Authority &amp; Volatility</h3>
+          </div>
+          <div class="radio-mode-group" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(2, 6, 23, 0.7); padding: 0.4rem 0.6rem; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <label id="label-mode-rated" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.35rem 0.75rem; border-radius: 0.5rem; transition: all 0.2s ease;">
+              <input type="radio" name="participationModeRadio" id="radio-mode-rated" value="rated" checked style="accent-color: #0284C7; cursor: pointer;" />
+              <span id="text-mode-rated" style="font-weight: 700; font-size: 0.9rem; color: #FFFFFF;">⚪ Rated Contest</span>
+            </label>
+            <label id="label-mode-unrated" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.35rem 0.75rem; border-radius: 0.5rem; transition: all 0.2s ease;">
+              <input type="radio" name="participationModeRadio" id="radio-mode-unrated" value="unrated" style="accent-color: #10B981; cursor: pointer;" />
+              <span id="text-mode-unrated" style="font-weight: 700; font-size: 0.9rem; color: #94A3B8;">⚪ Unrated Practice</span>
+            </label>
+          </div>
+        </div>
+        <!-- Forced Unrated Notice Badge (Flashes when high-ELO user attempts to select Rated on locked range) -->
+        <div id="forced-unrated-badge" style="display: none; margin-top: 0.85rem; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 0.5rem; padding: 0.65rem 1rem; font-size: 0.84rem; color: #FCA5A5; align-items: center; gap: 0.6rem; transition: all 0.3s ease;">
+          <span style="font-size: 1.1rem;">🚫</span>
+          <span id="forced-unrated-badge-text"><strong>CAPABILITY CEILING LOCKOUT:</strong> Rated Contest is disabled for this range because your active ELO exceeds the maximum allowed ceiling. Running in forced Unrated Practice mode.</span>
+        </div>
+      </div>
+
+      <!-- Relaxed Glowing Deep Jade Banner (Displayed when Unrated Practice is active) -->
+      <div id="unrated-jade-banner" style="display: none; background: linear-gradient(135deg, rgba(6, 78, 59, 0.45) 0%, rgba(5, 150, 105, 0.25) 100%); border: 1px solid #10B981; box-shadow: 0 0 30px rgba(16, 185, 129, 0.35), inset 0 0 20px rgba(16, 185, 129, 0.18); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem; color: #A7F3D0; transition: all 0.4s ease;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="width: 46px; height: 46px; border-radius: 12px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.45); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0;">
+            🛡️
+          </div>
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: #34D399; margin: 0; letter-spacing: 0.02em;">Unrated Practice Arena — Zero Volatility Active</h3>
+            <p style="font-size: 0.9rem; color: #D1FAE5; margin: 0.35rem 0 0 0; line-height: 1.5;">
+              ELO volatility is disabled. System expectation quotas, velocity penalties, and rating updates are deactivated. Hone heuristic factoring intuition freely in sandbox isolation (Delta ELO = 0).
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- Brand-New Asset Block: System Expectations Division -->
-      <div class="contract-card expectations-division-card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(10, 15, 30, 0.98) 100%); border: 1px solid rgba(56, 189, 248, 0.35); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(14, 165, 233, 0.12); position: relative; overflow: hidden;">
+      <div class="contract-card expectations-division-card" id="system-expectations-container" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(10, 15, 30, 0.98) 100%); border: 1px solid rgba(56, 189, 248, 0.35); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(14, 165, 233, 0.12); position: relative; overflow: hidden;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem; position: relative; z-index: 1;">
           <div style="display: flex; align-items: center; gap: 0.65rem;">
             <div style="width: 34px; height: 34px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); display: flex; align-items: center; justify-content: center; color: #38BDF8;">
@@ -248,7 +300,7 @@
               </div>
             </div>
             <p style="font-size: 0.78rem; color: #94A3B8; margin: 0; line-height: 1.45;">
-              Aggressive pacing challenge threshold calibrated to division mathematical tension.
+              Scaled human pacing limit dynamically calibrated to active ELO rank tier difficulty.
             </p>
           </div>
 
@@ -260,7 +312,7 @@
                 <span style="font-size: 0.9rem;">🎯</span>
               </div>
               <h4 style="font-size: 0.95rem; font-weight: 800; color: #FFFFFF; margin: 0 0 0.5rem 0;">Assistance Target</h4>
-              <div style="font-family: var(--font-math); font-size: 1.15rem; font-weight: 800; color: #10B981; margin-bottom: 0.35rem;">
+              <div id="expectation-lifelines-val" style="font-family: var(--font-math); font-size: 1.15rem; font-weight: 800; color: #10B981; margin-bottom: 0.35rem;">
                 Expected: 0 lifelines utilized
               </div>
             </div>
@@ -277,12 +329,12 @@
                 <span style="font-size: 0.9rem;">🏆</span>
               </div>
               <h4 style="font-size: 0.95rem; font-weight: 800; color: #FFFFFF; margin: 0 0 0.5rem 0;">Precision Floor</h4>
-              <div style="font-family: var(--font-math); font-size: 1.25rem; font-weight: 800; color: #F59E0B; margin-bottom: 0.35rem;">
+              <div id="expectation-accuracy-val" style="font-family: var(--font-math); font-size: 1.25rem; font-weight: 800; color: #F59E0B; margin-bottom: 0.35rem;">
                 Expected: 90%+ Precision
               </div>
             </div>
             <p style="font-size: 0.78rem; color: #94A3B8; margin: 0; line-height: 1.45;">
-              Benchmark accuracy ceiling required for top-tier Olympiad rank recognition.
+              Benchmark tracking accuracy ceiling scaled dynamically to competitor active rank threshold.
             </p>
           </div>
 
@@ -294,7 +346,7 @@
                 <span style="font-size: 0.9rem;">⚠️</span>
               </div>
               <h4 style="font-size: 0.95rem; font-weight: 800; color: #FFFFFF; margin: 0 0 0.5rem 0;">Overtime Risk Rule</h4>
-              <div style="font-family: var(--font-math); font-size: 1.15rem; font-weight: 800; color: #EF4444; margin-bottom: 0.35rem;">
+              <div id="expectation-redemption-val" style="font-family: var(--font-math); font-size: 1.15rem; font-weight: 800; color: #EF4444; margin-bottom: 0.35rem;">
                 -5 pts on Overtime Miss
               </div>
             </div>

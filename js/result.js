@@ -5,10 +5,11 @@
  * Redemption Track, and Compiler Latency Audit Table (Sub-Second Pollard's Rho Logs).
  */
 
-import { getLastExamResult, setActiveExamParams, getSettings } from './storage.js';
+import { getLastExamResult, setLastExamResult, setActiveExamParams, getSettings, getLedger } from './storage.js';
 import { initGlobalHeader, renderFooter } from './header.js';
 import { toExponentialForm, formatExponentialString, parseAndValidateFactorInput } from './math-engine.js';
 import { playSound } from './audio.js';
+import { calculateEloDelta, getUserElo, setUserElo, recordRatedMatchToProfile, getTierByElo } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initGlobalHeader();
@@ -26,6 +27,67 @@ function renderResultDashboard() {
 
   // 6-Tier Olympiad Verdict Matrix
   const totalSolved = (result.correctFirstAttempt || 0) + (result.correctSecondAttempt || 0);
+  const accuracyPct = Math.round((totalSolved / (result.totalQuestions || 10)) * 100);
+
+  // ELO Engine Master Integration & Calculation
+  const activeUserElo = getUserElo();
+  const isForcedUnrated = result.participationMode === 'unrated' || result.mode === 'unrated' || Boolean(result.forcedUnrated) || Boolean(result.isForcedUnrated);
+
+  if (result.eloDelta === undefined || result.eloDelta === null) {
+    if (isForcedUnrated) {
+      // Hard-lock calculation matrix output to state exactly Delta ELO = 0
+      // Player's main rating must remain entirely untouched
+      result.eloDelta = 0;
+      result.eloExpected = 0.85;
+      result.eloVelocity = 1.0;
+      result.eloKFactor = 32;
+      result.isForcedUnrated = true;
+      result.verdictComment = 'Training';
+      result.expectationStatus = '⏸️ Deactivated';
+      result.currentElo = `${activeUserElo.toLocaleString()} ELO`;
+      setLastExamResult(result);
+    } else {
+      // Official Rated Contest: 4-digit dynamic equation loop
+      const ledger = getLedger();
+      const allocatedSec = result.allocatedSeconds || (result.timeSpent + (result.timeRemaining || 0)) || 180;
+      const actualSec = Math.max(1, result.timeSpent || 30);
+      
+      const eloCalc = calculateEloDelta({
+        userElo: activeUserElo,
+        maxBound: result.max || 200,
+        accuracyPct: accuracyPct,
+        allocatedSeconds: allocatedSec,
+        actualSeconds: actualSec,
+        isForcedUnrated: false,
+        participationMode: 'rated',
+        streakCount: ledger.currentStreak || 0
+      });
+
+      result.eloDelta = eloCalc.deltaR;
+      result.eloExpected = eloCalc.expected;
+      result.eloVelocity = eloCalc.velocity;
+      result.eloKFactor = eloCalc.kFactor;
+      result.isForcedUnrated = false;
+      result.verdictComment = eloCalc.comment;
+      result.expectationStatus = eloCalc.expectationStatus || (eloCalc.deltaR > 0 ? '✔️ Passed' : '❌ Failed');
+
+      const newElo = Math.max(0, activeUserElo + eloCalc.deltaR);
+      setUserElo(newElo);
+      result.currentElo = `${newElo.toLocaleString()} ELO`;
+      setLastExamResult(result);
+
+      recordRatedMatchToProfile({
+        tier: result.rangeTitle || 'Tier 1: 1 - 200',
+        accuracy: accuracyPct,
+        time: result.timeSpent || 30,
+        score: result.score || 0,
+        eloDelta: eloCalc.deltaR,
+        correctCount: totalSolved
+      });
+    }
+  }
+
+  const currentTier = getTierByElo(getUserElo());
   const isQuantumDecomposer = (result.correctFirstAttempt === 10 && (result.lifelinesUsedCount || 0) === 0);
   const isAlgorithmicStrategist = (!isQuantumDecomposer && totalSolved === 10);
   const isCadenceAnalyst = (!isQuantumDecomposer && !isAlgorithmicStrategist && result.score > 75);
@@ -119,19 +181,159 @@ function renderResultDashboard() {
   }
 
   // Populate absolute counter strip
-  const accuracyPct = Math.round((totalSolved / (result.totalQuestions || 10)) * 100);
-
   const elFirst = document.getElementById('cb-first-attempt');
   const elSecond = document.getElementById('cb-second-attempt');
   const elAccuracy = document.getElementById('cb-accuracy');
   const elTimeSpent = document.getElementById('cb-time-spent');
   const elLifelines = document.getElementById('cb-lifelines');
+  const elEloDelta = document.getElementById('cb-elo-delta');
 
   if (elFirst) elFirst.textContent = `${result.correctFirstAttempt} / 10`;
   if (elSecond) elSecond.textContent = `${result.correctSecondAttempt}`;
   if (elAccuracy) elAccuracy.textContent = `${accuracyPct}%`;
   if (elTimeSpent) elTimeSpent.textContent = `${result.timeSpent}s`;
   if (elLifelines) elLifelines.textContent = `${result.lifelinesUsedCount}`;
+
+  // Populate ELO Changes Matrix Block Beneath Score Ring & Telemetry Panel
+  const eloDeltaVal = result.eloDelta || 0;
+  const isUnratedSession = Boolean(result.isForcedUnrated);
+
+  const ringExpectationStatus = document.getElementById('ring-expectation-status');
+  const ringEloDelta = document.getElementById('ring-elo-delta');
+  const ringEloComment = document.getElementById('ring-elo-comment');
+
+  const elTierIcon = document.getElementById('elo-tier-icon');
+  const elTierTitle = document.getElementById('elo-tier-title');
+  const elStatusBadge = document.getElementById('elo-status-badge');
+  const elLiveVal = document.getElementById('elo-live-val');
+  const elReviewVal = document.getElementById('elo-review-val');
+  const elDeltaLarge = document.getElementById('elo-delta-large');
+
+  if (isUnratedSession) {
+    // Unrated Practice run: low-intensity muted platinum string stating exactly "0 ELO (Practice Run)"
+    // Expectation status to "⏸️ Deactivated", and dynamic comment row to state exactly "Training"
+    const platinumColor = '#E2E8F0';
+    const mutedColor = '#94A3B8';
+
+    if (ringExpectationStatus) {
+      ringExpectationStatus.textContent = '⏸️ Deactivated';
+      ringExpectationStatus.style.color = mutedColor;
+    }
+    if (ringEloDelta) {
+      ringEloDelta.textContent = '0 ELO (Practice Run)';
+      ringEloDelta.style.color = platinumColor;
+    }
+    if (ringEloComment) {
+      ringEloComment.textContent = 'Training';
+      ringEloComment.style.color = platinumColor;
+    }
+    if (elEloDelta) {
+      elEloDelta.textContent = '0 ELO (Practice Run)';
+      elEloDelta.style.color = platinumColor;
+    }
+    if (elDeltaLarge) {
+      elDeltaLarge.textContent = '0 ELO (Practice Run)';
+      elDeltaLarge.style.color = platinumColor;
+    }
+    if (elReviewVal) {
+      elReviewVal.textContent = 'Training';
+      elReviewVal.style.color = platinumColor;
+    }
+    if (elStatusBadge) {
+      elStatusBadge.textContent = 'UNRATED PRACTICE';
+      elStatusBadge.style.background = 'rgba(148, 163, 184, 0.15)';
+      elStatusBadge.style.color = platinumColor;
+      elStatusBadge.style.borderColor = 'rgba(148, 163, 184, 0.4)';
+    }
+  } else {
+    // Official Rated Contest
+    const isSuccessfulRun = eloDeltaVal > 0;
+    const supportiveRemarks = ['Amazing!', 'Brilliant!', 'Flawless!', 'Spectacular!', 'Mastery!'];
+    const criticalRemarks = ['Unexpected', 'Slumped', 'Sub-par', 'Velocity Slack', 'Hesitant'];
+
+    const chosenComment = result.verdictComment || (isSuccessfulRun
+      ? supportiveRemarks[Math.floor(Math.random() * supportiveRemarks.length)]
+      : criticalRemarks[Math.floor(Math.random() * criticalRemarks.length)]);
+
+    if (isSuccessfulRun) {
+      // Successful Rated run: vibrant neon green ELO delta change, expectation status ✔️ Passed
+      const neonGreen = '#10B981';
+      const formattedDelta = `+${eloDeltaVal} ELO`;
+
+      if (ringExpectationStatus) {
+        ringExpectationStatus.textContent = '✔️ Passed';
+        ringExpectationStatus.style.color = neonGreen;
+      }
+      if (ringEloDelta) {
+        ringEloDelta.textContent = formattedDelta;
+        ringEloDelta.style.color = neonGreen;
+      }
+      if (ringEloComment) {
+        ringEloComment.textContent = chosenComment;
+        ringEloComment.style.color = neonGreen;
+      }
+      if (elEloDelta) {
+        elEloDelta.textContent = formattedDelta;
+        elEloDelta.style.color = neonGreen;
+      }
+      if (elDeltaLarge) {
+        elDeltaLarge.textContent = formattedDelta;
+        elDeltaLarge.style.color = neonGreen;
+      }
+      if (elReviewVal) {
+        elReviewVal.textContent = chosenComment;
+        elReviewVal.style.color = neonGreen;
+      }
+      if (elStatusBadge) {
+        elStatusBadge.textContent = 'OFFICIAL RATED';
+        elStatusBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+        elStatusBadge.style.color = neonGreen;
+        elStatusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      }
+    } else {
+      // Underperforming Rated run: sharp neon red ELO drop, expectation status ❌ Failed
+      const neonRed = '#EF4444';
+      const formattedDelta = `${eloDeltaVal} ELO`;
+
+      if (ringExpectationStatus) {
+        ringExpectationStatus.textContent = '❌ Failed';
+        ringExpectationStatus.style.color = neonRed;
+      }
+      if (ringEloDelta) {
+        ringEloDelta.textContent = formattedDelta;
+        ringEloDelta.style.color = neonRed;
+      }
+      if (ringEloComment) {
+        ringEloComment.textContent = chosenComment;
+        ringEloComment.style.color = neonRed;
+      }
+      if (elEloDelta) {
+        elEloDelta.textContent = formattedDelta;
+        elEloDelta.style.color = neonRed;
+      }
+      if (elDeltaLarge) {
+        elDeltaLarge.textContent = formattedDelta;
+        elDeltaLarge.style.color = neonRed;
+      }
+      if (elReviewVal) {
+        elReviewVal.textContent = chosenComment;
+        elReviewVal.style.color = neonRed;
+      }
+      if (elStatusBadge) {
+        elStatusBadge.textContent = 'OFFICIAL RATED';
+        elStatusBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+        elStatusBadge.style.color = neonRed;
+        elStatusBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+      }
+    }
+  }
+
+  if (elTierIcon) elTierIcon.textContent = currentTier.symbol || '🧮';
+  if (elTierTitle) {
+    elTierTitle.textContent = currentTier.title || 'Sieve Calibrator';
+    elTierTitle.style.color = currentTier.colorHex || '#FFFFFF';
+  }
+  if (elLiveVal) elLiveVal.textContent = `${getUserElo().toLocaleString()} ELO`;
 
   // Populate Failure Audit Stack with Custom Nested Mistake Analysis Tables
   const failureContainer = document.getElementById('failure-audit-list');
@@ -287,12 +489,14 @@ function renderResultDashboard() {
   const getShareTelemetryText = () => {
     const firstAttemptClears = (result.correctFirstAttempt !== undefined) ? result.correctFirstAttempt : totalSolved;
     const totalQuestionsTarget = result.totalQuestions || 10;
-    const rankTitle = bracketTitle || 'Active Competitor';
+    const rankTitle = `${currentTier.title} ${currentTier.symbol}`;
     const categoryTitle = result.rangeTitle || 'Custom';
-    const eloDeltaStr = result.eloDelta !== undefined 
-      ? (result.eloDelta > 0 ? `+${result.eloDelta} ELO` : `${result.eloDelta} ELO`) 
-      : '0 ELO (Practice Run)';
-    const currentEloStr = result.currentElo || '1000 ELO (Base Track)';
+    const eloDeltaStr = result.isForcedUnrated 
+      ? '0 ELO (Sandbox Practice)' 
+      : (result.eloDelta !== undefined 
+        ? (result.eloDelta > 0 ? `+${result.eloDelta} ELO` : `${result.eloDelta} ELO`) + ` (${result.verdictComment || 'Calibrated'})`
+        : '0 ELO (Practice Run)');
+    const currentEloStr = `${getUserElo().toLocaleString()} ELO`;
     const lifelinesUsed = result.lifelinesUsedCount !== undefined ? result.lifelinesUsedCount : 0;
     const secondsSpent = result.timeSpent !== undefined ? result.timeSpent : 0;
 

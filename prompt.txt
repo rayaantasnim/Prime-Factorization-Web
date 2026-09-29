@@ -1,0 +1,81 @@
+You are an expert Frontend Software Architect and UI/UX Core Engineer specialized in high-performance competitive mathematics platforms. Your immediate task is to apply a surgical, comprehensive logical patch to the ELO calculation script ("js/result.js") and the verdict layout view ("result.html") to fully realign the rating shifts with highly dynamic system expectations derived from historical contest ledgers.
+
+🛑 UNBREAKABLE APPEARANCE AND SCOPE DIRECTIVE: No other changes beyond this prompt are highly forbidden. The brand-new features should not dash with the existing ones and the new features should be highly precise with great color combinations which create great combination with the existing colors. Modify STRICTLY and ONLY the mechanical variables, hyper-links, and script evaluation hooks mentioned below. Protect all premium midnight-blue variables and neon typography properties with 100% precision. The global Settings gear icon must open the Engine Configuration global overlay across standard views.
+
+Execute the following systemic routing alignments and mathematical calibrations with absolute precision:
+
+---
+
+### 1. DYNAMIC SYSTEM EXPECTATIONS & HIGH-VOLATILITY ELO CALIBRATION (js/result.js)
+- Rolling Historical Audit: Intercept the final execution loop on result.html. Instead of using static values, compute the active session expectations dynamically by auditing the player's historical data array (the rolling averages of the Last 10 Contests Ledger).
+- Expectation-Driven ELO Shifts: Adjust the 4-digit ELO calculation algorithm (Delta R) to be entirely governed by these dynamic benchmarks:
+  * If the active session metrics satisfy or surpass the rolling historical averages, accelerate the ELO change multiplier upward, granting a stability bonus to verify rank solidification.
+  * If the performance falls beneath the dynamic thresholds (e.g., dropping >10% below their rolling accuracy baseline or hitting a severe speed slump), immediately flag a System Expectation Deficit and force an automatic ELO decay penalty drop, even if the raw match was technically won.
+
+---
+
+### 2. THE DYNAMIC VERIFICATION LEDGER GRID INJECTION (result.html & js/result.js)
+- Standalone Display Section: Inject a dedicated glass-morphic visual asset container block directly beneath the central score ring card labeled exactly "System Expectations Verification Ledger".
+- Dual-Remark Output Grid: Inside this container, construct a responsive matrix grid showcasing exactly 4 core evaluative categories. Each category must feature a dual-option output remark configuration (strictly disabled for manual user inputs, rendering output analytics logs only):
+  * Option 1 (The Visual Checkbox Status): Displays an unclickable custom graphic icon container showing a vibrant neon green check mark [✔️] if the expectation was successfully conquered, or a neon red cross mark [❌] if failed.
+  * Option 2 (The Numerical Performance Rating): Displays a high-contrast metric rating stamped precisely as an absolute fractional point score out of 10 (e.g., "9.2 / 10 Points").
+- Calibrate the 4 Dynamic Categories with this dual-remark framework precisely as follows:
+  1. `Score Expectation`: Ticks [✔️] and prints rating out of 10 based on whether the final raw score (out of 100 max, following lifeline minuses) conquered the dynamic chasing target.
+  2. `Accuracy Expectation`: Ticks [✔️] and prints rating out of 10 by evaluating current precision match metrics against the historical rolling ledger.
+  3. `Lifeline Usage Expectation`: Ticks [✔️] and prints rating out of 10 by auditing resource efficiency (e.g., a perfect 10/10 points if 0 lifelines were triggered during execution).
+  4. `Time Consumption Expectation` [The Hidden Target Unveiled]: Ticks [✔️] and prints rating out of 10 by mapping factor calculation speed velocity thresholds. (This metric must remain completely hidden from the pre-flight contract.html page and revealed entirely as an output checkbox/rating row here).
+
+
+
+
+
+
+
+
+
+
+You are an expert Frontend Software Architect and UI/UX Core Engineer specialized in gamified competitive training platforms. Your immediate task is to develop a brand-new, standalone documentation page named "rules.html" along with its exclusive script controller, and surgically sync the home page ("index.html") to precisely showcase all the major core upgrades (Parts 1 to 5) implemented so far.
+
+🛑 UNBREAKABLE INTEGRATION AND ISOLATION DIRECTIVE: No other changes beyond this prompt are highly forbidden. The brand-new features should not dash with the existing ones and the new features should be highly precise with great color combinations which create great combination with the existing colors. Modify STRICTLY and ONLY the HTML, CSS, and JS components necessary for rendering the requested documentation layout maps. Protect all premium midnight-blue background variables and signature neon typography themes with 100% precision. The global unified Top Navigation Bar and standard Baseline Footer must remain completely identical across all views, and the Settings gear icon must open its pre-existing Engine Configuration global overlay.
+
+Execute the following layout injections and text content modifications with absolute precision:
+
+---
+
+### 1. THE GLOBAL UNIFIED "RULES & POLICIES" INTERFACE (rules.html & js/rules.js)
+- Structural Skeleton: Create a beautifully structured, standalone file named "rules.html" driven by "js/rules.js". It must perfectly clone and display the unified top navigation bar and standard baseline footer templates.
+- High-Density Documentation Grid: Build a responsive, multi-card documentation grid layout broken down into 4 high-contrast neon sections detailing the official competitive framework:
+  * Section A [The Dynamic ELO Framework]: Documents the 4-digit scoring math, the dynamic volatility multipliers based on daily streaks, and the 12-tier rank ladder ranging from Foundry Initiate up to the Prime Singularity peak.
+  * Section B [The Asymmetric Range Firewall]: Explains the decentralized boundary lockout system preventing high-tier players from point-farming easy numbers, forcing sessions into Unrated Practice (Delta ELO = 0).
+  * Section C [The Global Friday Clash Protocol]: Outlines the rules for the weekly UTC-locked global clash event at 17:00 UTC (No lifelines, adaptive seed matching, and exponential speed scoring).
+  * Section D [The Three-Strike Security Charter]: Details the client-side cryptographic HMAC storage signature validation, warning players that data tampering triggers an automated 3-strike penalty loop ending in permanent browser-lockout and full-screen unskippable Access Denied ban states.
+
+
+
+
+
+
+
+You are an expert Frontend Software Architect and Core UI/UX Engineer. Your immediate task is to apply a surgical, comprehensive synchronization patch exclusively to the profile controller script ("js/profile.js") to transition all placeholder metrics and registries into a fully dynamic, ledger-driven local engine.
+
+🛑 STRICT ISOLATION MANDATE: You are ordered to execute ONLY the modifications explicitly written within this command layout. Any alterations, adjustments, or deletions targeting pre-existing layouts, HTML structures, global nav-bars, or color palettes outside the specified scope of this command are STRICTLY FORBIDDEN. Protect all premium midnight-blue variables and neon typography properties with 100% precision.
+
+Execute the following storage synchronization integrations with absolute precision:
+
+---
+
+### 🧱 LOCAL STORAGE REGISTRY INTERCEPTION & PB WIDGET CALIBRATION (js/profile.js)
+1. History Arrays Binding: Upon page load initialization, query the player's historical match logs directly from localStorage. If the history ledger array is empty or null, securely fallback all metric displays to baseline values (0 or base tiers) to prevent console script crashes.
+2. Personal Best (PB) Dynamic Overwrites: If match records are detected, loop through the history logs to calculate and overwrite the 6 milestone card displays in real-time:
+   - Overwrite Card 1 & Card 4 & Card 6 with their absolute lifetime maximum achieved tier rank, peak ELO rating score, and peak tier title color tokens.
+   - Overwrite Card 3 [3-Layer Lowest Time Consumption Widget]: Extract the match profile tracking the absolute fastest time duration. Dynamically inject the recorded performance calendar date into Row 1, print the high-precision duration time clamped in seconds (e.g., "34.12s") into Row 2, and render the color-coded neon tier title where it occurred into Row 3.
+3. Recent Ledger & Analytics Synchronization: Dynamically populate the "Last 10 Performances Tracker" horizontal table grid. Loop through the 10 most recent entries in the ledger array and generate dynamic table rows displaying their parsed Tier/Mode, Accuracy %, Time Expended, Local Timestamp, and color-code their Net ELO Change score in glowing neon green (+) or neon red (-) based on the match audit records.
+
+
+
+
+
+
+
+
+

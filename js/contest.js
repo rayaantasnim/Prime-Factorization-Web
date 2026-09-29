@@ -8,6 +8,7 @@
 import { initGlobalHeader, renderFooter, triggerFlash, initSettingsModal } from './header.js';
 import { getLedger, getSettings, setActiveExamParams } from './storage.js';
 import { playSound } from './audio.js';
+import { getUserElo, setUserElo } from './elo-engine.js';
 
 // 9 Standard Mathematical Tiers (Exactly 9 equal segments)
 const STANDARD_TIERS = [
@@ -145,34 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initSettingsModal();
   initContestHub();
 });
-
-// Read User ELO Rating from LocalStorage or Compute from Ledger
-function getUserElo() {
-  try {
-    const customElo = localStorage.getItem('primefactor_elo');
-    if (customElo && !isNaN(Number(customElo)) && Number(customElo) > 0) {
-      return Math.round(Number(customElo));
-    }
-  } catch (e) {
-    console.warn('Error reading ELO:', e);
-  }
-
-  // Olympiad Edge default formula from ledger:
-  const ledger = getLedger();
-  const calculated = 1200 + 
-    Math.floor((ledger.highScore || 0) * 1.5) + 
-    ((ledger.bestStreak || 0) * 30) + 
-    ((ledger.grandMasterCount || 0) * 100);
-  return Math.min(3200, Math.max(800, calculated));
-}
-
-function setUserElo(newElo) {
-  try {
-    localStorage.setItem('primefactor_elo', String(Math.round(newElo)));
-  } catch (e) {
-    console.warn('Error writing ELO:', e);
-  }
-}
 
 // Master Contest Hub Engine
 function initContestHub() {

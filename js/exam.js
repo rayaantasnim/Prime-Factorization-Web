@@ -75,6 +75,7 @@ function initExamArena() {
   const initialStartingScore = isFocusTrackingDisabled ? -10 : 0;
 
   const participationMode = urlParams.get('mode') || rules.participationMode || 'rated';
+  const isForcedUnrated = urlParams.get('forcedUnrated') === 'true' || Boolean(rules.isForcedUnrated) || (participationMode === 'unrated');
 
   const resolvedMin = (urlMin && !isNaN(urlMin)) ? urlMin : (params.min || 1);
   const resolvedMax = (urlMax && !isNaN(urlMax)) ? urlMax : (params.max || 200);
@@ -105,6 +106,7 @@ function initExamArena() {
     trackFocus,
     isFocusTrackingDisabled,
     participationMode,
+    isForcedUnrated,
     totalQuestions: totalQuestionsTarget,
     timerInterval: null,
     isFrozen: false,
@@ -1203,9 +1205,11 @@ function initExamArena() {
       score: state.score,
       timeRemaining: Math.max(0, state.timeRemaining),
       timeSpent: state.totalTimeLimit - Math.max(0, state.timeRemaining),
+      allocatedSeconds: state.totalTimeLimit,
       totalQuestions: state.totalQuestions,
       participationMode: state.participationMode,
       mode: state.participationMode,
+      isForcedUnrated: state.isForcedUnrated,
       correctFirstAttempt: firstTryCorrect,
       correctSecondAttempt: secondTryCorrect,
       incorrectTotal: state.incorrectSubmissionsCount,

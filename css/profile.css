@@ -134,20 +134,25 @@ body.profile-view {
   transform: rotate(90deg);
 }
 
-/* Responsive Column Alignment Grid: Symmetrical 2 Columns on Desktop/Tablet, Single Column on Mobile */
+/* Mobile-first: single column stack governed by strict native vertical scrolling */
 .matrix-topology-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.25rem;
   box-sizing: border-box;
+  max-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 0.25rem;
 }
 
-@media (max-width: 768px) {
+/* Desktop & Tablet Viewports: Render the interactive routing cards symmetrically across 2 side-by-side balanced grid columns */
+@media (min-width: 768px) {
   .matrix-topology-grid {
-    grid-template-columns: 1fr;
-    max-height: calc(100vh - 140px);
-    overflow-y: auto;
-    padding-right: 0.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
   }
 }
 
@@ -581,3 +586,148 @@ body.profile-view {
   color: #38BDF8;
   text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
 }
+
+/* ================= 7. TELEMETRY & SPEED SECTION ================= */
+.telemetry-speed-card {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-sizing: border-box;
+}
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+  .telemetry-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .telemetry-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.telemetry-node {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: all 0.25s ease;
+}
+
+.telemetry-node:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(56, 189, 248, 0.15);
+  transform: translateY(-2px);
+}
+
+.telemetry-node-label {
+  font-size: 0.8rem;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.telemetry-node-val {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 0.25rem;
+}
+
+.telemetry-node-desc {
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+/* ================= 8. MEDALS VAULT SECTION ================= */
+.medals-vault-card {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-sizing: border-box;
+}
+
+.medals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 960px) {
+  .medals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .medals-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.medal-item {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.85rem;
+  padding: 1.35rem 1.15rem;
+  text-align: center;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.medal-item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(245, 158, 11, 0.2);
+}
+
+.medal-icon-badge {
+  font-size: 2.2rem;
+  margin-bottom: 0.75rem;
+  display: inline-block;
+}
+
+.medal-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.35rem;
+}
+
+.medal-desc {
+  font-size: 0.8rem;
+  color: #94A3B8;
+  line-height: 1.4;
+}
+
+/* ================= 9. DATA DIAGNOSTICS SECTION ================= */
+.diagnostics-card {
+  background: radial-gradient(circle at top left, rgba(14, 165, 233, 0.12), rgba(17, 24, 39, 0.95) 60%);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  box-sizing: border-box;
+}
+

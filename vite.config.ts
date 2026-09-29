@@ -24,6 +24,8 @@ export default defineConfig(() => {
           exam: path.resolve(import.meta.dirname, 'exam.html'),
           result: path.resolve(import.meta.dirname, 'result.html'),
           contest: path.resolve(import.meta.dirname, 'contest.html'),
+          profile: path.resolve(import.meta.dirname, 'profile.html'),
+          'profile-settings': path.resolve(import.meta.dirname, 'profile-settings.html'),
         },
       },
     },

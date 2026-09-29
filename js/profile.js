@@ -7,6 +7,7 @@
 import { getLedger, getLastExamResult, getSettings } from './storage.js';
 import { playSound } from './audio.js';
 import { renderFooter } from './header.js';
+import { getUserElo, getUserPeakElo, getTierByElo, reSignProfileDirectory } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   renderFooter();
@@ -155,20 +156,54 @@ function renderProfileMetrics() {
   const ledger = getLedger();
   const lastResult = getLastExamResult();
 
-  // If last result exists, integrate it into top slot of matches
-  const matchRegistry = [...DEFAULT_MATCH_REGISTRY];
-  if (lastResult) {
-    const accuracy = Math.round(((lastResult.correctFirstAttempt || 0) + (lastResult.correctSecondAttempt || 0)) / (lastResult.totalQuestions || 10) * 100);
-    matchRegistry.unshift({
-      id: 0,
-      tier: `${lastResult.rangeTitle || 'Tier 1: 1 - 200'} (${lastResult.participationMode === 'unrated' ? 'Practice' : 'Rated'})`,
-      accuracy,
-      time: lastResult.timeSpent || 24.6,
-      score: lastResult.score || 85,
-      eloDelta: 0,
-      date: new Date().toISOString().replace('T', ' ').slice(0, 16)
-    });
-    matchRegistry.pop(); // keep at 10
+  // Master ELO Matrix & Identity Synchronization
+  const currentElo = getUserElo();
+  const peakElo = getUserPeakElo();
+  const activeTier = getTierByElo(currentElo);
+  const peakTier = getTierByElo(peakElo);
+
+  // Custom User Handle & Cryptographic Token
+  const customUser = localStorage.getItem('primefactor_profile_username') || localStorage.getItem('primefactor_profile_token') || 'Rayaan Tasnim';
+  const token = localStorage.getItem('primefactor_profile_token') || 'OLY-PF-746525000545';
+
+  const profileDisplayName = document.getElementById('profile-display-name');
+  if (profileDisplayName) profileDisplayName.textContent = customUser;
+
+  const tokenBadge = document.getElementById('profile-token-badge') || document.querySelector('.identity-token-badge');
+  if (tokenBadge) tokenBadge.textContent = token;
+
+  const rankTag = document.getElementById('profile-rank-tag') || document.querySelector('.identity-rank-tag');
+  if (rankTag) {
+    rankTag.textContent = `${activeTier.symbol} ${activeTier.title}`;
+    rankTag.style.color = activeTier.colorHex;
+    rankTag.style.borderColor = activeTier.colorHex;
+    rankTag.style.background = `${activeTier.colorHex}22`;
+  }
+
+  const profileEloTag = document.getElementById('profile-elo-tag');
+  if (profileEloTag) {
+    profileEloTag.textContent = `${currentElo.toLocaleString()} ELO (Live Rating)`;
+    profileEloTag.style.color = activeTier.colorHex;
+  }
+
+  // Load Real Match Registry Logs from Cache
+  let matchRegistry = [];
+  try {
+    const rawLogs = localStorage.getItem('primefactor_match_logs');
+    if (rawLogs) {
+      matchRegistry = JSON.parse(rawLogs);
+    }
+  } catch (e) {
+    console.warn('Error reading match logs:', e);
+  }
+
+  if (!matchRegistry || matchRegistry.length === 0) {
+    matchRegistry = [...DEFAULT_MATCH_REGISTRY];
+  } else if (matchRegistry.length < 10) {
+    const padCount = 10 - matchRegistry.length;
+    matchRegistry = [...matchRegistry, ...DEFAULT_MATCH_REGISTRY.slice(0, padCount)];
+  } else {
+    matchRegistry = matchRegistry.slice(0, 10);
   }
 
   // Populate PB Milestone Cards
@@ -182,30 +217,39 @@ function renderProfileMetrics() {
   const elMaxRank = document.getElementById('pb-max-rank');
 
   if (elHighestTier) {
-    elHighestTier.textContent = lastResult?.rangeTitle || 'Tier 1: 1 - 200';
+    const tierName = matchRegistry[0]?.tier || lastResult?.rangeTitle || 'Tier 1: 1 - 200';
+    elHighestTier.textContent = tierName.split('(')[0].trim();
   }
   if (elHighestSpeed) {
     elHighestSpeed.textContent = '0.038 ms';
   }
   if (elWidgetDate) {
-    elWidgetDate.textContent = 'Sep 28, 2026';
+    elWidgetDate.textContent = matchRegistry[0]?.date || 'Sep 28, 2026';
   }
   if (elWidgetTime) {
-    const lowestTime = lastResult?.timeSpent ? `${lastResult.timeSpent}s Elapsed` : '24.6s Elapsed';
-    elWidgetTime.textContent = lowestTime;
+    let bestTime = 99999;
+    matchRegistry.forEach(m => {
+      const t = parseFloat(m.time);
+      if (!isNaN(t) && t < bestTime && t > 0) bestTime = t;
+    });
+    if (bestTime === 99999) bestTime = lastResult?.timeSpent || 24.6;
+    elWidgetTime.textContent = `${bestTime}s Elapsed`;
   }
   if (elWidgetTier) {
-    elWidgetTier.textContent = lastResult?.rangeTitle ? `${lastResult.rangeTitle} Division` : 'Tier 1: 1 - 200 Division';
+    const tierAchieved = matchRegistry[0]?.tier ? `${matchRegistry[0].tier.split('(')[0].trim()} Division` : 'Tier 1: 1 - 200 Division';
+    elWidgetTier.textContent = tierAchieved;
   }
   if (elMaxRating) {
-    elMaxRating.textContent = '1,000 ELO';
+    elMaxRating.textContent = `${peakElo.toLocaleString()} ELO`;
   }
   if (elMaxStreak) {
-    const bestStreak = Math.max(12, ledger.bestStreak || 0);
+    const bestStreak = Math.max(12, ledger.bestStreak || 0, ledger.currentStreak || 0);
     elMaxStreak.textContent = `${bestStreak} Matches`;
   }
   if (elMaxRank) {
-    elMaxRank.textContent = 'Quantum Decomposer';
+    elMaxRank.textContent = `${peakTier.symbol} ${peakTier.title}`;
+    elMaxRank.style.color = peakTier.colorHex;
+    elMaxRank.style.textShadow = `0 0 16px ${peakTier.colorHex}`;
   }
 
   // Populate Streak Telemetry
@@ -223,11 +267,13 @@ function renderProfileMetrics() {
   const tbody = document.getElementById('last-10-tbody');
   if (tbody) {
     tbody.innerHTML = matchRegistry.map((m) => {
-      const eloTag = m.eloDelta > 0 
-        ? `<span class="score-elo-tag">+${m.score} pts (+${m.eloDelta} ELO)</span>` 
-        : (m.eloDelta < 0 
-          ? `<span class="score-elo-tag" style="color: #EF4444;">${m.score} pts (${m.eloDelta} ELO)</span>` 
-          : `<span class="score-elo-tag neutral">+${m.score} pts (+0 ELO)</span>`);
+      const deltaVal = Number(m.eloDelta) || 0;
+      let eloTag = `<span class="score-elo-tag neutral">+${m.score} pts (+0 ELO)</span>`;
+      if (deltaVal > 0) {
+        eloTag = `<span class="score-elo-tag">+${m.score} pts (+${deltaVal} ELO)</span>`;
+      } else if (deltaVal < 0) {
+        eloTag = `<span class="score-elo-tag" style="color: #EF4444;">${m.score} pts (${deltaVal} ELO)</span>`;
+      }
 
       return `
         <tr>
@@ -287,13 +333,21 @@ function initClipboardButtons() {
   // Button 1: Copy Academic Profile
   if (btnAcademic) {
     btnAcademic.addEventListener('click', () => {
+      const activeUser = localStorage.getItem('primefactor_profile_username') || localStorage.getItem('primefactor_profile_token') || 'Rayaan Tasnim';
+      const token = localStorage.getItem('primefactor_profile_token') || 'OLY-PF-746525000545';
+      const currentElo = getUserElo();
+      const peakElo = getUserPeakElo();
+      const activeTier = getTierByElo(currentElo);
+      const ledger = getLedger();
+
       const academicText = `⚡ Prime-Factor.app Academic Profile Credentials ⚡\n\n` +
-        `👤 Competitor: Rayaan Tasnim (Olympiad Contender)\n` +
-        `🔑 Token ID: OLY-PF-746525000545-ALPHA\n` +
-        `🏆 Current Rank: Quantum Decomposer\n` +
-        `📡 Current ELO: 1000 ELO (Base Track)\n` +
-        `📈 Peak Rating: 1000 ELO (Standard Registry)\n` +
-        `🛡️ Primary Division: Tier 1: 1 - 200\n\n` +
+        `👤 Competitor: ${activeUser} (Olympiad Contender)\n` +
+        `🔑 Token ID: ${token}\n` +
+        `🏆 Current Rank: ${activeTier.symbol} ${activeTier.title}\n` +
+        `📡 Current ELO: ${currentElo.toLocaleString()} ELO\n` +
+        `📈 Peak Rating: ${peakElo.toLocaleString()} ELO\n` +
+        `🧩 Solved Composites: ${Math.max(140, ledger.totalSolved || 0)}\n` +
+        `🛡️ Status: Authenticated Active Contender\n\n` +
         `✨ Certified By Rayaan Tasnim\n` +
         `🚀 Powered by Olympiad Edge\n` +
         `© All rights reserved.`;
@@ -326,9 +380,12 @@ function initClipboardButtons() {
   // Button 3: Copy Lifetime Milestones
   if (btnMilestones) {
     btnMilestones.addEventListener('click', () => {
+      const peakElo = getUserPeakElo();
+      const peakTier = getTierByElo(peakElo);
+
       const milestonesText = `⚡ Prime-Factor.app Lifetime PB Milestones ⚡\n\n` +
-        `🏆 Max Rating Achieved: 1000 ELO (Base Track)\n` +
-        `👑 Max Rank Achieved: Quantum Decomposer\n` +
+        `🏆 Max Rating Achieved: ${peakElo.toLocaleString()} ELO\n` +
+        `👑 Max Rank Achieved: ${peakTier.symbol} ${peakTier.title}\n` +
         `⚡ Highest Speed Tracked: 0.038 ms / factor (Pollard's Rho Brent)\n` +
         `⏱ Lowest Time Consumption: 24.6s (Tier 1: 1 - 200 Division)\n` +
         `📅 PB Milestone Date: September 28, 2026\n\n` +
@@ -343,15 +400,25 @@ function initClipboardButtons() {
   // Button 4: Copy Last 10 Contests Ledger
   if (btnContests) {
     btnContests.addEventListener('click', () => {
-      const rowsList = DEFAULT_MATCH_REGISTRY.map((m, idx) => {
+      let logs = [];
+      try {
+        const rawLogs = localStorage.getItem('primefactor_match_logs');
+        if (rawLogs) logs = JSON.parse(rawLogs);
+      } catch (e) {
+        console.warn('Error reading logs for clipboard:', e);
+      }
+      if (!logs || logs.length === 0) logs = DEFAULT_MATCH_REGISTRY;
+
+      const rowsList = logs.slice(0, 10).map((m, idx) => {
         const num = String(idx + 1).padStart(2, '0');
-        return `#${num} | ${m.tier.padEnd(26, ' ')} | ${String(m.accuracy).padStart(3, ' ')}% Acc | ${m.time}s | Score: ${m.score} (+0 ELO) | ${m.date}`;
+        const eloD = Number(m.eloDelta) || 0;
+        const eloStr = eloD > 0 ? `+${eloD} ELO` : (eloD < 0 ? `${eloD} ELO` : `+0 ELO`);
+        return `#${num} | ${String(m.tier).padEnd(26, ' ')} | ${String(m.accuracy).padStart(3, ' ')}% Acc | ${m.time}s | Score: ${m.score} (${eloStr}) | ${m.date}`;
       }).join('\n');
 
       const contestsText = `⚡ Prime-Factor.app Last 10 Contests Ledger ⚡\n\n` +
-        `📊 Passed Matches: 10/10 Completed\n` +
-        `🎯 Historical Accuracy: 96.0%\n` +
-        `⏱ Total Time Elapsed: 312s\n\n` +
+        `📊 Logged Matches: ${Math.min(10, logs.length)} Completed\n` +
+        `🎯 Current Live ELO: ${getUserElo().toLocaleString()} ELO\n\n` +
         `MATCH REGISTRY:\n` +
         `${rowsList}\n\n` +
         `✨ Certified By Rayaan Tasnim\n` +
@@ -359,6 +426,22 @@ function initClipboardButtons() {
         `© All rights reserved.`;
 
       copyToClipboard(contestsText, btnContests, 'Last 10 Contests Ledger');
+    });
+  }
+
+  // Diagnostics Export Button
+  const btnExport = document.getElementById('btn-export-diagnostics');
+  if (btnExport) {
+    btnExport.addEventListener('click', () => {
+      playSound('click');
+      exportDiagnosticsBackup();
+      const originalHTML = btnExport.innerHTML;
+      btnExport.textContent = '✔️ State Backup Exported!';
+      btnExport.classList.add('btn-neon-copied-glow');
+      setTimeout(() => {
+        btnExport.innerHTML = originalHTML;
+        btnExport.classList.remove('btn-neon-copied-glow');
+      }, 2000);
     });
   }
 }

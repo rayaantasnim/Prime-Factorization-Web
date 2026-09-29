@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile System Settings — PrimeFactor.app</title>
+  <meta name="description" content="Configure contestant credentials, audio synthetics, and academic audit telemetry preferences." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./css/profile.css" />
+
+  <style>
+    .settings-portal-card {
+      background: radial-gradient(circle at top right, rgba(30, 58, 138, 0.25), rgba(17, 24, 39, 0.95) 70%);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 1.25rem;
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(56, 189, 248, 0.12);
+      max-width: 800px;
+      margin: 0 auto 3rem;
+    }
+    .settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-top: 1.75rem;
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.15rem 1.25rem;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 0.85rem;
+    }
+    .settings-label-block h4 {
+      font-size: 1.05rem;
+      color: #FFFFFF;
+      margin-bottom: 0.25rem;
+      font-weight: 700;
+    }
+    .settings-label-block p {
+      font-size: 0.84rem;
+      color: #94A3B8;
+      margin: 0;
+    }
+    .settings-switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+    .settings-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #334155;
+      transition: 0.3s;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #0284C7;
+      border-color: #38BDF8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+    }
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+    .input-handle {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #FFFFFF;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.5rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      width: 220px;
+    }
+    .input-handle:focus {
+      border-color: #38BDF8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
+    .save-confirm-banner {
+      display: none;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10B981;
+      color: #34D399;
+      padding: 0.75rem 1rem;
+      border-radius: 0.65rem;
+      font-weight: 700;
+      margin-top: 1.25rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="profile-view">
+  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Persistent Global Top Header with Dropdown Navigation (Cloned perfectly from index.html) -->
+  <header class="fixed-header">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass with 5 links + mobile System link) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./ranges.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Range Selections</span>
+            </div>
+            <span class="dropdown-badge">10 Tiers</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
+          </a>
+
+          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+              </svg>
+              <span>Contest</span>
+            </div>
+            <span class="dropdown-badge">Arena</span>
+          </a>
+
+          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Profile</span>
+            </div>
+            <span class="dropdown-badge">Overview</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="./profile-settings.html" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link" style="background: rgba(14, 165, 233, 0.15); border-left: 3px solid #38BDF8;">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge" style="background: #0284C7; color: #FFFFFF;">Portal</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="./profile-settings.html" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Standalone Settings Gear Icon -->
+      <div class="header-actions">
+        <a href="./profile.html" class="icon-btn" aria-label="Return to Profile Dashboard" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="profile-content-container">
+    <div class="settings-portal-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem;">
+        <div>
+          <h2 style="font-size: 1.6rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.25rem;">Profile System Settings Portal</h2>
+          <p style="color: #94A3B8; font-size: 0.9rem; margin: 0;">Configure contestant credentials, audio synthetics &amp; local telemetry audits.</p>
+        </div>
+        <a href="./profile.html" class="btn-clipboard-neon" style="text-decoration: none;">
+          <span>← Back to Profile</span>
+        </a>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Cryptographic Token Handle</h4>
+            <p>Unique local authentication token generated during serverless onboarding.</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <code id="display-profile-token" style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(56, 189, 248, 0.4); color: #38BDF8; padding: 0.5rem 0.85rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.95rem; font-weight: bold;">--------</code>
+            <button id="btn-copy-token" class="btn-clipboard-neon" style="padding: 0.5rem 0.75rem; font-size: 0.8rem;">
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Competitive Rating &amp; Rank</h4>
+            <p>Active 4-digit dynamic ELO standing and Olympiad tier verification.</p>
+          </div>
+          <div style="text-align: right;">
+            <div id="display-profile-tier" style="font-size: 1rem; font-weight: 800; color: #38BDF8;">🧮 Sieve Calibrator</div>
+            <div id="display-profile-elo" style="font-size: 0.85rem; color: #94A3B8; font-weight: 600;">1,000 ELO (Base Track)</div>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Contestant Handle / Name</h4>
+            <p>Customize your displayed Olympiad academic profile identity.</p>
+          </div>
+          <input type="text" id="setting-username" class="input-handle" value="Rayaan Tasnim" maxlength="32" />
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Hermetic Web Audio Synthesizer</h4>
+            <p>Play in-browser chime frequencies for clicks, spins, and correct solves.</p>
+          </div>
+          <label class="settings-switch">
+            <input type="checkbox" id="setting-sound" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Second Attempt Allowance</h4>
+            <p>Permit redemption retry if the first decomposition submission misses.</p>
+          </div>
+          <label class="settings-switch">
+            <input type="checkbox" id="setting-second-attempt" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Cadence Pause Control</h4>
+            <p>Enable temporary pause timer during non-competition practice routines.</p>
+          </div>
+          <label class="settings-switch">
+            <input type="checkbox" id="setting-pause" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row" style="border-color: rgba(56, 189, 248, 0.25);">
+          <div class="settings-label-block">
+            <h4>Integrity Resign &amp; Cache Re-Anchor</h4>
+            <p>Re-compute HMAC security mask and re-verify profile directory integrity.</p>
+          </div>
+          <button id="btn-re-sign" class="btn-clipboard-neon" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-color: rgba(56, 189, 248, 0.5); color: #38BDF8;">
+            <span>Re-Anchor Signature</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="save-banner" class="save-confirm-banner">
+        ✔️ Profile Settings Saved Successfully!
+      </div>
+
+      <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+        <button id="btn-save-settings" class="btn-clipboard-neon btn-neon-copied-glow" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+          <span>Save Configuration</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Persistent Baseline Footer Matrix -->
+  <div id="site-footer-slot">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">© Olympiad Edge</p>
+        <p class="footer-line">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { getSettings, updateSettings } from './js/storage.js';
+    import { playSound } from './js/audio.js';
+    import { getUserElo, getUserPeakElo, getTierByElo, reSignProfileDirectory, initServerlessOnboarding } from './js/elo-engine.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initServerlessOnboarding();
+
+      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
+      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
+      if (menuToggle && dropdownMenu) {
+        menuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('active');
+        });
+        document.addEventListener('click', (e) => {
+          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+            dropdownMenu.classList.remove('active');
+          }
+        });
+      }
+
+      const settings = getSettings();
+      const soundCheck = document.getElementById('setting-sound');
+      const secondCheck = document.getElementById('setting-second-attempt');
+      const pauseCheck = document.getElementById('setting-pause');
+      const userHandle = document.getElementById('setting-username');
+      const saveBtn = document.getElementById('btn-save-settings');
+      const banner = document.getElementById('save-banner');
+
+      // Populate Live Token & ELO Status
+      const token = localStorage.getItem('primefactor_profile_token') || 'OLY-PF-746525000545';
+      const tokenDisplay = document.getElementById('display-profile-token');
+      const btnCopyToken = document.getElementById('btn-copy-token');
+      if (tokenDisplay) tokenDisplay.textContent = token;
+
+      if (btnCopyToken) {
+        btnCopyToken.addEventListener('click', async () => {
+          playSound('click');
+          try {
+            await navigator.clipboard.writeText(token);
+          } catch(e) {}
+          btnCopyToken.textContent = 'Copied!';
+          setTimeout(() => { btnCopyToken.textContent = 'Copy'; }, 1500);
+        });
+      }
+
+      const currentElo = getUserElo();
+      const peakElo = getUserPeakElo();
+      const currentTier = getTierByElo(currentElo);
+
+      const tierDisplay = document.getElementById('display-profile-tier');
+      const eloDisplay = document.getElementById('display-profile-elo');
+      if (tierDisplay) {
+        tierDisplay.textContent = `${currentTier.symbol} ${currentTier.title}`;
+        tierDisplay.style.color = currentTier.colorHex;
+      }
+      if (eloDisplay) {
+        eloDisplay.textContent = `${currentElo.toLocaleString()} ELO · Peak: ${peakElo.toLocaleString()} ELO`;
+      }
+
+      // Re-anchor signature
+      const btnReSign = document.getElementById('btn-re-sign');
+      if (btnReSign) {
+        btnReSign.addEventListener('click', () => {
+          playSound('click');
+          reSignProfileDirectory();
+          if (banner) {
+            banner.textContent = '✔️ Profile Directory Integrity Re-Anchored with HMAC!';
+            banner.style.display = 'block';
+            setTimeout(() => { 
+              banner.textContent = '✔️ Profile Settings Saved Successfully!';
+              banner.style.display = 'none'; 
+            }, 2500);
+          }
+        });
+      }
+
+      if (soundCheck) soundCheck.checked = settings.soundEnabled ?? true;
+      if (secondCheck) secondCheck.checked = settings.allowSecondAttempt ?? true;
+      if (pauseCheck) pauseCheck.checked = settings.allowPause ?? true;
+
+      const storedUser = localStorage.getItem('primefactor_profile_username');
+      if (storedUser && userHandle) userHandle.value = storedUser;
+
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          playSound('click');
+          updateSettings({
+            soundEnabled: soundCheck.checked,
+            allowSecondAttempt: secondCheck.checked,
+            allowPause: pauseCheck.checked
+          });
+          if (userHandle && userHandle.value.trim()) {
+            localStorage.setItem('primefactor_profile_username', userHandle.value.trim());
+          }
+          reSignProfileDirectory();
+          if (banner) {
+            banner.style.display = 'block';
+            setTimeout(() => { banner.style.display = 'none'; }, 2500);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -110,6 +110,17 @@
             <span class="dropdown-badge">Arena</span>
           </a>
 
+          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Profile</span>
+            </div>
+            <span class="dropdown-badge">Overview</span>
+          </a>
+
           <!-- Desktop Settings Link -->
           <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
             <div class="dropdown-link-content">
@@ -198,6 +209,19 @@
           <div id="verdict-badge-val" class="verdict-tier-badge">
             <span id="quantum-score-badge-node">Calculating...</span>
           </div>
+
+          <!-- ELO Changes Matrix Block Beneath Score Ring -->
+          <div id="ring-elo-changes-card" class="ring-elo-changes-block" style="margin-top: 1.25rem; width: 100%; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 0.85rem; padding: 0.85rem 1rem; text-align: center; box-sizing: border-box; backdrop-filter: blur(8px);">
+            <div style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: #94A3B8; margin-bottom: 0.35rem;">
+              Expectation Status: <span id="ring-expectation-status" style="font-weight: 800; color: #38BDF8;">Evaluating...</span>
+            </div>
+            <div id="ring-elo-delta" style="font-family: monospace; font-size: 1.35rem; font-weight: 900; color: #10B981; letter-spacing: 0.02em;">
+              +0 ELO
+            </div>
+            <div style="font-size: 0.8rem; margin-top: 0.35rem; color: #94A3B8;">
+              Review: <strong id="ring-elo-comment" style="color: #38BDF8; font-weight: 800;">Calibrated</strong>
+            </div>
+          </div>
         </div>
 
         <!-- Metrics Audit Deck -->
@@ -229,6 +253,31 @@
             <div class="counter-box">
               <div class="cb-label">Lifelines Used</div>
               <div id="cb-lifelines" class="cb-val tabular-nums">0</div>
+            </div>
+
+            <div class="counter-box" id="cb-elo-box">
+              <div class="cb-label">Competitive Delta</div>
+              <div id="cb-elo-delta" class="cb-val tabular-nums" style="color: #10B981; font-weight: 800;">+0 ELO</div>
+            </div>
+          </div>
+
+          <!-- Competitive ELO Telemetry Matrix Panel -->
+          <div id="elo-telemetry-panel" style="background: rgba(17, 24, 39, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 0.75rem; padding: 1rem 1.25rem; margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+              <div id="elo-tier-icon" style="font-size: 2rem;">🧮</div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span id="elo-tier-title" style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF;">Sieve Calibrator</span>
+                  <span id="elo-status-badge" style="font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 9999px; background: rgba(56, 189, 248, 0.15); color: #38BDF8; font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.4);">RATED</span>
+                </div>
+                <div style="font-size: 0.825rem; color: #94A3B8; margin-top: 0.15rem;">
+                  Live Rating: <strong id="elo-live-val" style="color: #38BDF8;">1,000 ELO</strong> · Review: <span id="elo-review-val" style="color: #34D399; font-weight: 700;">Calibrated</span>
+                </div>
+              </div>
+            </div>
+            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end;">
+              <div id="elo-delta-large" style="font-size: 1.4rem; font-weight: 900; color: #10B981; font-family: monospace;">+0 ELO</div>
+              <div style="font-size: 0.75rem; color: #94A3B8;">Formula: K · (Acc - E) · V</div>
             </div>
           </div>
 

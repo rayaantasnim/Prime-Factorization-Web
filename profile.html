@@ -111,6 +111,17 @@
             <span class="dropdown-badge">Arena</span>
           </a>
 
+          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item" style="background: rgba(14, 165, 233, 0.15); border-left: 3px solid #38BDF8;">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Profile</span>
+            </div>
+            <span class="dropdown-badge" style="background: #0284C7; color: #FFFFFF;">Overview</span>
+          </a>
+
           <!-- Desktop Settings Link -->
           <a href="./profile-settings.html" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link">
             <div class="dropdown-link-content">
@@ -250,14 +261,14 @@
         <div class="identity-meta">
           <h1>
             <span id="profile-display-name">Rayaan Tasnim</span>
-            <span class="identity-token-badge">OLY-PF-746525000545</span>
+            <span id="profile-token-badge" class="identity-token-badge">OLY-PF-746525000545</span>
           </h1>
           <div class="identity-sub-details">
-            <span class="identity-rank-tag">🏆 Quantum Decomposer</span>
+            <span id="profile-rank-tag" class="identity-rank-tag">🏆 Sieve Calibrator</span>
             <span>•</span>
             <span id="profile-elo-tag" style="color: #38BDF8; font-weight: 700;">1000 ELO (Base Track)</span>
             <span>•</span>
-            <span style="color: #94A3B8;">Division: Tier 1 (1 - 200)</span>
+            <span id="profile-division-tag" style="color: #94A3B8;">Division: Tier 1 (1 - 200)</span>
           </div>
         </div>
       </div>
@@ -444,10 +455,101 @@
       </div>
     </section>
 
-    <!-- Ancillary Section Anchors for Topology Navigation Map -->
-    <div id="sec-telemetry-speed" style="height: 1px; visibility: hidden;"></div>
-    <div id="sec-medals-vault" style="height: 1px; visibility: hidden;"></div>
-    <div id="sec-diagnostics" style="height: 1px; visibility: hidden;"></div>
+    <!-- 4. Telemetry & Speed Velocity Breakdown -->
+    <section id="sec-telemetry-speed" class="telemetry-speed-card">
+      <div class="section-banner-head">
+        <div class="section-banner-title">
+          <span>⚡</span> Telemetry &amp; Solve Speed Analytics
+        </div>
+        <span class="pb-badge" style="background: rgba(16, 185, 129, 0.15); color: #34D399; border-color: rgba(52, 211, 153, 0.4);">
+          Sub-Second Engine
+        </span>
+      </div>
+      <p style="color: #94A3B8; font-size: 0.88rem; margin-bottom: 1.25rem;">
+        Live algorithmic Pollard's Rho verification latencies, Brent cycle decomposition velocity, and deterministic Miller-Rabin prime test benchmarks.
+      </p>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-node">
+          <div class="telemetry-node-label">Pollard's Rho Velocity</div>
+          <div class="telemetry-node-val tabular-nums" style="color: #38BDF8;">0.012 ms</div>
+          <div class="telemetry-node-desc">Average per-cycle gcd factor step</div>
+        </div>
+        <div class="telemetry-node">
+          <div class="telemetry-node-label">Prime Confirmation</div>
+          <div class="telemetry-node-val tabular-nums" style="color: #34D399;">0.026 ms</div>
+          <div class="telemetry-node-desc">Deterministic Miller-Rabin test</div>
+        </div>
+        <div class="telemetry-node">
+          <div class="telemetry-node-label">Mean Factor Speed</div>
+          <div class="telemetry-node-val tabular-nums" style="color: #F59E0B;">0.038 ms</div>
+          <div class="telemetry-node-desc">Complete composite decomposition</div>
+        </div>
+        <div class="telemetry-node">
+          <div class="telemetry-node-label">Client Memory Footprint</div>
+          <div class="telemetry-node-val tabular-nums" style="color: #A78BFA;">&lt; 3.8 MB</div>
+          <div class="telemetry-node-desc">100% Hermetic in-memory execution</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Medals Vault & Accolades -->
+    <section id="sec-medals-vault" class="medals-vault-card">
+      <div class="section-banner-head">
+        <div class="section-banner-title">
+          <span>🏅</span> Olympiad Medals &amp; Honors Vault
+        </div>
+        <span class="pb-badge" style="background: rgba(245, 158, 11, 0.15); color: #F59E0B; border-color: rgba(245, 158, 11, 0.4);">
+          Verified Honors
+        </span>
+      </div>
+      <p style="color: #94A3B8; font-size: 0.88rem; margin-bottom: 1.25rem;">
+        Verified Math Olympiad honors, tournament credentials, and speed mastery badges awarded by Olympiad Edge.
+      </p>
+
+      <div class="medals-grid">
+        <div class="medal-item">
+          <span class="medal-icon-badge">🥇</span>
+          <div class="medal-title">Tier 1 Grandmaster</div>
+          <div class="medal-desc">Awarded for flawless 10/10 factor decomposition in under 30 seconds.</div>
+        </div>
+        <div class="medal-item">
+          <span class="medal-icon-badge">⚡</span>
+          <div class="medal-title">Sub-Second Lightning</div>
+          <div class="medal-desc">Maintained sub-50ms factorization verification across 10 consecutive trials.</div>
+        </div>
+        <div class="medal-item">
+          <span class="medal-icon-badge">👑</span>
+          <div class="medal-title">Quantum Decomposer</div>
+          <div class="medal-desc">Achieved top-echelon rating status with greater than 95% historical accuracy.</div>
+        </div>
+        <div class="medal-item">
+          <span class="medal-icon-badge">🛡️</span>
+          <div class="medal-title">Cadence Sentinel</div>
+          <div class="medal-desc">Sustained zero-strike flawless answers through high-pressure competitive mode.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Data Diagnostics & Backup Portal -->
+    <section id="sec-diagnostics" class="diagnostics-card">
+      <div>
+        <h3 style="font-size: 1.25rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.35rem;">
+          💾 Data Diagnostics &amp; Academic State Backup
+        </h3>
+        <p style="color: #94A3B8; font-size: 0.88rem; margin: 0; max-width: 620px;">
+          Export a certified, hermetic JSON snapshot of your candidate ledger, PB milestones, cadence telemetry, and local examination caches.
+        </p>
+      </div>
+      <button id="btn-export-diagnostics" class="btn-clipboard-neon" aria-label="Export Diagnostics Backup JSON">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Export JSON Backup</span>
+      </button>
+    </section>
 
   </main>
 
