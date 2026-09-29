@@ -1,0 +1,70 @@
+    .preset-badge-btn{
+      background-color: lightcoral !important;
+      color:white !important;
+      margin-bottom: 20px !important;
+    }
+
+    /* ================= SIDE-BY-SIDE RESPONSIVE GRID INJECTION ================= */
+    .custom-bounds-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px !important;
+      align-items: center !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+      overflow: visible !important;
+      margin-bottom: clamp(1.25rem, 3vh, 1.75rem) !important;
+    }
+
+    .custom-bound-card {
+      box-sizing: border-box !important;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      position: relative !important;
+      z-index: 1 !important;
+      overflow: visible !important;
+      margin: 0 !important;
+    }
+
+    @media (min-width: 768px) {
+      .custom-bounds-grid {
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 24px !important;
+        width: 100% !important;
+        max-width: 800px !important;
+        margin: 0 auto clamp(1.25rem, 3vh, 1.75rem) !important;
+      }
+
+      .custom-bound-card {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+      }
+    }
+
+    @keyframes pulse-aggressive {
+      0%, 100% {
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
+        border-color: rgba(239, 68, 68, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 25px rgba(239, 68, 68, 0.55);
+        border-color: rgba(239, 68, 68, 0.9);
+      }
+    }
+
+    @keyframes pulse-slack {
+      0%, 100% {
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+        border-color: rgba(245, 158, 11, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 25px rgba(245, 158, 11, 0.55);
+        border-color: rgba(245, 158, 11, 0.9);
+      }
+    }

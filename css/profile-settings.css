@@ -1,0 +1,102 @@
+    .settings-portal-card {
+      background: radial-gradient(circle at top right, rgba(30, 58, 138, 0.25), rgba(17, 24, 39, 0.95) 70%);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 1.25rem;
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(56, 189, 248, 0.12);
+      max-width: 800px;
+      margin: 0 auto 3rem;
+    }
+    .settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-top: 1.75rem;
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.15rem 1.25rem;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 0.85rem;
+    }
+    .settings-label-block h4 {
+      font-size: 1.05rem;
+      color: #FFFFFF;
+      margin-bottom: 0.25rem;
+      font-weight: 700;
+    }
+    .settings-label-block p {
+      font-size: 0.84rem;
+      color: #94A3B8;
+      margin: 0;
+    }
+    .settings-switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+    .settings-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #334155;
+      transition: 0.3s;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #0284C7;
+      border-color: #38BDF8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+    }
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+    .input-handle {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #FFFFFF;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.5rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      width: 220px;
+    }
+    .input-handle:focus {
+      border-color: #38BDF8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
+    .save-confirm-banner {
+      display: none;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10B981;
+      color: #34D399;
+      padding: 0.75rem 1rem;
+      border-radius: 0.65rem;
+      font-weight: 700;
+      margin-top: 1.25rem;
+      text-align: center;
+    }
