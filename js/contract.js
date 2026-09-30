@@ -7,7 +7,7 @@
 import { initGlobalHeader, renderFooter, triggerFlash } from './header.js';
 import { getActiveExamParams, setActiveExamParams } from './storage.js';
 import { playSound } from './audio.js';
-import { getUserElo, isRangeBannedForElo, getTierByElo, getTierBanCeilingDescription } from './elo-engine.js';
+import { getUserElo, isRangeBannedForElo, getTierByElo, getTierBanCeilingDescription, computeSystemExpectations } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initGlobalHeader();
@@ -80,43 +80,8 @@ function initContractGatekeeper() {
     ? strikePenaltyParam 
     : (storedParams.rules?.allowStrikePenalty !== undefined ? storedParams.rules.allowStrikePenalty : true);
 
-  // Multi-Axis Dynamic Parameters based on active ELO rank tier pulled from localStorage:
-  // 1. Time Consumed Target: dynamically calculate a scaled human limit based on tier rank difficulty
-  let humanPacingLimit = '< 4.5s per factor';
-  if (userElo < 1200) {
-    humanPacingLimit = '< 4.5s per factor';
-  } else if (userElo < 1600) {
-    humanPacingLimit = '< 3.5s per factor';
-  } else if (userElo < 2000) {
-    humanPacingLimit = '< 2.5s per factor';
-  } else if (userElo < 2400) {
-    humanPacingLimit = '< 1.8s per factor';
-  } else {
-    // 2400+ ELO scales aggressively down
-    humanPacingLimit = '< 1.2s per factor';
-  }
-
-  // 2. Target Session Accuracy: scale benchmark tracking accuracy ceiling dynamically based on active rank thresholds
-  let humanAccuracyTarget = 'Expected: 90%+ Precision';
-  if (userElo < 900) {
-    // Apprentice ranges require 80% accuracy
-    humanAccuracyTarget = 'Expected: 80%+ Precision';
-  } else if (userElo < 1400) {
-    humanAccuracyTarget = 'Expected: 85%+ Precision';
-  } else if (userElo < 2000) {
-    humanAccuracyTarget = 'Expected: 90%+ Precision';
-  } else if (userElo < 2400) {
-    humanAccuracyTarget = 'Expected: 92%+ Precision';
-  } else if (userElo < 3000) {
-    humanAccuracyTarget = 'Expected: 94%+ Precision';
-  } else {
-    // Quantum Decomposer requires a strict 95%+ precision bar
-    humanAccuracyTarget = 'Expected: 95%+ Precision';
-  }
-
-  const humanLifelinesTarget = userElo < 1200 
-    ? 'Expected: ≤ 1 lifeline utilized' 
-    : 'Expected: 0 lifelines utilized';
+  // Multi-Axis Dynamic Expectations cross-matrix derived from player ELO and session MAX_BOUND
+  const expectations = computeSystemExpectations(userElo, max);
 
   // Populate DOM elements
   const elTier = document.getElementById('contract-tier-name');
@@ -127,6 +92,7 @@ function initContractGatekeeper() {
   const elPacing = document.getElementById('expectation-pacing-val');
   const elAccuracy = document.getElementById('expectation-accuracy-val');
   const elLifelines = document.getElementById('expectation-lifelines-val');
+  const elScore = document.getElementById('expectation-score-val');
   const elRedemption = document.getElementById('expectation-redemption-val');
   const elCountdownNum = document.getElementById('contract-countdown-num');
   const elProgress = document.getElementById('contract-progress-bar');
@@ -149,10 +115,11 @@ function initContractGatekeeper() {
   if (elBounds) elBounds.textContent = `${min.toLocaleString()} — ${max.toLocaleString()}`;
   if (elTime) elTime.textContent = `${durationMinutes} Minutes (${durationSeconds}s)`;
   if (elQuestions) elQuestions.textContent = `${questionsCount} Questions`;
-  if (elPacing) elPacing.textContent = humanPacingLimit;
-  if (elAccuracy) elAccuracy.textContent = humanAccuracyTarget;
-  if (elLifelines) elLifelines.textContent = humanLifelinesTarget;
-  if (elRedemption) elRedemption.textContent = '-5 pts on Overtime Miss';
+  if (elPacing) elPacing.textContent = expectations.pacing;
+  if (elAccuracy) elAccuracy.textContent = expectations.accuracy;
+  if (elLifelines) elLifelines.textContent = expectations.lifelines;
+  if (elScore) elScore.textContent = expectations.scoreExpectation;
+  if (elRedemption) elRedemption.textContent = expectations.scoreExpectation;
 
   if (elStrike) {
     elStrike.textContent = strikeEnabled ? 'ACTIVE (Disqualification & -10 pts)' : 'BYPASSED (Standard Deductions Only)';

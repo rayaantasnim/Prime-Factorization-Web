@@ -3,27 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contest Hub — PrimeFactor.app Competitive Arena</title>
-  <meta name="description" content="Competitive Math Olympiad contest arena with Sudden Death Lightning Roll spin wheel, algorithmic High-ELO lockout filter, and live tournament routing." />
-  <meta property="og:title" content="Contest Hub — PrimeFactor.app Competitive Arena" />
-  <meta property="og:description" content="Competitive Math Olympiad contest arena with Sudden Death Lightning Roll spin wheel, algorithmic High-ELO lockout filter, and live tournament routing." />
+  <title>Dynamic Rating Calibrator &amp; Rank Matrix — PrimeFactor.app</title>
+  <meta name="description" content="Explore your Olympiad prime factorization ELO rating, track career peak spikes, configure personalized target goals, and view the 12-tier competitive matrix." />
+  <meta property="og:title" content="Dynamic Rating Calibrator &amp; Rank Matrix — PrimeFactor.app" />
+  <meta property="og:description" content="Interactive 12-tier competitive ELO rank matrix, career peak analytics, goal tracker, and AI strategic recommendations." />
+  <meta property="author" content="Rayaan Tasnim" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="icon" type="image/x-icon" href="./favicon.ico">
-  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="css/contest.css"/>
+  <link rel="stylesheet" href="./css/rating.css" />
+  <link rel="stylesheet" href="css/rating-media-query.css"/>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
-<body style="min-height: 100vh; display: flex; flex-direction: column;">
+<body>
   <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
   <div id="flash-overlay" aria-hidden="true"></div>
 
-  <!-- Persistent Global Top Header with Dropdown Navigation & Engine Settings Gear Icon -->
+  <!-- Persistent Global Top Header with Dropdown Navigation -->
   <header class="fixed-header">
     <div class="header-container">
       <!-- Left: Minimalist Logo + Brand Text -->
@@ -43,7 +45,7 @@
           <span>Navigation</span>
         </button>
 
-        <!-- Dropdown Box (Frosted Glass with links) -->
+        <!-- Dropdown Box (Frosted Glass) -->
         <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
           <a href="./index.html" class="dropdown-link-item">
             <div class="dropdown-link-content">
@@ -70,7 +72,7 @@
             <span class="dropdown-badge">Policies</span>
           </a>
 
-          <a href="./rating.html" class="dropdown-link-item">
+          <a href="./rating.html" class="dropdown-link-item" style="background: rgba(14, 165, 233, 0.15); border-left: 3px solid #38BDF8;">
             <div class="dropdown-link-content">
               <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="20" x2="18" y2="10"></line>
@@ -79,7 +81,7 @@
               </svg>
               <span>Rating</span>
             </div>
-            <span class="dropdown-badge">Matrix</span>
+            <span class="dropdown-badge" style="background: #0284C7; color: #FFFFFF;">Matrix</span>
           </a>
 
           <a href="./edu.html" class="dropdown-link-item">
@@ -106,7 +108,7 @@
             <span class="dropdown-badge">Facilities</span>
           </a>
 
-          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item" style="background: rgba(14, 165, 233, 0.15); border-left: 3px solid #38BDF8;">
+          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
             <div class="dropdown-link-content">
               <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
@@ -118,7 +120,7 @@
               </svg>
               <span>Contest</span>
             </div>
-            <span class="dropdown-badge" style="background: #0284C7; color: #FFFFFF;">Arena</span>
+            <span class="dropdown-badge">Arena</span>
           </a>
 
           <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
@@ -145,7 +147,7 @@
           </a>
 
           <!-- Mobile-only System link -->
-          <a href="#" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" id="dropdown-mobile-system" aria-label="System Configuration">
+          <a href="#" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
             <div class="dropdown-link-content">
               <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
@@ -172,147 +174,163 @@
   <!-- Global Settings Modal Slot -->
   <div id="settings-modal-slot"></div>
 
-  <!-- Main Content Wrapper -->
-  <main class="main-wrapper" style="flex: 1 0 auto; padding-top: 5.5rem; padding-bottom: 3.5rem;">
-    <div class="contest-hero-wrapper">
-      
+  <!-- Main Rating Content -->
+  <main class="main-wrapper rating-wrapper">
+    <div class="content-container rating-container">
+
       <!-- Section Header -->
-      <div class="section-head" style="text-align: center; margin-bottom: 1rem;">
-        <span class="section-kicker">Olympiad Edge Tournament Circuit</span>
-        <h1 class="section-title">Contest Hub</h1>
-        <p class="section-desc" style="max-width: 44rem; margin: 0.5rem auto 0;">
-          Sudden Death Lightning Roll arena with real-time physics spin, algorithmic high-ELO lockout prevention, and official tournament routing.
+      <div class="section-head" style="margin-bottom: 2rem;">
+        <span class="section-kicker">Competitive Performance Calibration</span>
+        <h1 class="section-title">Dynamic Rating &amp; Horizon Calibrator</h1>
+        <p class="section-desc">
+          Official telemetry tracking your active ELO standing, lifetime career peak spike, customized horizon goal targets, and the 12-tier competitive hierarchy with active range firewalls.
         </p>
       </div>
 
-      <!-- User ELO Rating & Lockout Status Badge -->
-      <div class="user-elo-badge" id="user-elo-badge-node" style="background-color:black;">
-        <span>Competitor Rating: <span class="user-elo-val" id="competitor-elo-val">1200</span> ELO</span>
-        <span style="color: #64748B;">•</span>
-        <span id="elo-lockout-summary" style="color: #38BDF8; font-weight: 700;">9 / 9 Divisions Unlocked</span>
-        
-      </div>
-
-      <!-- Sudden Death Lightning Roll Real-Time Spin Wheel Stage -->
-      <div class="contest-wheel-stage">
-        <div class="wheel-container-frame" id="wheel-frame">
-          
-          <!-- Floating Pointer Pin (Indicator) at 12 o'clock -->
-          <div class="wheel-pointer-pin" id="wheel-pointer" aria-hidden="true">
-            <svg viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 42L0 12C0 5.37258 7.16344 0 16 0C24.8366 0 32 5.37258 32 12L16 42Z" fill="#DC2626"/>
-              <path d="M16 36L4 12C4 7 9.5 3 16 3C22.5 3 28 7 28 12L16 36Z" fill="#EF4444"/>
-              <circle cx="16" cy="11" r="4" fill="#FFFFFF"/>
-            </svg>
+      <!-- 1. Top Metric Dashboard: 3 High-Density Glass-Morphic Elements -->
+      <div class="rating-top-dashboard">
+        <!-- Metric 1: Current Rating -->
+        <div class="rating-metric-card" id="card-current-rating">
+          <div>
+            <div class="rating-metric-head">
+              <span class="rating-metric-kicker">Current Rating</span>
+              <span style="font-size: 1.2rem;" id="current-tier-icon">🧩</span>
+            </div>
+            <div class="rating-metric-val"  id="metric-current-elo">
+              500 ELO
+            </div>
+            <div id="metric-current-tier-title" style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: gold; margin-bottom: 0.5rem;">
+              Composite Apprentice
+            </div>
           </div>
-
-          <!-- Circular Spin Wheel Canvas (9 Segments) -->
-          <canvas id="wheel-canvas" width="600" height="600"></canvas>
-
-          <!-- Centered Activation Trigger Hub ("ROLL ARENA") -->
-          <button type="button" class="wheel-center-core" id="roll-arena-btn" aria-label="Roll Arena Sudden Death Selector">
-            <span class="roll-btn-label">ROLL<br/>ARENA</span>
-            <span class="roll-btn-sub">Instant</span>
-          </button>
+          <p class="rating-metric-subtext">
+            Active serverless ELO rating dynamically modified through competitive rated exams.
+          </p>
         </div>
 
-        <!-- Real-Time Roll Status / Winner Banner -->
-        <div class="roll-status-banner" id="roll-status-banner">
-          <span id="roll-status-icon">⚡</span>
-          <span id="roll-status-text">Click "ROLL ARENA" to spin the Sudden Death selector wheel.</span>
+        <!-- Metric 2: Max Rating -->
+        <div class="rating-metric-card" id="card-max-rating">
+          <div>
+            <div class="rating-metric-head">
+              <span class="rating-metric-kicker" style="color: #F59E0B;">Career Peak Rating</span>
+              <span style="font-size: 1.2rem;">⚡</span>
+            </div>
+            <div class="rating-metric-val" id="metric-peak-elo" style="color: #F59E0B;">
+              500 ELO
+            </div>
+            <div id="metric-peak-tier-title" style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: #FCD34D; margin-bottom: 0.5rem;">
+              All-Time Career High
+            </div>
+          </div>
+          <p class="rating-metric-subtext">
+            Highest historical rating zenith recorded and cryptographically anchored in career logs.
+          </p>
+        </div>
+
+        <!-- Metric 3: Expected Rating [Goal Input Field] -->
+        <div class="rating-metric-card" id="card-expected-rating">
+          <div>
+            <div class="rating-metric-head">
+              <span class="rating-metric-kicker" style="color: #10B981;">Target Rating Goal</span>
+              <span style="font-size: 1.2rem;">🎯</span>
+            </div>
+            <div class="rating-metric-val" id="metric-goal-display" style="color: #10B981;">
+              None
+            </div>
+            
+            <form id="rating-goal-form" class="rating-goal-form" onsubmit="return false;">
+              <input 
+                type="number" 
+                id="rating-goal-input" 
+                class="rating-goal-input" 
+                placeholder="Target ELO" 
+                min="500" 
+                max="5000"
+                step="50"
+                aria-label="Set Goal Rating"
+              />
+              <button type="button" id="rating-goal-submit-btn" class="rating-goal-btn">
+                Set Goal
+              </button>
+              <button type="button" id="rating-goal-clear-btn" class="rating-goal-clear-btn" style="display: none;">
+                Reset
+              </button>
+            </form>
+          </div>
+          <p class="rating-metric-subtext" id="goal-status-hint" style="margin-top: 0.5rem;">
+            Document a custom ELO benchmark to calculate dynamic target horizons.
+          </p>
         </div>
       </div>
 
-      <!-- Modular Navigation Junctions (3 Distinct Actions) -->
-      <div class="junctions-grid">
-        
-        <!-- Junction 1: Rated Contests -->
-        <a href="./ranges.html" class="junction-card" id="junction-rated">
+      <!-- 2. Middle Rank Matrix Chart: Official 12-Tier Hierarchy -->
+      <section class="rating-matrix-section">
+        <div class="rating-matrix-header">
           <div>
-            <div class="junction-card-header">
-              <div class="junction-icon-wrap">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                  <path d="M4 22h16"></path>
-                  <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
-                  <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
-                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-                </svg>
-              </div>
-              <span class="junction-badge">Official ELO</span>
+            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700; margin-bottom: 0.25rem;">
+              Competitive Tier System
             </div>
-            <h3 class="junction-title">Rated Contests</h3>
-            <p class="junction-desc">
-              Select directly from the 10 standardized competitive tiers ranging from Foundations (1-200) to the Olympian Cosmic Manifold.
-            </p>
+            <h2 style="font-size: clamp(1.3rem, 2.5vw, 1.75rem); font-weight: 800; color: #FFFFFF; margin: 0;">
+              Official 12-Tier Rank Matrix
+            </h2>
           </div>
-          <div class="junction-action">
-            <span>Explore 10 Tier Matrix</span>
-            <span>→</span>
-          </div>
-        </a>
+          <span style="font-size: 0.8rem; background: rgba(56, 189, 248, 0.15); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.35); padding: 0.35rem 0.85rem; border-radius: 9999px; font-weight: 700;">
+            12 Official Ranks
+          </span>
+        </div>
 
-        <!-- Junction 2: Virtual Unrated Contests -->
-        <a href="./custom.html?unrated=true" class="junction-card" id="junction-unrated">
-          <div>
-            <div class="junction-card-header">
-              <div class="junction-icon-wrap" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #10B981;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                  <circle cx="12" cy="11" r="3"></circle>
-                </svg>
-              </div>
-              <span class="junction-badge" style="background: rgba(16, 185, 129, 0.12); color: #10B981; border-color: rgba(16, 185, 129, 0.3);">Practice Sandbox</span>
+        <div class="rating-matrix-table-wrap">
+          <table class="rating-matrix-table" id="rating-matrix-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Rank</th>
+                <th>Tier Title &amp; Symbol</th>
+                <th>ELO Threshold</th>
+                <th>Color Token</th>
+                <th>Asymmetric Range Firewall Limits</th>
+              </tr>
+            </thead>
+            <tbody id="rating-matrix-tbody">
+              <!-- Populated dynamically via js/rating.js from ELO_TIERS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. AI-Driven Advanced Suggestions Window -->
+      <br><br><section class="rating-ai-suggestions-card" id="rating-ai-suggestions-container">
+        <div class="rating-ai-header">
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <div class="rating-ai-badge">
+              <span class="rating-ai-pulse-dot"></span>
+              <span>Tactical Horizon AI Engine</span>
             </div>
-            <h3 class="junction-title">Virtual Unrated Contests</h3>
-            <p class="junction-desc">
-              Practice under personalized duration bounds up to 180 minutes and zero rating penalty risk. Calibrate mental heuristics freely.
-            </p>
+            <span style="font-size: 0.8rem; color: #94A3B8;">Adaptive Strategy Formulator</span>
           </div>
-          <div class="junction-action" style="color: #10B981;">
-            <span>Configure Practice Arena</span>
-            <span>→</span>
-          </div>
-        </a>
+          <span id="ai-suggestion-tier-tag" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: #CBD5E1; font-weight: 700;">
+            Calibrated for Active Tier
+          </span>
+        </div>
 
-        <!-- Junction 3: Previous Contests -->
-        <a href="profile.html" class="junction-card" id="junction-previous">
-          <div>
-            <div class="junction-card-header">
-              <div class="junction-icon-wrap" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #F59E0B;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-              </div>
-              <span class="junction-badge" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B; border-color: rgba(245, 158, 11, 0.3);">Audit Records</span>
-            </div>
-            <h3 class="junction-title">Previous Contests</h3>
-            <p class="junction-desc">
-              Jump directly to your personal performance matrix hub to audit historical trials, grandmaster flawless solves, and cumulative accuracy.
-            </p>
-          </div>
-          <div class="junction-action" style="color: #F59E0B;">
-            <span>See your past performance</span>
-            <span>→</span>
-          </div>
-        </a>
-
-      </div>
+        <div class="rating-ai-output-box" id="rating-ai-suggestion-text">
+          <!-- Populated dynamically by js/rating.js -->
+        </div>
+      </section>
 
     </div>
   </main>
 
-  <!-- Persistent Global Site Footer -->
-  <footer class="site-footer">
-    <div class="footer-container">
-      <p class="footer-line highlight">© Olympiad Edge</p>
-      <p class="footer-line">Authorized By Rayaan Tasnim</p>
-      <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
-    </div>
-  </footer>
+  <!-- Persistent Baseline Footer Matrix -->
+  <div id="site-footer-slot">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">&copy; Olympiad Edge</p>
+        <p class="footer-line">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
+      </div>
+    </footer>
+  </div>
 
-  <script type="module" src="./js/contest.js"></script>
+  <script type="module" src="./js/rating.js"></script>
 </body>
 </html>

@@ -1,0 +1,251 @@
+/**
+ * PrimeFactor.app — Rules & Policies Portal Styles
+ * High-contrast dark-neon aesthetic, mathematical formula callouts,
+ * interactive matrix grids, and responsive viewport ergonomics.
+ */
+
+.rules-wrapper {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 5.5rem;
+  padding-bottom: 4rem;
+}
+
+.rules-container {
+  width: 100%;
+  max-width: 82rem;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+  box-sizing: border-box;
+}
+
+.rules-status-bar {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 1rem;
+  padding: 1.25rem 1.75rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35), inset 0 0 15px rgba(14, 165, 233, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.rules-status-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.rules-status-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94A3B8;
+  font-weight: 700;
+}
+
+.rules-status-val {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 4-Card Documentation Grid */
+.rules-doc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.75rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .rules-doc-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+.rules-card {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 15, 30, 0.98) 100%);
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+  box-sizing: border-box;
+}
+
+/* Neon accents per card */
+.rules-card-elo {
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), inset 0 0 25px rgba(14, 165, 233, 0.08);
+}
+
+.rules-card-firewall {
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), inset 0 0 25px rgba(245, 158, 11, 0.08);
+}
+
+.rules-card-clash {
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), inset 0 0 25px rgba(244, 63, 94, 0.08);
+}
+
+.rules-card-security {
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), inset 0 0 25px rgba(239, 68, 68, 0.08);
+}
+
+.rules-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.rules-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rules-card-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.rules-card-title {
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.rules-card-badge {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+.rules-card-lead {
+  font-size: 0.95rem;
+  color: #CBD5E1;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+/* Formula Callout Block */
+.rules-formula-box {
+  background: rgba(10, 15, 26, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-math), monospace;
+  font-size: 1rem;
+  color: #F8FAFC;
+  line-height: 1.5;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.rules-formula-title {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94A3B8;
+  margin-bottom: 0.4rem;
+  font-weight: 700;
+}
+
+.rules-spec-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.rules-spec-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.88rem;
+  color: #94A3B8;
+  line-height: 1.5;
+}
+
+.rules-spec-item strong {
+  color: #FFFFFF;
+}
+
+.rules-spec-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 0.55rem;
+  flex-shrink: 0;
+}
+
+/* Firewall Matrix Table */
+.firewall-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 1.25rem;
+}
+
+.firewall-mini-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.firewall-mini-table th {
+  background: rgba(15, 23, 42, 0.95);
+  color: #38BDF8;
+  padding: 0.6rem 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.firewall-mini-table td {
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #CBD5E1;
+}
+
+.firewall-mini-table tr:last-child td {
+  border-bottom: none;
+}

@@ -651,5 +651,76 @@ export function recordRatedMatchToProfile(matchData) {
   }
 }
 
+// ============================================================================
+// 7. MULTI-AXIS CROSS-MATRIX DYNAMIC EXPECTATIONS ENGINE
+// ============================================================================
+
+export function computeSystemExpectations(userElo, maxBound) {
+  const elo = Number(userElo !== undefined && userElo !== null ? userElo : 500) || 500;
+  const bound = Number(maxBound !== undefined && maxBound !== null ? maxBound : 200) || 200;
+
+  // 1. Time Consumed Target: adaptive calculation speed limit
+  // For elite ranks (e.g. Prime Singularity crossing easy bounds): "< 1.2s per factor"
+  // For new Composite Apprentice ranks: scale seamlessly to a relaxed "< 3.8s per factor"
+  let pacing = '< 3.8s per factor';
+  if (elo >= 3000) {
+    pacing = '< 1.2s per factor';
+  } else if (elo >= 2400) {
+    pacing = bound <= 2000 ? '< 1.2s per factor' : '< 1.5s per factor';
+  } else if (elo >= 2000) {
+    pacing = bound <= 1000 ? '< 1.4s per factor' : '< 1.8s per factor';
+  } else if (elo >= 1600) {
+    pacing = '< 2.2s per factor';
+  } else if (elo >= 1200) {
+    pacing = '< 2.8s per factor';
+  } else if (elo >= 900) {
+    pacing = '< 3.2s per factor';
+  } else {
+    pacing = '< 3.8s per factor';
+  }
+
+  // 2. Target Session Accuracy: scales required precision benchmarks dynamically between 80% to 95%+ based on active range complexity
+  let accuracy = 'Expected: 80%+ Precision';
+  if (bound <= 200) {
+    accuracy = 'Expected: 80%+ Precision';
+  } else if (bound <= 500) {
+    accuracy = 'Expected: 83%+ Precision';
+  } else if (bound <= 1000) {
+    accuracy = 'Expected: 85%+ Precision';
+  } else if (bound <= 2000) {
+    accuracy = 'Expected: 88%+ Precision';
+  } else if (bound <= 5000) {
+    accuracy = 'Expected: 90%+ Precision';
+  } else if (bound <= 10000) {
+    accuracy = 'Expected: 92%+ Precision';
+  } else if (bound <= 25000) {
+    accuracy = 'Expected: 94%+ Precision';
+  } else {
+    accuracy = 'Expected: 95%+ Precision';
+  }
+
+  // 3. Lifelines Usage Parameter: Forces "Expected: 0 lifelines utilized" for advanced ELO brackets
+  let lifelines = 'Expected: ≤ 1 lifeline utilized';
+  if (elo >= 1200) {
+    lifelines = 'Expected: 0 lifelines utilized';
+  }
+
+  // 4. Score Expectation: dynamically computes absolute minimal raw score (out of 100 max) to secure a positive rating adjustment
+  const tierBaseline = getTierBaselineFromRange(bound);
+  const exponent = (tierBaseline - elo) / 400;
+  const rawExpected = 1 / (1 + Math.pow(10, exponent));
+  const E = Math.min(0.95, Math.max(0.15, rawExpected));
+  const minScore = Math.min(100, Math.max(15, Math.round(E * 100)));
+  const scoreExpectation = `Expected: ≥ ${minScore} / 100 pts`;
+
+  return {
+    pacing,
+    accuracy,
+    lifelines,
+    scoreExpectation,
+    minScore
+  };
+}
+
 // Execute unskippable root initialization hook immediately on import!
 initServerlessOnboarding();

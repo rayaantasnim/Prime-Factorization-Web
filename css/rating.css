@@ -1,0 +1,278 @@
+/**
+ * PrimeFactor.app — Rating Calibrator Hub Styles
+ * Glass-morphic metric dashboard, 12-tier competitive matrix,
+ * goal target persistence input, and AI-driven strategic guidance terminal.
+ */
+
+.rating-wrapper {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 5.5rem;
+  padding-bottom: 4rem;
+}
+
+.rating-container {
+  width: 100%;
+  max-width: 82rem;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+  box-sizing: border-box;
+}
+
+/* 1. Top Metric Dashboard: 3 High-Density Glass-Morphic Elements */
+.rating-top-dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 860px) {
+  .rating-top-dashboard {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.rating-metric-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 1.25rem;
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(14, 165, 233, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.rating-metric-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.rating-metric-kicker {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #38BDF8;
+  font-weight: 700;
+}
+
+.rating-metric-val {
+  font-family: var(--font-math), monospace;
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.1;
+  margin-bottom: 0.4rem;
+}
+
+.rating-metric-subtext {
+  font-size: 0.82rem;
+  color: #94A3B8;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Goal Target Input Form */
+.rating-goal-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rating-goal-input {
+  background: rgba(10, 15, 26, 0.85);
+  border: 1.5px solid rgba(56, 189, 248, 0.4);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  color: #FFFFFF;
+  font-family: var(--font-math), monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  width: 140px;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.rating-goal-input:focus {
+  border-color: #38BDF8;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+.rating-goal-btn {
+  background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.15rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.rating-goal-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+}
+
+.rating-goal-clear-btn {
+  background: transparent;
+  color: #94A3B8;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.rating-goal-clear-btn:hover {
+  color: #EF4444;
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* 2. Middle Rank Matrix Chart */
+.rating-matrix-section {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 15, 30, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  margin-bottom: 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+}
+
+.rating-matrix-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rating-matrix-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.rating-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.rating-matrix-table th {
+  background: rgba(15, 23, 42, 0.98);
+  color: #38BDF8;
+  padding: 0.85rem 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.rating-matrix-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #CBD5E1;
+  vertical-align: middle;
+}
+
+.rating-matrix-table tr.active-tier-row {
+  background: rgba(56, 189, 248, 0.12);
+  border-left: 3px solid #38BDF8;
+}
+
+.rating-matrix-table tr.active-tier-row td {
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+/* 3. AI-Driven Advanced Suggestions Window */
+.rating-ai-suggestions-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 20, 38, 0.98) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), inset 0 0 25px rgba(14, 165, 233, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.rating-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rating-ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38BDF8;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rating-ai-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #38BDF8;
+  box-shadow: 0 0 10px #38BDF8;
+  animation: aiPulse 2s infinite ease-in-out;
+}
+
+@keyframes aiPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.rating-ai-output-box {
+  background: rgba(10, 15, 26, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 0.85rem;
+  padding: 1.25rem 1.5rem;
+  font-size: 1rem;
+  color: #F8FAFC;
+  line-height: 1.65;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.rating-ai-output-box strong {
+  color: #38BDF8;
+}

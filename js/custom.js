@@ -8,7 +8,7 @@
 import { initGlobalHeader, renderFooter, initSettingsModal } from './header.js';
 import { setActiveExamParams, getSettings } from './storage.js';
 import { playSound } from './audio.js';
-import { getUserElo, isRangeBannedForElo, getTierBanCeilingDescription } from './elo-engine.js';
+import { getUserElo, isRangeBannedForElo, getTierBanCeilingDescription, computeSystemExpectations } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initGlobalHeader();
@@ -63,6 +63,24 @@ function initCustomRangeForm() {
   const customCautionBanner = document.getElementById('custom-forced-unrated-badge');
   const customCautionText = document.getElementById('custom-forced-unrated-badge-text');
   const textCustomModeRated = document.getElementById('text-custom-mode-rated');
+
+  function updateCustomExpectations() {
+    const userElo = getUserElo();
+    const maxVal = Number(maxInput ? maxInput.value : 2500) || 2500;
+    const expectations = computeSystemExpectations(userElo, maxVal);
+
+    const elPacing = document.getElementById('expectation-pacing-val');
+    const elAccuracy = document.getElementById('expectation-accuracy-val');
+    const elLifelines = document.getElementById('expectation-lifelines-val');
+    const elScore = document.getElementById('expectation-score-val');
+    const elRedemption = document.getElementById('expectation-redemption-val');
+
+    if (elPacing) elPacing.textContent = expectations.pacing;
+    if (elAccuracy) elAccuracy.textContent = expectations.accuracy;
+    if (elLifelines) elLifelines.textContent = expectations.lifelines;
+    if (elScore) elScore.textContent = expectations.scoreExpectation;
+    if (elRedemption) elRedemption.textContent = expectations.scoreExpectation;
+  }
 
   function checkCapabilityCeiling() {
     const userElo = getUserElo();
@@ -309,6 +327,7 @@ function initCustomRangeForm() {
         evaluatePaceAndEfficiency();
         validate();
         checkCapabilityCeiling();
+        updateCustomExpectations();
       }
     });
   });
@@ -322,6 +341,7 @@ function initCustomRangeForm() {
     evaluatePaceAndEfficiency();
     validate();
     checkCapabilityCeiling();
+    updateCustomExpectations();
   });
 
   function validate() {
@@ -464,4 +484,5 @@ function initCustomRangeForm() {
   evaluatePaceAndEfficiency();
   validate();
   checkCapabilityCeiling();
+  updateCustomExpectations();
 }

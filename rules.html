@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rules &amp; Competitive Policies — PrimeFactor.app</title>
+  <meta name="description" content="Official regulatory charter of PrimeFactor.app: Dynamic ELO framework, Asymmetric Range Firewall, Friday Clash Protocol, and Three-Strike Security Charter." />
+  <meta property="og:title" content="Rules &amp; Competitive Policies — PrimeFactor.app" />
+  <meta property="og:description" content="Platform charter: Dynamic ELO mathematics, Asymmetric Range Firewall, Friday Clash protocols, and Three-Strike client security." />
+  <meta property="author" content="Rayaan Tasnim" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./css/rules.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Persistent Global Top Header with Dropdown Navigation -->
+  <header class="fixed-header">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./rules.html" class="dropdown-link-item" style="background: rgba(14, 165, 233, 0.15); border-left: 3px solid #38BDF8;">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <span>Rules</span>
+            </div>
+            <span class="dropdown-badge" style="background: #0284C7; color: #FFFFFF;">Policies</span>
+          </a>
+
+          <a href="./rating.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+              <span>Rating</span>
+            </div>
+            <span class="dropdown-badge">Matrix</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
+          </a>
+
+          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+              </svg>
+              <span>Contest</span>
+            </div>
+            <span class="dropdown-badge">Arena</span>
+          </a>
+
+          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Profile</span>
+            </div>
+            <span class="dropdown-badge">Overview</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="#" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Standalone Settings Gear Icon -->
+      <div class="header-actions">
+        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Settings Modal Slot -->
+  <div id="settings-modal-slot"></div>
+
+  <!-- Main Rules Content -->
+  <main class="main-wrapper rules-wrapper">
+    <div class="content-container rules-container">
+
+      <!-- Section Header -->
+      <div class="section-head" style="margin-bottom: 2rem;">
+        <span class="section-kicker">Governance &amp; Standard Operating Procedures</span>
+        <h1 class="section-title">Rules &amp; Competitive Policies</h1>
+        <p class="section-desc">
+          Official mathematical and regulatory charter governing competitive ELO progression, range firewall security, Friday Clash rules, and anti-cheat cryptographic storage verification.
+        </p>
+      </div>
+
+      <!-- Live Player Context Status Bar -->
+      <div class="rules-status-bar" id="rules-status-bar">
+        <div class="rules-status-metric">
+          <span class="rules-status-label">Active Competitor Rating</span>
+          <span class="rules-status-val" id="rules-user-elo">
+            <span style="color: #38BDF8;">500</span> ELO
+          </span>
+        </div>
+        <div class="rules-status-metric">
+          <span class="rules-status-label">Active Tier Division</span>
+          <span class="rules-status-val" id="rules-user-tier" style="font-size: 1.15rem; color: #E2E8F0;">
+            🧩 Composite Apprentice
+          </span>
+        </div>
+        <div class="rules-status-metric">
+          <span class="rules-status-label">Range Firewall Status</span>
+          <span class="rules-status-val" id="rules-user-firewall" style="font-size: 0.95rem; color: #10B981;">
+            🟢 Full Access (Open Floor)
+          </span>
+        </div>
+        <div class="rules-status-metric">
+          <span class="rules-status-label">Integrity Status</span>
+          <span class="rules-status-val" id="rules-user-security" style="font-size: 0.95rem; color: #38BDF8;">
+            🛡️ Verified (0 Strikes)
+          </span>
+        </div>
+      </div>
+
+      <!-- 4 High-Density Documentation Sections -->
+      <div class="rules-doc-grid">
+
+        <!-- Card A: The Dynamic ELO Framework -->
+        <article class="rules-card rules-card-elo" id="rule-card-elo">
+          <div>
+            <div class="rules-card-header">
+              <div class="rules-card-title-group">
+                <div class="rules-card-icon-box" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38BDF8;">
+                  📊
+                </div>
+                <div>
+                  <h2 class="rules-card-title">The Dynamic ELO Framework</h2>
+                  <span style="font-size: 0.8rem; color: #94A3B8;">4-Digit Scaling &amp; Volatility Engine</span>
+                </div>
+              </div>
+              <span class="rules-card-badge" style="background: rgba(56, 189, 248, 0.15); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.35);">
+                Core Mathematics
+              </span>
+            </div>
+
+            <p class="rules-card-lead">
+              The platform implements a serverless, 4-digit logarithmic rating engine calibrated specifically to factor discovery speed and prime decomposition precision. Every user starts at an onboarding baseline of <strong>500 ELO</strong> (Tier 11 · Composite Apprentice).
+            </p>
+
+            <div class="rules-formula-box">
+              <div class="rules-formula-title">Official ELO Delta Formulation</div>
+              <div style="font-size: 1.05rem; font-weight: 700; color: #38BDF8; margin-bottom: 0.35rem;">
+                &Delta;R = K &times; (Net Accuracy% &minus; E) &times; V
+              </div>
+              <div style="font-size: 0.8rem; color: #94A3B8;">
+                Where E = 1 / [1 + 10^((R_baseline &minus; R_user) / 400)] and V = Allocated_Time / Expended_Time
+              </div>
+            </div>
+
+            <ul class="rules-spec-list">
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #38BDF8;"></span>
+                <span><strong>Onboarding Baseline:</strong> All new profiles initialize strictly at 500 ELO, granting open access across foundational tiers without immediate firewall blocks.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #38BDF8;"></span>
+                <span><strong>Dynamic Volatility (K):</strong> K scales with active daily streak volume: <code>K = 32 &times; (1 + log10(Streak + 1))</code>. Maintaining consecutive daily runs doubles rating growth potential.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #38BDF8;"></span>
+                <span><strong>High-Tier Hardening (1800+ ELO):</strong> At or above 1800 ELO, a diminishing-returns dampener <code>1800 / R_user</code> scales positive point yields, while rating losses remain 100% unshielded.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #38BDF8;"></span>
+                <span><strong>Inactivity Decay:</strong> Competitors at &ge; 1800 ELO idle for &ge; 14 days incur -10 ELO weekly penalties until competitive activity is re-anchored.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 0.75rem; padding: 0.85rem 1.15rem; font-size: 0.82rem; color: #94A3B8;">
+            💡 <em>Rule Insight:</em> Quick sub-second factor inputs amplify the Velocity index (V up to 3.5&times;), rewarding pure mental calculation agility.
+          </div>
+        </article>
+
+        <!-- Card B: The Asymmetric Range Firewall -->
+        <article class="rules-card rules-card-firewall" id="rule-card-firewall">
+          <div>
+            <div class="rules-card-header">
+              <div class="rules-card-title-group">
+                <div class="rules-card-icon-box" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #F59E0B;">
+                  🛡️
+                </div>
+                <div>
+                  <h2 class="rules-card-title">The Asymmetric Range Firewall</h2>
+                  <span style="font-size: 0.8rem; color: #94A3B8;">Anti-Farming Capability Gateways</span>
+                </div>
+              </div>
+              <span class="rules-card-badge" style="background: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.35);">
+                Firewall Lockout
+              </span>
+            </div>
+
+            <p class="rules-card-lead">
+              To safeguard global leaderboard integrity and eliminate point-farming in trivial number domains, the engine enforces automated asymmetric capability locks based on your live rating bracket.
+            </p>
+
+            <div class="firewall-table-wrap">
+              <table class="firewall-mini-table">
+                <thead>
+                  <tr>
+                    <th>Rating Bracket</th>
+                    <th>Locked Bounds (Rated)</th>
+                    <th>Forced Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>&ge; 900 ELO</strong></td>
+                    <td>MAX_BOUND &le; 200 (Tier 1)</td>
+                    <td>Auto Unrated Practice</td>
+                  </tr>
+                  <tr>
+                    <td><strong>&ge; 1,400 ELO</strong></td>
+                    <td>MAX_BOUND &le; 500 (Tiers 1&ndash;2)</td>
+                    <td>Auto Unrated Practice</td>
+                  </tr>
+                  <tr>
+                    <td><strong>&ge; 1,800 ELO</strong></td>
+                    <td>MAX_BOUND &le; 1,000 (Tiers 1&ndash;3)</td>
+                    <td>Auto Unrated Practice</td>
+                  </tr>
+                  <tr>
+                    <td><strong>&ge; 2,200 ELO</strong></td>
+                    <td>MAX_BOUND &le; 2,000 (Tiers 1&ndash;4)</td>
+                    <td>Auto Unrated Practice</td>
+                  </tr>
+                  <tr>
+                    <td><strong>&ge; 2,700 ELO</strong></td>
+                    <td>MAX_BOUND &le; 5,000 (Tiers 1&ndash;5)</td>
+                    <td>Auto Unrated Practice</td>
+                  </tr>
+                  <tr>
+                    <td><strong>&ge; 3,000 ELO</strong></td>
+                    <td>MAX_BOUND &le; 10,000 (Tiers 1&ndash;6)</td>
+                    <td>Auto Unrated Practice</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <ul class="rules-spec-list">
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #F59E0B;"></span>
+                <span><strong>Sandbox Enforcement:</strong> Launching a firewalled boundary forces <strong>Unrated Practice Mode (&Delta;R = 0)</strong> with zero rating impact.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #F59E0B;"></span>
+                <span><strong>Decentralized Capability:</strong> High-tier solvers must challenge range domains commensurate with their rank to secure competitive rating adjustments.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 0.75rem; padding: 0.85rem 1.15rem; font-size: 0.82rem; color: #94A3B8;">
+            ⚠️ <em>Firewall Advisory:</em> Custom arena bounds are analyzed in real time. If your manual MAX_BOUND violates your bracket, rated participation is locked automatically.
+          </div>
+        </article>
+
+        <!-- Card C: The Global Friday Clash Protocol -->
+        <article class="rules-card rules-card-clash" id="rule-card-clash">
+          <div>
+            <div class="rules-card-header">
+              <div class="rules-card-title-group">
+                <div class="rules-card-icon-box" style="background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #F43F5E;">
+                  ⚔️
+                </div>
+                <div>
+                  <h2 class="rules-card-title">The Global Friday Clash Protocol</h2>
+                  <span style="font-size: 0.8rem; color: #94A3B8;">Weekly Championship Regulations</span>
+                </div>
+              </div>
+              <span class="rules-card-badge" style="background: rgba(244, 63, 94, 0.15); color: #F43F5E; border: 1px solid rgba(244, 63, 94, 0.35);">
+                UTC Locked Event
+              </span>
+            </div>
+
+            <p class="rules-card-lead">
+              Every Friday at exactly <strong>17:00 UTC</strong>, the platform hosts the Global Friday Clash: a high-stakes, synchronized Olympiad arena where competitors worldwide tackle identical problem seeds under strict tournament constraints.
+            </p>
+
+            <div class="rules-formula-box">
+              <div class="rules-formula-title">Clash Tournament Directives</div>
+              <div style="font-size: 0.95rem; font-weight: 700; color: #F43F5E; margin-bottom: 0.25rem;">
+                Weekly Schedule: Every Friday &bull; 17:00:00 UTC Sharp
+              </div>
+              <div style="font-size: 0.82rem; color: #94A3B8;">
+                Synchronized seed generator matching all competitors across 10 tiered Olympiad composites.
+              </div>
+            </div>
+
+            <ul class="rules-spec-list">
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #F43F5E;"></span>
+                <span><strong>Zero Lifelines Policy:</strong> Timer pauses, question regenerations, and conceptual hints are completely deactivated. All factor discoveries must be 100% unassisted.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #F43F5E;"></span>
+                <span><strong>Adaptive Tier Seed Matching:</strong> The question seed is cryptographically bound to the weekly UTC timestamp, ensuring all competitors face equivalent mathematical challenges.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #F43F5E;"></span>
+                <span><strong>Exponential Speed Scoring:</strong> Sub-second calculations trigger non-linear velocity bonus multipliers. Perfect clears under 120 seconds receive the Golden Factor Ribbon.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #F43F5E;"></span>
+                <span><strong>Single Session Attempt:</strong> Competitors receive exactly one rated submission per Friday cycle. Disconnections or browser closes register the score at point of exit.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.2); border-radius: 0.75rem; padding: 0.85rem 1.15rem; font-size: 0.82rem; color: #94A3B8;">
+            🏆 <em>Medal Allocation:</em> Top 3 global Friday Clash performers earn persistent Olympiad Championship medals pinned permanently to their public profile card.
+          </div>
+        </article>
+
+        <!-- Card D: The Three-Strike Security Charter -->
+        <article class="rules-card rules-card-security" id="rule-card-security">
+          <div>
+            <div class="rules-card-header">
+              <div class="rules-card-title-group">
+                <div class="rules-card-icon-box" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #EF4444;">
+                  🚨
+                </div>
+                <div>
+                  <h2 class="rules-card-title">The Three-Strike Security Charter</h2>
+                  <span style="font-size: 0.8rem; color: #94A3B8;">Cryptographic Storage Integrity Shield</span>
+                </div>
+              </div>
+              <span class="rules-card-badge" style="background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.35);">
+                Zero Tolerance
+              </span>
+            </div>
+
+            <p class="rules-card-lead">
+              PrimeFactor.app employs a high-velocity, client-side HMAC cryptographic fingerprint engine. On every storage transaction, the profile payload (rating, matches, solved, token) is hashed and cross-verified.
+            </p>
+
+            <div class="rules-formula-box" style="border-color: rgba(239, 68, 68, 0.3);">
+              <div class="rules-formula-title" style="color: #EF4444;">Integrity Hash Verification Token</div>
+              <div style="font-size: 0.88rem; font-family: monospace; color: #FCA5A5; word-break: break-all;">
+                HMAC_SHA256(Profile_Payload + Secret) &rarr; primefactor_profile_sig
+              </div>
+            </div>
+
+            <ul class="rules-spec-list">
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #EF4444;"></span>
+                <span><strong>Strike 1 &bull; Minor Tampering Warning:</strong> Modifying localStorage keys externally results in an immediate <strong>-100 ELO Deduction</strong> and mandatory signature re-anchoring.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #EF4444;"></span>
+                <span><strong>Strike 2 &bull; Automated Liquidation:</strong> Second detected signature violation triggers <strong>Complete Rating Liquidation to 0 ELO (Foundry Initiate)</strong> and historical match log purge.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #EF4444;"></span>
+                <span><strong>Strike 3 &bull; Permanent Hard Lockout:</strong> Third violation permanently flags the browser environment with <code>PERMANENTLY_BANNED</code>. The app terminates with a hard lockout screen. Zero appeal policy.</span>
+              </li>
+              <li class="rules-spec-item">
+                <span class="rules-spec-bullet" style="background: #EF4444;"></span>
+                <span><strong>Focus Tracking Violations:</strong> Tab switching or leaving the active exam window inflicts -5 raw points per event under active anti-cheat monitoring.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.75rem; padding: 0.85rem 1.15rem; font-size: 0.82rem; color: #94A3B8;">
+            🛡️ <em>Security Notice:</em> Client security checks execute automatically within 1ms of page evaluation. Never edit browser devtools storage manually.
+          </div>
+        </article>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Persistent Baseline Footer Matrix -->
+  <div id="site-footer-slot">
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">&copy; Olympiad Edge</p>
+        <p class="footer-line">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line" style="font-size: 0.75rem; color: #94A3B8;">All rights reserved</p>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/rules.js"></script>
+</body>
+</html>

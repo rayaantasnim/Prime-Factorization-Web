@@ -482,6 +482,11 @@ body.in-exam .main-wrapper {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.4) rgba(15, 23, 42, 0.6);
   
   /* State: Default Hidden */
   opacity: 0;
@@ -492,12 +497,35 @@ body.in-exam .main-wrapper {
   pointer-events: none;
 }
 
+.nav-dropdown-glass-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-dropdown-glass-container::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 10px;
+}
+
+.nav-dropdown-glass-container::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.4);
+  border-radius: 10px;
+}
+
 /* State: Triggered Active */
 .nav-dropdown-glass-container.active {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .nav-dropdown-glass-container {
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .dropdown-link-item {
