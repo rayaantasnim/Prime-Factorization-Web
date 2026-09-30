@@ -1,131 +1,112 @@
-# PrimeFactor.app
-
 <div align="center">
 
-  <h1> PrimeFactor.app </h1>
-  <p><strong>Olympiad Prime Factorization Speed Laboratory</strong></p>
+# 🔱 PrimeFactor.app — Olympiad Edge Prime Factorization Speed Laboratory
 
-  <p>
-    An elite, client-side speed laboratory engineered for competitive mathematicians and Olympiad contenders to master high-velocity prime factorization and number theory heuristics.
-  </p>
+### An ultra-velocity, serverless mathematical training arena engineered for elite Math Olympiad competitors and camp selection prep.
 
-  <p>
-    <a href="#key-features"><strong>Explore Features</strong></a> •
-    <a href="#technical-architecture"><strong>Architecture</strong></a> •
-    <a href="#number-theory-heuristics"><strong>Heuristics</strong></a> •
-    <a href="#scoring--verdict-matrix"><strong>Scoring Protocol</strong></a>
-  </p>
+[![Architecture](https://img.shields.io/badge/Architecture-Serverless%20Vanilla%20JS-blueviolet?style=flat-square&logo=javascript)](https://shields.io)
+[![Initial ELO](https://img.shields.io/badge/Initial%20ELO-500%20Composite%20Apprentice-ff69b4?style=flat-square&logo=speedtest)](https://shields.io)
+[![Security](https://img.shields.io/badge/Security-HMAC--SHA256%20Anti--Tamper-red?style=flat-square&logo=1password)](https://shields.io)
+[![UI Theme](https://img.shields.io/badge/UI%20Theme-Olympiad%20Glassmorphism-purple?style=flat-square)](https://shields.io)
 
-  <p>
-    <code>Author: Rayaan Tasnim</code> • 
-    <code>Architecture: Serverless / Vanilla ESM</code> • 
-    <code>License: MIT</code>
-  </p>
+---
 
 </div>
 
----
+## 📡 Core Architectural Facilities
 
-## 🔬 Project Overview
+The platform integrates 15 enterprise-grade client-side runtime modules designed for low-latency feedback and tamper-resistant skill tracking:
 
-**PrimeFactor.app** is a zero-latency, serverless training facility built for Olympiad mathematicians (IMO, USAMO, Putnam). Standard math drills focus on basic arithmetic; **PrimeFactor.app** trains subconscious pattern recognition, modular arithmetic shortcuts, and structural prime decomposition under strict temporal constraints.
+### 01. Dynamic Onboarding Gate
+* **Identity Caching**: Safeguards initial user profile caching via browser local storage validation routines.
+* **Baseline Allocation**: Hard-codes new user profiles directly to a `500 ELO` (Composite Apprentice) rating floor instead of standard legacy 1000 ELO assumptions.
+* **Initialization Flow**: Instantiates player cryptographic tokens and lifetime stat registers on first interactive launch.
 
-Engineered with zero external framework overhead, the application executes high-precision deterministic primality tests and integer factorization directly within the browser thread, pairing visual feedback with micro-tactile audio cues.
+### 02. Core Factorization Lab
+* **Execution Arena**: High-velocity game loop capable of processing composite integers ranging from simple two-digit values up to multi-digit bounds.
+* **Constraint Tracking**: Tracks exact keypress sequences, active input latencies, and prime decomposition correctness in real time.
+* **Sub-millisecond State Engine**: Evaluates prime factors instantly using deterministic trial division and pre-computed prime lookup arrays.
 
----
+### 03. Omnipresent ELO-to-Range Ceiling Firewall
+* **Anti-Farming Protection**: Monitors active competitive ELO ratings against selected lower/upper numerical bounds.
+* **Dynamic Gatekeeping**: Automatically forces match sessions into "Unrated Practice Mode" if a high-ranking player attempts to farm rating points on trivial ranges.
+* **Automated Penalty Engine**: Prevents rating inflation across all 12 platform competitive brackets.
 
-## ⚡ Technical Architecture
+### 04. Custom Parametric Setup Architecture
+* **Configurable Bounds**: Allows competitors to customize personalized lower and upper range parameters anywhere between 4 and 100,000.
+* **Timer Granularity**: Fine-tunes time limits down to discrete second increments or unlocks un-timed analysis.
+* **Lifeline Control**: Toggles optional 3-strike countdown systems for high-stakes elimination simulations.
 
-The core engine relies strictly on native web standards and client-side computational number theory algorithms to maintain 60 FPS performance and immediate evaluation.
+### 05. Spin Wheel Audio-Physics Module
+* **Decentralized Sudden-Death**: Implements a Canvas-based radial selector for random arena parameter assignments.
+* **Acoustic Feedback Engine**: Emits realistic mechanical ticking audio synthesized via the Web Audio API with realistic deceleration frequency drops.
+* **Sub-Millisecond Deflections**: Calculates randomized angular drop deflections to guarantee non-deterministic wheel landings regardless of initial frame rates.
 
-| Component | Technical Implementation | Purpose / Specification |
-| :--- | :--- | :--- |
-| **Runtime Architecture** | Vanilla Browser ESM (ES2022+) | Zero bundler overhead, instant static delivery, native module imports. |
-| **Primality Engine** | Miller-Rabin Primality Test | Deterministic evaluation using base-a witness sets for guaranteed speed. |
-| **Factorization Core** | Pollard's Rho + Brent's Cycle | Sub-millisecond decomposition of composite numbers up to target bounds. |
-| **Telemetry & Storage** | Native `localStorage` API | Persists user telemetry, personal ledgers, and local configurations locally. |
-| **UI & Audio Engine** | GSAP 3.x + Web Audio API | High-performance dynamic animations coupled with synthesized micro-tones. |
+### 06. Pre-Flight Multi-Axis Contract Gate
+* **Contract Evaluation**: Cross-evaluates player ELO tiers, lifetime accuracy ratings, and target numerical bounds prior to match start.
+* **Target Calculation**: Dynamically computes required target time thresholds, maximum allowed attempts, and dynamic score chase goals.
+* **Binding Session State**: Encapsulates match constraints inside an immutable session contract payload.
 
----
+### 07. Exam Arena Hidden Velocity Tracker
+* **Cognitive Load Reduction**: Suppresses disruptive visual timer countdowns during live factorization tasks.
+* **Background Pacing**: Runs a continuous precision timer thread (`performance.now()`) in the background.
+* **Overhead Capsule Rendering**: Renders real-time dynamic chasing target status indicators onto the top capsule bar text node without exposing exact elapsed milliseconds.
 
-## 🗺️ Application Topology & Core Nodes
+### 08. Post-Match Verification Ledger Grid
+* **Glass-Morphic Analytics Panel**: Displays a structured session report directly beneath the match result summary ring.
+* **Itemized Factor Audit**: Maps factor inputs alongside interactive read-only checkbox states (`[✔️]` for exact prime hits, `[❌]` for non-prime or invalid factors).
+* **Scalar Scoring**: Computes a fractional 10-point scalar score derived from response latency, penalty occurrences, and range difficulty multipliers.
 
-### 1. Hero Gateway
-The primary landing zone establishing visual focus, active tier status, session metrics, and instant drill access.
+### 09. The 100 Olympiad Medals Vault
+* **Milestone Tracking**: Comprehensive honors library recording 100 numeric bounds achievements, streak milestones, and accuracy metrics.
+* **Vector Icon Integration**: Utilizes crisp vector iconography scaled dynamically across target devices.
+* **Persistence Layer**: Tracks unlocked achievements securely inside the signed local client data store.
 
-### 2. Instant Randomizer
-A deterministic number generation node that pulls composite integers directly based on active range configurations, instantly preparing the factorization canvas.
+### 10. The 100 Tactical Insignia Badges
+* **Precision Badging**: Grants specialized insignia for exceptional operational efficiency (e.g., sub-second factorizations, zero-lifeline runs, and consecutive speed runs).
+* **Rhythm Cadence Monitoring**: Analyzes input inter-keystroke intervals (IKIs) to detect steady state calculation cadences.
+* **Resource Multipliers**: Awards extra prestige indicators when completing complex factorizations without using factor hints or strike buffers.
 
-### 3. Local Settings Node
-Allows athletes to configure temporal limits, active tier ranges, UI sound synthesis thresholds, and custom key bindings using native `<kbd>` inputs.
+### 11. Fade-to-Inspire Visual Engine
+* **Visual Lock State**: Applies a 25% opacity grayscale CSS filter and pointer-events overlay to unearned honors and medals.
+* **Interactive Motivation**: Intercepts click events on locked achievements to trigger a localized 3-second motivational legacy callout toast.
+* **Clean Reset Loop**: Automatically fades out overlay callouts using CSS transition timers without triggering layout shifts.
 
-### 4. Personal Ledger
-A local telemetry tracker storing time-to-solve logs, error frequency across specific prime factors, historical speed curves, and personal best runs.
+### 12. Recent Table Ledger Analytics Matrix
+* **Session Telemetry**: Cleans out legacy hardcoded static tables to render accurate, dynamic session records for the last 10 matches.
+* **Recovery Metrics**: Tracks first-try prime factorizations vs. second-chance strike recoveries separately.
+* **Rating Vectors**: Highlights real ELO deltas using distinct glowing green/red net rating indicators.
 
-### 5. Prime Playground
-An unstructured sandbox mode designed to analyze arbitrary large integers, run step-by-step Pollard's Rho visual breakdowns, and explore custom factor trees.
+### 13. Career Memory Accumulation Aggregates
+* **Persistent Stat Tracking**: Aggregates continuous performance data across multiple local sessions.
+* **Core Metrics**: Maintains persistent counters for Active Win Streaks, Lifetime Peak Streaks, Total Prime Factors Identified, and Cumulative Solved Integers.
+* **Data Integrity Checks**: Validates aggregate values against session history signatures on platform startup.
 
----
+### 14. Profile Identity Customization Settings
+* **Competitor Metadata**: Provides input fields to store Real Name, City, Country, and Institutional Affiliation.
+* **Training Missions**: Selects active focus missions from an 11-option drop-down menu (e.g., "Mersenne Search Speed", "Fermat Factorization Focus", "Olympiad Sprint").
+* **Local Persistence**: Caches profile parameters locally while binding identity keys to local ELO ratings.
 
-## 🧠 Olympiad Number Theory Heuristics
-
-To excel in high-tier factorization, the platform encourages applying rapid computational shortcuts before falling back to manual decomposition:
-
-*   **Parity & Modulo Isolation ($n \pmod m$):** 
-    *   Direct check for $2$ ($n \equiv 0 \pmod 2$) and $5$ ($n \equiv 0, 5 \pmod{10}$).
-    *   Alternative base isolation for $3$ and $9$ via digital root reduction.
-*   **Digital Root Reduction:**
-    *   An integer $n$ is divisible by $3$ (or $9$) if and only if the sum of its digits $\sum d_i \equiv 0 \pmod 3$ (or $\pmod 9$).
-*   **Difference of Squares Decomposition:**
-    *   If $n$ is odd and close to a perfect square, rewrite as $n = a^2 - b^2 = (a-b)(a+b)$. Useful for odd composites with close factor pairs.
-*   **Divisibility by 11:**
-    *   Alternating sum of digits $\sum (-1)^i d_i \equiv 0 \pmod{11}$.
-
----
-
-## 📊 Scoring Protocol & Ranks
-
-### The Exam Contract
-Sessions operate under **Strict Exam Rules**:
-*   Every correct factorization awards base points scaled by the target integer's magnitude.
-*   Speed multipliers decay continuously per millisecond elapsed.
-*   Submitting an incorrect factor sequence immediately breaks active streaks and triggers a penalty deduction.
-
-### The 4 Ranks of Verdict
-
-| Rank | Designation | Performance Threshold | Description |
-| :---: | :--- | :--- | :--- |
-| 🪨 | **Novice / Factorer** | $> 10.0\text{s}$ per target | Reliance on manual trial division. |
-| ⚡ | **Adept Competitor** | $3.0\text{s} - 10.0\text{s}$ per target | Firm grasp of single-digit prime heuristics. |
-| 🔥 | **Grandmaster** | $1.0\text{s} - 3.0\text{s}$ per target | Rapid application of difference of squares and modulo rules. |
-| 💎 | **Olympiad Prime** | $< 1.0\text{s}$ per target | Sub-second intuition; immediate pattern matching. |
-
----
-
-## 🎯 10-Tier Range Selection Matrix
-
-Athletes can scale challenge severity using the 10-tier numerical range system:
-
-| Tier | Range Bound | Focus Domain |
-| :---: | :--- | :--- |
-| **Tier 1** | $1 - 100$ | Fundamental primes and basic multiplication tables. |
-| **Tier 2** | $101 - 500$ | Two-digit prime recognition and basic parity checks. |
-| **Tier 3** | $501 - 1,000$ | Three-digit composite isolation. |
-| **Tier 4** | $1,001 - 2,500$ | Divisibility tests for $7, 11, 13$. |
-| **Tier 5** | $2,501 - 5,000$ | Difference of squares patterns ($a^2 - b^2$). |
-| **Tier 6** | $5,001 - 10,000$ | Four-digit isolation and non-obvious prime factors. |
-| **Tier 7** | $10,001 - 25,000$ | Advanced modular arithmetic shortcuts. |
-| **Tier 8** | $25,001 - 50,000$ | High-density multi-factor decomposition. |
-| **Tier 9** | $50,001 - 100,000$ | Near-prime composites (semi-primes). |
-| **Tier 10** | $100,000+$ | Unrestricted Olympiad speed trials. |
+### 15. The Cryptographic 3-Strike Security Hammer
+* **HMAC State Verification**: Signs all local storage rating payloads using client-side HMAC-SHA256 signature hashes.
+* **Console Mutation Detection**: Monitors storage events and internal memory state changes for unauthorized manual edits.
+* **Security Hammer Execution**: Instantly clears state registers, clears DOM content, and places an immutable ban key inside local storage if state tampering is detected.
 
 ---
 
-## 🚀 Deployment & Local Setup
+## 🛠️ Local Development Environment Setup
 
-Because **PrimeFactor.app** is built using native Vanilla Browser ESM, no dynamic backend server, build pipeline, or heavy Node.js dependencies are required.
+Follow these steps to clone, run, and develop the platform locally using <kbd>Bun</kbd>, <kbd>Vite</kbd>, and <kbd>TypeScript</kbd>:
 
-### Local Development
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/username/primefactor-app.git](https://github.com/username/primefactor-app.git)
+```bash
+# 1. Clone the Math Olympiad Speed Laboratory source directory
+git clone [https://github.com/PrimeFactor/Prime-Factorization-Web.git](https://github.com/PrimeFactor/Prime-Factorization-Web.git)
+
+# 2. Enter the project root directory context path
+cd Prime-Factorization-Web
+
+# 3. Synchronize zero-dependency packages using Bun engine
+bun install
+
+# 4. Deploy the local client-side developer runtime environment server
+bun run dev
