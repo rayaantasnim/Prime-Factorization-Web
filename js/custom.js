@@ -8,6 +8,7 @@
 import { initGlobalHeader, renderFooter, initSettingsModal } from './header.js';
 import { setActiveExamParams, getSettings } from './storage.js';
 import { playSound } from './audio.js';
+import { getUserElo, isRangeBannedForElo, getTierBanCeilingDescription } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initGlobalHeader();
@@ -59,6 +60,51 @@ function initCustomRangeForm() {
   if (toggleFocus) toggleFocus.checked = true; // Default: ON
 
   // Participation Mode Selection Controller
+  const customCautionBanner = document.getElementById('custom-forced-unrated-badge');
+  const customCautionText = document.getElementById('custom-forced-unrated-badge-text');
+  const textCustomModeRated = document.getElementById('text-custom-mode-rated');
+
+  function checkCapabilityCeiling() {
+    const userElo = getUserElo();
+    const maxVal = Number(maxInput ? maxInput.value : 2500);
+    const isBanned = isRangeBannedForElo(userElo, maxVal);
+
+    if (isBanned) {
+      if (radioRated) radioRated.disabled = true;
+      if (labelRated) {
+        labelRated.style.cursor = 'not-allowed';
+        labelRated.style.opacity = '0.6';
+        labelRated.style.pointerEvents = 'none';
+      }
+      if (textCustomModeRated) {
+        textCustomModeRated.textContent = '🔒 Banned for your ELO Bracket';
+      }
+      if (radioUnrated) radioUnrated.checked = true;
+      if (radioRated) radioRated.checked = false;
+      updateParticipationModeUI('unrated');
+      if (customCautionBanner) {
+        customCautionBanner.style.display = 'flex';
+        if (customCautionText) {
+          customCautionText.innerHTML = `<strong>CAPABILITY CEILING LOCKOUT:</strong> Rated Contest is hard-banned because your active rating (${userElo.toLocaleString()} ELO) exceeds the capability ceiling for this custom maximum bound (${getTierBanCeilingDescription(maxVal)}). Forcefully toggled to Virtual Unrated Practice.`;
+        }
+      }
+    } else {
+      if (radioRated) radioRated.disabled = false;
+      if (labelRated) {
+        labelRated.style.cursor = 'pointer';
+        labelRated.style.opacity = '1';
+        labelRated.style.pointerEvents = 'auto';
+      }
+      if (textCustomModeRated) {
+        textCustomModeRated.textContent = '⚪ Rated Contest';
+      }
+      if (customCautionBanner) {
+        customCautionBanner.style.display = 'none';
+      }
+    }
+    return isBanned;
+  }
+
   function updateParticipationModeUI(mode) {
     if (mode === 'unrated') {
       if (labelRated) {
@@ -91,6 +137,7 @@ function initCustomRangeForm() {
   }
 
   radioRated?.addEventListener('change', () => {
+    if (checkCapabilityCeiling()) return;
     playSound('click');
     updateParticipationModeUI('rated');
     updateSessionStorageSettings();
@@ -261,6 +308,7 @@ function initCustomRangeForm() {
         maxInput.value = max;
         evaluatePaceAndEfficiency();
         validate();
+        checkCapabilityCeiling();
       }
     });
   });
@@ -273,6 +321,7 @@ function initCustomRangeForm() {
   maxInput?.addEventListener('input', () => {
     evaluatePaceAndEfficiency();
     validate();
+    checkCapabilityCeiling();
   });
 
   function validate() {
@@ -341,11 +390,12 @@ function initCustomRangeForm() {
     }
 
     playSound('click');
+    const isBanned = checkCapabilityCeiling();
     const label = `Custom: ${valid.min.toLocaleString()} - ${valid.max.toLocaleString()}`;
     const timeSeconds = valid.minutes * 60;
     const allowStrike = toggleStrike ? toggleStrike.checked : true;
     const isFocusTracking = toggleFocus ? toggleFocus.checked : true;
-    const mode = (radioUnrated && radioUnrated.checked) ? 'unrated' : 'rated';
+    const mode = (isBanned || (radioUnrated && radioUnrated.checked)) ? 'unrated' : 'rated';
     const initialPenalty = isFocusTracking ? 0 : -10;
 
     const customRules = {
@@ -358,6 +408,7 @@ function initCustomRangeForm() {
       focusPenalty: isFocusTracking ? -5 : 0,
       initialPenalty: initialPenalty,
       participationMode: mode,
+      isForcedUnrated: isBanned,
       soundEnabled: baseSettings.soundEnabled
     };
 
@@ -404,7 +455,7 @@ function initCustomRangeForm() {
     }
 
     // 3. Forward seamlessly to contract.html
-    window.location.href = `./contract.html?min=${valid.min}&max=${valid.max}&title=${encodeURIComponent(label)}&time=${timeSeconds}&questions=${valid.questions}&strikePenalty=${allowStrike}&trackFocus=${isFocusTracking}&mode=${mode}&initialPenalty=${initialPenalty}`;
+    window.location.href = `./contract.html?min=${valid.min}&max=${valid.max}&title=${encodeURIComponent(label)}&time=${timeSeconds}&questions=${valid.questions}&strikePenalty=${allowStrike}&trackFocus=${isFocusTracking}&mode=${mode}&initialPenalty=${initialPenalty}${isBanned ? '&forcedUnrated=true' : ''}`;
   });
 
   // Run initial checks & triggers
@@ -412,4 +463,5 @@ function initCustomRangeForm() {
   updateQuantityDisplay(quantitySlider ? quantitySlider.value : 10);
   evaluatePaceAndEfficiency();
   validate();
+  checkCapabilityCeiling();
 }

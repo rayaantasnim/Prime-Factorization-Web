@@ -5,9 +5,10 @@
  */
 
 import { rollCompositeNumber, parseAndValidateFactorInput, generateConceptualHint, factorize } from './math-engine.js';
-import { getActiveExamParams, setLastExamResult, recordExamCompletion } from './storage.js';
+import { getActiveExamParams, setLastExamResult, recordExamCompletion, getLedger } from './storage.js';
 import { triggerFlash, renderFooter } from './header.js';
 import { playSound } from './audio.js';
+import { getUserElo, isRangeBannedForElo, getTierBaselineFromRange } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   renderFooter();
@@ -74,11 +75,15 @@ function initExamArena() {
   const isFocusTrackingDisabled = (!trackFocus) || (urlInitialPenalty === -10) || (storedInitialPenalty === -10) || (sessionStorage.getItem('primefactor_focus_tracking_off_penalty') === '10');
   const initialStartingScore = isFocusTrackingDisabled ? -10 : 0;
 
-  const participationMode = urlParams.get('mode') || rules.participationMode || 'rated';
-  const isForcedUnrated = urlParams.get('forcedUnrated') === 'true' || Boolean(rules.isForcedUnrated) || (participationMode === 'unrated');
-
   const resolvedMin = (urlMin && !isNaN(urlMin)) ? urlMin : (params.min || 1);
   const resolvedMax = (urlMax && !isNaN(urlMax)) ? urlMax : (params.max || 200);
+
+  const userElo = getUserElo();
+  const isBanned = isRangeBannedForElo(userElo, resolvedMax);
+  const initialMode = urlParams.get('mode') || rules.participationMode || 'rated';
+  const isForcedUnrated = isBanned || urlParams.get('forcedUnrated') === 'true' || Boolean(rules.isForcedUnrated) || (initialMode === 'unrated');
+  const participationMode = isForcedUnrated ? 'unrated' : 'rated';
+
   const resolvedTitle = urlTitle || params.title || `Division: ${resolvedMin} - ${resolvedMax}`;
   const totalDuration = resolveTimeLimit(resolvedMin, resolvedMax, urlTime, params.timeLimit);
   const allowStrikePenalty = urlStrikePenalty !== null ? urlStrikePenalty : (rules.allowStrikePenalty !== undefined ? rules.allowStrikePenalty : true);
@@ -87,11 +92,25 @@ function initExamArena() {
     ? urlQuestions 
     : (params.questions || params.questionsCount || params.totalQuestions || 10);
 
-  // The Expected Target Node: live score tracker target that users chase (fallback 85 points)
+  // The Expected Target Node: live score tracker target derived dynamically by the background script
+  const ledger = getLedger();
+  let dynamicTargetScore = 85;
   const urlExpected = urlParams.get('expected') ? Number(urlParams.get('expected')) : null;
-  const resolvedExpectedScore = (urlExpected && !isNaN(urlExpected)) 
-    ? urlExpected 
-    : (params.expectedScore || 85);
+
+  if (urlExpected && !isNaN(urlExpected)) {
+    dynamicTargetScore = urlExpected;
+  } else if (params.expectedScore && !isNaN(params.expectedScore)) {
+    dynamicTargetScore = params.expectedScore;
+  } else {
+    const tierBaseline = getTierBaselineFromRange(resolvedMax);
+    const exponent = (tierBaseline - userElo) / 400;
+    const rawExpected = 1 / (1 + Math.pow(10, exponent));
+    dynamicTargetScore = Math.round(Math.min(0.95, Math.max(0.60, rawExpected)) * 100);
+    if (ledger.highScore && ledger.highScore > 0) {
+      dynamicTargetScore = Math.min(95, Math.max(dynamicTargetScore, Math.round(ledger.highScore * 0.9)));
+    }
+  }
+  const resolvedExpectedScore = dynamicTargetScore;
 
   // State Management
   const state = {
@@ -191,6 +210,10 @@ function initExamArena() {
   const hudErrorsEl = document.getElementById('hud-errors-val');
   const hudTimerEl = document.getElementById('hud-timer-val');
   const hudTimerContainer = document.getElementById('hud-timer-item');
+
+  if (hudExpectedEl) {
+    hudExpectedEl.textContent = state.expectedScore;
+  }
 
   const targetNumberEl = document.getElementById('target-number-val');
   const targetHintBox = document.getElementById('target-hint-box');

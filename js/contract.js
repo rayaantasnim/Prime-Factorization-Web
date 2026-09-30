@@ -231,9 +231,18 @@ function initContractGatekeeper() {
     syncState('rated');
   }
 
-  // Apply Initial Mode UI State
-  if (isForcedUnrated) {
-    setUnratedModeUI(isBanned);
+  // Apply Initial Mode UI State & Lockdown Enforcement
+  if (isBanned) {
+    if (radioRated) radioRated.disabled = true;
+    if (textModeRated) textModeRated.textContent = '🔒 Banned for your ELO Bracket';
+    if (labelModeRated) {
+      labelModeRated.style.cursor = 'not-allowed';
+      labelModeRated.style.opacity = '0.6';
+      labelModeRated.style.pointerEvents = 'none';
+    }
+    setUnratedModeUI(true);
+  } else if (isForcedUnrated) {
+    setUnratedModeUI(false);
   } else {
     setRatedModeUI();
   }

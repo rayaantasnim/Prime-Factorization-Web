@@ -82,7 +82,9 @@ function renderResultDashboard() {
         time: result.timeSpent || 30,
         score: result.score || 0,
         eloDelta: eloCalc.deltaR,
-        correctCount: totalSolved
+        correctCount: totalSolved,
+        firstAttemptClears: (result.correctFirstAttempt !== undefined ? result.correctFirstAttempt : totalSolved),
+        totalQuestions: (result.totalQuestions || 10)
       });
     }
   }
@@ -576,7 +578,7 @@ function renderResultDashboard() {
         title: result.rangeTitle,
         rules: getSettings()
       });
-      window.location.href = `./exam.html?min=${result.min}&max=${result.max}&title=${encodeURIComponent(result.rangeTitle)}`;
+      window.location.href = `./contract.html?min=${result.min}&max=${result.max}&title=${encodeURIComponent(result.rangeTitle || '')}`;
     });
   }
 

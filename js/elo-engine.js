@@ -13,10 +13,10 @@ export const ENGINE_HMAC_SECRET = "YOUR_LOCAL_HMAC_SECRET_KEY_PLACEHOLDER";
 // ============================================================================
 export const ELO_TIERS = [
   {
-    tierIndex: 12,
+    tierIndex: 1,
     minElo: 3000,
     maxElo: Infinity,
-    title: 'Quantum Decomposer',
+    title: 'Prime Singularity',
     symbol: '👑',
     colorName: 'Nebula Pink',
     colorHex: '#F43F5E',
@@ -26,7 +26,7 @@ export const ELO_TIERS = [
     description: 'Transcendent supreme cognitive computing capability. Sub-second Pollard’s Rho mastery.'
   },
   {
-    tierIndex: 11,
+    tierIndex: 2,
     minElo: 2700,
     maxElo: 2999,
     title: 'Riemann Transcendentalist',
@@ -39,7 +39,7 @@ export const ELO_TIERS = [
     description: 'Master of prime distribution heuristics and deep complex coordinate decomposition.'
   },
   {
-    tierIndex: 10,
+    tierIndex: 3,
     minElo: 2400,
     maxElo: 2699,
     title: 'Canonical Analyst',
@@ -52,7 +52,7 @@ export const ELO_TIERS = [
     description: 'Canonical prime power representation speed specialist.'
   },
   {
-    tierIndex: 9,
+    tierIndex: 4,
     minElo: 2200,
     maxElo: 2399,
     title: 'Gaussian Cryptographer',
@@ -61,11 +61,11 @@ export const ELO_TIERS = [
     colorHex: '#8B5CF6',
     glowClass: 'glow-vibrant-violet',
     cssEffect: 'neon-shimmer',
-    lockedTiers: [1, 2, 3], // Tiers 1-3 locked
+    lockedTiers: [1, 2, 3, 4], // Tiers 1-4 locked
     description: 'Cryptographic security engineer decoding RSA-grade composite components.'
   },
   {
-    tierIndex: 8,
+    tierIndex: 5,
     minElo: 2000,
     maxElo: 2199,
     title: 'Eulerian Sentinel',
@@ -74,11 +74,11 @@ export const ELO_TIERS = [
     colorHex: '#F59E0B',
     glowClass: 'glow-laser-amber',
     cssEffect: 'neon-shimmer',
-    lockedTiers: [1, 2], // Tiers 1-2 locked
+    lockedTiers: [1, 2, 3], // Tiers 1-3 locked
     description: 'Guardian of totient function identities and cyclic modular rings.'
   },
   {
-    tierIndex: 7,
+    tierIndex: 6,
     minElo: 1800,
     maxElo: 1999,
     title: 'Logarithmic Vector',
@@ -87,11 +87,11 @@ export const ELO_TIERS = [
     colorHex: '#2563EB',
     glowClass: 'glow-cobalt-blue',
     cssEffect: 'neon-shimmer',
-    lockedTiers: [1], // Tier 1 locked
+    lockedTiers: [1, 2, 3], // Tiers 1-3 locked
     description: 'Exponential acceleration solver reaching Olympiad national contender status.'
   },
   {
-    tierIndex: 6,
+    tierIndex: 7,
     minElo: 1600,
     maxElo: 1799,
     title: 'Prime Strategist',
@@ -100,11 +100,11 @@ export const ELO_TIERS = [
     colorHex: '#059669',
     glowClass: 'glow-deep-jade',
     cssEffect: 'standard-neon',
-    lockedTiers: [],
+    lockedTiers: [1, 2], // Tiers 1-2 locked
     description: 'Tactical decomposer executing swift sieve filtering heuristics.'
   },
   {
-    tierIndex: 5,
+    tierIndex: 8,
     minElo: 1400,
     maxElo: 1599,
     title: 'Modular Operator',
@@ -113,11 +113,11 @@ export const ELO_TIERS = [
     colorHex: '#10B981',
     glowClass: 'glow-mint-green',
     cssEffect: 'standard-neon',
-    lockedTiers: [],
+    lockedTiers: [1, 2], // Tiers 1-2 locked
     description: 'Consistent modular arithmetic solver executing flawless textbook prime splits.'
   },
   {
-    tierIndex: 4,
+    tierIndex: 9,
     minElo: 1200,
     maxElo: 1399,
     title: 'Radix Scholar',
@@ -126,11 +126,11 @@ export const ELO_TIERS = [
     colorHex: '#E2E8F0',
     glowClass: 'glow-muted-platinum',
     cssEffect: 'standard-neon',
-    lockedTiers: [],
+    lockedTiers: [1], // Tier 1 locked
     description: 'Dedicated contender displaying strong computational foundation across 3-digit domains.'
   },
   {
-    tierIndex: 3,
+    tierIndex: 10,
     minElo: 900,
     maxElo: 1199,
     title: 'Sieve Calibrator',
@@ -139,11 +139,11 @@ export const ELO_TIERS = [
     colorHex: '#D97706',
     glowClass: 'glow-polished-bronze',
     cssEffect: 'standard-neon',
-    lockedTiers: [],
-    description: 'Standard competitive baseline. Default onboarding floor initialized at 1000 ELO.'
+    lockedTiers: [1], // Tier 1 locked
+    description: 'Standard competitive baseline for sieve filtering heuristics.'
   },
   {
-    tierIndex: 2,
+    tierIndex: 11,
     minElo: 500,
     maxElo: 899,
     title: 'Composite Apprentice',
@@ -152,11 +152,11 @@ export const ELO_TIERS = [
     colorHex: '#64748B',
     glowClass: 'glow-slate-gray',
     cssEffect: 'standard-neon',
-    lockedTiers: [],
-    description: 'Developing mental heuristics for basic prime testing and composite division.'
+    lockedTiers: [], // Open baseline. No range locks.
+    description: 'Default onboarding floor initialized at 500 ELO. Developing mental heuristics for basic prime testing and composite division.'
   },
   {
-    tierIndex: 1,
+    tierIndex: 12,
     minElo: 0,
     maxElo: 499,
     title: 'Foundry Initiate',
@@ -171,7 +171,7 @@ export const ELO_TIERS = [
 ];
 
 export function getTierByElo(elo) {
-  const safeElo = Math.max(0, Math.round(Number(elo) || 1000));
+  const safeElo = Math.max(0, Math.round(Number(elo !== undefined && elo !== null ? elo : 500)));
   for (const tier of ELO_TIERS) {
     if (safeElo >= tier.minElo && safeElo <= tier.maxElo) {
       return tier;
@@ -334,24 +334,41 @@ export function initServerlessOnboarding() {
     throw new Error('Hard Lockout Active');
   }
 
-  // Check existing token handle
+  // Check existing token handle and storage keys
   let token = localStorage.getItem('primefactor_profile_token');
-  if (!token) {
-    // Brand new user sequence
-    token = generateUniqueTokenHandle(8);
-    localStorage.setItem('primefactor_profile_token', token);
-    localStorage.setItem('primefactor_profile_username', token);
-    
-    // Baseline statistics
-    localStorage.setItem('primefactor_elo', '1000');
-    localStorage.setItem('primefactor_peak_elo', '1000');
-    localStorage.setItem('primefactor_total_solved', '0');
-    localStorage.setItem('primefactor_total_matches', '0');
-    localStorage.setItem('primefactor_historical_accuracy', '0');
-    localStorage.setItem('primefactor_match_logs', JSON.stringify([]));
-    localStorage.setItem('primefactor_last_rated_date', new Date().toISOString());
+  const storedElo = localStorage.getItem('primefactor_elo');
+  const storedPeak = localStorage.getItem('primefactor_peak_elo');
 
-    // Sign directory
+  const isFreshContext = !token || storedElo === null || storedPeak === null || isNaN(Number(storedElo)) || Number(storedElo) <= 0;
+
+  if (isFreshContext) {
+    // Brand new user sequence or uninitialized storage keys
+    if (!token) {
+      token = generateUniqueTokenHandle(8);
+      localStorage.setItem('primefactor_profile_token', token);
+      localStorage.setItem('primefactor_profile_username', token);
+    }
+    
+    // Baseline statistics forcefully initialized at 500 ELO (Tier 11 · Composite Apprentice Level)
+    localStorage.setItem('primefactor_elo', '500');
+    localStorage.setItem('primefactor_peak_elo', '500');
+    if (localStorage.getItem('primefactor_total_solved') === null) {
+      localStorage.setItem('primefactor_total_solved', '0');
+    }
+    if (localStorage.getItem('primefactor_total_matches') === null) {
+      localStorage.setItem('primefactor_total_matches', '0');
+    }
+    if (localStorage.getItem('primefactor_historical_accuracy') === null) {
+      localStorage.setItem('primefactor_historical_accuracy', '0');
+    }
+    if (localStorage.getItem('primefactor_match_logs') === null) {
+      localStorage.setItem('primefactor_match_logs', JSON.stringify([]));
+    }
+    if (localStorage.getItem('primefactor_last_rated_date') === null) {
+      localStorage.setItem('primefactor_last_rated_date', new Date().toISOString());
+    }
+
+    // Sign directory instantly with HMAC verification signature
     reSignProfileDirectory();
   } else {
     // Verify directory integrity
@@ -365,8 +382,8 @@ export function initServerlessOnboarding() {
 export function reSignProfileDirectory() {
   const payload = {
     token: localStorage.getItem('primefactor_profile_token') || '',
-    elo: localStorage.getItem('primefactor_elo') || '1000',
-    peak: localStorage.getItem('primefactor_peak_elo') || '1000',
+    elo: localStorage.getItem('primefactor_elo') || '500',
+    peak: localStorage.getItem('primefactor_peak_elo') || '500',
     solved: localStorage.getItem('primefactor_total_solved') || '0',
     matches: localStorage.getItem('primefactor_total_matches') || '0'
   };
@@ -382,8 +399,8 @@ export function verifyProfileIntegrity() {
   }
   const payload = {
     token: localStorage.getItem('primefactor_profile_token') || '',
-    elo: localStorage.getItem('primefactor_elo') || '1000',
-    peak: localStorage.getItem('primefactor_peak_elo') || '1000',
+    elo: localStorage.getItem('primefactor_elo') || '500',
+    peak: localStorage.getItem('primefactor_peak_elo') || '500',
     solved: localStorage.getItem('primefactor_total_solved') || '0',
     matches: localStorage.getItem('primefactor_total_matches') || '0'
   };
@@ -441,14 +458,14 @@ export function getUserElo() {
   } catch (e) {
     console.warn('Error reading ELO:', e);
   }
-  return 1000; // Sieve Calibrator floor
+  return 500; // Composite Apprentice floor
 }
 
 export function setUserElo(newElo) {
   const safeElo = Math.max(0, Math.round(Number(newElo) || 0));
   localStorage.setItem('primefactor_elo', String(safeElo));
 
-  const peak = Math.max(safeElo, Number(localStorage.getItem('primefactor_peak_elo') || 1000));
+  const peak = Math.max(safeElo, Number(localStorage.getItem('primefactor_peak_elo') || 500));
   localStorage.setItem('primefactor_peak_elo', String(peak));
 
   reSignProfileDirectory();
@@ -457,7 +474,7 @@ export function setUserElo(newElo) {
 
 export function getUserPeakElo() {
   const current = getUserElo();
-  const peak = Number(localStorage.getItem('primefactor_peak_elo') || 1000);
+  const peak = Number(localStorage.getItem('primefactor_peak_elo') || 500);
   return Math.max(current, peak);
 }
 
@@ -466,19 +483,25 @@ export function getUserPeakElo() {
 // ============================================================================
 
 export function isRangeBannedForElo(userElo, maxBound) {
-  const tier = getTierByElo(userElo);
-  const targetTierNum = getTierNumberFromMax(maxBound);
-  return tier.lockedTiers.includes(targetTierNum);
+  const elo = Number(userElo) || 0;
+  const bound = Number(maxBound) || 0;
+  if (elo >= 3000) return bound <= 10000;
+  if (elo >= 2700) return bound <= 5000;
+  if (elo >= 2200) return bound <= 2000;
+  if (elo >= 1800) return bound <= 1000;
+  if (elo >= 1400) return bound <= 500;
+  if (elo >= 900) return bound <= 200;
+  return false;
 }
 
 export function getTierBanCeilingDescription(maxBound) {
-  const tierNum = getTierNumberFromMax(maxBound);
-  if (tierNum === 1) return 'Tier 1 (1 - 200) requires ELO < 1800 for Rated Contests.';
-  if (tierNum === 2) return 'Tier 2 (201 - 500) requires ELO < 2000 for Rated Contests.';
-  if (tierNum === 3) return 'Tier 3 (501 - 1,000) requires ELO < 2200 for Rated Contests.';
-  if (tierNum === 4) return 'Tier 4 (1,001 - 2,000) requires ELO < 2400 for Rated Contests.';
-  if (tierNum === 5) return 'Tier 5 (2,001 - 5,000) requires ELO < 2700 for Rated Contests.';
-  if (tierNum === 6) return 'Tier 6 (5,001 - 10,000) requires ELO < 3000 for Rated Contests.';
+  const bound = Number(maxBound) || 0;
+  if (bound <= 200) return 'MAX_BOUND ≤ 200 is restricted for ratings ≥ 900 ELO (Blocks Tier 1 Foundations).';
+  if (bound <= 500) return 'MAX_BOUND ≤ 500 is restricted for ratings ≥ 1,400 ELO (Blocks Tiers 1–2 Intermediate).';
+  if (bound <= 1000) return 'MAX_BOUND ≤ 1,000 is restricted for ratings ≥ 1,800 ELO (Blocks Tiers 1–3 Olympiad Baseline).';
+  if (bound <= 2000) return 'MAX_BOUND ≤ 2,000 is restricted for ratings ≥ 2,200 ELO (Blocks Tiers 1–4 Advanced).';
+  if (bound <= 5000) return 'MAX_BOUND ≤ 5,000 is restricted for ratings ≥ 2,700 ELO (Blocks Tiers 1–5 Master).';
+  if (bound <= 10000) return 'MAX_BOUND ≤ 10,000 is restricted for ratings ≥ 3,000 ELO (Blocks Tiers 1–6 Invitational).';
   return 'Competitive tier open to all rated contenders.';
 }
 
@@ -563,20 +586,50 @@ export function calculateEloDelta(params) {
   };
 }
 
+export function formatLocalDateString(dateInput = new Date()) {
+  try {
+    const d = (dateInput instanceof Date) ? dateInput : new Date(dateInput);
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    const parts = formatter.formatToParts(d);
+    const map = {};
+    for (const part of parts) {
+      map[part.type] = part.value;
+    }
+    let hour = map.hour || '00';
+    if (hour === '24') hour = '00';
+    return `${map.year}-${map.month}-${map.day} ${hour}:${map.minute}`;
+  } catch (e) {
+    return new Date().toISOString().replace('T', ' ').slice(0, 16);
+  }
+}
+
 // Record completed match into profile logs
 export function recordRatedMatchToProfile(matchData) {
   try {
     const rawLogs = localStorage.getItem('primefactor_match_logs');
     const logs = rawLogs ? JSON.parse(rawLogs) : [];
 
+    const totalQuestions = matchData.totalQuestions || 10;
+    const firstAttemptClears = matchData.firstAttemptClears !== undefined ? matchData.firstAttemptClears : (matchData.correctCount || 0);
+    const accuracy = matchData.accuracy !== undefined ? matchData.accuracy : (totalQuestions > 0 ? Math.round((firstAttemptClears / totalQuestions) * 100) : 0);
+
     logs.unshift({
       id: Date.now(),
       tier: matchData.tier || 'Tier 1: 1 - 200',
-      accuracy: matchData.accuracy || 100,
+      accuracy,
+      firstAttemptClears,
+      totalQuestions,
       time: matchData.time || 24.6,
-      score: matchData.score || 85,
+      score: matchData.score !== undefined ? matchData.score : 0,
       eloDelta: matchData.eloDelta || 0,
-      date: new Date().toISOString().replace('T', ' ').slice(0, 16)
+      date: formatLocalDateString(new Date())
     });
 
     // Keep last 25 matches in active cache

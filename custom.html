@@ -181,7 +181,7 @@
             <label id="label-mode-rated" class="participation-mode-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.15rem; border-radius: 0.75rem; background: rgba(14, 165, 233, 0.12); border: 1.5px solid #0EA5E9; cursor: pointer; transition: all 0.25s ease;">
               <input type="radio" name="participationMode" id="radio-mode-rated" value="rated" checked style="accent-color: #0EA5E9; width: 18px; height: 18px; cursor: pointer;" />
               <div style="display: flex; flex-direction: column;">
-                <span style="font-weight: 800; font-size: 0.95rem; color: #FFFFFF; letter-spacing: 0.02em;">⚪ Rated Contest</span>
+                <span id="text-custom-mode-rated" style="font-weight: 800; font-size: 0.95rem; color: #FFFFFF; letter-spacing: 0.02em;">⚪ Rated Contest</span>
                 <span style="font-size: 0.75rem; color: #94A3B8;">Official ELO rating gains and leaderboard updates active</span>
               </div>
             </label>
@@ -193,6 +193,11 @@
                 <span style="font-size: 0.75rem; color: #94A3B8;">Zero ELO penalty risk · Sandbox heuristics testing</span>
               </div>
             </label>
+          </div>
+          <!-- Neon crimson caution banner container for custom mode -->
+          <div id="custom-forced-unrated-badge" style="display: none; margin-top: 0.85rem; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 0.5rem; padding: 0.65rem 1rem; font-size: 0.84rem; color: #FCA5A5; align-items: center; gap: 0.6rem; transition: all 0.3s ease;">
+            <span style="font-size: 1.1rem;">🚫</span>
+            <span id="custom-forced-unrated-badge-text"><strong>CAPABILITY CEILING LOCKOUT:</strong> Rated Contest is disabled because your active ELO exceeds the capability ceiling for this custom maximum bound. Automatically toggled to Virtual Unrated Practice.</span>
           </div>
         </div>
       </div>
@@ -489,7 +494,7 @@
   </footer>
 
   <!-- Hardcoded Navbar Toggle Script Block -->
-  <script src="integrated-js/custom.js"></script>
+  <script type="module" src="integrated-js/custom.js"></script>
   <script type="module" src="./js/custom.js"></script>
 </body>
 </html>
