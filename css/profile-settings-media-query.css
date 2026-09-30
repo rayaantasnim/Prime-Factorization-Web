@@ -1,0 +1,167 @@
+/* ==========================================================================
+   Media Query CSS Module for Profile Settings Portal
+   ========================================================================== */
+
+/* 1. Base / Global Spacing & Layout Adjustments */
+main.profile-content-container,
+.settings-portal-card,
+.settings-group,
+.settings-row {
+  margin-bottom: 1.5rem; /* Requirement 2: Margin-bottom for sections and core topics */
+  box-sizing: border-box;
+}
+
+.settings-portal-card {
+  width: 100%;
+  max-width: 100%; /* Requirement 4: Prevents exceeding or overlaying screen size */
+  box-sizing: border-box;
+}
+
+/* 2. Responsive Styles for Tablet & Smaller Screens (<= 768px) */
+@media screen and (max-width: 768px) {
+  
+  /* Requirement 3 & 5: Adjust padding left and precisely allocate right padding */
+  .settings-portal-card {
+    padding-left: 0.85rem;
+    padding-right: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .settings-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding-left: 0.85rem;
+    padding-right: 1.15rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Header inside settings card responsive breakdown */
+  .settings-portal-card > div:first-child {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Requirement 4: Ensure inputs and interactive handles fit screen width */
+  .input-handle {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .settings-row > div:last-child {
+    width: 100%;
+    text-align: left !important;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  /* Requirement 6: Break table (Latency Table Ledger) vertically on smaller screens */
+  .latency-table-ledger,
+  .latency-table-ledger table {
+    display: block;
+    width: 100%;
+  }
+
+  .latency-table-ledger thead {
+    display: none; /* Hide header rows for small screen stacked view */
+  }
+
+  .latency-table-ledger tbody,
+  .latency-table-ledger tr,
+  .latency-table-ledger td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .latency-table-ledger tr {
+    margin-bottom: 1rem;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(15, 23, 42, 0.8);
+  }
+
+  .latency-table-ledger td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem 0.5rem 0.5rem; /* Preserves explicit right padding */
+    text-align: right;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .latency-table-ledger td:last-child {
+    border-bottom: none;
+  }
+
+  /* Add data attributes headers visually when table is stacked */
+  .latency-table-ledger td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #38BDF8;
+    text-align: left;
+    padding-right: 0.5rem;
+  }
+}
+
+/* 3. Responsive Styles for Small Mobile Devices / Androids (<= 480px) */
+@media screen and (max-width: 480px) {
+  
+  /* Requirement 3 & 5: Precise padding-right & reduced padding-left for Android viewport constraints */
+  .settings-portal-card {
+    padding-left: 0.65rem;
+    padding-right: 1rem;
+  }
+
+  .settings-row {
+    padding-left: 0.65rem;
+    padding-right: 1rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .settings-label-block h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .settings-label-block p {
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  /* Requirement 4: Complete containment for small screens without overflowing */
+  #display-profile-token {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* 4. Desktop / Larger Screens Alignment (>= 769px) */
+@media screen and (min-width: 769px) {
+  /* Requirement 6: Remain standard layout for normal desktop type larger screens */
+  .latency-table-ledger table {
+    display: table;
+    width: 100%;
+  }
+
+  .latency-table-ledger thead {
+    display: table-header-group;
+  }
+
+  .latency-table-ledger tr {
+    display: table-row;
+  }
+
+  .latency-table-ledger td,
+  .latency-table-ledger th {
+    display: table-cell;
+  }
+}

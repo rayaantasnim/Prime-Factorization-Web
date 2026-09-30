@@ -1,0 +1,182 @@
+/* =========================================================
+   PrimeFactor.app — Media Query & Responsive CSS (Updated)
+   ========================================================= */
+
+/* 1. Root Variables & Spacing Control */
+:root {
+  --mobile-padding-left: clamp(0.5rem, 2vw, 0.75rem);
+  --mobile-padding-right: clamp(0.5rem, 2vw, 0.75rem);
+}
+
+/* Ensure padding and layout safety across all viewports */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.main-wrapper,
+.content-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: var(--mobile-padding-left) !important;
+  padding-right: var(--mobile-padding-right) !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Hero Banner & Section Width / Margin Fixes */
+.section-head,
+.hero-banner,
+.hero-section,
+.results-hero-grid,
+.diagnostic-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important; /* Removed excessive right margin causing horizontal overflow */
+  box-sizing: border-box !important;
+}
+
+.section-head {
+  margin-bottom: clamp(1rem, 3vh, 1.75rem) !important;
+}
+
+/* 3. Cards & Container Alignment */
+.master-ring-card,
+.metrics-audit-deck,
+.audit-stack-card,
+.report-card-widget,
+.diagnostic-panel,
+.counter-box,
+#elo-telemetry-panel,
+#ring-elo-changes-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: var(--mobile-padding-left) !important;
+  padding-right: var(--mobile-padding-right) !important;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Flexible Layout Grids */
+.results-hero-grid,
+.audit-sections-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .results-hero-grid {
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  }
+  
+  .audit-sections-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.stats-counter-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* 4. Compiler Latency Table Mobile Breakdown */
+.latency-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .latency-table, 
+  .latency-table thead, 
+  .latency-table tbody, 
+  .latency-table th, 
+  .latency-table td, 
+  .latency-table tr {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .latency-table thead {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .latency-table tr {
+    margin-bottom: 0.875rem;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .latency-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0 !important;
+    border: none !important;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1) !important;
+    text-align: left !important;
+    font-size: 0.85rem;
+  }
+
+  .latency-table td:last-child {
+    border-bottom: none !important;
+  }
+
+  .latency-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.725rem;
+    letter-spacing: 0.05em;
+    color: #94A3B8;
+    text-align: left;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+  }
+}
+
+/* 5. Mobile Adjustments for Narrow Viewports */
+@media (max-width: 480px) {
+  #elo-telemetry-panel {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  #elo-telemetry-panel > div:last-child {
+    text-align: left !important;
+    align-items: flex-start !important;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .report-card-widget {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .report-card-widget button {
+    width: 100%;
+  }
+
+  .stats-counter-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

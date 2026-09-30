@@ -203,8 +203,8 @@
 
     .section-desc {
       color: var(--text-muted);
-      max-width: 700px;
-      font-size: 1rem;
+      min-width: 700px;
+      font-size: var(--font-heading);
     }
 
     /* Hero Grid System */
@@ -444,7 +444,8 @@
     }
 
     .empty-audit-notice {
-      color: var(--text-muted);
+      color: #000000 !important;
+      background-color: white !important;
       font-size: 0.9rem;
       font-style: italic;
       padding: 0.5rem 0;
@@ -506,4 +507,38 @@
     .hamburger-bars:hover{
       color:#0B0F17 !important;
       background-color:black;
+    }
+
+
+  @media (max-width:1100px){
+    .section-desc{
+      max-width: 500px !important;
+    }
+  }
+
+
+    @media(min-width:1200px){
+      .section-desc{
+        padding-right: 10px !important;
+        margin-right: 0px !important;
+      }
+    }
+
+
+    @media(max-width:1100px){
+      .section-desc{
+        padding-right: 200px !important;
+      }
+    }
+
+    @media(max-width:1000px){
+      .section-desc{
+        padding-right: 220px !important;
+      }
+    }
+
+    @media(max-width:800px){
+      .section-desc{
+        padding-right: 270px !important;
+      }
     }

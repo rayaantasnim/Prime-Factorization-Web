@@ -220,7 +220,7 @@ function renderResultDashboard() {
       ringExpectationStatus.style.color = mutedColor;
     }
     if (ringEloDelta) {
-      ringEloDelta.textContent = '0 ELO (Practice Run)';
+      ringEloDelta.textContent = '0 ELO ';
       ringEloDelta.style.color = platinumColor;
     }
     if (ringEloComment) {
@@ -380,7 +380,7 @@ function renderResultDashboard() {
                     <td style="color: #FFFFFF; font-weight: 600;">${escapeHtml(diagnosis2)}</td>
                   </tr>
                   <tr style="background: rgba(16, 185, 129, 0.1);">
-                    <td style="color: #34D399; font-weight: 700;">Canonical Factors</td>
+                    <td style="color: #34D399; font-weight: 700;">Precise Factors</td>
                     <td colspan="2" style="font-size: 1rem; color: #FFFFFF; font-weight: 700;">
                       ${expStr} &nbsp; <span style="color: var(--text-muted); font-weight: 600;">(${f.trueFactors.join(' &times; ')})</span>
                     </td>
@@ -404,18 +404,27 @@ function renderResultDashboard() {
         const exp = toExponentialForm(r.trueFactors);
         const expStr = formatExponentialString(exp);
         return `
-          <div class="audit-item">
-            <div class="audit-q" style="font-weight: 700; color: #FFFFFF; margin-bottom: 0.35rem;">Target Integer: ${r.number.toLocaleString()}</div>
-            <div class="text-crimson" style="font-size: 0.875rem;">Initial Error: <span>${escapeHtml(r.attempt1)}</span></div>
-            <div class="text-amber" style="font-weight: 700; font-size: 0.875rem;">Redeemed Correction: <span>${escapeHtml(r.attempt2)}</span></div>
-            <div class="text-mint" style="font-size: 0.9rem; font-weight: 700; margin-top: 0.35rem;">
+          <div class="audit-item" style="background: rgba(30, 30, 47, 0.9); border: 1px solid rgba(255, 215, 0, 0.25); border-radius: 0.6rem; padding: 0.85rem 1rem; margin-bottom: 0.75rem;">
+            <div class="audit-q" style="font-weight: 700; color: #A6FF00; margin-bottom: 0.35rem; font-size: 0.95rem;">
+              Target Integer: ${r.number.toLocaleString()}
+            </div>
+
+            <div class="text-crimson" style="font-weight: 700; font-size: 0.875rem; color: #FF3131; margin-bottom: 0.2rem;">
+              Initial Error: <span>${escapeHtml(r.attempt1)}</span>
+            </div>
+            
+            <div class="text-amber" style="font-weight: 700; font-size: 0.875rem; color: #FF914D; margin-bottom: 0.2rem;">
+              Redeemed Correction: <span>${escapeHtml(r.attempt2)}</span>
+            </div>
+            
+            <div class="text-mint" style="font-size: 0.9rem; font-weight: 700; color: #FFD700; margin-top: 0.05rem;">
               Canonical Form: <span>${expStr}</span>
             </div>
           </div>
         `;
       }).join('');
     } else {
-      redemptionContainer.innerHTML = `<div class="empty-audit-notice">No redemption entries recorded. (No overtime retries utilized).</div>`;
+      redemptionContainer.innerHTML = `<div class="empty-audit-notice" >No redemption entries recorded. (No overtime retries utilized).</div>`;
     }
   }
 

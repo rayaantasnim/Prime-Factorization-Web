@@ -1,0 +1,246 @@
+/* =========================================================
+   PrimeFactor.app — Optimized Global Media Queries CSS
+   Fully responsive across all device viewports worldwide.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1. Standard Desktop & High-Resolution Displays (<= 1200px)
+   --------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .home-section {
+    margin-bottom: 2.5rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+
+  .content-container {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
+  .section-head {
+    margin-bottom: 2rem !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   2. Small Desktop & Tablet Landscape (<= 992px)
+   --------------------------------------------------------- */
+@media (max-width: 992px) {
+  .home-section {
+    margin-bottom: 2rem !important;
+    padding: 2.5rem 1.75rem !important;
+  }
+
+  .section-head {
+    margin-bottom: 1.75rem !important;
+    padding: 1.25rem 1.5rem !important;
+  }
+
+  .ranks-grid,
+  .contract-grid,
+  .auto-fit-grid-300,
+  .auto-fit-grid-240 {
+    gap: 1.25rem !important;
+  }
+
+  .rank-card,
+  .contract-card,
+  .range-tilt-card,
+  .strategy-card,
+  .ledger-box {
+    margin-bottom: 1rem !important;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 5vw, 3.25rem) !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   3. Tablet Portrait & Large Android / Mobile (<= 768px)
+   --------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Prevent horizontal scrolling & text clipping */
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+
+  /* Structural Separation & Adjusted Safe Padding */
+  .home-section {
+    margin-bottom: 2rem !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+    border-radius: 1.25rem !important;
+  }
+
+  .content-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0.25rem !important;
+    padding-right: 1.25rem !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Card Width Precision & Overflow Guards */
+  .rank-card,
+  .contract-card,
+  .range-tilt-card,
+  .strategy-card,
+  .ledger-box,
+  .randomizer-card,
+  .settings-node-card,
+  .playground-container,
+  .overlay-nav-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 1.25rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1.25rem !important;
+    box-sizing: border-box !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* Grid Layout Fallbacks for Small Viewports */
+  .ranks-grid,
+  .contract-grid,
+  .auto-fit-grid-300,
+  .auto-fit-grid-240,
+  .overlay-nav-grid,
+  .ledger-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 1rem !important;
+  }
+
+  /* Navigation Dropdown Adjustments */
+  .global-nav-dropdown,
+  .nav-dropdown-glass-container {
+    width: calc(100vw - 2rem) !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) translateY(-10px) !important;
+  }
+
+  .global-nav-dropdown.active,
+  .nav-dropdown-glass-container.active {
+    transform: translateX(-50%) translateY(0) !important;
+  }
+
+  .floating-menu-trigger {
+    top: 4.75rem !important;
+    left: 0.75rem !important;
+  }
+
+  /* Header Controls */
+  .header-container {
+    padding-left: 0.5rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   4. Small Mobile & Android Devices (<= 480px)
+   --------------------------------------------------------- */
+@media(max-width: 480px) {
+  /* Enforce section separations and reduced padding-left with safe padding-right */
+  .home-section {
+    margin-bottom: 1.75rem !important;
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 1.15rem !important;
+  }
+
+  .content-container {
+    padding-left: 0.15rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .section-head {
+    margin-bottom: 1.25rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Complete Card Containment for Small Screens */
+  .rank-card,
+  .contract-card,
+  .range-tilt-card,
+  .strategy-card,
+  .ledger-box,
+  .randomizer-card,
+  .settings-node-card,
+  .playground-container {
+    margin-bottom: 1rem !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 1.15rem !important;
+  }
+
+  /* Typography scale fixes to prevent text outflow */
+  .hero-title {
+    font-size: 1.85rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .section-title {
+    font-size: 1.5rem !important;
+  }
+
+  .hero-badge-meta {
+    font-size: 0.75rem !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
+  .hero-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .playground-input {
+    font-size: 0.95rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.75rem !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   5. Extra-Small Screens / Micro Android Devices (<= 360px)
+   --------------------------------------------------------- */
+@media (max-width: 360px){
+  .home-section {
+    margin-bottom: 1.25rem !important;
+    padding-left: 0.25rem !important;
+    padding-right: 0.85rem !important;
+  }
+
+  .content-container {
+    padding-left: 0rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .rank-card,
+  .contract-card,
+  .range-tilt-card,
+  .strategy-card,
+  .ledger-box {
+    padding-left: 0.5rem !important;
+    padding-right: 0.85rem !important;
+  }
+
+  .brand-text {
+    font-size: 1rem !important;
+  }
+}

@@ -1,0 +1,270 @@
+/* ==========================================================================
+   PRIME-FACTOR.APP — CANDIDATE PROFILE MEDIA QUERIES & RESPONSIVE LAYOUT
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. UNIVERSAL BOX-SIZING & BASE RESPONSIVE SAFETY
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   2. SECTION & CORE TOPIC SEPARATION (MARGIN-BOTTOM)
+   -------------------------------------------------------------------------- */
+main.profile-content-container section,
+section.profile-identity-card,
+section#sec-records,
+section.streak-telemetry-strip,
+section#sec-last-performances,
+section#sec-telemetry-speed,
+section#sec-medals-vault,
+section#sec-diagnostics {
+  margin-bottom: clamp(2rem, 4vw, 3rem) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. RESPONSIVE CONTAINER & PRECISION PADDING MANAGEMENT (PADDING-RIGHT/LEFT)
+   -------------------------------------------------------------------------- */
+.profile-content-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 5.5rem;
+  padding-bottom: 3rem;
+  padding-left: clamp(0.75rem, 3vw, 1.75rem) !important;
+  padding-right: clamp(1rem, 3.5vw, 2rem) !important;
+  box-sizing: border-box;
+}
+
+/* Ensure sub-containers, sections, and overlay boxes maintain explicit right padding */
+.profile-identity-card,
+.pb-card,
+.streak-telemetry-strip,
+.ledger-table-card,
+.telemetry-speed-card,
+.medals-vault-card,
+.diagnostics-card,
+.matrix-overlay-container {
+  padding-right: clamp(0.85rem, 2.5vw, 1.75rem);
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   4. CARD WIDTH & RESPONSIVE GRID ADAPTATIONS
+   -------------------------------------------------------------------------- */
+/* Personal Best (PB) Milestones Grid */
+.pb-milestone-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Streak Telemetry Grid */
+.streak-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Telemetry & Speed Analytics Grid */
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Medals & Honors Vault Grid */
+.medals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure individual cards fill available grid slot without overflowing container width */
+.pb-card,
+.streak-metric-box,
+.telemetry-node,
+.medal-item,
+.matrix-routing-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   5. MEDIA QUERIES FOR TABLET & SMALL DESKTOP VIEWPORTS (max-width: 1024px)
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 1024px) {
+  .pb-milestone-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .telemetry-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .medals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. MEDIA QUERIES FOR MEDIUM TABLETS & MOBILE LANDSCAPE (max-width: 768px)
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 768px) {
+  .profile-content-container {
+    padding-top: 5rem;
+    padding-left: 0.75rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  .streak-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-identity-card,
+  .diagnostics-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile-matrix-trigger {
+    top: 4.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   7. VERTICAL TABLE BREAKDOWN & COMPACT MOBILE LAYOUT (max-width: 640px)
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 640px) {
+  /* Padding adjustment for small mobile screens (Androids / Small iPhones) */
+  .profile-content-container {
+    padding-left: 0.5rem !important;
+    padding-right: 1.15rem !important;
+  }
+
+  .profile-identity-card,
+  .pb-card,
+  .streak-telemetry-strip,
+  .ledger-table-card,
+  .telemetry-speed-card,
+  .medals-vault-card,
+  .diagnostics-card {
+    padding-left: 0.75rem !important;
+    padding-right: 1rem !important;
+    border-radius: 0.85rem;
+  }
+
+  /* Single Column Card Stacks */
+  .pb-milestone-grid,
+  .streak-metrics-grid,
+  .telemetry-grid,
+  .medals-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Adjust Identity Meta Text for Smaller Devices */
+  .identity-main-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .identity-meta h1 {
+    font-size: 1.35rem;
+  }
+
+  /* VERTICAL BREAKDOWN FOR LATENCY TABLE LEDGER */
+  .ledger-table-wrap {
+    border: none;
+    overflow-x: visible;
+  }
+
+  .ledger-table {
+    display: block;
+    width: 100%;
+  }
+
+  .ledger-table thead {
+    display: none; /* Hide header row on small screens */
+  }
+
+  .ledger-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .ledger-table tr {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem 0.75rem 0.75rem;
+    box-sizing: border-box;
+  }
+
+  .ledger-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.82rem;
+    text-align: right;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ledger-table td:last-child {
+    border-bottom: none;
+  }
+
+  /* Add data label before value vertically */
+  .ledger-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: #94A3B8;
+    text-align: left;
+    padding-right: 0.75rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. EXTRA SMALL DEVICE OPTIMIZATIONS (max-width: 380px)
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 380px) {
+  .profile-content-container {
+    padding-left: 0.35rem !important;
+    padding-right: 0.85rem !important;
+  }
+
+  .btn-clipboard-neon {
+    width: 100%;
+    justify-content: center;
+    padding: 0.65rem 0.5rem;
+  }
+}
