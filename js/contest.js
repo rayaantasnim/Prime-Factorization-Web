@@ -23,7 +23,6 @@ const STANDARD_TIERS = [
     time: 180, // 3 min
     color: '#10B981', // Mint Emerald
     darkColor: '#064e3b',
-    lockoutElo: 1400, // Locked out if player ELO >= 1400
     rangeStr: '1 — 200'
   },
   {
@@ -37,7 +36,6 @@ const STANDARD_TIERS = [
     time: 300, // 5 min
     color: '#0EA5E9', // Sky Cyan
     darkColor: '#0c4a6e',
-    lockoutElo: 1650,
     rangeStr: '201 — 500'
   },
   {
@@ -51,7 +49,6 @@ const STANDARD_TIERS = [
     time: 480, // 8 min
     color: '#2563EB', // Royal Blue
     darkColor: '#1e3a8a',
-    lockoutElo: 1900,
     rangeStr: '501 — 1,000'
   },
   {
@@ -65,7 +62,6 @@ const STANDARD_TIERS = [
     time: 720, // 12 min
     color: '#6366F1', // Indigo Neon
     darkColor: '#312e81',
-    lockoutElo: 2150,
     rangeStr: '1,001 — 2k'
   },
   {
@@ -79,7 +75,6 @@ const STANDARD_TIERS = [
     time: 1080, // 18 min
     color: '#8B5CF6', // Purple Violet
     darkColor: '#4c1d95',
-    lockoutElo: 2400,
     rangeStr: '2,001 — 5k'
   },
   {
@@ -93,7 +88,6 @@ const STANDARD_TIERS = [
     time: 1500, // 25 min
     color: '#EC4899', // Crimson Rose
     darkColor: '#831843',
-    lockoutElo: 2650,
     rangeStr: '5,001 — 10k'
   },
   {
@@ -107,7 +101,6 @@ const STANDARD_TIERS = [
     time: 2100, // 35 min
     color: '#F59E0B', // Amber Gold
     darkColor: '#78350f',
-    lockoutElo: 2850,
     rangeStr: '10,001 — 20k'
   },
   {
@@ -121,7 +114,6 @@ const STANDARD_TIERS = [
     time: 2700, // 45 min
     color: '#F97316', // Neon Orange
     darkColor: '#7c2d12',
-    lockoutElo: 99999, // Unbanned rated target
     rangeStr: '20,001 — 35k'
   },
   {
@@ -135,7 +127,6 @@ const STANDARD_TIERS = [
     time: 3600, // 60 min
     color: '#D946EF', // Cosmic Fuchsia
     darkColor: '#701a75',
-    lockoutElo: 99999, // Unbanned rated target
     rangeStr: '1 — 50,000'
   }
 ];
@@ -172,14 +163,38 @@ function initContestHub() {
   let isBlinking = false;
   let blinkPhase = false;
 
-  // Process Tiers with Algorithmic Lockout
+  // Process Tiers with Official 12-Tier ELO-to-Range Banning Matrix
   let userElo = getUserElo();
   let tiersWithLockout = computeLockouts(userElo);
 
   function computeLockouts(elo) {
     return STANDARD_TIERS.map((tier) => {
-      const isLocked = elo >= tier.lockoutElo;
-      return { ...tier, isLocked };
+      let isLocked = false;
+      let minBannedElo = null;
+
+      // 12-Tier ELO-to-Range Banning Matrix Application
+      if (elo >= 3000) {
+        // Tier 1 · 3000+ ELO [Prime Singularity]: MAX_BOUND <= 10000
+        if (tier.max <= 10000) { isLocked = true; minBannedElo = 3000; }
+      } else if (elo >= 2700) {
+        // Tier 2 · 2700 - 2999 ELO [Riemann Transcendentalist]: MAX_BOUND <= 5000
+        if (tier.max <= 5000) { isLocked = true; minBannedElo = 2700; }
+      } else if (elo >= 2200) {
+        // Tier 4 & 3 · 2200 - 2699 ELO [Gaussian Cryptographer / Canonical Analyst]: MAX_BOUND <= 2000
+        if (tier.max <= 2000) { isLocked = true; minBannedElo = 2200; }
+      } else if (elo >= 1800) {
+        // Tier 6 & 5 · 1800 - 2199 ELO [Logarithmic Vector / Eulerian Sentinel]: MAX_BOUND <= 1000
+        if (tier.max <= 1000) { isLocked = true; minBannedElo = 1800; }
+      } else if (elo >= 1400) {
+        // Tier 8 & 7 · 1400 - 1799 ELO [Modular Operator / Prime Strategist]: MAX_BOUND <= 500
+        if (tier.max <= 500) { isLocked = true; minBannedElo = 1400; }
+      } else if (elo >= 900) {
+        // Tier 10 & 9 · 900 - 1399 ELO [Sieve Calibrator / Radix Scholar]: MAX_BOUND <= 200
+        if (tier.max <= 200) { isLocked = true; minBannedElo = 900; }
+      }
+      // Tier 11 (500-899) & Tier 12 (0-499): All segments open.
+
+      return { ...tier, isLocked, minBannedElo };
     });
   }
 
@@ -190,10 +205,10 @@ function initContestHub() {
 
     if (eloSummaryEl) {
       if (lockedCount === 0) {
-        eloSummaryEl.textContent = `All 9 Divisions Open for Rolling`;
+        eloSummaryEl.textContent = `All 9 Divisions Open`;
         eloSummaryEl.style.color = '#10B981';
       } else {
-        eloSummaryEl.textContent = `${unlockedCount} / 9 Divisions Eligible (${lockedCount} Low-ELO Locked)`;
+        eloSummaryEl.textContent = `${unlockedCount} / 9 Divisions Eligible (${lockedCount} Banned)`;
         eloSummaryEl.style.color = '#F59E0B';
       }
     }
@@ -204,12 +219,12 @@ function initContestHub() {
     editEloBtn.addEventListener('click', () => {
       playSound('click');
       const input = prompt(
-        `Enter simulated Competitor ELO rating (800 - 3200):\n\nLockout thresholds:\n• Tier 1: ≥ 1400\n• Tier 2: ≥ 1650\n• Tier 3: ≥ 1900\n• Tier 4: ≥ 2150\n• Tier 5: ≥ 2400\n• Tier 6: ≥ 2650\n• Tier 7: ≥ 2850`,
+        `Enter simulated Competitor ELO rating (0 - 4000):\n\nOfficial Banning Thresholds:\n• ELO ≥ 900: Locks MAX_BOUND ≤ 200\n• ELO ≥ 1400: Locks MAX_BOUND ≤ 500\n• ELO ≥ 1800: Locks MAX_BOUND ≤ 1,000\n• ELO ≥ 2200: Locks MAX_BOUND ≤ 2,000\n• ELO ≥ 2700: Locks MAX_BOUND ≤ 5,000\n• ELO ≥ 3000: Locks MAX_BOUND ≤ 10,000`,
         String(userElo)
       );
       if (input !== null) {
         const val = Number(input.trim());
-        if (!isNaN(val) && val >= 500 && val <= 4000) {
+        if (!isNaN(val) && val >= 0 && val <= 4000) {
           userElo = Math.round(val);
           setUserElo(userElo);
           tiersWithLockout = computeLockouts(userElo);
@@ -310,7 +325,7 @@ function initContestHub() {
 
         ctx.font = '11px sans-serif';
         ctx.fillStyle = '#475569';
-        ctx.fillText(`(ELO ≥ ${tier.lockoutElo})`, radius - 35, 14);
+        ctx.fillText(`(ELO ≥ ${tier.minBannedElo})`, radius - 35, 14);
 
         // Small tier label near center
         ctx.textAlign = 'left';
@@ -420,15 +435,12 @@ function initContestHub() {
     if (bannerIcon) bannerIcon.textContent = '⚡';
     if (bannerText) bannerText.textContent = `Sudden Death roll active. Decelerating into eligible tournament division...`;
 
-    // Calculate target angle:
-    // When pointer (-PI/2) points at segment chosenIndex:
-    // relAngle = chosenIndex * STEP_RAD
-    // -PI/2 - rotation = chosenIndex * STEP_RAD => rotation = -PI/2 - chosenIndex * STEP_RAD
-    // We add small random jitter inside the segment (within +/- 12 degrees or 0.2 rad)
+    // Automated Mathematical Offset Calculation (< 1ms):
+    // Force wheel rotation to land strictly on the selected authorized open division (`chosenIndex`).
     const jitter = (Math.random() - 0.5) * (STEP_RAD * 0.55);
-    const targetOffset = -Math.PI / 2 - chosenIndex * STEP_RAD + jitter;
+    let targetOffset = -Math.PI / 2 - chosenIndex * STEP_RAD + jitter;
 
-    // Guarantee 6 to 9 full spins (2 * PI * 7)
+    // Guarantee 6 to 9 full spins
     const fullSpins = (6 + Math.floor(Math.random() * 3)) * (2 * Math.PI);
     
     // Normalize start angle
@@ -444,12 +456,9 @@ function initContestHub() {
       const elapsed = now - startTime;
       const progress = Math.min(1, elapsed / duration);
 
-      // Quartic Deceleration Physics curve (fast initial spin, long natural roll-out)
-      // Ease-out quartic: 1 - (1 - t)^4
+      // Quartic Deceleration Physics curve
       const ease = 1 - Math.pow(1 - progress, 4);
 
-      currentRotation = currentRotation + (totalRotationTarget - currentRotation) * (ease / (progress || 1)) * 0.04;
-      // To strictly reach target at progress=1:
       const interpolatedRotation = startAngle + (totalRotationTarget - startAngle) * ease;
       currentRotation = interpolatedRotation;
 
@@ -474,10 +483,7 @@ function initContestHub() {
   }
 
   /**
-   * Direct Rerouting Gateway:
-   * 1. Halts cleanly on valid chosen tier
-   * 2. Blinks segment with flash triggers for exactly 1 second (1000ms)
-   * 3. Captures bounds parameters and smoothly reroutes to contract.html
+   * Direct Rerouting Gateway
    */
   function finalizeRoll(chosenIndex, chosenTier) {
     isSpinning = false;
