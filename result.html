@@ -12,11 +12,13 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="css/result.css">
+  <link rel="stylesheet" href="css/result-media-query.css"/>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="icon" type="image/x-icon" href="./favicon.ico">
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="css/media.css"/>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
@@ -166,7 +168,7 @@
       <div class="section-head" style="margin-bottom: 2rem;">
         <span class="section-kicker">Diagnostic Assessment</span>
         <h1 class="section-title">Final Verdict &amp; Analytics</h1>
-        <p class="section-desc">
+        <p class="section-desc" >
           Complete session audit breakdown, cognitive speed telemetry, compiler latency logs, and mathematical failure analysis.
         </p>
       </div>
@@ -254,11 +256,6 @@
               <div class="cb-label">Lifelines Used</div>
               <div id="cb-lifelines" class="cb-val tabular-nums">0</div>
             </div>
-
-            <div class="counter-box" id="cb-elo-box">
-              <div class="cb-label">Competitive Delta</div>
-              <div id="cb-elo-delta" class="cb-val tabular-nums" style="color: #10B981; font-weight: 800;">+0 ELO</div>
-            </div>
           </div>
 
           <!-- Competitive ELO Telemetry Matrix Panel -->
@@ -314,9 +311,7 @@
             <button id="result-new-range-btn" class="btn-secondary" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">
               <span>Choose New Tier</span>
             </button>
-            <button id="result-share-btn" class="btn-secondary" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">
-              <span>Copy Verdict Audit</span>
-            </button>
+            
             <div id="share-verdict-toast" style="display: none; align-self: center; font-size: 0.85rem; font-weight: 600; color: #10B981 !important;">
               ✓ Summary copied to clipboard!
             </div>
@@ -342,15 +337,16 @@
         <!-- Redemption Track -->
         <div class="audit-stack-card">
           <h3 style="color: #FFFFFF; font-weight: 800; font-size: 1.3rem; margin-bottom: 0.25rem;">
-            <span style="color: #FBBF24;">🔄</span> Redemption Track
+            <span style="color: #FFD700;">🔄</span> Redemption Track
           </h3>
           <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-muted);">
             Questions missed on the initial pass but successfully recovered during overtime.
           </p>
-          <div id="redemption-audit-list" class="audit-list">
+          <div id="redemption-audit-list" style="background-color: #1E1E2F;" class="audit-list">
             <!-- Dynamically populated -->
           </div>
         </div>
+
       </div>
 
       <!-- Compiler Latency Audit Table Sub-Card -->
@@ -383,9 +379,6 @@
             </tbody>
           </table>
         </div>
-      </section>
-
-    </div>
   </main>
 
   <div id="site-footer-slot">
@@ -399,30 +392,7 @@
   </div>
 
   <!-- Navbar Toggle Script Block -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
-      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
-      
-      if (menuToggle && dropdownMenu) {
-        menuToggle._hasToggleListener = true;
-        menuToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          dropdownMenu.classList.toggle('active');
-          const isExpanded = dropdownMenu.classList.contains('active');
-          menuToggle.setAttribute('aria-expanded', isExpanded);
-        });
-        
-        document.addEventListener('click', (e) => {
-          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-            dropdownMenu.classList.remove('active');
-            menuToggle.setAttribute('aria-expanded', 'false');
-          }
-        });
-      }
-    });
-  </script>
-
+  <script src="integrated-js/result.js"></script>
   <script type="module" src="./js/result.js"></script>
 </body>
 </html>

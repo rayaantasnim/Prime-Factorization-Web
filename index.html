@@ -14,10 +14,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="css/index.css"/>
+  <link rel="stylesheet" href="css/index-media-query.css"/>
 
   <!-- GSAP with ScrollToPlugin for smooth spatial animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -185,12 +186,21 @@
         </div>
       </div>
       <div class="overlay-nav-card" data-target="sec-verdict">
-        <span class="overlay-card-num">02</span>
+        <span class="overlay-card-num">2.1</span>
         <div class="overlay-card-info">
           <h4>The 6 Ranks of Verdict</h4>
           <p>Performance tiers and mathematical benchmarks</p>
         </div>
       </div>
+
+      <div class="overlay-nav-card" data-target="sec-elo-matrix">
+        <span class="overlay-card-num">2.2</span>
+        <div class="overlay-card-info">
+          <h4>The 12 Ranks of ELO</h4>
+          <p>ELO Based ranks depicting the efficiency for factorizing</p>
+        </div>
+      </div>
+
       <div class="overlay-nav-card" data-target="sec-contract">
         <span class="overlay-card-num">03</span>
         <div class="overlay-card-info">
@@ -198,6 +208,7 @@
           <p>Scoring matrix, hint penalties, and 3-strike risk</p>
         </div>
       </div>
+
       <div class="overlay-nav-card" data-target="sec-randomizer">
         <span class="overlay-card-num">04</span>
         <div class="overlay-card-info">
@@ -676,7 +687,7 @@
         </div>
 
         <div id="randomizer-trigger-card" class="randomizer-card">
-          <span class="section-kicker">Click to Trigger Random Deployment</span>
+          <span class="section-kicker" style="color: #000000;">Click to Trigger Random Deployment</span>
           <div class="randomizer-slot-box">
             <span id="slot-machine-target" class="slot-machine-text">ROLL ARENA</span>
           </div>
@@ -805,61 +816,9 @@
           </p>
         </div>
 
-        <div class="settings-node-card">
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Second Chance Overtime Loop</h4>
-              <p>Allows retrying missed numbers during the overtime loop if time remains</p>
-            </div>
-            <label class="switch" aria-label="Toggle second chance loop">
-              <input type="checkbox" id="local-toggle-second-attempt">
-              <span class="slider-round"></span>
-            </label>
-          </div>
-
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Timer Pauses (Max 2 per Exam)</h4>
-              <p>Permits 5-second tactical countdown halts during active exams</p>
-            </div>
-            <label class="switch" aria-label="Toggle timer pauses">
-              <input type="checkbox" id="local-toggle-pauses">
-              <span class="slider-round"></span>
-            </label>
-          </div>
-
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Regeneration Lifeline (Max 1 per Exam)</h4>
-              <p>Permits discarding a question to roll a new composite (-2 pts penalty)</p>
-            </div>
-            <label class="switch" aria-label="Toggle regeneration lifeline">
-              <input type="checkbox" id="local-toggle-regen">
-              <span class="slider-round"></span>
-            </label>
-          </div>
-
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Conceptual Hints (Max 1 per Exam)</h4>
-              <p>Permits number theory hints; halves correct answer points for that question</p>
-            </div>
-            <label class="switch" aria-label="Toggle conceptual hints">
-              <input type="checkbox" id="local-toggle-hints">
-              <span class="slider-round"></span>
-            </label>
-          </div>
-
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Synthesized Web Audio Feedback</h4>
-              <p>Pure harmonic chimes and alert cues synthesized directly in browser</p>
-            </div>
-            <label class="switch" aria-label="Toggle audio feedback">
-              <input type="checkbox" id="local-toggle-audio">
-              <span class="slider-round"></span>
-            </label>
-          </div>
+        <div class="content-container section-head">
+          <a href="./profile-settings.html" class="btn-primary" style="background: #FFFFFF; color: var(--text-primary);">
+            Click to redirect</a>
         </div>
       </div>
     </section>
@@ -1117,32 +1076,7 @@
   </div>
 
   <!-- Hardcoded Navbar Toggle Script Block -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
-      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
-      
-      if (menuToggle && dropdownMenu) {
-        menuToggle._hasToggleListener = true;
-        menuToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          dropdownMenu.classList.toggle('active');
-          // Smoothly transition aria attributes for universal accessibility updates
-          const isExpanded = dropdownMenu.classList.contains('active');
-          menuToggle.setAttribute('aria-expanded', isExpanded);
-        });
-        
-        // Force close the overlay dropdown if the user clicks anywhere outside of it
-        document.addEventListener('click', (e) => {
-          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-            dropdownMenu.classList.remove('active');
-            menuToggle.setAttribute('aria-expanded', 'false');
-          }
-        });
-      }
-    });
-  </script>
-
+  <script src="integrated-js/index.js"></script>
   <!-- Page Module Logic -->
   <script type="module" src="./js/home.js"></script>
 </body>

@@ -427,38 +427,15 @@
   </div>
 
   <!-- Hardcoded Navbar Toggle Script Block -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
-      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
-      
-      if (menuToggle && dropdownMenu) {
-        menuToggle._hasToggleListener = true;
-        menuToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          dropdownMenu.classList.toggle('active');
-          // Smoothly transition aria attributes for universal accessibility updates
-          const isExpanded = dropdownMenu.classList.contains('active');
-          menuToggle.setAttribute('aria-expanded', isExpanded);
-        });
-        
-        // Force close the overlay dropdown if the user clicks anywhere outside of it
-        document.addEventListener('click', (e) => {
-          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-            dropdownMenu.classList.remove('active');
-            menuToggle.setAttribute('aria-expanded', 'false');
-          }
-        });
-      }
-    });
-  </script>
+  
 
   <!-- Subtle Soft Deterrent Toast Notification (Anti-Cheat Anomaly Feedback) -->
-  <div id="anticheat-deterrent-toast" style="color:transparent;" class="soft-deterrent-toast" role="status" aria-live="polite">
+  <div id="anticheat-deterrent-toast" class="soft-deterrent-toast" role="status" aria-live="polite">
     <span class="toast-icon">😉</span>
     <span id="anticheat-toast-text" >Are you a human calculator or using a sidekick device? 😉</span>
   </div>
 
   <script type="module" src="./js/exam.js"></script>
+  <script src="integrated-js/exam.js"></script>
 </body>
 </html>

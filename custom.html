@@ -203,8 +203,8 @@
           <img class="section-bg-image" src="https://images.pexels.com/photos/3747474/pexels-photo-3747474.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Algebraic matrix coordinate grid" loading="lazy" />
           <div class="section-bg-overlay"></div>
         </div>
-        <div style="position: relative; z-index: 1; background-color: #0284C7; padding: 20px !important; padding-bottom: 0px !important; margin-bottom: 5px !important;">
-          <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: black; display: block; margin-bottom: 0.5rem; font-weight: 700;">
+        <div style="position: relative; z-index: 1; background-color: lightblue; padding: 20px !important; padding-bottom: 0px !important; margin-bottom: 5px !important;">
+          <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: black; display: block; margin-bottom: 0.5rem; font-weight: bolder;">
             Quick Bounds Presets
           </label>
           <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
@@ -489,32 +489,7 @@
   </footer>
 
   <!-- Hardcoded Navbar Toggle Script Block -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
-      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
-      
-      if (menuToggle && dropdownMenu) {
-        menuToggle._hasToggleListener = true;
-        menuToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          dropdownMenu.classList.toggle('active');
-          // Smoothly transition aria attributes for universal accessibility updates
-          const isExpanded = dropdownMenu.classList.contains('active');
-          menuToggle.setAttribute('aria-expanded', isExpanded);
-        });
-        
-        // Force close the overlay dropdown if the user clicks anywhere outside of it
-        document.addEventListener('click', (e) => {
-          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-            dropdownMenu.classList.remove('active');
-            menuToggle.setAttribute('aria-expanded', 'false');
-          }
-        });
-      }
-    });
-  </script>
-
+  <script src="integrated-js/custom.js"></script>
   <script type="module" src="./js/custom.js"></script>
 </body>
 </html>
