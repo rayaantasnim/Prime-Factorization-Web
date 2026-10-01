@@ -16,49 +16,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="css/contest.css"/>
-
-  <style>
-    /* Unearned CSS configuration layer forcing faded grayscale blur state */
-    .wheel-slot-locked,
-    .wheel-slice-locked {
-      filter: grayscale(100%) opacity(0.35) !important;
-      transition: all 0.3s ease !important;
-      pointer-events: none !important;
-    }
-
-    .division-slots-strip {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.45rem;
-      margin: 1.25rem 0 0.5rem;
-      max-width: 680px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .division-slot-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.3rem 0.65rem;
-      border-radius: 9999px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #E2E8F0;
-      transition: all 0.3s ease;
-      user-select: none;
-    }
-
-    .division-slot-badge.wheel-slot-locked {
-      filter: grayscale(100%) opacity(0.35) !important;
-      transition: all 0.3s ease !important;
-      border-color: rgba(148, 163, 184, 0.3);
-      color: #94A3B8;
-    }
-  </style>
+  <link rel="stylesheet" href="css/contest-special.css"/>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
