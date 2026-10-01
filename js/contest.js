@@ -149,19 +149,94 @@ function initContestHub() {
   const eloValEl = document.getElementById('competitor-elo-val');
   const eloSummaryEl = document.getElementById('elo-lockout-summary');
   const editEloBtn = document.getElementById('edit-elo-btn');
+  const divisionSlotsStrip = document.getElementById('division-slots-strip');
 
   if (!canvas || !rollBtn) return;
 
   const ctx = canvas.getContext('2d');
   const SEGMENTS_COUNT = 9;
   const STEP_RAD = (2 * Math.PI) / SEGMENTS_COUNT; // 40 degrees per segment
+  const TOOTH_RAD = Math.PI / 18; // 36 mechanical escapement teeth (10 degrees each)
 
   let currentRotation = 0; // in radians
   let isSpinning = false;
   let lastPointedIndex = -1;
+  let lastToothIndex = -1;
   let winningIndex = -1;
   let isBlinking = false;
   let blinkPhase = false;
+
+  // Real-Time Mechanical Audio Context Synthesizer
+  let mechAudioCtx = null;
+  function getMechanicalAudioContext() {
+    if (!mechAudioCtx) {
+      const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtxClass) {
+        mechAudioCtx = new AudioCtxClass();
+      }
+    }
+    if (mechAudioCtx && mechAudioCtx.state === 'suspended') {
+      mechAudioCtx.resume();
+    }
+    return mechAudioCtx;
+  }
+
+  function playMechanicalTick(velocityRatio = 1.0) {
+    try {
+      const actx = getMechanicalAudioContext();
+      if (!actx) return;
+      const now = actx.currentTime;
+
+      // Dynamic mechanical pawl tick with friction-frequency resonance
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      const filter = actx.createBiquadFilter();
+
+      filter.type = 'bandpass';
+      const centerFreq = 2400 + Math.random() * 500;
+      filter.frequency.setValueAtTime(centerFreq, now);
+      filter.Q.setValueAtTime(4.5, now);
+
+      osc.type = 'triangle';
+      const basePitch = 1400 + 850 * Math.min(1.5, velocityRatio);
+      osc.frequency.setValueAtTime(basePitch, now);
+      osc.frequency.exponentialRampToValueAtTime(280, now + 0.015);
+
+      const volume = Math.min(0.22, 0.06 + 0.12 * Math.min(1.2, velocityRatio));
+      gain.gain.setValueAtTime(volume, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.018);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(actx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.02);
+    } catch (e) {}
+  }
+
+  function playMechanicalLockIn() {
+    try {
+      const actx = getMechanicalAudioContext();
+      if (!actx) return;
+      const now = actx.currentTime;
+
+      // Heavy metallic ratchet lock-in clunk: dual resonance harmonic strike
+      [540, 1080, 2160].forEach((freq, idx) => {
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = idx === 0 ? 'triangle' : 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.012);
+        osc.frequency.exponentialRampToValueAtTime(110, now + idx * 0.012 + 0.12);
+        gain.gain.setValueAtTime(0.24, now + idx * 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.012 + 0.14);
+        osc.connect(gain);
+        gain.connect(actx.destination);
+        osc.start(now + idx * 0.012);
+        osc.stop(now + idx * 0.012 + 0.14);
+      });
+    } catch (e) {}
+  }
 
   // Process Tiers with Official 12-Tier ELO-to-Range Banning Matrix
   let userElo = getUserElo();
@@ -198,6 +273,25 @@ function initContestHub() {
     });
   }
 
+  function renderDivisionSlotsStrip() {
+    if (!divisionSlotsStrip) return;
+    divisionSlotsStrip.innerHTML = tiersWithLockout.map((t) => {
+      if (t.isLocked) {
+        return `<div id="slot-badge-${t.id}" class="division-slot-badge wheel-slot-locked" style="filter: grayscale(100%) opacity(0.35); transition: all 0.3s ease;">
+          <span>🔒</span>
+          <span>T${t.tierNum}: ${t.shortLabel}</span>
+          <span style="font-size: 0.65rem; color: #94A3B8;">(Locked ≥ ${t.minBannedElo})</span>
+        </div>`;
+      } else {
+        return `<div id="slot-badge-${t.id}" class="division-slot-badge" style="border-color: ${t.color};">
+          <span style="color: ${t.color};">●</span>
+          <span>T${t.tierNum}: ${t.shortLabel}</span>
+          <span style="font-size: 0.68rem; color: #38BDF8;">(${t.rangeStr})</span>
+        </div>`;
+      }
+    }).join('');
+  }
+
   function updateEloDisplay() {
     if (eloValEl) eloValEl.textContent = userElo;
     const unlockedCount = tiersWithLockout.filter(t => !t.isLocked).length;
@@ -212,6 +306,8 @@ function initContestHub() {
         eloSummaryEl.style.color = '#F59E0B';
       }
     }
+
+    renderDivisionSlotsStrip();
   }
 
   // Adjust Rating interactive prompt
@@ -280,6 +376,13 @@ function initContestHub() {
       const tier = tiersWithLockout[i];
       const startAngle = i * STEP_RAD - STEP_RAD / 2;
       const endAngle = startAngle + STEP_RAD;
+
+      ctx.save();
+
+      // Visual Slot Lockdown: Apply faded grayscale blur state layer
+      if (tier.isLocked) {
+        ctx.filter = 'grayscale(100%) opacity(0.35)';
+      }
 
       ctx.beginPath();
       ctx.moveTo(0, 0);
@@ -357,6 +460,7 @@ function initContestHub() {
       }
 
       ctx.restore();
+      ctx.restore(); // Restore filter & segment save
     }
 
     // Outer wheel ring boundary
@@ -375,17 +479,15 @@ function initContestHub() {
   // Initial draw
   drawWheel(currentRotation);
   lastPointedIndex = getSegmentAtPointer(currentRotation);
+  lastToothIndex = Math.floor(currentRotation / TOOTH_RAD);
 
   /**
    * Chattering audio-visual click trigger node.
    * Fires every single time a color segment passes under the 12 o'clock indicator pin.
    */
   function triggerPointerTick(segmentIndex) {
-    playSound('wheelTick');
-
     if (pointerPin) {
       pointerPin.classList.remove('pin-flick');
-      // Force DOM reflow to re-trigger transition
       void pointerPin.offsetWidth;
       pointerPin.classList.add('pin-flick');
       setTimeout(() => {
@@ -404,8 +506,8 @@ function initContestHub() {
   }
 
   /**
-   * The Real-Time Physics Spin Loop
-   * Engages smooth physics-driven deceleration block.
+   * The Real-Time Physics Spin Loop with Audio-Mechanical Synchronization
+   * Engages friction dampening, rapid-to-dragging audio slowdown, and needle intercept.
    */
   function startRoll() {
     if (isSpinning) return;
@@ -415,56 +517,113 @@ function initContestHub() {
     tiersWithLockout = computeLockouts(userElo);
     updateEloDisplay();
 
-    // Algorithmic Filter Layer: choose ONLY valid, unbanned rated targets
+    // Verify at least one division is eligible
     const validTiers = tiersWithLockout.filter(t => !t.isLocked);
     if (validTiers.length === 0) {
-      alert('All divisions are locked! Please adjust your ELO rating.');
+      alert('All divisions are locked for your rating! Please calibrate your ELO rating.');
       return;
     }
 
     isSpinning = true;
     rollBtn.disabled = true;
     rollBtn.style.pointerEvents = 'none';
-    playSound('alert');
 
-    // Randomly select one eligible target
-    const chosenTier = validTiers[Math.floor(Math.random() * validTiers.length)];
-    const chosenIndex = tiersWithLockout.findIndex(t => t.id === chosenTier.id);
+    // Immediate mechanical sound effect sequence: rapid startup click burst
+    playMechanicalTick(1.5);
+    setTimeout(() => playMechanicalTick(1.4), 22);
+    setTimeout(() => playMechanicalTick(1.3), 44);
 
     if (bannerEl) bannerEl.className = 'roll-status-banner';
     if (bannerIcon) bannerIcon.textContent = '⚡';
     if (bannerText) bannerText.textContent = `Sudden Death roll active. Decelerating into eligible tournament division...`;
 
-    // Automated Mathematical Offset Calculation (< 1ms):
-    // Force wheel rotation to land strictly on the selected authorized open division (`chosenIndex`).
-    const jitter = (Math.random() - 0.5) * (STEP_RAD * 0.55);
-    let targetOffset = -Math.PI / 2 - chosenIndex * STEP_RAD + jitter;
+    // 1. Initial tentative spin calculation (random angle on circle)
+    const randomFullSpins = (6 + Math.floor(Math.random() * 3)) * (2 * Math.PI);
+    const tentativeStopAngle = Math.random() * (2 * Math.PI);
+    const tentativeTotalRotation = currentRotation + randomFullSpins + tentativeStopAngle;
 
-    // Guarantee 6 to 9 full spins
-    const fullSpins = (6 + Math.floor(Math.random() * 3)) * (2 * Math.PI);
-    
-    // Normalize start angle
-    const startAngle = currentRotation % (2 * Math.PI);
-    let delta = (targetOffset - startAngle) % (2 * Math.PI);
-    if (delta < 0) delta += 2 * Math.PI;
+    // 2. Determine tentative landing segment under the 12 o'clock needle (-PI/2)
+    const tentativeSegment = getSegmentAtPointer(tentativeTotalRotation);
+    const isTentativeLocked = tiersWithLockout[tentativeSegment].isLocked;
 
-    const totalRotationTarget = currentRotation + fullSpins + delta;
+    let finalChosenIndex = tentativeSegment;
+    let finalRotationTarget = tentativeTotalRotation;
+
+    // 3. Automated Mathematical Offset Override (< 1ms execution):
+    // If the spinning calculations attempt to land the visual indicator pin/needle on a restricted,
+    // grayscale slice, execute an automated mathematical offset override within 1 millisecond.
+    if (isTentativeLocked) {
+      const interceptT0 = performance.now();
+      const unlockedIndices = [];
+      for (let i = 0; i < SEGMENTS_COUNT; i++) {
+        if (!tiersWithLockout[i].isLocked) {
+          unlockedIndices.push(i);
+        }
+      }
+
+      if (unlockedIndices.length > 0) {
+        // Advance forward to the nearest unlocked, open division target slice
+        let bestTargetIndex = unlockedIndices[0];
+        let minAngularDiff = Infinity;
+
+        for (const uIdx of unlockedIndices) {
+          let diff = (uIdx - tentativeSegment + SEGMENTS_COUNT) % SEGMENTS_COUNT;
+          if (diff === 0) diff = SEGMENTS_COUNT;
+          if (diff < minAngularDiff) {
+            minAngularDiff = diff;
+            bestTargetIndex = uIdx;
+          }
+        }
+
+        finalChosenIndex = bestTargetIndex;
+
+        // Force wheel to advance to land strictly on the authorized open division
+        const safeJitter = (Math.random() - 0.5) * (STEP_RAD * 0.45);
+        const targetOffset = -Math.PI / 2 - finalChosenIndex * STEP_RAD + safeJitter;
+        const startAngle = currentRotation % (2 * Math.PI);
+        let delta = (targetOffset - startAngle) % (2 * Math.PI);
+        if (delta < 0) delta += 2 * Math.PI;
+
+        finalRotationTarget = currentRotation + randomFullSpins + delta;
+        const interceptT1 = performance.now();
+        console.info(`[Physics Needle Intercept] Overrode locked slice ${tentativeSegment + 1} -> routed to unlocked slice ${finalChosenIndex + 1} (${tiersWithLockout[finalChosenIndex].label}) in ${(interceptT1 - interceptT0).toFixed(3)}ms.`);
+      }
+    } else {
+      // Tentative slice is authorized and open; apply slight centering jitter
+      const safeJitter = (Math.random() - 0.5) * (STEP_RAD * 0.45);
+      const targetOffset = -Math.PI / 2 - finalChosenIndex * STEP_RAD + safeJitter;
+      const startAngle = currentRotation % (2 * Math.PI);
+      let delta = (targetOffset - startAngle) % (2 * Math.PI);
+      if (delta < 0) delta += 2 * Math.PI;
+      finalRotationTarget = currentRotation + randomFullSpins + delta;
+    }
+
+    const chosenTier = tiersWithLockout[finalChosenIndex];
     const duration = 4800; // 4.8 seconds deceleration
     const startTime = performance.now();
+    const startRotationVal = currentRotation;
 
     function physicsStep(now) {
       const elapsed = now - startTime;
       const progress = Math.min(1, elapsed / duration);
 
-      // Quartic Deceleration Physics curve
+      // Quartic Deceleration Physics curve (Friction Dampening)
       const ease = 1 - Math.pow(1 - progress, 4);
 
-      const interpolatedRotation = startAngle + (totalRotationTarget - startAngle) * ease;
-      currentRotation = interpolatedRotation;
-
+      currentRotation = startRotationVal + (finalRotationTarget - startRotationVal) * ease;
       drawWheel(currentRotation);
 
-      // Check for segment traversal under pin
+      // Instantaneous velocity ratio scaled to friction dampening
+      const velocityRatio = Math.pow(1 - progress, 3);
+
+      // Mechanical gear tooth escapement audio: ticks scale down with deceleration
+      const currentTooth = Math.floor(currentRotation / TOOTH_RAD);
+      if (currentTooth !== lastToothIndex) {
+        lastToothIndex = currentTooth;
+        playMechanicalTick(Math.max(0.15, velocityRatio * 1.4));
+      }
+
+      // Segment traversal under pointer pin
       const currentSegment = getSegmentAtPointer(currentRotation);
       if (currentSegment !== lastPointedIndex) {
         lastPointedIndex = currentSegment;
@@ -474,8 +633,9 @@ function initContestHub() {
       if (progress < 1) {
         requestAnimationFrame(physicsStep);
       } else {
-        // Spin finished!
-        finalizeRoll(chosenIndex, chosenTier);
+        // Deceleration complete: trigger final sharp mechanical "lock-in" audio click
+        playMechanicalLockIn();
+        finalizeRoll(finalChosenIndex, chosenTier);
       }
     }
 
@@ -490,7 +650,7 @@ function initContestHub() {
     winningIndex = chosenIndex;
     lastPointedIndex = chosenIndex;
 
-    // Audio-visual confirmation triggers
+    // Visual fanfare triggers
     playSound('correct');
     playSound('fanfare');
     triggerFlash('success');
@@ -522,9 +682,9 @@ function initContestHub() {
       rules: getSettings()
     });
 
-    // Exactly 1 second (1000ms) delay before seamless reroute
+    // Exactly 1 second delay before seamless reroute with parameters
     setTimeout(() => {
-      const url = `./contract.html?min=${chosenTier.min}&max=${chosenTier.max}&title=${encodeURIComponent(chosenTier.title)}&time=${chosenTier.time}`;
+      const url = `./contract.html?min=${chosenTier.min}&max=${chosenTier.max}&title=${encodeURIComponent(chosenTier.title)}&time=${chosenTier.time}&tier=${chosenTier.tierNum}&mode=rated`;
       window.location.href = url;
     }, 1000);
   }

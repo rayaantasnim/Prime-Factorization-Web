@@ -1,6 +1,6 @@
-import { getSettings, updateSettings } from './js/storage.js';
-import { playSound } from './js/audio.js';
-import { getUserElo, getUserPeakElo, getTierByElo, reSignProfileDirectory, initServerlessOnboarding } from './js/elo-engine.js';
+import { getSettings, updateSettings } from '../js/storage.js';
+import { playSound } from '../js/audio.js';
+import { getUserElo, getUserPeakElo, getTierByElo, reSignProfileDirectory, initServerlessOnboarding } from '../js/elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initServerlessOnboarding();

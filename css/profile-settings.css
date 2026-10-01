@@ -99,4 +99,80 @@
       font-weight: 700;
       margin-top: 1.25rem;
       text-align: center;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+    }
+    .unsaved-warning-banner {
+      display: none;
+      background: rgba(234, 179, 8, 0.12);
+      border: 1.5px solid #EAB308;
+      color: #FDE047;
+      padding: 0.75rem 1rem;
+      border-radius: 0.65rem;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-top: 1.25rem;
+      box-shadow: 0 0 18px rgba(234, 179, 8, 0.3);
+      align-items: center;
+      gap: 0.6rem;
+      animation: pulse-warning-glow 2s infinite ease-in-out;
+    }
+    @keyframes pulse-warning-glow {
+      0%, 100% {
+        border-color: #EAB308;
+        box-shadow: 0 0 14px rgba(234, 179, 8, 0.25);
+      }
+      50% {
+        border-color: #FACC15;
+        box-shadow: 0 0 24px rgba(250, 204, 21, 0.45);
+      }
+    }
+    .input-select-neon {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #FFFFFF;
+      padding: 0.55rem 0.85rem;
+      border-radius: 0.5rem;
+      font-family: inherit;
+      font-size: 0.92rem;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 240px;
+      box-sizing: border-box;
+    }
+    .input-select-neon:focus {
+      border-color: #38BDF8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+    .input-select-neon option {
+      background: #0f172a;
+      color: #FFFFFF;
+    }
+    .btn-save-inactive {
+      opacity: 0.55;
+      filter: grayscale(35%);
+      background: rgba(15, 23, 42, 0.85);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #94A3B8;
+      box-shadow: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-save-active-wake {
+      opacity: 1 !important;
+      filter: none !important;
+      background: #059669 !important;
+      color: #FFFFFF !important;
+      border-color: #10B981 !important;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.85), 0 0 45px rgba(52, 211, 153, 0.55) !important;
+      transform: scale(1.03);
+      cursor: pointer !important;
+      animation: neon-save-pulse 1.8s infinite ease-in-out;
+    }
+    @keyframes neon-save-pulse {
+      0%, 100% {
+        box-shadow: 0 0 18px rgba(16, 185, 129, 0.8), 0 0 32px rgba(52, 211, 153, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 28px rgba(16, 185, 129, 1), 0 0 48px rgba(52, 211, 153, 0.7);
+      }
     }

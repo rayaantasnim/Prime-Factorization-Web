@@ -1,0 +1,224 @@
+    /* ================= SYSTEM EXPECTATIONS VERIFICATION LEDGER ================= */
+    .verification-ledger-container {
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      border-radius: 1.25rem;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      margin-bottom: 2.25rem;
+      box-shadow: 
+        0 20px 40px -15px rgba(0, 0, 0, 0.7),
+        inset 0 0 25px rgba(14, 165, 233, 0.08);
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .verification-ledger-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 1rem;
+    }
+
+    .verification-ledger-title {
+      font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+      margin: 0.2rem 0 0;
+      line-height: 1.2;
+    }
+
+    .verification-ledger-sub {
+      font-size: 0.88rem;
+      color: #94A3B8;
+      margin: 0 0 1.5rem;
+      max-width: 58rem;
+      line-height: 1.5;
+    }
+
+    .verification-ledger-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.25rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 1080px) {
+      .verification-ledger-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .verification-ledger-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ledger-category-block {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      box-sizing: border-box;
+    }
+
+    .ledger-category-block:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 12px 24px -10px rgba(14, 165, 233, 0.25);
+    }
+
+    .category-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .category-kicker {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #38BDF8;
+      font-weight: 700;
+    }
+
+    .category-pill-badge {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.12);
+      color: #38BDF8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .category-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin: 0 0 0.4rem;
+      letter-spacing: 0.02em;
+    }
+
+    .category-subtext {
+      font-size: 0.8rem;
+      color: #94A3B8;
+      line-height: 1.45;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+
+    .dual-remark-container {
+      background: rgba(2, 6, 23, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 0.75rem;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .dual-option-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .option-type-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748B;
+      font-weight: 700;
+    }
+
+    /* Option 1: Unclickable custom checkbox */
+    .unclickable-checkbox-wrapper {
+      pointer-events: none !important;
+      user-select: none !important;
+      cursor: default !important;
+    }
+
+    .custom-status-checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 800;
+      border: 1.5px solid transparent;
+      transition: all 0.25s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .custom-status-checkbox.pass {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: #10B981;
+      color: #34D399;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.2), inset 0 0 8px rgba(16, 185, 129, 0.1);
+    }
+
+    .custom-status-checkbox.fail {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: #EF4444;
+      color: #F87171;
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.2), inset 0 0 8px rgba(239, 68, 68, 0.1);
+    }
+
+    .checkbox-symbol {
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+
+    .checkbox-text {
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* Option 2: High-contrast metric rating stamped precisely */
+    .numerical-rating-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.45rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 1.05rem;
+      font-weight: 800;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38BDF8;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .category-benchmark-footer {
+      font-size: 0.74rem;
+      color: #94A3B8;
+      padding-top: 0.4rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      line-height: 1.4;
+    }

@@ -179,6 +179,12 @@
         </a>
       </div>
 
+      <!-- Yellow Neon Status Warning Banner (Dynamic Wake-Up) -->
+      <div id="unsaved-warning-banner" class="unsaved-warning-banner" style="display: none;">
+        <span style="font-size: 1.15rem;">⚠️</span>
+        <span>Unsaved Configuration Detected — Click &quot;Save Configuration&quot; to securely commit your profile credentials.</span>
+      </div>
+
       <div class="settings-group">
         <div class="settings-row">
           <div class="settings-label-block">
@@ -206,10 +212,67 @@
 
         <div class="settings-row">
           <div class="settings-label-block">
-            <h4>Contestant Handle / Name</h4>
+            <h4>Contestant Handle / Screen Name</h4>
             <p>Customize your displayed Olympiad academic profile identity.</p>
           </div>
           <input type="text" id="setting-username" class="input-handle" value="Rayaan Tasnim" maxlength="32" />
+        </div>
+
+        <!-- 1. Real Name Input Field (Default: "None") -->
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Certified Real Name</h4>
+            <p>Certified candidate legal name printed on Olympiad accreditation certificates.</p>
+          </div>
+          <input type="text" id="setting-realname" class="input-handle" value="None" maxlength="64" autocomplete="name" />
+        </div>
+
+        <!-- 2. City Input Field -->
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Training City</h4>
+            <p>Specify active metropolitan training base or regional laboratory.</p>
+          </div>
+          <input type="text" id="setting-city" class="input-handle" value="None" maxlength="64" placeholder="e.g. Cambridge" />
+        </div>
+
+        <!-- 3. Country Input Field -->
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Training Country</h4>
+            <p>Specify active nation for global Olympiad classification rosters.</p>
+          </div>
+          <input type="text" id="setting-country" class="input-handle" value="None" maxlength="64" placeholder="e.g. United States" />
+        </div>
+
+        <!-- 4. Organization / Institution Field -->
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Organization / Institution</h4>
+            <p>School, university department, or regional mathematics squad affiliation.</p>
+          </div>
+          <input type="text" id="setting-organization" class="input-handle" value="None" maxlength="80" placeholder="e.g. MIT Olympiad Mathematics Team" />
+        </div>
+
+        <!-- 5. Cause to Enroll Select Box (11 Olympiad Purpose Options) -->
+        <div class="settings-row">
+          <div class="settings-label-block">
+            <h4>Cause to Enroll</h4>
+            <p>Primary purpose registered with Olympiad Edge training protocols.</p>
+          </div>
+          <select id="setting-enroll-cause" class="input-select-neon">
+            <option value="Olympiad Training">Olympiad Training</option>
+            <option value="Academic Excellence">Academic Excellence</option>
+            <option value="Mental Cadence & Pacing">Mental Cadence &amp; Pacing</option>
+            <option value="Number Theory Research">Number Theory Research</option>
+            <option value="Cognitive Speed Testing">Cognitive Speed Testing</option>
+            <option value="Competitive Math Sprint">Competitive Math Sprint</option>
+            <option value="Algorithm Development">Algorithm Development</option>
+            <option value="Olympiad Edge Scouting">Olympiad Edge Scouting</option>
+            <option value="Integer Factorization Laboratory">Integer Factorization Laboratory</option>
+            <option value="National League Preparation">National League Preparation</option>
+            <option value="Pure Mathematical Leisure">Pure Mathematical Leisure</option>
+          </select>
         </div>
 
         <div class="settings-row">
@@ -261,7 +324,7 @@
       </div>
 
       <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
-        <button id="btn-save-settings" class="btn-clipboard-neon btn-neon-copied-glow" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+        <button id="btn-save-settings" class="btn-clipboard-neon btn-save-inactive" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
           <span>Save Configuration</span>
         </button>
       </div>
@@ -280,111 +343,7 @@
   </div>
 
 
-  <script type="module">
-    import { getSettings, updateSettings } from './js/storage.js';
-    import { playSound } from './js/audio.js';
-    import { getUserElo, getUserPeakElo, getTierByElo, reSignProfileDirectory, initServerlessOnboarding } from './js/elo-engine.js';
-
-    document.addEventListener('DOMContentLoaded', () => {
-      initServerlessOnboarding();
-
-      const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
-      const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
-      if (menuToggle && dropdownMenu) {
-        menuToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          dropdownMenu.classList.toggle('active');
-        });
-        document.addEventListener('click', (e) => {
-          if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-            dropdownMenu.classList.remove('active');
-          }
-        });
-      }
-
-      const settings = getSettings();
-      const soundCheck = document.getElementById('setting-sound');
-      const secondCheck = document.getElementById('setting-second-attempt');
-      const pauseCheck = document.getElementById('setting-pause');
-      const userHandle = document.getElementById('setting-username');
-      const saveBtn = document.getElementById('btn-save-settings');
-      const banner = document.getElementById('save-banner');
-
-      // Populate Live Token & ELO Status
-      const token = localStorage.getItem('primefactor_profile_token') || 'OLY-PF-746525000545';
-      const tokenDisplay = document.getElementById('display-profile-token');
-      const btnCopyToken = document.getElementById('btn-copy-token');
-      if (tokenDisplay) tokenDisplay.textContent = token;
-
-      if (btnCopyToken) {
-        btnCopyToken.addEventListener('click', async () => {
-          playSound('click');
-          try {
-            await navigator.clipboard.writeText(token);
-          } catch(e) {}
-          btnCopyToken.textContent = 'Copied!';
-          setTimeout(() => { btnCopyToken.textContent = 'Copy'; }, 1500);
-        });
-      }
-
-      const currentElo = getUserElo();
-      const peakElo = getUserPeakElo();
-      const currentTier = getTierByElo(currentElo);
-
-      const tierDisplay = document.getElementById('display-profile-tier');
-      const eloDisplay = document.getElementById('display-profile-elo');
-      if (tierDisplay) {
-        tierDisplay.textContent = `${currentTier.symbol} ${currentTier.title}`;
-        tierDisplay.style.color = currentTier.colorHex;
-      }
-      if (eloDisplay) {
-        eloDisplay.textContent = `${currentElo.toLocaleString()} ELO · Peak: ${peakElo.toLocaleString()} ELO`;
-      }
-
-      // Re-anchor signature
-      const btnReSign = document.getElementById('btn-re-sign');
-      if (btnReSign) {
-        btnReSign.addEventListener('click', () => {
-          playSound('click');
-          reSignProfileDirectory();
-          if (banner) {
-            banner.textContent = '✔️ Profile Directory Integrity Re-Anchored with HMAC!';
-            banner.style.display = 'block';
-            setTimeout(() => { 
-              banner.textContent = '✔️ Profile Settings Saved Successfully!';
-              banner.style.display = 'none'; 
-            }, 2500);
-          }
-        });
-      }
-
-      if (soundCheck) soundCheck.checked = settings.soundEnabled ?? true;
-      if (secondCheck) secondCheck.checked = settings.allowSecondAttempt ?? true;
-      if (pauseCheck) pauseCheck.checked = settings.allowPause ?? true;
-
-      const storedUser = localStorage.getItem('primefactor_profile_username');
-      if (storedUser && userHandle) userHandle.value = storedUser;
-
-      if (saveBtn) {
-        saveBtn.addEventListener('click', () => {
-          playSound('click');
-          updateSettings({
-            soundEnabled: soundCheck.checked,
-            allowSecondAttempt: secondCheck.checked,
-            allowPause: pauseCheck.checked
-          });
-          if (userHandle && userHandle.value.trim()) {
-            localStorage.setItem('primefactor_profile_username', userHandle.value.trim());
-          }
-          reSignProfileDirectory();
-          if (banner) {
-            banner.style.display = 'block';
-            setTimeout(() => { banner.style.display = 'none'; }, 2500);
-          }
-        });
-      }
-    });
-  </script>
-
+  <!-- Dedicated Profile Settings Controller Layer -->
+  <script type="module" src="./js/profile-settings.js"></script>
 </body>
 </html>

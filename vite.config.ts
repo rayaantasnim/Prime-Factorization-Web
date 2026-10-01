@@ -26,6 +26,7 @@ export default defineConfig(() => {
           contest: path.resolve(import.meta.dirname, 'contest.html'),
           profile: path.resolve(import.meta.dirname, 'profile.html'),
           'profile-settings': path.resolve(import.meta.dirname, 'profile-settings.html'),
+          medals: path.resolve(import.meta.dirname, 'medals.html'),
           rules: path.resolve(import.meta.dirname, 'rules.html'),
           rating: path.resolve(import.meta.dirname, 'rating.html'),
         },

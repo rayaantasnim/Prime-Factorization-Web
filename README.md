@@ -96,17 +96,17 @@ The platform integrates 15 enterprise-grade client-side runtime modules designed
 
 ## 🛠️ Local Development Environment Setup
 
-Follow these steps to clone, run, and develop the platform locally using <kbd>Bun</kbd>, <kbd>Vite</kbd>, and <kbd>TypeScript</kbd>:
+Follow these steps to clone, run, and develop the platform locally using <kbd>Node.js</kbd>, <kbd>npm</kbd>, <kbd>Vite</kbd>, and <kbd>TypeScript</kbd>:
 
 ```bash
 # 1. Clone the Math Olympiad Speed Laboratory source directory
-git clone [https://github.com/PrimeFactor/Prime-Factorization-Web.git](https://github.com/PrimeFactor/Prime-Factorization-Web.git)
+git clone https://github.com/PrimeFactor/Prime-Factorization-Web.git
 
 # 2. Enter the project root directory context path
 cd Prime-Factorization-Web
 
-# 3. Synchronize zero-dependency packages using Bun engine
-bun install
+# 3. Synchronize dependencies using npm
+npm install
 
 # 4. Deploy the local client-side developer runtime environment server
-bun run dev
+npm run dev

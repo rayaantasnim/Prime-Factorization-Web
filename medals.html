@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Olympiad Medals &amp; Badges Vault — PrimeFactor.app</title>
+  <meta name="description" content="Certified Math Olympiad medals, speed mastery insignias, verified tier honors, and candidate achievement vault with fade-to-inspire tracking." />
+  <meta property="og:title" content="Olympiad Medals &amp; Badges Vault — PrimeFactor.app" />
+  <meta property="og:description" content="Certified Math Olympiad medals, speed mastery insignias, and dual-vault achievement system." />
+  <meta property="author" content="Rayaan Tasnim" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./css/profile.css" />
+  <link rel="stylesheet" href="css/medal.css"/>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body class="profile-view">
+
+  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Persistent Global Top Header with Dropdown Navigation (Identical across views) -->
+  <header class="fixed-header">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./rules.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <span>Rules</span>
+            </div>
+            <span class="dropdown-badge">Policies</span>
+          </a>
+
+          <a href="./rating.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+              <span>Rating</span>
+            </div>
+            <span class="dropdown-badge">Matrix</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
+          </a>
+
+          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+              </svg>
+              <span>Contest</span>
+            </div>
+            <span class="dropdown-badge">Arena</span>
+          </a>
+
+          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Profile</span>
+            </div>
+            <span class="dropdown-badge">Overview</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="./profile-settings.html" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="./profile-settings.html" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Settings Link -->
+      <div class="header-actions">
+        <a href="./profile-settings.html" class="icon-btn" aria-label="Profile Settings">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dual Vault Wrapper -->
+  <main class="medals-page-wrapper" style="margin-top:10%;">
+
+    <!-- 1. The Dual-Vault Master Switcher (2 Separate Vaults: 100+ Medals & 100+ Badges) -->
+    <div class="vault-master-switcher">
+      <div id="switch-vault-medals" class="vault-switch-card active" role="button" tabindex="0">
+        <div class="switch-icon-box">🏅</div>
+        <div class="switch-info">
+          <div class="switch-title">
+            <span>The Medals Vault</span>
+            <span style="font-size: 0.72rem; color: #F59E0B;" id="medals-capacity-label">(100 Accolades)</span>
+          </div>
+          <div class="switch-subtitle">Advanced Number Theory, Diophantine systems &amp; Cosmic Manifolds</div>
+        </div>
+        <div class="switch-status-pill" id="medals-count-badge">0 / 100 Gained</div>
+      </div>
+
+      <div id="switch-vault-badges" class="vault-switch-card switch-badges" role="button" tabindex="0">
+        <div class="switch-icon-box">🛡️</div>
+        <div class="switch-info">
+          <div class="switch-title">
+            <span>The Badges Vault</span>
+            <span style="font-size: 0.72rem; color: #38BDF8;" id="badges-capacity-label">(100 Insignias)</span>
+          </div>
+          <div class="switch-subtitle">Sub-second reflexes, zero-lifeline integrity &amp; window lock logs</div>
+        </div>
+        <div class="switch-status-pill" id="badges-count-badge">0 / 100 Gained</div>
+      </div>
+    </div>
+
+    <!-- 2. Active Vault Hero Overview Card -->
+    <section class="medals-hero-card">
+      <div class="medals-hero-top">
+        <div class="medals-hero-title-group">
+          <span id="vault-kicker" style="font-size: 0.78rem; font-weight: 800; color: #F59E0B; text-transform: uppercase; letter-spacing: 0.08em;">
+            🏛️ OLYMPIAD COMPETITIVE MEDALS VAULT · 100 ACCOLADES
+          </span>
+          <h1 id="vault-main-title">
+            <span>🏅</span> Olympiad Medals Vault
+          </h1>
+          <p id="vault-main-desc">
+            Certified Math Olympiad accolades, speed mastery insignias, and verified tier milestones awarded for high-precision prime factorizations.
+          </p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <button id="btn-copy-honors" class="btn-clipboard-neon" aria-label="Copy Honors Ledger">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span>Copy Dual-Vault Ledger</span>
+          </button>
+          <a href="./profile.html" class="btn-clipboard-neon" style="text-decoration: none;">
+            <span>← Candidate Profile</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Fade-To-Inspire Protocol Guidance Banner -->
+      <div class="inspire-protocol-banner">
+        <span style="font-size: 1.25rem;">✨</span>
+        <div>
+          <strong>The Fade-to-Inspire Protocol:</strong> Only earned accolades shine with luminous cyber-glow. Unearned accolades fade in an awaiting state (`opacity: 0.25; grayscale: 100%`). Click an awaiting medal to test its lock.
+        </div>
+      </div>
+
+      <!-- Live Summary Bar -->
+      <div class="medals-summary-bar">
+        <div class="summary-metric-box">
+          <span class="summary-metric-label" id="summary-progress-label">Medals Progress</span>
+          <div class="summary-metric-value tabular-nums" id="summary-unlocked-count">0 / 100</div>
+          <div class="progress-bar-track">
+            <div id="summary-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+        <div class="summary-metric-box">
+          <span class="summary-metric-label">Vault Honor Points</span>
+          <div class="summary-metric-value tabular-nums" style="color: #F59E0B;" id="summary-honor-points">0 pts</div>
+        </div>
+        <div class="summary-metric-box">
+          <span class="summary-metric-label">Candidate Live ELO</span>
+          <div class="summary-metric-value tabular-nums" style="color: #38BDF8;" id="summary-user-elo">1,000 ELO</div>
+        </div>
+        <div class="summary-metric-box">
+          <span class="summary-metric-label">Current Tier Standing</span>
+          <div class="summary-metric-value" style="font-size: 1.15rem; color: #10B981;" id="summary-user-tier">Composite Apprentice</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Interactive Controls Strip (Search + Filter Tabs) -->
+    <div class="vault-controls-strip">
+      <div class="controls-row-top">
+        <div class="search-input-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="vault-search-input" class="search-input-field" placeholder="Search 200+ honors by title, theorem, hurdle, or strata..." />
+        </div>
+
+        <!-- Filter Tab Buttons: All, Achieved, Locked, Speed Velocity, Resource Integrity, Streak Volumes -->
+        <div class="medals-filter-strip" id="filter-tabs-container">
+          <button class="filter-tab-btn active" data-filter="all">All (100)</button>
+          <button class="filter-tab-btn" data-filter="achieved">✦ Achieved</button>
+          <button class="filter-tab-btn" data-filter="locked">🔒 Locked</button>
+          <button class="filter-tab-btn" data-filter="speed">⚡ Speed Velocity</button>
+          <button class="filter-tab-btn" data-filter="resource">🛡️ Resource Integrity</button>
+          <button class="filter-tab-btn" data-filter="streak">🔥 Streak Volumes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Dynamic 200+ Vault Grid -->
+    <div class="vault-grid-container" id="vault-cards-grid">
+      <!-- Injected and updated dynamically by js/medals.js -->
+    </div>
+
+  </main>
+
+  <!-- Medal & Badge Inspection Modal Dialog (Single-Tap Glass-Morphic Popup Overlay) -->
+  <div id="medal-inspect-modal" class="medal-modal-overlay" role="dialog" aria-modal="true" aria-label="Honors Certificate Inspection">
+    <div class="medal-modal-box">
+      <!-- Red Close Control Node [X] -->
+      <button id="close-inspect-modal" class="medal-modal-close" aria-label="Close Inspection Modal">✕</button>
+      
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <div id="modal-medal-icon" style="font-size: 3.6rem; margin-bottom: 0.5rem; line-height: 1;">🥇</div>
+        <span id="modal-medal-badge" class="vault-badge-tag tag-shining-gold">✦ GAINED &amp; VERIFIED</span>
+        <h2 id="modal-medal-title" style="font-size: 1.45rem; font-weight: 800; color: #FFFFFF; margin: 0.5rem 0 0.25rem;">Title</h2>
+        <p id="modal-medal-cat" style="color: #F59E0B; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin: 0;">STRATA</p>
+        <p id="modal-medal-date" style="color: #38BDF8; font-size: 0.82rem; font-weight: 600; margin-top: 0.35rem; font-family: monospace;">Unlocked: October 1, 2026</p>
+      </div>
+
+      <!-- Extreme Hurdle Broken Box -->
+      <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 0.75rem; padding: 1rem 1.25rem; margin-bottom: 1rem;">
+        <div style="font-size: 0.74rem; color: #F59E0B; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 0.35rem;">⚡ Extreme Hurdle Broken</div>
+        <p id="modal-medal-hurdle" style="color: #F1F5F9; font-size: 0.9rem; line-height: 1.45; margin: 0; font-weight: 600;">Hurdle condition</p>
+      </div>
+
+      <!-- Historical Dark-Neon Flavor Text Box -->
+      <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 0.75rem; padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
+        <div style="font-size: 0.74rem; color: #38BDF8; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 0.35rem;">📜 Historical Theoretical Context</div>
+        <p id="modal-medal-flavor" style="color: #94A3B8; font-size: 0.85rem; line-height: 1.5; margin: 0; font-style: italic;">Historical lore</p>
+      </div>
+
+      <!-- Points & Status Indicators -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 0.5rem; padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">Honor Points</div>
+          <div id="modal-medal-pts" style="font-size: 1.15rem; font-weight: 800; color: #F59E0B;">+150 pts</div>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 0.5rem; padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">Cryptographic State</div>
+          <div id="modal-medal-status" style="font-size: 1.05rem; font-weight: 800; color: #34D399;">Authentic Signature</div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 0.75rem; font-size: 0.75rem; color: #64748B; text-align: center;">
+        Authorized by Rayaan Tasnim &bull; Olympiad Edge Cryptographic Integrity Seal
+      </div>
+    </div>
+  </div>
+
+  <!-- Persistent Baseline Footer Matrix -->
+  <div id="site-footer-slot"></div>
+
+  <!-- Dedicated Medals Vault Controller Layer -->
+  <script type="module" src="./js/medals.js"></script>
+</body>
+</html>

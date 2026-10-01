@@ -47,7 +47,8 @@ main.profile-content-container,
   }
 
   /* Requirement 4: Ensure inputs and interactive handles fit screen width */
-  .input-handle {
+  .input-handle,
+  .input-select-neon {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;

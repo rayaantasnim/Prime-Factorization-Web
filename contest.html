@@ -17,6 +17,49 @@
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="css/contest.css"/>
 
+  <style>
+    /* Unearned CSS configuration layer forcing faded grayscale blur state */
+    .wheel-slot-locked,
+    .wheel-slice-locked {
+      filter: grayscale(100%) opacity(0.35) !important;
+      transition: all 0.3s ease !important;
+      pointer-events: none !important;
+    }
+
+    .division-slots-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.45rem;
+      margin: 1.25rem 0 0.5rem;
+      max-width: 680px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .division-slot-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #E2E8F0;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .division-slot-badge.wheel-slot-locked {
+      filter: grayscale(100%) opacity(0.35) !important;
+      transition: all 0.3s ease !important;
+      border-color: rgba(148, 163, 184, 0.3);
+      color: #94A3B8;
+    }
+  </style>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
@@ -190,7 +233,11 @@
         <span>Competitor Rating: <span class="user-elo-val" id="competitor-elo-val">1200</span> ELO</span>
         <span style="color: #64748B;">•</span>
         <span id="elo-lockout-summary" style="color: #38BDF8; font-weight: 700;">9 / 9 Divisions Unlocked</span>
-        
+      </div>
+
+      <!-- Division Slots Visual Lockdown Status Strip -->
+      <div class="division-slots-strip" id="division-slots-strip" aria-label="Division Slots Capability Status">
+        <!-- Rendered and updated dynamically by js/contest.js -->
       </div>
 
       <!-- Sudden Death Lightning Roll Real-Time Spin Wheel Stage -->
@@ -209,8 +256,8 @@
           <!-- Circular Spin Wheel Canvas (9 Segments) -->
           <canvas id="wheel-canvas" width="600" height="600"></canvas>
 
-          <!-- Centered Activation Trigger Hub ("ROLL ARENA") -->
-          <button type="button" class="wheel-center-core" id="roll-arena-btn" aria-label="Roll Arena Sudden Death Selector">
+          <!-- Centered Activation Trigger Hub ("ROLL ARENA INSTANT") -->
+          <button type="button" class="wheel-center-core" id="roll-arena-btn" aria-label="ROLL ARENA INSTANT">
             <span class="roll-btn-label">ROLL<br/>ARENA</span>
             <span class="roll-btn-sub">Instant</span>
           </button>

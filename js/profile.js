@@ -182,6 +182,12 @@ function renderProfileMetrics() {
     profileEloTag.style.color = activeTier.colorHex;
   }
 
+  const divisionTag = document.getElementById('profile-division-tag');
+  if (divisionTag) {
+    const rangeText = activeTier.maxElo === Infinity ? '3,000+ ELO' : `${activeTier.minElo.toLocaleString()} - ${activeTier.maxElo.toLocaleString()} ELO`;
+    divisionTag.textContent = `Division: ${activeTier.title} (${rangeText})`;
+  }
+
   // Load Real Match Registry Logs from Cache (Purged fake dummy records)
   let matchRegistry = [];
   try {
@@ -195,7 +201,7 @@ function renderProfileMetrics() {
     matchRegistry = [];
   }
 
-  // Surgical isolation of single fastest valid clear duration from authentic cache
+  // 1. Surgical isolation of single fastest valid clear duration from authentic cache
   let fastestMatch = null;
   let minDuration = Infinity;
 
@@ -222,6 +228,49 @@ function renderProfileMetrics() {
     }
   }
 
+  // 2. Highest Tier Performed across history
+  let highestTierFound = null;
+  let maxTierBoundary = 0;
+  if (matchRegistry.length > 0) {
+    for (const m of matchRegistry) {
+      const b = getTierMaxFromTitle(m.tier);
+      if (b > maxTierBoundary) {
+        maxTierBoundary = b;
+        highestTierFound = (m.tier || '').split('(')[0].trim();
+      }
+    }
+  } else if (lastResult?.rangeTitle) {
+    highestTierFound = lastResult.rangeTitle.split('(')[0].trim();
+  }
+
+  // 3. Scan historic run profiles for peak concurrent winning streak
+  let calculatedPeakStreak = 0;
+  let currentRun = 0;
+  const chronoLogs = [...matchRegistry].reverse();
+  for (const m of chronoLogs) {
+    const isWin = (Number(m.eloDelta) >= 0 && Number(m.score) > 0) || (Number(m.accuracy) >= 70) || (Number(m.firstAttemptClears) === 10);
+    if (isWin) {
+      currentRun++;
+      if (currentRun > calculatedPeakStreak) calculatedPeakStreak = currentRun;
+    } else {
+      currentRun = 0;
+    }
+  }
+  const lifetimePeakStreak = Math.max(Number(ledger.bestStreak || 0), calculatedPeakStreak);
+
+  // 4. Cumulative sum engine: First-Chance clears + Second-Chance recovered completions
+  let sumClearsFromLogs = 0;
+  for (const m of matchRegistry) {
+    const clears = (Number(m.firstAttemptClears || 0) + Number(m.secondAttemptClears || 0)) || Number(m.correctCount || 0) || (m.accuracy ? Math.round((m.accuracy / 100) * (m.totalQuestions || 10)) : 0);
+    sumClearsFromLogs += clears;
+  }
+  const storedSolved = Number(localStorage.getItem('primefactor_total_solved') || 0);
+  const ledgerSolved = Number(ledger.totalSolved || 0);
+  const totalCompositesSolved = Math.max(ledgerSolved, storedSolved, sumClearsFromLogs);
+
+  // Active streak
+  const activeStreak = Number(ledger.currentStreak || 0);
+
   // Populate PB Milestone Cards
   const elHighestTier = document.getElementById('pb-highest-tier');
   const elHighestSpeed = document.getElementById('pb-highest-speed');
@@ -231,28 +280,24 @@ function renderProfileMetrics() {
   const elMaxRating = document.getElementById('pb-max-rating');
   const elMaxStreak = document.getElementById('pb-max-streak');
   const elMaxRank = document.getElementById('pb-max-rank');
+  const pbRankCard = document.getElementById('pb-card-rank');
+  const pbRankBadge = document.getElementById('pb-rank-badge');
 
   if (elHighestTier) {
-    if (matchRegistry.length > 0) {
-      elHighestTier.textContent = matchRegistry[0].tier.split('(')[0].trim();
-    } else if (lastResult?.rangeTitle) {
-      elHighestTier.textContent = lastResult.rangeTitle.split('(')[0].trim();
-    } else {
-      elHighestTier.textContent = '—';
-    }
+    elHighestTier.textContent = highestTierFound || (matchRegistry.length > 0 ? 'Tier 1: 1 - 200' : '—');
   }
 
   if (elHighestSpeed) {
-    elHighestSpeed.textContent = fastestMatch ? `${Number(fastestMatch.time).toFixed(1)}s` : '—';
+    elHighestSpeed.textContent = fastestMatch ? `${Number(fastestMatch.time).toFixed(2)}s` : '—';
   }
 
   // 3-Layer "Lowest Time Consumption" widget card layout:
   // Layer 1: Date of Performance
-  // Layer 2: Total Time Expended (high-precision duration in seconds)
+  // Layer 2: Total Time Expended (high-precision duration in seconds e.g. "34.12s")
   // Layer 3: Tier Title Achieved (color-coded)
   if (fastestMatch) {
     if (elWidgetDate) elWidgetDate.textContent = fastestMatch.date || '—';
-    if (elWidgetTime) elWidgetTime.textContent = `${Number(fastestMatch.time).toFixed(1)}s Elapsed`;
+    if (elWidgetTime) elWidgetTime.textContent = `${Number(fastestMatch.time).toFixed(2)}s Elapsed`;
     if (elWidgetTier) {
       const tierTitle = (fastestMatch.tier || 'Tier 1: 1 - 200').split('(')[0].trim();
       elWidgetTier.textContent = `${tierTitle} Division`;
@@ -278,21 +323,26 @@ function renderProfileMetrics() {
     elMaxRating.textContent = `${peakElo.toLocaleString()} ELO`;
   }
 
-  // Career Overview Sync: fully driven by localStorage ledger values, fallback to 0
-  const lifetimePeakStreak = Number(ledger.bestStreak || 0);
-  const lifetimeClearedComposites = Number(ledger.totalSolved || 0);
-  const activeStreak = Number(ledger.currentStreak || 0);
-
   if (elMaxStreak) {
     elMaxStreak.textContent = `${lifetimePeakStreak} Matches`;
   }
+
   if (elMaxRank) {
     elMaxRank.textContent = `${peakTier.symbol} ${peakTier.title}`;
     elMaxRank.style.color = peakTier.colorHex;
     elMaxRank.style.textShadow = `0 0 16px ${peakTier.colorHex}`;
+    if (pbRankCard) {
+      pbRankCard.style.borderColor = `${peakTier.colorHex}66`;
+      pbRankCard.style.boxShadow = `0 0 20px ${peakTier.colorHex}22`;
+    }
+    if (pbRankBadge) {
+      pbRankBadge.style.color = peakTier.colorHex;
+      pbRankBadge.style.borderColor = peakTier.colorHex;
+      pbRankBadge.style.background = `${peakTier.colorHex}25`;
+    }
   }
 
-  // Populate Streak Telemetry
+  // Populate Streak Telemetry Strip
   const elActiveStreak = document.getElementById('streak-active-val');
   const elPeakStreak = document.getElementById('streak-peak-val');
   const elSlump = document.getElementById('streak-slump-val');
@@ -301,7 +351,7 @@ function renderProfileMetrics() {
   if (elActiveStreak) elActiveStreak.textContent = `${activeStreak} Matches`;
   if (elPeakStreak) elPeakStreak.textContent = `${lifetimePeakStreak} Clears`;
   if (elSlump) elSlump.textContent = '0.00%';
-  if (elComposites) elComposites.textContent = `${lifetimeClearedComposites} Solved`;
+  if (elComposites) elComposites.textContent = `${totalCompositesSolved} Solved`;
 
   // Populate Last 10 Performances Table
   const tbody = document.getElementById('last-10-tbody');
@@ -317,9 +367,13 @@ function renderProfileMetrics() {
     } else {
       const activeRows = matchRegistry.slice(0, 10);
       tbody.innerHTML = activeRows.map((m) => {
+        const firstAttempts = Number(m.firstAttemptClears || 0);
+        const secondAttempts = Number(m.secondAttemptClears || 0);
+        const totalQ = Number(m.totalQuestions) || 10;
         let trueAccuracy = 0;
-        if (m.firstAttemptClears !== undefined && m.totalQuestions && Number(m.totalQuestions) > 0) {
-          trueAccuracy = Math.round((Number(m.firstAttemptClears) / Number(m.totalQuestions)) * 100);
+
+        if (firstAttempts > 0 || secondAttempts > 0) {
+          trueAccuracy = Math.min(100, Math.round(((firstAttempts + secondAttempts) / totalQ) * 100));
         } else if (m.accuracy !== undefined) {
           trueAccuracy = Math.round(Number(m.accuracy));
         }
@@ -332,11 +386,14 @@ function renderProfileMetrics() {
           eloTag = `<span class="score-elo-tag" style="color: #EF4444;">${m.score ?? 0} pts (${deltaVal} ELO)</span>`;
         }
 
+        const durationFormatted = parseFloat(m.time);
+        const timeDisplay = !isNaN(durationFormatted) ? `${durationFormatted.toFixed(1)}s` : `${m.time}s`;
+
         return `
           <tr>
             <td style="font-weight: 700; color: #FFFFFF;">${m.tier || 'Custom'}</td>
             <td class="tabular-nums font-bold" style="color: ${trueAccuracy >= 90 ? '#34D399' : (trueAccuracy >= 75 ? '#FBBF24' : '#EF4444')};">${trueAccuracy}%</td>
-            <td class="tabular-nums font-mono">${m.time}s</td>
+            <td class="tabular-nums font-mono">${timeDisplay}</td>
             <td>${eloTag}</td>
             <td class="tabular-nums" style="color: #94A3B8; font-size: 0.825rem;">${m.date || '—'}</td>
           </tr>

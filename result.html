@@ -19,6 +19,8 @@
   <link rel="icon" type="image/x-icon" href="./favicon.ico">
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 
+  <link rel="stylesheet" href="css/system-expectation.css"/>
+  <link rel="stylesheet" href="css/system-expectation-media-query.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
@@ -330,6 +332,185 @@
           </div>
         </div>
       </div>
+
+      <!-- System Expectations Verification Ledger Container -->
+      <section class="verification-ledger-container" id="system-expectations-verification-ledger" aria-label="System Expectations Verification Ledger">
+        <div class="verification-ledger-header">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+              📋
+            </div>
+            <div>
+              <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: #38BDF8; font-weight: 700;">Audit Protocol</span>
+              <h2 class="verification-ledger-title">System Expectations Verification Ledger</h2>
+            </div>
+          </div>
+          <div>
+            <span id="ledger-session-mode-badge" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; background: rgba(14, 165, 233, 0.15); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.35); padding: 0.35rem 0.75rem; border-radius: 9999px; font-weight: 700;">
+              Dual-Remark Output Matrix
+            </span>
+          </div>
+        </div>
+
+        <p class="verification-ledger-sub">
+          Post-match audit breakdown cross-evaluating session telemetry against dynamic contractual expectation targets and hidden factor velocity thresholds.
+        </p>
+
+        <!-- Dual-Remark Output Matrix (4 Core Evaluative Category Blocks) -->
+        <div class="verification-ledger-grid" id="verification-categories-grid">
+          
+          <!-- Category 1: Score Expectation -->
+          <div class="ledger-category-block" id="category-score-block">
+            <div class="category-block-header">
+              <span class="category-kicker">Category 01</span>
+              <span class="category-pill-badge">Score Target</span>
+            </div>
+            <h3 class="category-title">Score Expectation</h3>
+            <p class="category-subtext">
+              Final raw points audited against the dynamic chasing target following lifeline and focus penalty minuses.
+            </p>
+
+            <div class="dual-remark-container">
+              <!-- Option 1 [The Visual Checkbox Status] (strictly disabled for user inputs) -->
+              <div class="dual-option-row">
+                <span class="option-type-label">Status Verification:</span>
+                <div class="unclickable-checkbox-wrapper" tabindex="-1" aria-disabled="true" style="pointer-events: none; user-select: none;">
+                  <div class="custom-status-checkbox pass" id="checkbox-score-status">
+                    <span class="checkbox-symbol" id="symbol-score-status">✔️</span>
+                    <span class="checkbox-text" id="text-score-status">Target Conquered</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Option 2 [The Numerical Performance Rating] -->
+              <div class="dual-option-row">
+                <span class="option-type-label">Performance Rating:</span>
+                <div class="numerical-rating-badge font-mono" id="rating-score-points">
+                  9.4 / 10 Points
+                </div>
+              </div>
+            </div>
+
+            <div class="category-benchmark-footer" id="footer-score-benchmark">
+              Target: ≥ 75 pts · Actual Score: 85 pts
+            </div>
+          </div>
+
+          <!-- Category 2: Accuracy Expectation -->
+          <div class="ledger-category-block" id="category-accuracy-block">
+            <div class="category-block-header">
+              <span class="category-kicker">Category 02</span>
+              <span class="category-pill-badge">Precision Matrix</span>
+            </div>
+            <h3 class="category-title">Accuracy Expectation</h3>
+            <p class="category-subtext">
+              Combined 1st-attempt clears and 2nd-chance overtime recoveries evaluated against rolling historical ledger.
+            </p>
+
+            <div class="dual-remark-container">
+              <!-- Option 1 [The Visual Checkbox Status] (strictly disabled for user inputs) -->
+              <div class="dual-option-row">
+                <span class="option-type-label">Status Verification:</span>
+                <div class="unclickable-checkbox-wrapper" tabindex="-1" aria-disabled="true" style="pointer-events: none; user-select: none;">
+                  <div class="custom-status-checkbox pass" id="checkbox-accuracy-status">
+                    <span class="checkbox-symbol" id="symbol-accuracy-status">✔️</span>
+                    <span class="checkbox-text" id="text-accuracy-status">Precision Satisfied</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Option 2 [The Numerical Performance Rating] -->
+              <div class="dual-option-row">
+                <span class="option-type-label">Performance Rating:</span>
+                <div class="numerical-rating-badge font-mono" id="rating-accuracy-points">
+                  9.0 / 10 Points
+                </div>
+              </div>
+            </div>
+
+            <div class="category-benchmark-footer" id="footer-accuracy-benchmark">
+              Session: 90% (8 1st, 1 2nd) · Rolling Ledger: 80%
+            </div>
+          </div>
+
+          <!-- Category 3: Lifeline Usage Expectation -->
+          <div class="ledger-category-block" id="category-lifeline-block">
+            <div class="category-block-header">
+              <span class="category-kicker">Category 03</span>
+              <span class="category-pill-badge">Resource Audit</span>
+            </div>
+            <h3 class="category-title">Lifeline Usage Expectation</h3>
+            <p class="category-subtext">
+              Resource efficiency audit awarding perfect 10/10 points if zero unassisted lifelines were triggered.
+            </p>
+
+            <div class="dual-remark-container">
+              <!-- Option 1 [The Visual Checkbox Status] (strictly disabled for user inputs) -->
+              <div class="dual-option-row">
+                <span class="option-type-label">Status Verification:</span>
+                <div class="unclickable-checkbox-wrapper" tabindex="-1" aria-disabled="true" style="pointer-events: none; user-select: none;">
+                  <div class="custom-status-checkbox pass" id="checkbox-lifeline-status">
+                    <span class="checkbox-symbol" id="symbol-lifeline-status">✔️</span>
+                    <span class="checkbox-text" id="text-lifeline-status">Resource Efficient</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Option 2 [The Numerical Performance Rating] -->
+              <div class="dual-option-row">
+                <span class="option-type-label">Performance Rating:</span>
+                <div class="numerical-rating-badge font-mono" id="rating-lifeline-points">
+                  10.0 / 10 Points
+                </div>
+              </div>
+            </div>
+
+            <div class="category-benchmark-footer" id="footer-lifeline-benchmark">
+              Lifelines Triggered: 0 · Allowance: ≤ 1
+            </div>
+          </div>
+
+          <!-- Category 4: Time Consumption Expectation [The Hidden Target Unveiled] -->
+          <div class="ledger-category-block" id="category-time-block">
+            <div class="category-block-header">
+              <span class="category-kicker">Category 04</span>
+              <span class="category-pill-badge" style="background: rgba(245, 158, 11, 0.15); color: #F59E0B; border-color: rgba(245, 158, 11, 0.4);">
+                The Hidden Target Unveiled
+              </span>
+            </div>
+            <h3 class="category-title">Time Consumption Expectation</h3>
+            <p class="category-subtext">
+              Factor calculation speed velocity mapped against unannounced cognitive latency thresholds.
+            </p>
+
+            <div class="dual-remark-container">
+              <!-- Option 1 [The Visual Checkbox Status] (strictly disabled for user inputs) -->
+              <div class="dual-option-row">
+                <span class="option-type-label">Status Verification:</span>
+                <div class="unclickable-checkbox-wrapper" tabindex="-1" aria-disabled="true" style="pointer-events: none; user-select: none;">
+                  <div class="custom-status-checkbox pass" id="checkbox-time-status">
+                    <span class="checkbox-symbol" id="symbol-time-status">✔️</span>
+                    <span class="checkbox-text" id="text-time-status">Velocity Qualified</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Option 2 [The Numerical Performance Rating] -->
+              <div class="dual-option-row">
+                <span class="option-type-label">Performance Rating:</span>
+                <div class="numerical-rating-badge font-mono" id="rating-time-points">
+                  9.2 / 10 Points
+                </div>
+              </div>
+            </div>
+
+            <div class="category-benchmark-footer" id="footer-time-benchmark">
+              Speed: 2.1s/factor · Hidden Target: &lt; 2.8s/factor
+            </div>
+          </div>
+
+        </div>
+      </section>
 
       <!-- Audit Sections Grid: Failure Stack & Redemption Track -->
       <div class="audit-sections-grid">

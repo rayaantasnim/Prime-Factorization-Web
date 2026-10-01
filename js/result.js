@@ -9,7 +9,7 @@ import { getLastExamResult, setLastExamResult, setActiveExamParams, getSettings,
 import { initGlobalHeader, renderFooter } from './header.js';
 import { toExponentialForm, formatExponentialString, parseAndValidateFactorInput } from './math-engine.js';
 import { playSound } from './audio.js';
-import { calculateEloDelta, getUserElo, setUserElo, recordRatedMatchToProfile, getTierByElo } from './elo-engine.js';
+import { calculateEloDelta, getUserElo, setUserElo, recordRatedMatchToProfile, getTierByElo, computeSystemExpectations } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initGlobalHeader();
@@ -337,6 +337,9 @@ function renderResultDashboard() {
   }
   if (elLiveVal) elLiveVal.textContent = `${getUserElo().toLocaleString()} ELO`;
 
+  // Render the System Expectations Verification Ledger (Dual-Remark Output Matrix)
+  renderVerificationLedger(result, activeUserElo);
+
   // Populate Failure Audit Stack with Custom Nested Mistake Analysis Tables
   const failureContainer = document.getElementById('failure-audit-list');
   if (failureContainer) {
@@ -587,6 +590,213 @@ function renderResultDashboard() {
       playSound('click');
       window.location.href = './ranges.html';
     });
+  }
+}
+
+/**
+ * System Expectations Verification Ledger (Dual-Remark Output Matrix)
+ * Evaluates 4 core categories:
+ * 1. Score Expectation: Checks if raw points >= chasing target; ratings out of 10
+ * 2. Accuracy Expectation: Evaluates precision metrics (1st clears + 2nd chance overtime) vs historical rolling ledger
+ * 3. Lifeline Usage Expectation: Audits resource efficiency (10/10 for 0 unassisted lifelines)
+ * 4. Time Consumption Expectation: Unveils hidden velocity thresholds and maps calculation speed
+ */
+function renderVerificationLedger(result, activeUserElo) {
+  const container = document.getElementById('system-expectations-verification-ledger');
+  if (!container) return;
+
+  const totalQuestions = result.totalQuestions || 10;
+  const firstClears = result.correctFirstAttempt !== undefined ? result.correctFirstAttempt : 0;
+  const secondClears = result.correctSecondAttempt !== undefined ? result.correctSecondAttempt : 0;
+  const totalSolvedMatch = firstClears + secondClears;
+  const matchAccuracyPct = Math.round((totalSolvedMatch / totalQuestions) * 100);
+
+  const expectations = computeSystemExpectations(activeUserElo, result.max || 200);
+
+  // Update session mode badge if in unrated practice
+  const modeBadge = document.getElementById('ledger-session-mode-badge');
+  if (modeBadge) {
+    if (result.isForcedUnrated || result.participationMode === 'unrated') {
+      modeBadge.textContent = 'Unrated Practice Audit Matrix';
+      modeBadge.style.color = '#34D399';
+      modeBadge.style.borderColor = 'rgba(52, 211, 153, 0.4)';
+      modeBadge.style.background = 'rgba(16, 185, 129, 0.12)';
+    } else {
+      modeBadge.textContent = 'Rated Contest Verification Matrix';
+      modeBadge.style.color = '#38BDF8';
+      modeBadge.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+      modeBadge.style.background = 'rgba(14, 165, 233, 0.15)';
+    }
+  }
+
+  // -------------------------------------------------------------
+  // 1. SCORE EXPECTATION
+  // Ticks [✔️] and prints rating out of 10 based on whether the final raw score
+  // (out of 100 max, following lifeline minuses) conquered the dynamic chasing target.
+  // -------------------------------------------------------------
+  const rawScore = result.score !== undefined ? result.score : 0;
+  const targetScore = expectations.minScore || 75;
+  const isScorePassed = rawScore >= targetScore;
+  const scorePts = Math.min(10.0, Math.max(0.0, +(rawScore / 10).toFixed(1)));
+
+  const cbScore = document.getElementById('checkbox-score-status');
+  const symScore = document.getElementById('symbol-score-status');
+  const txtScore = document.getElementById('text-score-status');
+  const ratingScore = document.getElementById('rating-score-points');
+  const footScore = document.getElementById('footer-score-benchmark');
+
+  if (cbScore && symScore && txtScore) {
+    if (isScorePassed) {
+      cbScore.className = 'custom-status-checkbox pass';
+      symScore.textContent = '✔️';
+      txtScore.textContent = 'Target Conquered';
+    } else {
+      cbScore.className = 'custom-status-checkbox fail';
+      symScore.textContent = '❌';
+      txtScore.textContent = 'Target Missed';
+    }
+  }
+  if (ratingScore) {
+    ratingScore.textContent = `${scorePts.toFixed(1)} / 10 Points`;
+  }
+  if (footScore) {
+    footScore.textContent = `Chasing Target: ≥ ${targetScore} pts · Final Raw Score: ${rawScore} pts`;
+  }
+
+  // -------------------------------------------------------------
+  // 2. ACCURACY EXPECTATION
+  // Ticks [✔️] and prints rating out of 10 by evaluating current precision match metrics
+  // (surgically combining first-attempt successful clears AND second-chance recovered completions against total session questions)
+  // against the historical rolling ledger.
+  // -------------------------------------------------------------
+  const ledger = getLedger();
+  const historicalAcc = ledger.totalAttempted > 0 
+    ? Math.round((ledger.totalSolved / ledger.totalAttempted) * 100) 
+    : 80;
+  const accuracyBenchmark = Math.min(historicalAcc, 80);
+  const isAccuracyPassed = matchAccuracyPct >= accuracyBenchmark;
+  
+  // Fractional rating out of 10 combining 1st clears (1.0 weight) and 2nd chance overtime (0.75 weight)
+  const precisionRatio = ((firstClears * 1.0 + secondClears * 0.75) / totalQuestions) * 10;
+  const accuracyPts = Math.min(10.0, Math.max(0.0, +precisionRatio.toFixed(1)));
+
+  const cbAccuracy = document.getElementById('checkbox-accuracy-status');
+  const symAccuracy = document.getElementById('symbol-accuracy-status');
+  const txtAccuracy = document.getElementById('text-accuracy-status');
+  const ratingAccuracy = document.getElementById('rating-accuracy-points');
+  const footAccuracy = document.getElementById('footer-accuracy-benchmark');
+
+  if (cbAccuracy && symAccuracy && txtAccuracy) {
+    if (isAccuracyPassed) {
+      cbAccuracy.className = 'custom-status-checkbox pass';
+      symAccuracy.textContent = '✔️';
+      txtAccuracy.textContent = 'Precision Satisfied';
+    } else {
+      cbAccuracy.className = 'custom-status-checkbox fail';
+      symAccuracy.textContent = '❌';
+      txtAccuracy.textContent = 'Precision Deficit';
+    }
+  }
+  if (ratingAccuracy) {
+    ratingAccuracy.textContent = `${accuracyPts.toFixed(1)} / 10 Points`;
+  }
+  if (footAccuracy) {
+    footAccuracy.textContent = `Match Precision: ${matchAccuracyPct}% (${firstClears} 1st, ${secondClears} 2nd) · Rolling Ledger: ${historicalAcc}%`;
+  }
+
+  // -------------------------------------------------------------
+  // 3. LIFELINE USAGE EXPECTATION
+  // Ticks [✔️] and prints rating out of 10 by auditing resource efficiency
+  // (e.g., a perfect 10/10 points if 0 lifelines were triggered during execution).
+  // -------------------------------------------------------------
+  const lifelinesUsed = result.lifelinesUsedCount !== undefined ? result.lifelinesUsedCount : 0;
+  const allowedLifelines = (activeUserElo >= 1200) ? 0 : 1;
+  const isLifelinesPassed = lifelinesUsed <= allowedLifelines;
+
+  let lifelineRating = 10.0;
+  if (lifelinesUsed === 0) {
+    lifelineRating = 10.0;
+  } else if (lifelinesUsed === 1) {
+    lifelineRating = (allowedLifelines >= 1) ? 8.5 : 7.0;
+  } else if (lifelinesUsed === 2) {
+    lifelineRating = 5.0;
+  } else if (lifelinesUsed === 3) {
+    lifelineRating = 2.5;
+  } else {
+    lifelineRating = Math.max(0.0, +(10 - lifelinesUsed * 2.5).toFixed(1));
+  }
+
+  const cbLifeline = document.getElementById('checkbox-lifeline-status');
+  const symLifeline = document.getElementById('symbol-lifeline-status');
+  const txtLifeline = document.getElementById('text-lifeline-status');
+  const ratingLifeline = document.getElementById('rating-lifeline-points');
+  const footLifeline = document.getElementById('footer-lifeline-benchmark');
+
+  if (cbLifeline && symLifeline && txtLifeline) {
+    if (isLifelinesPassed) {
+      cbLifeline.className = 'custom-status-checkbox pass';
+      symLifeline.textContent = '✔️';
+      txtLifeline.textContent = (lifelinesUsed === 0) ? 'Pure Unassisted Mastery' : 'Resource Efficient';
+    } else {
+      cbLifeline.className = 'custom-status-checkbox fail';
+      symLifeline.textContent = '❌';
+      txtLifeline.textContent = 'Over-Assisted';
+    }
+  }
+  if (ratingLifeline) {
+    ratingLifeline.textContent = `${lifelineRating.toFixed(1)} / 10 Points`;
+  }
+  if (footLifeline) {
+    footLifeline.textContent = `Lifelines Triggered: ${lifelinesUsed} · Contract Baseline: ≤ ${allowedLifelines} utilized`;
+  }
+
+  // -------------------------------------------------------------
+  // 4. TIME CONSUMPTION EXPECTATION [The Hidden Target Unveiled]
+  // Ticks [✔️] and prints rating out of 10 by mapping factor calculation speed velocity thresholds.
+  // (This metric must remain completely hidden from pre-flight contract.html and revealed entirely here).
+  // -------------------------------------------------------------
+  const timeSpent = Math.max(1, result.timeSpent !== undefined ? result.timeSpent : 30);
+  const totalFactorsCount = (result.compilerLatencyAudit && result.compilerLatencyAudit.length > 0)
+    ? result.compilerLatencyAudit.reduce((acc, q) => acc + (q.factorCount || 2), 0)
+    : Math.max(1, totalQuestions * 2.5);
+
+  const secPerFactor = +(timeSpent / totalFactorsCount).toFixed(2);
+  let thresholdSec = 2.8;
+  const pacingMatch = expectations.pacing ? expectations.pacing.match(/([\d.]+)/) : null;
+  if (pacingMatch) thresholdSec = parseFloat(pacingMatch[1]);
+
+  const isTimePassed = secPerFactor <= thresholdSec;
+  let timeRating = 10.0;
+  if (secPerFactor <= thresholdSec) {
+    const margin = thresholdSec - secPerFactor;
+    timeRating = Math.min(10.0, +(8.5 + (margin / thresholdSec) * 1.5).toFixed(1));
+  } else {
+    const over = secPerFactor - thresholdSec;
+    timeRating = Math.max(1.0, +(8.0 - (over / thresholdSec) * 4.5).toFixed(1));
+  }
+
+  const cbTime = document.getElementById('checkbox-time-status');
+  const symTime = document.getElementById('symbol-time-status');
+  const txtTime = document.getElementById('text-time-status');
+  const ratingTime = document.getElementById('rating-time-points');
+  const footTime = document.getElementById('footer-time-benchmark');
+
+  if (cbTime && symTime && txtTime) {
+    if (isTimePassed) {
+      cbTime.className = 'custom-status-checkbox pass';
+      symTime.textContent = '✔️';
+      txtTime.textContent = 'Velocity Qualified';
+    } else {
+      cbTime.className = 'custom-status-checkbox fail';
+      symTime.textContent = '❌';
+      txtTime.textContent = 'Velocity Sluggish';
+    }
+  }
+  if (ratingTime) {
+    ratingTime.textContent = `${timeRating.toFixed(1)} / 10 Points`;
+  }
+  if (footTime) {
+    footTime.textContent = `Speed: ${secPerFactor}s/factor · Hidden Target: < ${thresholdSec}s/factor`;
   }
 }
 
