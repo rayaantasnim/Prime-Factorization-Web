@@ -476,7 +476,33 @@ function initClipboardButtons() {
     btnStreak.addEventListener('click', () => {
       const ledger = getLedger();
       const activeStreak = Number(ledger.currentStreak || 0);
-      const peakStreak = Number(ledger.bestStreak || 0);
+
+      // Compute peak streak by taking match logs into account exactly like renderProfileMetrics()
+      let matchRegistry = [];
+      try {
+        const rawLogs = localStorage.getItem('primefactor_match_logs');
+        if (rawLogs) {
+          matchRegistry = JSON.parse(rawLogs);
+          if (!Array.isArray(matchRegistry)) matchRegistry = [];
+        }
+      } catch (e) {
+        matchRegistry = [];
+      }
+
+      let calculatedPeakStreak = 0;
+      let currentRun = 0;
+      const chronoLogs = [...matchRegistry].reverse();
+      for (const m of chronoLogs) {
+        const isWin = (Number(m.eloDelta) >= 0 && Number(m.score) > 0) || (Number(m.accuracy) >= 70) || (Number(m.firstAttemptClears) === 10);
+        if (isWin) {
+          currentRun++;
+          if (currentRun > calculatedPeakStreak) calculatedPeakStreak = currentRun;
+        } else {
+          currentRun = 0;
+        }
+      }
+
+      const peakStreak = Math.max(Number(ledger.bestStreak || 0), calculatedPeakStreak);
       const totalSolved = Number(ledger.totalSolved || 0);
 
       const streakText = `⚡ Prime-Factor.app Streak Records & Cadence Ledger ⚡\n\n` +
