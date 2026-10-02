@@ -731,3 +731,81 @@ body.profile-view {
   box-sizing: border-box;
 }
 
+.medals-button {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  margin-top: 1.5rem !important;
+  width: 100% !important;
+
+  center {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+
+    .btn-clipboard-neon {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      text-decoration: none !important;
+      padding: 0.75rem 1.4rem !important;
+      box-sizing: border-box !important;
+      max-width: 100% !important;
+
+      span {
+        display: inline-block !important;
+        text-align: center !important;
+        word-break: break-word !important;
+      }
+    }
+  }
+
+  /* Media Queries Across Devices */
+
+  /* Extra Small Devices (Mobile Portrait, < 480px) */
+  @media screen and (max-width: 480px) {
+    margin-top: 1rem !important;
+
+    center {
+      .btn-clipboard-neon {
+        width: 100% !important;
+        padding: 0.65rem 1rem !important;
+        font-size: 0.875rem !important;
+      }
+    }
+  }
+
+  /* Small Devices (Mobile Landscape & Small Tablets, 481px - 768px) */
+  @media screen and (min-width: 481px) and (max-width: 768px) {
+    center {
+      .btn-clipboard-neon {
+        width: auto !important;
+        padding: 0.7rem 1.25rem !important;
+        font-size: 0.95rem !important;
+      }
+    }
+  }
+
+  /* Medium Devices (Tablets Landscape & Laptops, 769px - 1024px) */
+  @media screen and (min-width: 769px) and (max-width: 1024px) {
+    center {
+      .btn-clipboard-neon {
+        padding: 0.75rem 1.4rem !important;
+        font-size: 1rem !important;
+      }
+    }
+  }
+
+  /* Large Devices (Desktops & Large Screens, > 1025px) */
+  @media screen and (min-width: 1025px) {
+    center {
+      .btn-clipboard-neon {
+        padding: 0.8rem 1.5rem !important;
+        font-size: 1.05rem !important;
+      }
+    }
+  }
+}
