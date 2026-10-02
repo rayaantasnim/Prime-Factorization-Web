@@ -1,0 +1,101 @@
+.vault-master-switcher {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1.25rem !important;
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  .vault-switch-card {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto !important;
+    grid-template-rows: auto auto !important;
+    align-items: center !important;
+    column-gap: 1.25rem !important;
+    row-gap: 0.75rem !important;
+    padding: 1.25rem 1.5rem !important;
+
+    @media (max-width: 680px) {
+      grid-template-columns: auto 1fr !important;
+      grid-template-rows: auto auto auto !important;
+      align-items: center !important;
+      row-gap: 0.85rem !important;
+      width: 100% !important;
+    }
+
+    .switch-icon-box {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+      font-size: 2.2rem !important;
+      line-height: 1 !important;
+      flex-shrink: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    .switch-info {
+      grid-column: 2 / -1 !important;
+      display: contents !important;
+
+      .switch-title {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+        gap: 0.2rem !important;
+
+        > span:first-child:not([class]):not([id]) {
+          font-size: 1.15rem !important;
+          font-weight: 800 !important;
+          line-height: 1.25 !important;
+          display: block !important;
+        }
+
+        #medals-capacity-label,
+        #badges-capacity-label {
+          display: block !important;
+          font-size: 0.78rem !important;
+          font-weight: 700 !important;
+          line-height: 1 !important;
+        }
+      }
+
+      .switch-subtitle {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+        font-size: 0.84rem !important;
+        font-weight: 500 !important;
+        line-height: 1.45 !important;
+        text-align: left !important;
+        margin-top: 0.25rem !important;
+        background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, #38bdf8 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+
+        @media (max-width: 680px) {
+          grid-column: 1 / -1 !important;
+          grid-row: 2 !important;
+        }
+      }
+    }
+
+    .switch-status-pill {
+      grid-column: 3 !important;
+      grid-row: 1 !important;
+      justify-self: end !important;
+
+      @media (max-width: 680px) {
+        grid-column: 1 / -1 !important;
+        grid-row: 3 !important;
+        justify-self: start !important;
+        width: fit-content !important;
+      }
+    }
+  }
+}

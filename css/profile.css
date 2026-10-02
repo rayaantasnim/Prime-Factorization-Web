@@ -731,6 +731,15 @@ body.profile-view {
   box-sizing: border-box;
 }
 
+
+
+
+
+
+/* ==========================================================================
+   PRIME-FACTOR.APP — CANDIDATE Badges and medals vault button showcase
+   ========================================================================== */
+
 .medals-button {
   display: flex !important;
   justify-content: center !important;
