@@ -41,3 +41,31 @@
   }
 }
 
+/* Base styles for desktop / large screens */
+.heading-section {
+  font-size: 1.65rem; 
+  color: #000000; 
+  font-weight: 800; 
+  margin: 0;
+}
+
+/* Tablets and small laptops (max-width: 768px) */
+@media screen and (max-width: 768px) {
+  .heading-section {
+    font-size: 1.45rem;
+  }
+}
+
+/* Mobile devices in landscape and larger phones (max-width: 576px) */
+@media screen and (max-width: 576px) {
+  .heading-section {
+    font-size: 1.25rem;
+  }
+}
+
+/* Small mobile devices (max-width: 375px) */
+@media screen and (max-width: 375px) {
+  .heading-section {
+    font-size: 1.1rem;
+  }
+}
