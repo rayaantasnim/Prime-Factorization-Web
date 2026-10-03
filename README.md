@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="PrimeFactor.app Hero Module Banner" width="100%" />
+  <img src="https://images.pexels.com/photos/36747234/pexels-photo-36747234.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="PrimeFactor.app Hero Module Banner" width="100%" />
 </p>
 
 # ∏ PrimeFactor.app
