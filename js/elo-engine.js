@@ -4,7 +4,7 @@
  * Asymmetric Tier-Banning Firewall, and Cryptographic 3-Strike Storage Integrity Hammer.
  */
 
-import { getLedger, addNotification } from './storage.js';
+import { getLedger, addNotification, DEFAULT_LEDGER } from './storage.js';
 
 export const ENGINE_HMAC_SECRET = "YOUR_LOCAL_HMAC_SECRET_KEY_PLACEHOLDER";
 
@@ -240,33 +240,126 @@ export function getStorageSignature(payloadObj) {
   return computeHMAC(JSON.stringify(payloadObj));
 }
 
+// Last verified authentic profile payload decoded during a valid HMAC pass
+let lastVerifiedProfilePayload = null;
+
+export function getSignatureTracePayload() {
+  if (lastVerifiedProfilePayload && lastVerifiedProfilePayload.elo !== undefined) {
+    return { ...lastVerifiedProfilePayload };
+  }
+  try {
+    const rawTrace = localStorage.getItem('primefactor_signature_trace');
+    if (rawTrace) {
+      let tracePayload = null;
+      let traceSig = null;
+      if (rawTrace.includes('.')) {
+        const [b64, s] = rawTrace.split('.');
+        tracePayload = JSON.parse(atob(b64));
+        traceSig = s;
+      } else {
+        const parsed = JSON.parse(rawTrace);
+        tracePayload = parsed.payload;
+        traceSig = parsed.signature;
+      }
+      if (tracePayload && traceSig && computeHMAC(JSON.stringify(tracePayload)) === traceSig) {
+        lastVerifiedProfilePayload = { ...tracePayload };
+        return { ...tracePayload };
+      }
+    }
+  } catch (e) {
+    console.warn('Error parsing signature trace:', e);
+  }
+  return null;
+}
+
 // Execute 3-Strike Escalation on Tampering
 export function handleSecurityViolation(strikeCount = 1, reason = 'Storage Character Mutation Detected') {
-  const currentStrikes = Number(localStorage.getItem('primefactor_security_strikes') || 0) + 1;
+  const storedStrikes = Number(localStorage.getItem('primefactor_security_strikes') || 0);
+  let sessionStrikes = 0;
+  let cookieStrikes = 0;
+  try {
+    sessionStrikes = Number(sessionStorage.getItem('primefactor_security_strikes') || 0);
+    const cookieMatch = typeof document !== 'undefined' && document.cookie ? document.cookie.match(/primefactor_security_strikes=(\d+)/) : null;
+    if (cookieMatch) cookieStrikes = Number(cookieMatch[1]);
+  } catch (e) {}
+
+  const highestRecorded = Math.max(storedStrikes, sessionStrikes, cookieStrikes, strikeCount - 1);
+  const currentStrikes = highestRecorded + 1;
+
   localStorage.setItem('primefactor_security_strikes', String(currentStrikes));
+  try {
+    sessionStorage.setItem('primefactor_security_strikes', String(currentStrikes));
+    if (typeof document !== 'undefined') {
+      document.cookie = `primefactor_security_strikes=${currentStrikes}; path=/; max-age=31536000; SameSite=Lax`;
+    }
+  } catch (e) {}
 
   if (currentStrikes >= 3) {
-    // STRIKE 3: Permanent Hard Lockout
+    // STRIKE 3 UPGRADE: Atomic Profile Destruction & Asymmetric Trap
+    // The exact millisecond Strike 3 is verified, execute synchronous full atomic wipe of client storage using localStorage.clear()
+    localStorage.clear();
     localStorage.setItem('prime_factor_security_verdict', 'PERMANENTLY_BANNED');
+    try {
+      sessionStorage.setItem('prime_factor_security_verdict', 'PERMANENTLY_BANNED');
+      sessionStorage.setItem('primefactor_security_trap', 'TRAPPED');
+      sessionStorage.setItem('primefactor_atomized', 'true');
+      sessionStorage.setItem('primefactor_security_strikes', String(currentStrikes));
+      if (typeof document !== 'undefined') {
+        document.cookie = "primefactor_security_verdict=PERMANENTLY_BANNED; path=/; max-age=31536000; SameSite=Lax";
+        document.cookie = "primefactor_security_trap=TRAPPED; path=/; max-age=31536000; SameSite=Lax";
+        document.cookie = `primefactor_security_strikes=${currentStrikes}; path=/; max-age=31536000; SameSite=Lax`;
+      }
+    } catch (e) {}
+
     renderPermanentBanScreen();
     throw new Error('Hard Lockout: Security Violation - Permanent Ban Applied.');
   } else if (currentStrikes === 2) {
-    // STRIKE 2: Instant Liquidation to 0 ELO
-    setUserElo(0);
+    // STRIKE 2 UPGRADE: True Zero Purge & LIFO Alert
+    // Forcefully wipe the database down to absolute 0 ELO (Foundry Initiate level), bypassing the standard 500 ELO floor baseline configuration.
+    localStorage.setItem('primefactor_elo', '0');
+    localStorage.setItem('primefactor_peak_elo', '0');
+    localStorage.setItem('primefactor_total_solved', '0');
+    localStorage.setItem('primefactor_total_matches', '0');
+    localStorage.setItem('primefactor_historical_accuracy', '0');
     localStorage.setItem('primefactor_match_logs', JSON.stringify([]));
+    localStorage.setItem('primefactor_ledger', JSON.stringify(DEFAULT_LEDGER));
     reSignProfileDirectory();
-    renderSecurityWarningModal('STRIKE 2 WARNING', 'Illegal client modification detected. Competitive rating liquidated to 0 ELO (Foundry Initiate). Continued tampering triggers permanent browser blacklisting.');
+
+    // Immediately invoke addNotification() with parameters type: 'security_tampering', an explicit title of Security Liquidation, and a detailed notice tracking the total career ledger wipe
+    addNotification({
+      type: 'security_tampering',
+      title: 'Security Liquidation',
+      message: '🛡️ Strike 2: Illegal client modification detected. Competitive rating liquidated to absolute 0 ELO (Foundry Initiate level) and total career ledger wiped.'
+    });
+
+    renderSecurityWarningModal('STRIKE 2 WARNING', 'Illegal client modification detected. Competitive rating liquidated to 0 ELO (Foundry Initiate). Total career ledger wiped. Continued tampering triggers permanent browser blacklisting.');
   } else {
-    // STRIKE 1: -100 ELO Deduction
-    const active = getUserElo();
-    setUserElo(Math.max(0, active - 100));
+    // STRIKE 1 UPGRADE: Base-Rate Memory Lock
+    // Completely bypass reading from localStorage or getUserElo() upon validation failure.
+    // Instead, parse the last verified, uncorrupted profile payload state decoded during previous valid HMAC pass.
+    const uncorruptedTrace = getSignatureTracePayload();
+    let unblemishedElo = 500;
+    if (uncorruptedTrace && uncorruptedTrace.elo !== undefined && !isNaN(Number(uncorruptedTrace.elo))) {
+      unblemishedElo = Number(uncorruptedTrace.elo);
+    }
+
+    // Subtract exactly 100 ELO from this cached trace, then commit that value
+    const penalizedElo = Math.max(0, unblemishedElo - 100);
+    localStorage.setItem('primefactor_elo', String(penalizedElo));
+
+    const rawPeak = uncorruptedTrace?.peak ?? localStorage.getItem('primefactor_peak_elo');
+    const safePeak = rawPeak !== null && !isNaN(Number(rawPeak)) ? Number(rawPeak) : penalizedElo;
+    localStorage.setItem('primefactor_peak_elo', String(Math.max(penalizedElo, safePeak)));
+
     reSignProfileDirectory();
+
     addNotification({
       type: 'security_tampering',
       title: 'Security Strike',
       message: '🛡️ Tampering Detected. -100 ELO Liquidated.'
     });
-    renderSecurityWarningModal('STRIKE 1 WARNING', 'Security integrity signature mismatch registered. -100 ELO penalty applied. Cache signature re-anchored.');
+
+    renderSecurityWarningModal('STRIKE 1 WARNING', `Security integrity signature mismatch registered. Baseline memory locked to authentic trace (${unblemishedElo} ELO). -100 ELO penalty applied (${penalizedElo} ELO committed). Cache signature re-anchored.`);
   }
 }
 
@@ -333,11 +426,51 @@ export function generateUniqueTokenHandle(length = 8) {
 }
 
 export function initServerlessOnboarding() {
-  // Hard Lockout Check
-  if (localStorage.getItem('prime_factor_security_verdict') === 'PERMANENTLY_BANNED') {
+  // 1. Hard Lockout Check across localStorage, sessionStorage, and cookies
+  let isPermanentlyBanned = false;
+  try {
+    if (localStorage.getItem('prime_factor_security_verdict') === 'PERMANENTLY_BANNED' ||
+        sessionStorage.getItem('prime_factor_security_verdict') === 'PERMANENTLY_BANNED' ||
+        (typeof document !== 'undefined' && document.cookie && document.cookie.includes('primefactor_security_verdict=PERMANENTLY_BANNED'))) {
+      isPermanentlyBanned = true;
+    }
+  } catch (e) {}
+
+  if (isPermanentlyBanned) {
+    try {
+      localStorage.setItem('prime_factor_security_verdict', 'PERMANENTLY_BANNED');
+      sessionStorage.setItem('prime_factor_security_verdict', 'PERMANENTLY_BANNED');
+    } catch (e) {}
     renderPermanentBanScreen();
     throw new Error('Hard Lockout Active');
   }
+
+  // 2. FAIL-SAFE ASYMMETRIC TRAP & STRIKE COUNTER ROLLBACK INTERCEPTION:
+  // If an opportunistic bad actor attempts to decrement the strike count:
+  const localStrikes = Number(localStorage.getItem('primefactor_security_strikes') || 0);
+  let sessionStrikes = 0;
+  let cookieStrikes = 0;
+  try {
+    sessionStrikes = Number(sessionStorage.getItem('primefactor_security_strikes') || 0);
+    const cookieMatch = typeof document !== 'undefined' && document.cookie ? document.cookie.match(/primefactor_security_strikes=(\d+)/) : null;
+    if (cookieMatch) cookieStrikes = Number(cookieMatch[1]);
+  } catch (e) {}
+  const highestRecordedStrikes = Math.max(sessionStrikes, cookieStrikes);
+
+  if (highestRecordedStrikes > 0 && localStrikes < highestRecordedStrikes) {
+    handleSecurityViolation(highestRecordedStrikes, 'Strike Counter Rollback Detected');
+    return;
+  }
+
+  // 3. FAIL-SAFE ASYMMETRIC TRAP: Intercept missing directory state or atomized lineage
+  let isTrapped = false;
+  try {
+    if (sessionStorage.getItem('primefactor_security_trap') === 'TRAPPED' ||
+        sessionStorage.getItem('primefactor_atomized') === 'true' ||
+        (typeof document !== 'undefined' && document.cookie && document.cookie.includes('primefactor_security_trap=TRAPPED'))) {
+      isTrapped = true;
+    }
+  } catch (e) {}
 
   // Abrupt Exit & Refresh Integrity Check
   const currentStatus = localStorage.getItem('status') || localStorage.getItem('primefactor_status');
@@ -350,7 +483,7 @@ export function initServerlessOnboarding() {
   const storedElo = localStorage.getItem('primefactor_elo');
   const storedPeak = localStorage.getItem('primefactor_peak_elo');
 
-  const isFreshContext = !token || storedElo === null || storedPeak === null || isNaN(Number(storedElo)) || Number(storedElo) <= 0;
+  const isFreshContext = !token || storedElo === null || storedPeak === null || isNaN(Number(storedElo)) || Number(storedElo) < 0;
 
   if (isFreshContext) {
     // Brand new user sequence or uninitialized storage keys
@@ -360,9 +493,14 @@ export function initServerlessOnboarding() {
       localStorage.setItem('primefactor_profile_username', token);
     }
     
-    // Baseline statistics forcefully initialized at 500 ELO (Tier 11 · Composite Apprentice Level)
-    localStorage.setItem('primefactor_elo', '500');
-    localStorage.setItem('primefactor_peak_elo', '500');
+    // FAIL-SAFE ASYMMETRIC TRAP:
+    // If an opportunistic bad actor cleared browser storage to bypass the lockout screen,
+    // their previous profile lineage has been destroyed atomized.
+    // Do not award them the default 500 ELO onboarding floor. Trap them in an unprivileged state initializing strictly at 0 ELO.
+    const initialElo = isTrapped ? 0 : 500;
+    localStorage.setItem('primefactor_elo', String(initialElo));
+    localStorage.setItem('primefactor_peak_elo', String(initialElo));
+
     if (localStorage.getItem('primefactor_total_solved') === null) {
       localStorage.setItem('primefactor_total_solved', '0');
     }
@@ -377,6 +515,14 @@ export function initServerlessOnboarding() {
     }
     if (localStorage.getItem('primefactor_last_rated_date') === null) {
       localStorage.setItem('primefactor_last_rated_date', new Date().toISOString());
+    }
+
+    if (isTrapped) {
+      addNotification({
+        type: 'security_tampering',
+        title: 'Security Quarantine',
+        message: '🛡️ Profile initialized in trapped quarantine state at 0 ELO (Foundry Initiate).'
+      });
     }
 
     // Sign directory instantly with HMAC verification signature
@@ -618,6 +764,14 @@ export function reSignProfileDirectory() {
   };
   const signature = computeHMAC(JSON.stringify(payload));
   localStorage.setItem('primefactor_profile_sig', signature);
+
+  // Lock unblemished payload trace in memory and persistent signature trace
+  lastVerifiedProfilePayload = { ...payload };
+  try {
+    localStorage.setItem('primefactor_signature_trace', btoa(JSON.stringify(payload)) + '.' + signature);
+  } catch (e) {
+    console.warn('Error updating signature trace:', e);
+  }
 }
 
 export function verifyProfileIntegrity() {
@@ -638,6 +792,13 @@ export function verifyProfileIntegrity() {
     handleSecurityViolation(1, 'Profile Directory Signature Mismatch');
     return false;
   }
+
+  // Update verified payload state decoded during valid HMAC pass
+  lastVerifiedProfilePayload = { ...payload };
+  try {
+    localStorage.setItem('primefactor_signature_trace', btoa(JSON.stringify(payload)) + '.' + sig);
+  } catch (e) {}
+
   return true;
 }
 
@@ -681,7 +842,7 @@ export function checkInactivityDecay() {
 export function getUserElo() {
   try {
     const raw = localStorage.getItem('primefactor_elo');
-    if (raw && !isNaN(Number(raw)) && Number(raw) >= 0) {
+    if (raw !== null && !isNaN(Number(raw)) && Number(raw) >= 0) {
       return Math.round(Number(raw));
     }
   } catch (e) {
@@ -694,7 +855,9 @@ export function setUserElo(newElo) {
   const safeElo = Math.max(0, Math.round(Number(newElo) || 0));
   localStorage.setItem('primefactor_elo', String(safeElo));
 
-  const peak = Math.max(safeElo, Number(localStorage.getItem('primefactor_peak_elo') || 500));
+  const rawPeak = localStorage.getItem('primefactor_peak_elo');
+  const currentPeak = rawPeak !== null && !isNaN(Number(rawPeak)) ? Number(rawPeak) : safeElo;
+  const peak = Math.max(safeElo, currentPeak);
   localStorage.setItem('primefactor_peak_elo', String(peak));
 
   reSignProfileDirectory();
@@ -703,7 +866,8 @@ export function setUserElo(newElo) {
 
 export function getUserPeakElo() {
   const current = getUserElo();
-  const peak = Number(localStorage.getItem('primefactor_peak_elo') || 500);
+  const rawPeak = localStorage.getItem('primefactor_peak_elo');
+  const peak = rawPeak !== null && !isNaN(Number(rawPeak)) ? Number(rawPeak) : current;
   return Math.max(current, peak);
 }
 

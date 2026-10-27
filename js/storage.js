@@ -64,6 +64,11 @@ export function getLedger() {
   return safeGet(LEDGER_KEY, DEFAULT_LEDGER);
 }
 
+export function clearLedger() {
+  safeSet(LEDGER_KEY, DEFAULT_LEDGER);
+  return DEFAULT_LEDGER;
+}
+
 export function recordExamCompletion(resultPayload) {
   // If in unrated practice mode, bypass permanent ledger updates and ELO alterations
   if (resultPayload.participationMode === 'unrated' || resultPayload.mode === 'unrated') {

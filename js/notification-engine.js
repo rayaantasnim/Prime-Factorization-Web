@@ -41,6 +41,7 @@ export function updateUnreadStatusDots() {
   const isUnread = hasUnreadNotifications();
   const overheadDot = document.getElementById('overhead-nav-unread-dot');
   const rowDot = document.getElementById('notif-row-unread-dot');
+  const dashboardDot = document.getElementById('dashboard-notif-dot');
   const standaloneBadge = document.getElementById('telemetry-unread-badge');
 
   if (overheadDot) {
@@ -48,6 +49,10 @@ export function updateUnreadStatusDots() {
   }
   if (rowDot) {
     rowDot.style.display = isUnread ? 'inline-block' : 'none';
+  }
+
+  if (dashboardDot) {
+    dashboardDot.style.display = isUnread ? 'inline-block' : 'none';
   }
   if (standaloneBadge) {
     const unreadCount = getNotifications().filter(n => !n.isRead).length;

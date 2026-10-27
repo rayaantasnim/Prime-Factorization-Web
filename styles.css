@@ -3394,6 +3394,7 @@ input:checked + .slider-round:before {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    color:white !important;
   }
 
   .nav-dropdown-trigger {
@@ -3891,6 +3892,396 @@ input:checked + .slider-round:before {
 
 img{
   opacity: 1.0 !important;
+}
+
+/* =========================================================
+   FULL-SCREEN GLASSMORPHIC NAVIGATION DASHBOARD & HEADER MATRIX
+   ========================================================= */
+
+/* Fixed Header Layout & Desktop Adaptive Positioning */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height, 4rem);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.header-container {
+  position: relative !important;
+  width: 100%;
+  max-width: 82rem;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 100%;
+}
+
+/* 1. Far Left: Brand Logo */
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+/* 2. Absolute Center: Settings Gear Icon (Desktop Matrix) */
+.header-center-settings {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 10 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.header-settings-gear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  color: #94A3B8;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.header-settings-gear-btn:hover {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: #38BDF8;
+  color: #38BDF8;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+  transform: scale(1.05);
+}
+
+.header-settings-gear-btn svg,
+.header-settings-gear-btn .gear-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: 50% 50%;
+}
+
+.header-settings-gear-btn:hover svg,
+.header-settings-gear-btn:hover .gear-icon {
+  transform: rotate(90deg);
+}
+
+/* 3. Far Right: Navigation Menu Trigger */
+.header-right-nav {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem;
+  margin-left: auto !important;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+/* Mobile Fallback: Hide center gear on small screens */
+@media (max-width: 768px) {
+  .header-center-settings {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+/* COMPLETE DEACTIVATION OF LEGACY DROPDOWN */
+#global-dropdown-menu,
+.nav-dropdown-glass-container,
+.global-nav-dropdown {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* =========================================================
+   FULL-SCREEN GLASSMORPHIC NAVIGATION DASHBOARD OVERLAY
+   ========================================================= */
+.fullscreen-nav-dashboard {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99999 !important;
+  background: rgba(15, 23, 42, 0.88) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  overflow: hidden !important;
+  will-change: transform, opacity;
+}
+
+/* Fixed Close Dismissal Node in Top-Right Corner */
+.nav-dashboard-close-btn {
+  position: fixed !important;
+  top: 1.25rem !important;
+  right: clamp(1rem, 3vw, 2.25rem) !important;
+  z-index: 100001 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.55rem 1rem !important;
+  background: rgba(30, 41, 59, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 9999px !important;
+  color: #FFFFFF !important;
+  cursor: pointer !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.nav-dashboard-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: #EF4444 !important;
+  color: #EF4444 !important;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.45) !important;
+  transform: scale(1.05) !important;
+}
+
+.nav-dashboard-close-btn .close-label {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  padding: 0.15rem 0.45rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Normal Vertical Scrolling exclusively inside the scroll wrap */
+.nav-dashboard-scroll-wrap {
+  width: 100% !important;
+  height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: clamp(4.5rem, 8vh, 6rem) clamp(1rem, 4vw, 3rem) clamp(3rem, 6vh, 5rem) !important;
+  box-sizing: border-box !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-dashboard-content-box {
+  max-width: 78rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.nav-dashboard-header {
+  margin-bottom: clamp(1.5rem, 3.5vh, 2.75rem);
+}
+
+.nav-dashboard-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard-brand-symbol {
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, #0284C7, #38BDF8);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading, serif);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+}
+
+.nav-dashboard-kicker {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #38BDF8;
+  margin-bottom: 0.2rem;
+}
+
+.nav-dashboard-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  color: #FFFFFF !important;
+  margin: 0;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.nav-dashboard-subtitle {
+  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+  color: #CBD5E1 !important;
+  max-width: 50rem;
+  line-height: 1.5;
+  margin: 0.5rem 0 0 0;
+}
+
+/* =========================================================
+   3-TIER RESPONSIVE TOPOLOGY GRID (11 ITEMS)
+   Desktop: 3x3 Grid Matrix (3 columns)
+   Tablets (<= 1024px): 2x2 Grid Matrix (2 columns)
+   Mobile (<= 640px): 1x1 Single-Column Stack
+   ========================================================= */
+.nav-dashboard-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: clamp(1rem, 1.75vw, 1.5rem) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 1024px) {
+  .nav-dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* THE ISOLATED GLASSMORPHIC DASHBOARD CARD */
+.nav-dashboard-card {
+  position: relative !important;
+  background: rgba(30, 41, 59, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 1rem !important;
+  padding: clamp(1.15rem, 2vw, 1.45rem) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  overflow: hidden !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.nav-dashboard-card:hover {
+  transform: translateY(-4px) scale(1.02) !important;
+  background: rgba(30, 41, 59, 0.95) !important;
+  border-color: rgba(56, 189, 248, 0.45) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.2) !important;
+}
+
+.nav-card-top-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 0.85rem !important;
+}
+
+.nav-card-icon-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+.nav-card-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 0.65rem !important;
+  flex-shrink: 0 !important;
+}
+
+.nav-card-num {
+  font-family: var(--font-heading, sans-serif) !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  color: #64748B !important;
+  letter-spacing: 0.05em !important;
+}
+
+.nav-card-badge {
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  padding: 0.25rem 0.65rem !important;
+  border-radius: 9999px !important;
+  border: 1px solid !important;
+}
+
+.nav-card-body {
+  flex: 1 0 auto !important;
+  margin-bottom: 1rem !important;
+}
+
+.nav-card-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  color: #FFFFFF !important;
+  margin: 0 0 0.4rem 0 !important;
+  line-height: 1.25 !important;
+}
+
+.nav-card-desc {
+  font-size: 0.875rem !important;
+  color: #94A3B8 !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+.nav-dashboard-card:hover .nav-card-desc {
+  color: #CBD5E1 !important;
+}
+
+.nav-card-bottom-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-family: var(--font-heading, sans-serif) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  color: #38BDF8 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding-top: 0.65rem !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.nav-card-arrow {
+  transition: transform 0.25s ease !important;
+}
+
+.nav-dashboard-card:hover .nav-card-arrow {
+  transform: translateX(4px) !important;
 }
 
 @import "./css/notifications.css";
