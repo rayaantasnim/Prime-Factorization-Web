@@ -1,0 +1,743 @@
+/**
+ * PrimeFactor.app — Standalone Notifications Center Stylesheet
+ * High Contrast, Crisp Readability, Precise Color Harmony, Lite Interactive Hovers,
+ * Expanded Gaps & Breathing Room for Buttons, Cards, and Sections.
+ */
+
+/* ================= 1. SUB-PIXEL UNREAD GLOW MARKER ================= */
+.subpixel-unread-dot {
+  background: #DC2626 !important;
+  box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000 !important;
+  border-radius: 50% !important;
+  width: 8px !important;
+  height: 8px !important;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  animation: unreadDotPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes unreadDotPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000;
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.25);
+    box-shadow: 0 0 14px #EF4444, 0 0 28px #FF0000;
+  }
+}
+
+/* ================= 2. PAGE CONTAINER & LAYOUT MATRIX ================= */
+.notifications-page-wrapper {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 10.5rem 1.75rem 6rem 1.75rem; /* Generous top padding ensuring bell icon & title are exceptionally visible below the navbar */
+  box-sizing: border-box;
+}
+
+/* Header / Hero Section */
+.notifications-header-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2.25rem;
+  margin-bottom: 4rem; /* Generous gap before telemetry grid */
+}
+
+.notifications-title-lockup h1 {
+  font-family: var(--font-heading, 'Rajdhani', sans-serif);
+  font-size: clamp(2.25rem, 4.5vw, 3rem);
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.notifications-title-lockup h1 .title-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.35) 0%, rgba(37, 99, 235, 0.45) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.35);
+  font-size: 1.75rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.notifications-title-lockup h1 .title-icon-badge:hover {
+  transform: scale(1.08) rotate(5deg);
+  box-shadow: 0 0 35px rgba(6, 182, 212, 0.6);
+}
+
+.notifications-subtitle {
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 1.1rem;
+  color: #CBD5E1;
+  margin-top: 0.85rem;
+  max-width: 720px;
+  line-height: 1.65;
+}
+
+.notifications-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem; /* Expanded gap between action buttons */
+  flex-wrap: wrap;
+}
+
+/* Precise Action Buttons with Lite Hover Effects */
+.btn-notif-action {
+  font-family: var(--font-heading, sans-serif);
+  font-weight: 700;
+  font-size: 0.925rem;
+  letter-spacing: 0.03em;
+  padding: 0.8rem 1.5rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-decoration: none;
+  user-select: none;
+  margin-bottom: 0.5rem;
+}
+
+.btn-notif-action.btn-primary {
+  background: linear-gradient(135deg, #0284C7 0%, #06B6D4 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  box-shadow: 0 4px 18px rgba(6, 182, 212, 0.35);
+}
+
+.btn-notif-action.btn-primary:hover {
+  background: linear-gradient(135deg, #0369A1 0%, #0891B2 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.55);
+  border-color: rgba(56, 189, 248, 0.85);
+}
+
+.btn-notif-action.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-notif-action.btn-glass {
+  background: rgba(15, 23, 42, 0.85);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.btn-notif-action.btn-glass:hover {
+  background: rgba(30, 41, 59, 0.95);
+  color: #FFFFFF;
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.45);
+}
+
+.btn-notif-action.btn-glass:active {
+  transform: translateY(0);
+}
+
+.btn-notif-action.btn-danger-glass {
+  background: rgba(220, 38, 38, 0.18);
+  color: #FCA5A5;
+  border: 1px solid rgba(220, 38, 38, 0.45);
+}
+
+.btn-notif-action.btn-danger-glass:hover {
+  background: rgba(220, 38, 38, 0.32);
+  color: #FFFFFF;
+  border-color: #EF4444;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+
+.btn-notif-action.btn-danger-glass:active {
+  transform: translateY(0);
+}
+
+/* ================= 3. TELEMETRY METRIC CAPSULES ================= */
+.notifications-telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2rem; /* Expanded gap between metric cards */
+  margin-bottom: 4rem; /* Expanded gap before toolbar */
+}
+
+.telemetry-card {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.15rem;
+  padding: 1.85rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.telemetry-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.6), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.telemetry-card:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.4), 0 0 25px rgba(6, 182, 212, 0.18);
+}
+
+.telemetry-card:hover::after {
+  opacity: 1;
+}
+
+.telemetry-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.15rem;
+}
+
+.telemetry-label {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94A3B8;
+}
+
+.telemetry-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.telemetry-value {
+  font-family: var(--font-heading, monospace);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.telemetry-meta {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.85rem;
+  color: #94A3B8;
+  margin-top: 0.75rem;
+  font-weight: 500;
+}
+
+/* ================= 4. FILTER TOOLBAR TABS ================= */
+.notifications-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.15rem;
+  padding: 1.35rem 1.85rem;
+  margin-bottom: 3.75rem; /* Expanded margin before notification feed list */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.filter-tabs-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Expanded gap between filter buttons */
+  flex-wrap: wrap;
+}
+
+.filter-tab-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #CBD5E1;
+  font-family: var(--font-heading, sans-serif);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.75rem 1.45rem;
+  border-radius: 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  user-select: none;
+}
+
+.filter-tab-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(56, 189, 248, 0.35);
+  transform: translateY(-1px);
+}
+
+.filter-tab-btn:active {
+  transform: translateY(0);
+}
+
+.filter-tab-btn.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(37, 99, 235, 0.3) 100%);
+  color: #38BDF8;
+  border-color: rgba(56, 189, 248, 0.65);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+.toolbar-status-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-body, monospace);
+  font-size: 0.875rem;
+  color: #CBD5E1;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ================= 5. LIFO NOTIFICATION FEED LIST ================= */
+.notifications-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.85rem; /* Expanded gap between notification cards */
+}
+
+/* Card Component: Clean Solid-Glass with Lite Hover */
+.notif-card {
+  position: relative;
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.15rem;
+  padding: 1.85rem 2.15rem; /* Generous internal padding for breathing room */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.notif-card:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.9) 100%);
+  border-color: rgba(56, 189, 248, 0.55);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45), 0 0 30px rgba(6, 182, 212, 0.2);
+}
+
+.notif-card:active {
+  transform: translateY(-1px);
+}
+
+/* Active / Elevated Unread Cards */
+.notif-card.unread-card {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.92) 100%);
+  border-color: rgba(56, 189, 248, 0.65);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.35), 0 0 35px rgba(6, 182, 212, 0.22);
+}
+
+.notif-card.unread-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #06B6D4 0%, #3B82F6 100%);
+  box-shadow: 0 0 18px #06B6D4;
+}
+
+.notif-card.unread-card.offense-card {
+  border-color: rgba(220, 38, 38, 0.75);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.35), 0 0 35px rgba(220, 38, 38, 0.28);
+}
+
+.notif-card.unread-card.offense-card::before {
+  background: linear-gradient(180deg, #DC2626 0%, #EF4444 100%);
+  box-shadow: 0 0 18px #DC2626;
+}
+
+.notif-card.unread-card.security-card {
+  border-color: rgba(220, 38, 38, 0.9);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.35), 0 0 40px rgba(220, 38, 38, 0.35);
+}
+
+.notif-card.unread-card.security-card::before {
+  background: linear-gradient(180deg, #991B1B 0%, #DC2626 100%);
+  box-shadow: 0 0 20px #DC2626;
+}
+
+/* ================= 6. DESATURATED READ LOGS ================= */
+.notif-card.read-card {
+  background: rgba(15, 23, 42, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+.notif-card.read-card:hover {
+  background: rgba(15, 23, 42, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25) !important;
+}
+
+.notif-card.read-card .notif-title {
+  color: #CBD5E1 !important;
+}
+
+.notif-card.read-card .notif-message-text {
+  color: #94A3B8 !important;
+}
+
+.notif-card.read-card .notif-timestamp {
+  color: #64748B !important;
+}
+
+.notif-card.read-card .notif-type-badge {
+  opacity: 0.7;
+  filter: grayscale(20%);
+}
+
+.notif-card.read-card .notif-icon-bubble {
+  filter: grayscale(50%) opacity(0.8);
+}
+
+/* Header Inside Card */
+.notif-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.35rem;
+  margin-bottom: 1.15rem;
+}
+
+.notif-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.notif-icon-bubble {
+  font-size: 1.75rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.notif-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.notif-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+.notif-timestamp {
+  font-size: 0.85rem;
+  color: #38BDF8;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.notif-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+/* Precise Badges */
+.notif-type-badge {
+  font-size: 0.775rem;
+  font-weight: 800;
+  padding: 0.4rem 0.95rem;
+  border-radius: 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.badge-elo-gain {
+  background: rgba(16, 185, 129, 0.25);
+  color: #34D399;
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.18);
+}
+
+.badge-elo-loss {
+  background: rgba(239, 68, 68, 0.22);
+  color: #F87171;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.18);
+}
+
+.badge-offense {
+  background: rgba(220, 38, 38, 0.28);
+  color: #FCA5A5;
+  border: 1px solid rgba(220, 38, 38, 0.6);
+  box-shadow: 0 0 15px rgba(220, 38, 38, 0.3);
+}
+
+.badge-security {
+  background: rgba(220, 38, 38, 0.38);
+  color: #FECACA;
+  border: 1px solid #EF4444;
+  box-shadow: 0 0 18px rgba(220, 38, 38, 0.4);
+}
+
+.badge-system {
+  background: rgba(14, 165, 233, 0.22);
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 14px rgba(14, 165, 233, 0.2);
+}
+
+.btn-mark-single-read {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #E2E8F0;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.825rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.btn-mark-single-read:hover {
+  background: rgba(56, 189, 248, 0.25);
+  color: #38BDF8;
+  border-color: rgba(56, 189, 248, 0.55);
+  transform: translateY(-1px);
+}
+
+.btn-mark-single-read:active {
+  transform: translateY(0);
+}
+
+.read-indicator-label {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 0.775rem;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+/* Card Body */
+.notif-card-body {
+  margin: 1rem 0 1.35rem 0;
+}
+
+.notif-message-text {
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #F1F5F9;
+  word-break: break-word;
+}
+
+/* Card Footer */
+.notif-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.15rem;
+  font-size: 0.825rem;
+  color: #94A3B8;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.notif-security-audit-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #94A3B8;
+}
+
+/* Empty State */
+.notifications-empty-state {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 1.25rem;
+  padding: 5.5rem 2.5rem;
+  text-align: center;
+  color: #CBD5E1;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.empty-icon-wrap {
+  font-size: 3.75rem;
+  margin-bottom: 1.35rem;
+  opacity: 0.9;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+}
+
+.empty-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.01em;
+}
+
+.empty-desc {
+  font-size: 1rem;
+  color: #94A3B8;
+  max-width: 540px;
+  margin: 0 auto 2rem auto;
+  line-height: 1.65;
+}
+
+.btn-reset-filter {
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #38BDF8;
+  font-weight: 700;
+  font-size: 0.925rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 18px rgba(6, 182, 212, 0.25);
+  user-select: none;
+}
+
+.btn-reset-filter:hover {
+  background: rgba(56, 189, 248, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(6, 182, 212, 0.4);
+  border-color: rgba(56, 189, 248, 0.65);
+}
+
+.btn-reset-filter:active {
+  transform: translateY(0);
+}
+
+/* ================= 7. PRECISION RESPONSIVE BREAKPOINTS ================= */
+@media (max-width: 1024px) {
+  .notifications-telemetry-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .notifications-page-wrapper {
+    padding-top: 9rem;
+  }
+
+  .notifications-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.35rem;
+  }
+
+  .filter-tabs-group {
+    width: 100%;
+    flex-wrap: wrap; 
+    justify-content: flex-start;
+  }
+
+  .toolbar-status-summary {
+    justify-content: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+@media (max-width: 600px) {
+  .notifications-page-wrapper {
+    width: 94vw !important;
+    max-width: 94vw !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 auto !important;
+    padding-top: 8rem !important;
+    padding-bottom: 4rem !important;
+  }
+
+  .notifications-telemetry-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1.25rem !important;
+    width: 94vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .telemetry-card {
+    padding: 1.35rem !important;
+  }
+
+  .telemetry-value {
+    font-size: 1.8rem !important;
+  }
+
+  .notifications-toolbar {
+    width: 94vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .filter-tabs-group {
+    gap: 0.85rem !important;
+  }
+
+  .filter-tab-btn {
+    padding: 0.6rem 1rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  .notifications-feed-list {
+    width: 94vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    gap: 1.5rem !important;
+  }
+
+  .notif-card {
+    padding: 1.5rem !important;
+  }
+
+  .notif-card-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1.15rem !important;
+  }
+
+  .notif-meta-right {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+}

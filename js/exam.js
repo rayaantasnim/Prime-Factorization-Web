@@ -4,11 +4,20 @@
  * 6 Lifeline Controls, 3-Strike Penalty, Fullscreen GSAP Flushes, and Second Chance Loop.
  */
 
+// 1. Pre-Flight Lock Flag: The exact millisecond exam.html launches,
+// instantly commit exam_in_progress = "true" before any rendering timers ignite.
+try {
+  sessionStorage.setItem('exam_in_progress', 'true');
+  localStorage.setItem('exam_in_progress', 'true');
+} catch (e) {
+  console.warn('Pre-flight lock flag write error:', e);
+}
+
 import { rollCompositeNumber, parseAndValidateFactorInput, generateConceptualHint, factorize } from './math-engine.js';
 import { getActiveExamParams, setLastExamResult, recordExamCompletion, getLedger } from './storage.js';
 import { triggerFlash, renderFooter } from './header.js';
 import { playSound } from './audio.js';
-import { getUserElo, isRangeBannedForElo, getTierBaselineFromRange } from './elo-engine.js';
+import { getUserElo, isRangeBannedForElo, getTierBaselineFromRange, reSignProfileDirectory } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   renderFooter();
@@ -16,6 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initExamArena() {
+  // Abrupt Exit Check: If an abrupt exit was detected on page boot, suspend normal loops!
+  const currentStatus = localStorage.getItem('status') || localStorage.getItem('primefactor_status');
+  if (currentStatus === 'ABRUPT_EXIT') {
+    return;
+  }
   // Logo & Branding Lockdown: The absolute microsecond exam page initializes,
   // completely hide/remove the global nav-brand logo and branding headers
   document.body.classList.add('in-exam');
@@ -811,7 +825,7 @@ function initExamArena() {
     const currentItem = state.questionAudits[state.currentIndex];
     currentItem.hintActive = true;
 
-    const hintText = generateConceptualHint(currentItem.number);
+    const hintText = generateConceptualHint(currentItem.number, userElo);
 
     playSound('alert');
     triggerFlash('warning');
@@ -1137,6 +1151,98 @@ function initExamArena() {
   document.addEventListener('visibilitychange', onVisibilityChange);
   window.addEventListener('blur', onWindowBlur);
 
+  // 2. Hardware-Level Refresh & Window Interception:
+  // Hook into browser native unload and intercept keyboard reload macros
+  let abruptExitHandled = false;
+
+  function executeAbruptExitRoutine() {
+    if (state.examEnded || abruptExitHandled) return;
+    abruptExitHandled = true;
+
+    try {
+      // Write status = "ABRUPT_EXIT"
+      localStorage.setItem('status', 'ABRUPT_EXIT');
+      localStorage.setItem('primefactor_status', 'ABRUPT_EXIT');
+      sessionStorage.setItem('status', 'ABRUPT_EXIT');
+      sessionStorage.setItem('primefactor_status', 'ABRUPT_EXIT');
+
+      // Increment persistent integer primefactor_offense_count by 1
+      const currentOffenses = Number(localStorage.getItem('primefactor_offense_count') || 0) + 1;
+      localStorage.setItem('primefactor_offense_count', String(currentOffenses));
+
+      // Calculate and snapshot mid-match telemetry
+      const firstTryCount = state.questionAudits.filter(q => q.attempt1Correct === true).length;
+      const attemptedCount = state.questionAudits.filter(q => q.attempt1 !== null).length;
+      const accuracyPct = attemptedCount > 0 ? (firstTryCount / attemptedCount) * 100 : 0;
+      const timeSpent = state.totalTimeLimit - Math.max(0, state.timeRemaining);
+
+      const snapshot = {
+        userElo: getUserElo(),
+        maxBound: state.max,
+        accuracyPct,
+        allocatedSeconds: state.totalTimeLimit,
+        actualSeconds: Math.max(1, timeSpent),
+        isForcedUnrated: state.isForcedUnrated,
+        participationMode: state.participationMode,
+        score: state.score,
+        questionsCount: state.totalQuestions,
+        tier: state.title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem('primefactor_aborted_match_payload', JSON.stringify(snapshot));
+
+      // Immediately invoke reSignProfileDirectory() using serverless ENGINE_HMAC_SECRET key
+      reSignProfileDirectory();
+    } catch (err) {
+      console.warn('Error executing abrupt exit routine:', err);
+    }
+  }
+
+  // Trap keyboard macros: F5, Ctrl + R, and Ctrl + F5
+  const onReloadKeyTrap = (e) => {
+    if (state.examEnded) return;
+
+    const isF5 = e.key === 'F5' || e.code === 'F5' || e.keyCode === 116;
+    const isCtrlR = (e.ctrlKey || e.metaKey) && (e.key === 'r' || e.key === 'R' || e.code === 'KeyR' || e.keyCode === 82);
+    const isCtrlF5 = (e.ctrlKey || e.metaKey) && isF5;
+
+    if (isF5 || isCtrlR || isCtrlF5) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      playSound('error');
+      triggerFlash('penalty');
+
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '🚨 INTEGRITY LOCK: Reload shortcut intercepted! Reloading during an active exam is strictly prohibited.';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+
+      // Execute background routine to secure storage immediately
+      executeAbruptExitRoutine();
+      return false;
+    }
+  };
+
+  window.addEventListener('keydown', onReloadKeyTrap, true);
+  document.addEventListener('keydown', onReloadKeyTrap, true);
+
+  // Hook tightly into the browser's native beforeunload event layer for reload/close clicks
+  const onBeforeUnload = (e) => {
+    if (state.examEnded) return;
+    const inProgress = sessionStorage.getItem('exam_in_progress') === 'true' || localStorage.getItem('exam_in_progress') === 'true';
+    if (!inProgress) return;
+
+    executeAbruptExitRoutine();
+
+    const warningMsg = '🚨 Integrity Breach Warning: Reloading or closing this active Olympiad exam is registered as an Abrupt Exit offense and applies an immediate ELO penalty.';
+    e.preventDefault();
+    e.returnValue = warningMsg;
+    return warningMsg;
+  };
+
+  window.addEventListener('beforeunload', onBeforeUnload);
+
   // Global document listener for hotkeys during active exam
   const onDocKeyDown = (e) => {
     if (state.examEnded || state.isFrozen) return;
@@ -1187,6 +1293,16 @@ function initExamArena() {
     document.removeEventListener('visibilitychange', onVisibilityChange);
     window.removeEventListener('blur', onWindowBlur);
     document.removeEventListener('keydown', onDocKeyDown);
+    window.removeEventListener('keydown', onReloadKeyTrap, true);
+    document.removeEventListener('keydown', onReloadKeyTrap, true);
+    window.removeEventListener('beforeunload', onBeforeUnload);
+
+    // Clear active exam lock flags upon legitimate completion
+    sessionStorage.setItem('exam_in_progress', 'false');
+    localStorage.setItem('exam_in_progress', 'false');
+    localStorage.setItem('status', 'NORMAL');
+    localStorage.setItem('primefactor_status', 'NORMAL');
+    localStorage.removeItem('primefactor_aborted_match_payload');
 
     // Audit Calculations
     const firstTryCorrect = state.questionAudits.filter(q => q.attempt1Correct === true).length;

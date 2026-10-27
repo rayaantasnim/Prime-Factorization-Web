@@ -110,3 +110,33 @@
   .rating-matrix-table td:nth-child(4)::before { content: "Color Token:"; }
   .rating-matrix-table td:nth-child(5)::before { content: "Firewall Limits:"; }
 }
+
+/* ==========================================================================
+   3. Universal Clamped Responsive Layout: Blacklist Matrix Mobile Optimization
+   ========================================================================== */
+@media (max-width: 600px) {
+  .rating-blacklist-section {
+    width: 94vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .rating-blacklist-card {
+    padding: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .rating-blacklist-table-wrap {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .rating-blacklist-table th,
+  .rating-blacklist-table td {
+    padding: 0.85rem 0.75rem !important;
+    font-size: 0.85rem !important;
+  }
+}

@@ -385,11 +385,33 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
 /**
  * Conceptual Mathematical Hint Generator
  * Generates insightful number theory hints without revealing the full answer.
+ * Enforces Fermat Clue Blocker for ELO ≥ 1800 semiprime composites (N = p * q).
  */
-export function generateConceptualHint(targetNumber) {
+export function generateConceptualHint(targetNumber, userElo = null) {
   const factors = factorize(targetNumber);
   const smallestPrime = factors[0];
   const distinctPrimes = [...new Set(factors)];
+  const currentElo = Number(userElo !== null && userElo !== undefined ? userElo : (localStorage.getItem('primefactor_elo') || 500));
+
+  // ==========================================================================
+  // FERMAT CLUE BLOCKER (ELO ≥ 1800):
+  // For any 2-factor composites (N = p * q), intercepts and blocks standard
+  // difference-of-squares clues. Enforces complex alternative number theory hints
+  // (Euler's Totient identities or Chinese Remainder Theorem residues).
+  // ==========================================================================
+  if (currentElo >= 1800 && factors.length === 2) {
+    const p = factors[0];
+    const q = factors[1];
+    const phi = (p - 1) * (q - 1);
+    const sumPQ = p + q;
+
+    if (targetNumber % 2 !== 0) {
+      return `🛡️ Fermat Clue Blocker Engaged (ELO ≥ 1800): Target is semiprime N = p × q. Totient identity reveals φ(N) = (p-1)(q-1) = ${phi}, with factor sum (p+q) = ${sumPQ}. Deduce p and q from quadratic roots of x² - (${sumPQ})x + ${targetNumber} = 0.`;
+    } else {
+      const rem = targetNumber % (q - 1);
+      return `🛡️ Fermat Clue Blocker Engaged (ELO ≥ 1800): Target is semiprime N = p × q. CRT residue analysis: N ≡ ${rem} (mod ${q - 1}). Reconstruct prime divisors using Euler totient residue congruences.`;
+    }
+  }
 
   // Strategy 1: Even number
   if (targetNumber % 2 === 0) {
@@ -432,3 +454,4 @@ export function generateConceptualHint(targetNumber) {
   // Strategy 5: Smallest prime divisor
   return `Olympiad clue: The smallest prime factor dividing this number is ${smallestPrime}. Target decomposes into ${factors.length} total prime factors.`;
 }
+

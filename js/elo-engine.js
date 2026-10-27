@@ -4,7 +4,7 @@
  * Asymmetric Tier-Banning Firewall, and Cryptographic 3-Strike Storage Integrity Hammer.
  */
 
-import { getLedger } from './storage.js';
+import { getLedger, addNotification } from './storage.js';
 
 export const ENGINE_HMAC_SECRET = "YOUR_LOCAL_HMAC_SECRET_KEY_PLACEHOLDER";
 
@@ -261,6 +261,11 @@ export function handleSecurityViolation(strikeCount = 1, reason = 'Storage Chara
     const active = getUserElo();
     setUserElo(Math.max(0, active - 100));
     reSignProfileDirectory();
+    addNotification({
+      type: 'security_tampering',
+      title: 'Security Strike',
+      message: '🛡️ Tampering Detected. -100 ELO Liquidated.'
+    });
     renderSecurityWarningModal('STRIKE 1 WARNING', 'Security integrity signature mismatch registered. -100 ELO penalty applied. Cache signature re-anchored.');
   }
 }
@@ -334,6 +339,12 @@ export function initServerlessOnboarding() {
     throw new Error('Hard Lockout Active');
   }
 
+  // Abrupt Exit & Refresh Integrity Check
+  const currentStatus = localStorage.getItem('status') || localStorage.getItem('primefactor_status');
+  if (currentStatus === 'ABRUPT_EXIT') {
+    handleAbruptExitAudit();
+  }
+
   // Check existing token handle and storage keys
   let token = localStorage.getItem('primefactor_profile_token');
   const storedElo = localStorage.getItem('primefactor_elo');
@@ -378,6 +389,224 @@ export function initServerlessOnboarding() {
   // Check midnight time-zone inactivity decay loop
   checkInactivityDecay();
 }
+
+/**
+ * 3. The Post-Breach Penalty & Max Rating Cap (-5 ELO Shield)
+ * 4. The 10-Offense Multiplier Liquidation Hammer (-50 ELO)
+ */
+export function handleAbruptExitAudit() {
+  const offenseCount = Number(localStorage.getItem('primefactor_offense_count') || 1);
+  const currentElo = getUserElo();
+
+  let rawCalculatedDelta = -5;
+  let abortedPayload = null;
+
+  try {
+    const raw = localStorage.getItem('primefactor_aborted_match_payload');
+    if (raw) {
+      abortedPayload = JSON.parse(raw);
+      if (abortedPayload.participationMode !== 'unrated' && !abortedPayload.isForcedUnrated) {
+        const deltaCalc = calculateEloDelta({
+          userElo: abortedPayload.userElo || currentElo,
+          maxBound: abortedPayload.maxBound || 200,
+          accuracyPct: abortedPayload.accuracyPct || 0,
+          allocatedSeconds: abortedPayload.allocatedSeconds || 180,
+          actualSeconds: abortedPayload.actualSeconds || 30,
+          isForcedUnrated: false,
+          participationMode: 'rated',
+          streakCount: 0
+        });
+        rawCalculatedDelta = deltaCalc.deltaR;
+      } else {
+        rawCalculatedDelta = 0;
+      }
+    }
+  } catch (e) {
+    console.warn('Error reading aborted match payload:', e);
+  }
+
+  // 3. Mathematical Filter: finalDelta = Math.min(-5, rawCalculatedDelta)
+  // Strictly barred from gaining any positive rating updates under a reload offense.
+  // If calculated penalty is worse (e.g. -25 ELO), preserve the worse value.
+  const finalDelta = Math.min(-5, rawCalculatedDelta);
+
+  // 4. Verification Gate: 10-Offense Multiplier Liquidation Hammer (-50 ELO)
+  // The exact instance primefactor_offense_count reaches a multiple of 10,
+  // execute an immediate penalty: deduct flat -50 ELO directly from live rating database,
+  // clear offense counter back to 0.
+  const isHammerTriggered = (offenseCount > 0 && offenseCount % 10 === 0);
+  const hammerPenalty = isHammerTriggered ? 50 : 0;
+  if (isHammerTriggered) {
+    localStorage.setItem('primefactor_offense_count', '0');
+  }
+
+  const totalDelta = finalDelta - hammerPenalty;
+  const newElo = Math.max(0, currentElo + totalDelta);
+  setUserElo(newElo);
+
+  // Record breach in profile match logs
+  recordRatedMatchToProfile({
+    tier: abortedPayload?.tier ? `${abortedPayload.tier} [Abrupt Exit]` : 'Abrupt Exit Breach',
+    accuracy: abortedPayload?.accuracyPct ? Math.round(abortedPayload.accuracyPct) : 0,
+    firstAttemptClears: 0,
+    totalQuestions: abortedPayload?.questionsCount || 10,
+    time: abortedPayload?.actualSeconds || 0,
+    score: -10,
+    eloDelta: totalDelta
+  });
+
+  addNotification({
+    type: 'refresh_offense',
+    title: 'Integrity Breach',
+    message: '🚨 Abrupt reload recorded. Mandatory -5 ELO applied.'
+  });
+
+  // Reset status = "NORMAL" and session locks
+  localStorage.setItem('status', 'NORMAL');
+  localStorage.setItem('primefactor_status', 'NORMAL');
+  sessionStorage.setItem('status', 'NORMAL');
+  sessionStorage.setItem('primefactor_status', 'NORMAL');
+  localStorage.setItem('exam_in_progress', 'false');
+  sessionStorage.setItem('exam_in_progress', 'false');
+  localStorage.removeItem('primefactor_aborted_match_payload');
+
+  // Instantly lock the directory with a new valid cryptographic signature token
+  reSignProfileDirectory();
+
+  // Spawn inescapable glass-morphic native UI modal alert box
+  renderIntegrityBreachModal({
+    offenseCount,
+    currentElo,
+    newElo,
+    finalDelta,
+    hammerPenalty,
+    isHammerTriggered
+  });
+}
+
+export function renderIntegrityBreachModal(data) {
+  const { offenseCount, currentElo, newElo, finalDelta, isHammerTriggered } = data;
+
+  const existing = document.getElementById('integrity-breach-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'integrity-breach-modal';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.style.cssText = 'position: fixed; inset: 0; z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(0, 0, 0, 0.75); overflow-y: auto;';
+
+  modal.innerHTML = `
+    <div style="
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 2px solid #DC2626;
+      border-radius: 1rem;
+      max-width: 560px;
+      width: 100%;
+      padding: 2.25rem 2rem;
+      box-shadow: 0 0 50px rgba(220, 38, 38, 0.45), 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      text-align: center;
+      color: #E2E8F0;
+      font-family: var(--font-body, system-ui, sans-serif);
+      box-sizing: border-box;
+      position: relative;
+    ">
+      <div style="font-size: 3rem; line-height: 1; margin-bottom: 1rem; filter: drop-shadow(0 0 15px #DC2626);">🚨</div>
+      
+      <h2 style="
+        color: #FFFFFF;
+        font-family: var(--font-heading, 'Rajdhani', sans-serif);
+        font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+        font-weight: 800;
+        line-height: 1.35;
+        margin: 0 0 1.25rem 0;
+        letter-spacing: 0.02em;
+      ">
+        🚨 Integrity Breach: Abrupt page refresh or window closure detected! Offense recorded.
+      </h2>
+
+      <p style="font-size: 0.95rem; line-height: 1.6; color: #CBD5E1; margin-bottom: 1.25rem;">
+        Competitive integrity enforcement identified an unverified session termination or active browser reload. Mid-match ratings are secured via serverless cryptographic signatures.
+      </p>
+
+      <div style="
+        background: rgba(220, 38, 38, 0.12);
+        border: 1px solid rgba(220, 38, 38, 0.4);
+        border-radius: 0.75rem;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.25rem;
+        text-align: left;
+        font-size: 0.9rem;
+      ">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.4rem;">
+          <span style="color: #94A3B8;">Cumulative Reload Offenses:</span>
+          <span style="color: #F87171; font-weight: 700; font-family: monospace;">Offense #${offenseCount}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.4rem;">
+          <span style="color: #94A3B8;">Rating Delta Cap (Shield):</span>
+          <span style="color: #EF4444; font-weight: 700; font-family: monospace;">${finalDelta} ELO (Max Cap ≤ -5)</span>
+        </div>
+        ${isHammerTriggered ? `
+        <div style="background: rgba(220, 38, 38, 0.25); border: 1px solid #DC2626; border-radius: 0.5rem; padding: 0.6rem 0.75rem; margin: 0.5rem 0; color: #FECACA;">
+          <strong style="color: #FFFFFF;">🔨 10-OFFENSE LIQUIDATION HAMMER:</strong> Multiple of 10 reached (${offenseCount} cumulative reloads)! Flat <strong>-50 ELO</strong> liquidated from database. Counter reset to 0.
+        </div>
+        ` : ''}
+        <div style="display: flex; justify-content: space-between; padding-top: 0.2rem;">
+          <span style="color: #94A3B8;">Updated Competitive ELO:</span>
+          <span style="color: #38BDF8; font-weight: 800; font-family: monospace; font-size: 1.05rem;">
+            ${currentElo} → ${newElo} ELO
+          </span>
+        </div>
+      </div>
+
+      <p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 1.5rem; line-height: 1.4;">
+        Cryptographic Directory Re-signed with <code>ENGINE_HMAC_SECRET</code>. Subsequent unauthorized closures compound penalty escalation.
+      </p>
+
+      <button id="dismiss-integrity-breach-btn" style="
+        background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+        color: #FFFFFF;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 0.85rem 2.25rem;
+        border-radius: 0.5rem;
+        font-weight: 800;
+        font-size: 0.95rem;
+        cursor: pointer;
+        box-shadow: 0 0 25px rgba(220, 38, 38, 0.4);
+        transition: transform 0.2s, box-shadow 0.2s;
+        font-family: var(--font-heading, sans-serif);
+        letter-spacing: 0.03em;
+      ">
+        Acknowledge &amp; Return to Division Select
+      </button>
+    </div>
+  `;
+
+  const mountModal = () => {
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+
+    const btn = document.getElementById('dismiss-integrity-breach-btn');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        document.body.style.overflow = '';
+        modal.remove();
+        if (window.location.pathname.endsWith('exam.html') || window.location.pathname.includes('/exam')) {
+          window.location.href = './ranges.html';
+        }
+      });
+    }
+  };
+
+  if (document.body) {
+    mountModal();
+  } else {
+    document.addEventListener('DOMContentLoaded', mountModal);
+  }
+}
+
 
 export function reSignProfileDirectory() {
   const payload = {
@@ -644,6 +873,24 @@ export function recordRatedMatchToProfile(matchData) {
     localStorage.setItem('primefactor_total_solved', String(totalSolved));
 
     localStorage.setItem('primefactor_last_rated_date', new Date().toISOString());
+
+    // Dynamically generate and map content strings for ELO Gains & Losses
+    if (typeof matchData.eloDelta === 'number') {
+      if (matchData.eloDelta > 0) {
+        addNotification({
+          type: 'elo_gain',
+          title: 'Rating Gain',
+          message: `📈 Rating Increase: +${matchData.eloDelta} ELO earned in ${matchData.tier || 'Rated Arena'}.`
+        });
+      } else if (matchData.eloDelta < 0 && matchData.score !== -10) {
+        // Exclude abrupt reload breach which logs its own specific offense string
+        addNotification({
+          type: 'elo_loss',
+          title: 'Rating Adjustment',
+          message: `📉 Rating Adjustment: ${matchData.eloDelta} ELO in ${matchData.tier || 'Rated Arena'}.`
+        });
+      }
+    }
 
     reSignProfileDirectory();
   } catch (e) {

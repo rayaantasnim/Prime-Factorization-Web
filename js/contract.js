@@ -253,6 +253,18 @@ function initContractGatekeeper() {
     if (redirected) return;
     redirected = true;
     clearInterval(countdownTimer);
+
+    // Pre-Flight Lock Flag: The exact millisecond a user transitions from contract.html and launches exam.html,
+    // instantly commit a state tracking variable exam_in_progress = "true" to local/session storage before any rendering timers ignite.
+    try {
+      sessionStorage.setItem('exam_in_progress', 'true');
+      localStorage.setItem('exam_in_progress', 'true');
+      localStorage.setItem('status', 'NORMAL');
+      localStorage.setItem('primefactor_status', 'NORMAL');
+    } catch (e) {
+      console.warn('Error setting pre-flight exam lock in contract:', e);
+    }
+
     playSound('click');
     window.location.href = examUrl;
   };

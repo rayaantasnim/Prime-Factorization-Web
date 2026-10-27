@@ -5,6 +5,7 @@
 import { getSettings, updateSettings, setActiveExamParams } from './storage.js';
 import { playSound } from './audio.js';
 import { initServerlessOnboarding } from './elo-engine.js';
+import { updateUnreadStatusDots, initNotificationDotListeners } from './notification-engine.js';
 
 // Immediate Root Initialization Hook (within 1ms of module evaluation)
 initServerlessOnboarding();
@@ -158,6 +159,18 @@ export function initGlobalHeader(options = {}) {
                 <span class="dropdown-badge">Overview</span>
               </a>
 
+              <a href="./notifications.html" class="dropdown-link-item" id="dropdown-notification-trigger">
+                <div class="dropdown-link-content">
+                  <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                  <span style="font-family: var(--font-heading); color: #FFFFFF;">Notification</span>
+                  <span id="notif-row-unread-dot" class="subpixel-unread-dot" style="display: none; background: #DC2626; box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000; border-radius: 50%; width: 8px; height: 8px; margin-left: 8px; vertical-align: middle;"></span>
+                </div>
+                <span class="dropdown-badge" style="background: rgba(14, 165, 233, 0.2); color: #38BDF8;">Logs</span>
+              </a>
+
               <!-- Mobile-only System link -->
               <a href="#" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" id="dropdown-mobile-system" aria-label="System Configuration">
                 <div class="dropdown-link-content">
@@ -283,6 +296,18 @@ export function initGlobalHeader(options = {}) {
                 <span class="dropdown-badge">Overview</span>
               </a>
 
+              <a href="./notifications.html" class="dropdown-link-item" id="dropdown-notification-trigger">
+                <div class="dropdown-link-content">
+                  <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                  <span style="font-family: var(--font-heading); color: #FFFFFF;">Notification</span>
+                  <span id="notif-row-unread-dot" class="subpixel-unread-dot" style="display: none; background: #DC2626; box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000; border-radius: 50%; width: 8px; height: 8px; margin-left: 8px; vertical-align: middle;"></span>
+                </div>
+                <span class="dropdown-badge" style="background: rgba(14, 165, 233, 0.2); color: #38BDF8;">Logs</span>
+              </a>
+
               <!-- Desktop Settings Link -->
               <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
                 <div class="dropdown-link-content">
@@ -327,6 +352,66 @@ export function initGlobalHeader(options = {}) {
   const dropdownMenu = document.querySelector('.nav-dropdown-glass-container') || document.getElementById('global-dropdown-menu');
 
   if (toggleBtn && dropdownMenu) {
+    // 1. Inject glowing neon-red unread dot directly to the left of overhead Navigation button
+    if (toggleBtn.parentNode) {
+      let overheadDot = document.getElementById('overhead-nav-unread-dot');
+      if (!overheadDot) {
+        overheadDot = document.createElement('span');
+        overheadDot.id = 'overhead-nav-unread-dot';
+        overheadDot.className = 'subpixel-unread-dot';
+        overheadDot.style.cssText = 'background: #DC2626; box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000; border-radius: 50%; width: 8px; height: 8px; display: none; margin-right: 8px; vertical-align: middle; flex-shrink: 0;';
+        toggleBtn.parentNode.insertBefore(overheadDot, toggleBtn);
+        if (toggleBtn.parentNode.style) {
+          toggleBtn.parentNode.style.display = 'inline-flex';
+          toggleBtn.parentNode.style.alignItems = 'center';
+        }
+      }
+    }
+
+    // 2. Ensure Notification menu row link exists in dropdown cleanly between Profile and Settings
+    let notifTrigger = dropdownMenu.querySelector('#dropdown-notification-trigger');
+    if (!notifTrigger) {
+      notifTrigger = document.createElement('a');
+      notifTrigger.href = './notifications.html';
+      notifTrigger.className = 'dropdown-link-item';
+      notifTrigger.id = 'dropdown-notification-trigger';
+      notifTrigger.setAttribute('aria-label', 'Open Notification Center');
+      notifTrigger.innerHTML = `
+        <div class="dropdown-link-content">
+          <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span style="font-family: var(--font-heading); color: #FFFFFF;">Notification</span>
+          <span id="notif-row-unread-dot" class="subpixel-unread-dot" style="display: none; background: #DC2626; box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000; border-radius: 50%; width: 8px; height: 8px; margin-left: 8px; vertical-align: middle;"></span>
+        </div>
+        <span class="dropdown-badge" style="background: rgba(14, 165, 233, 0.2); color: #38BDF8;">Logs</span>
+      `;
+
+      const profileLink = dropdownMenu.querySelector('#dropdown-profile, a[href="./profile.html"], a[href="profile.html"]');
+      const settingsLink = dropdownMenu.querySelector('#dropdown-open-settings, .desktop-only-settings-link, .dropdown-open-settings-trigger');
+
+      if (profileLink && profileLink.nextSibling) {
+        dropdownMenu.insertBefore(notifTrigger, profileLink.nextSibling);
+      } else if (settingsLink) {
+        dropdownMenu.insertBefore(notifTrigger, settingsLink);
+      } else {
+        dropdownMenu.appendChild(notifTrigger);
+      }
+    } else {
+      notifTrigger.setAttribute('href', './notifications.html');
+    }
+
+    // 3. Global Navigation Redirect: invoke window.location.href = 'notifications.html'
+    if (notifTrigger && !notifTrigger._hasNotifRedirect) {
+      notifTrigger._hasNotifRedirect = true;
+      notifTrigger.addEventListener('click', (e) => {
+        playSound('click');
+        closeDropdown();
+        window.location.href = './notifications.html';
+      });
+    }
+
     function toggleDropdown(e) {
       e.stopPropagation();
       playSound('click');
@@ -386,6 +471,10 @@ export function initGlobalHeader(options = {}) {
         }
       });
     });
+
+    // Real-time unread status dots sync
+    initNotificationDotListeners();
+    updateUnreadStatusDots();
   }
 
   // Always initialize Settings modal structure so mobile & desktop triggers function everywhere
@@ -544,3 +633,5 @@ export function renderFooter(containerId = 'site-footer-slot') {
     `;
   }
 }
+
+
