@@ -74,7 +74,12 @@
         line-height: 1.45 !important;
         text-align: left !important;
         margin-top: 0.25rem !important;
-        background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, #38bdf8 100%) !important;
+        background: linear-gradient(
+          135deg,
+          #f8fafc 0%,
+          #cbd5e1 50%,
+          #38bdf8 100%
+        ) !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
 

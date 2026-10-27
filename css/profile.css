@@ -3,20 +3,20 @@
    ========================================================================== */
 
 :root {
-  --profile-bg: #0B0F17;
+  --profile-bg: #0b0f17;
   --profile-card: #111827;
-  --profile-card-subtle: #161F30;
+  --profile-card-subtle: #161f30;
   --profile-border: rgba(255, 255, 255, 0.08);
   --profile-border-glow: rgba(56, 189, 248, 0.35);
-  --neon-cyan: #38BDF8;
-  --neon-emerald: #10B981;
-  --neon-amber: #F59E0B;
-  --neon-rose: #F43F5E;
+  --neon-cyan: #38bdf8;
+  --neon-emerald: #10b981;
+  --neon-amber: #f59e0b;
+  --neon-rose: #f43f5e;
 }
 
 body.profile-view {
   background-color: var(--profile-bg) !important;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   min-height: 100vh;
 }
 
@@ -33,14 +33,16 @@ body.profile-view {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(56, 189, 248, 0.4);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45), 0 0 15px rgba(56, 189, 248, 0.18);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.45),
+    0 0 15px rgba(56, 189, 248, 0.18);
   padding: 0.6rem 1.15rem;
   border-radius: 9999px;
   cursor: pointer;
   font-family: inherit;
   font-size: 0.86rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #ffffff;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -52,9 +54,9 @@ body.profile-view {
 
 .profile-matrix-trigger:hover {
   transform: translateY(-2px) scale(1.03);
-  border-color: #00F0FF;
+  border-color: #00f0ff;
   box-shadow: 0 0 22px rgba(6, 182, 212, 0.5);
-  color: #00F0FF;
+  color: #00f0ff;
 }
 
 .profile-matrix-trigger:hover svg {
@@ -72,7 +74,9 @@ body.profile-view {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
   overflow-y: auto;
   padding: clamp(1.5rem, 4vw, 3.5rem);
   box-sizing: border-box;
@@ -102,12 +106,12 @@ body.profile-view {
 .matrix-overlay-title-group h3 {
   font-size: clamp(1.5rem, 3.5vw, 2.1rem);
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 0.35rem;
 }
 
 .matrix-overlay-title-group p {
-  color: #94A3B8;
+  color: #94a3b8;
   font-size: 0.92rem;
   margin: 0;
 }
@@ -115,7 +119,7 @@ body.profile-view {
 .matrix-overlay-close-btn {
   background: rgba(30, 41, 59, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #FFFFFF;
+  color: #ffffff;
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
@@ -128,8 +132,8 @@ body.profile-view {
 }
 
 .matrix-overlay-close-btn:hover {
-  background: #EF4444;
-  border-color: #EF4444;
+  background: #ef4444;
+  border-color: #ef4444;
   box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
   transform: rotate(90deg);
 }
@@ -165,7 +169,7 @@ body.profile-view {
   align-items: flex-start;
   gap: 1rem;
   text-decoration: none;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
@@ -174,7 +178,7 @@ body.profile-view {
 }
 
 .matrix-routing-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -188,7 +192,9 @@ body.profile-view {
   background: rgba(30, 41, 59, 0.9);
   border-color: rgba(56, 189, 248, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(56, 189, 248, 0.2);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 0 16px rgba(56, 189, 248, 0.2);
 }
 
 .matrix-routing-card:hover::before {
@@ -211,12 +217,12 @@ body.profile-view {
   font-size: 1.05rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .routing-card-body p {
   font-size: 0.84rem;
-  color: #94A3B8;
+  color: #94a3b8;
   margin: 0;
   line-height: 1.4;
 }
@@ -231,11 +237,17 @@ body.profile-view {
 }
 
 .profile-identity-card {
-  background: radial-gradient(circle at top right, rgba(30, 58, 138, 0.25), rgba(17, 24, 39, 0.95) 70%);
+  background: radial-gradient(
+    circle at top right,
+    rgba(30, 58, 138, 0.25),
+    rgba(17, 24, 39, 0.95) 70%
+  );
   border: 1px solid rgba(56, 189, 248, 0.25);
   border-radius: 1.25rem;
   padding: clamp(1.5rem, 3vw, 2.25rem);
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55), 0 0 25px rgba(56, 189, 248, 0.12);
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.55),
+    0 0 25px rgba(56, 189, 248, 0.12);
   margin-bottom: 2.25rem;
   display: flex;
   align-items: center;
@@ -256,7 +268,7 @@ body.profile-view {
   width: 76px;
   height: 76px;
   border-radius: 1.25rem;
-  background: linear-gradient(135deg, #0284C7 0%, #1E1B4B 100%);
+  background: linear-gradient(135deg, #0284c7 0%, #1e1b4b 100%);
   border: 2px solid var(--neon-cyan);
   box-shadow: 0 0 18px rgba(56, 189, 248, 0.5);
   display: flex;
@@ -264,14 +276,14 @@ body.profile-view {
   justify-content: center;
   font-size: 2.2rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   flex-shrink: 0;
 }
 
 .identity-meta h1 {
   font-size: clamp(1.4rem, 3vw, 2.1rem);
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 0.35rem;
   display: flex;
   align-items: center;
@@ -296,7 +308,7 @@ body.profile-view {
   gap: 1rem;
   flex-wrap: wrap;
   font-size: 0.9rem;
-  color: #CBD5E1;
+  color: #cbd5e1;
 }
 
 .identity-rank-tag {
@@ -309,7 +321,7 @@ body.profile-view {
 .btn-clipboard-neon {
   background: rgba(15, 23, 42, 0.85);
   border: 1.5px solid rgba(56, 189, 248, 0.45);
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 0.65rem 1.25rem;
   border-radius: 0.65rem;
   font-family: inherit;
@@ -325,8 +337,8 @@ body.profile-view {
 }
 
 .btn-clipboard-neon:hover {
-  border-color: #00F0FF;
-  color: #00F0FF;
+  border-color: #00f0ff;
+  color: #00f0ff;
   box-shadow: 0 0 18px rgba(6, 182, 212, 0.45);
   transform: translateY(-1px);
 }
@@ -334,9 +346,11 @@ body.profile-view {
 /* UX Vibrant Green Neon Glow Feedback Transition */
 .btn-neon-copied-glow {
   background: #059669 !important;
-  color: #FFFFFF !important;
-  border-color: #10B981 !important;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.95), 0 0 35px rgba(52, 211, 153, 0.6) !important;
+  color: #ffffff !important;
+  border-color: #10b981 !important;
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.95),
+    0 0 35px rgba(52, 211, 153, 0.6) !important;
   transform: scale(1.02);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
@@ -354,7 +368,7 @@ body.profile-view {
 .section-banner-title {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -396,7 +410,9 @@ body.profile-view {
 
 .pb-card:hover {
   border-color: rgba(56, 189, 248, 0.35);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(56, 189, 248, 0.15);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 0 16px rgba(56, 189, 248, 0.15);
   transform: translateY(-2px);
 }
 
@@ -412,7 +428,7 @@ body.profile-view {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-weight: 700;
-  color: #94A3B8;
+  color: #94a3b8;
 }
 
 .pb-badge {
@@ -429,13 +445,13 @@ body.profile-view {
   font-family: inherit;
   font-size: clamp(1.6rem, 2.5vw, 2.1rem);
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 0.35rem;
 }
 
 .pb-val-sub {
   font-size: 0.85rem;
-  color: #94A3B8;
+  color: #94a3b8;
 }
 
 /* Card 3: 3-Layer Layout Widget for Lowest Time Consumption */
@@ -458,13 +474,13 @@ body.profile-view {
 }
 
 .pb-layer-key {
-  color: #94A3B8;
+  color: #94a3b8;
   font-weight: 600;
 }
 
 .pb-layer-val {
   font-weight: 700;
-  color: #FFFFFF;
+  color: #ffffff;
   font-family: monospace;
 }
 
@@ -475,8 +491,10 @@ body.profile-view {
 
 /* Card 6: Neon Color-Coded Rank */
 .pb-rank-quantum {
-  color: #10B981 !important;
-  text-shadow: 0 0 15px rgba(16, 185, 129, 0.8), 0 0 25px rgba(16, 185, 129, 0.4);
+  color: #10b981 !important;
+  text-shadow:
+    0 0 15px rgba(16, 185, 129, 0.8),
+    0 0 25px rgba(16, 185, 129, 0.4);
 }
 
 /* ================= 5. STREAK RECORDS & CADENCE SUMMARY ================= */
@@ -519,7 +537,7 @@ body.profile-view {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #94A3B8;
+  color: #94a3b8;
   font-weight: 700;
   margin-bottom: 0.35rem;
 }
@@ -527,7 +545,7 @@ body.profile-view {
 .smb-val {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 /* ================= 6. LAST 10 PERFORMANCES TRACKER TABLE ================= */
@@ -556,7 +574,7 @@ body.profile-view {
 
 .ledger-table th {
   background: rgba(30, 41, 59, 0.6);
-  color: #94A3B8;
+  color: #94a3b8;
   padding: 0.85rem 1rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -568,7 +586,7 @@ body.profile-view {
 .ledger-table td {
   padding: 0.95rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: #E2E8F0;
+  color: #e2e8f0;
 }
 
 .ledger-table tr:hover td {
@@ -578,12 +596,12 @@ body.profile-view {
 .ledger-table .score-elo-tag {
   font-family: monospace;
   font-weight: 800;
-  color: #10B981;
+  color: #10b981;
   text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
 .ledger-table .score-elo-tag.neutral {
-  color: #38BDF8;
+  color: #38bdf8;
   text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
 }
 
@@ -626,13 +644,15 @@ body.profile-view {
 
 .telemetry-node:hover {
   border-color: rgba(56, 189, 248, 0.35);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(56, 189, 248, 0.15);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 12px rgba(56, 189, 248, 0.15);
   transform: translateY(-2px);
 }
 
 .telemetry-node-label {
   font-size: 0.8rem;
-  color: #94A3B8;
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 700;
@@ -642,13 +662,13 @@ body.profile-view {
 .telemetry-node-val {
   font-size: 1.55rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 0.25rem;
 }
 
 .telemetry-node-desc {
   font-size: 0.8rem;
-  color: #64748B;
+  color: #64748b;
 }
 
 /* ================= 8. MEDALS VAULT SECTION ================= */
@@ -694,7 +714,9 @@ body.profile-view {
 .medal-item:hover {
   transform: translateY(-3px);
   border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(245, 158, 11, 0.2);
+  box-shadow:
+    0 6px 25px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(245, 158, 11, 0.2);
 }
 
 .medal-icon-badge {
@@ -706,19 +728,23 @@ body.profile-view {
 .medal-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 0.35rem;
 }
 
 .medal-desc {
   font-size: 0.8rem;
-  color: #94A3B8;
+  color: #94a3b8;
   line-height: 1.4;
 }
 
 /* ================= 9. DATA DIAGNOSTICS SECTION ================= */
 .diagnostics-card {
-  background: radial-gradient(circle at top left, rgba(14, 165, 233, 0.12), rgba(17, 24, 39, 0.95) 60%);
+  background: radial-gradient(
+    circle at top left,
+    rgba(14, 165, 233, 0.12),
+    rgba(17, 24, 39, 0.95) 60%
+  );
   border: 1px solid rgba(56, 189, 248, 0.25);
   border-radius: 1rem;
   padding: 1.5rem;
@@ -730,11 +756,6 @@ body.profile-view {
   gap: 1.5rem;
   box-sizing: border-box;
 }
-
-
-
-
-
 
 /* ==========================================================================
    PRIME-FACTOR.APP — CANDIDATE Badges and medals vault button showcase

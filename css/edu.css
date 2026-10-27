@@ -1,10 +1,9 @@
 /* মোবাইল এবং ছোট স্ক্রিনের জন্য প্রিসাইজ ভার্টিক্যাল লেআউট */
 @media screen and (max-width: 768px) {
-  
   /* প্যারেন্ট কন্টেইনারকে জোরপূর্বক সিঙ্গেল কলাম ভার্টিক্যাল গ্রিডে রূপান্তর */
   .edu-subcards-grid {
     display: grid !important;
-    grid-template-columns: 1fr !important; 
+    grid-template-columns: 1fr !important;
     grid-template-rows: auto !important;
     gap: 20px !important;
     width: 100% !important;
@@ -14,7 +13,7 @@
   /* প্রতিটি কার্ডের হাইট অটো করা হলো যেন ভেতরের টেক্সট অনুযায়ী হাইট বাড়ে এবং ওভারল্যাপ না হয় */
   .edu-subcard {
     width: 100% !important;
-    height: auto !important; 
+    height: auto !important;
     min-height: min-content !important;
     display: flex !important;
     flex-direction: column !important;
@@ -43,9 +42,9 @@
 
 /* Base styles for desktop / large screens */
 .heading-section {
-  font-size: 1.65rem; 
-  color: #000000; 
-  font-weight: 800; 
+  font-size: 1.65rem;
+  color: #000000;
+  font-weight: 800;
   margin: 0;
 }
 

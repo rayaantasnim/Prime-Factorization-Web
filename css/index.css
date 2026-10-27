@@ -1,5 +1,4 @@
-
-section{
+section {
   margin-bottom: 30px !important;
 }
 
@@ -17,7 +16,10 @@ section{
 /* 2. Overhaul Parent Grid Layout to exact 3-Column matrix on desktop */
 .contract-grid {
   display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important; /* Forces clean 3 columns */
+  grid-template-columns: repeat(
+    3,
+    minmax(0, 1fr)
+  ) !important; /* Forces clean 3 columns */
   gap: 20px !important; /* Prevents card borders from smashing together */
   width: 100% !important;
   box-sizing: border-box !important;
@@ -48,9 +50,15 @@ section{
 }
 
 /* Highly saturated, readable text contrast metrics */
-.contract-pts.pts-positive { color: #10b981 !important; } /* Emerald Green */
-.contract-pts.pts-neutral { color: #3b82f6 !important; }  /* Royal Blue */
-.contract-pts.pts-negative { color: #ef4444 !important; } /* Crimson Red */
+.contract-pts.pts-positive {
+  color: #10b981 !important;
+} /* Emerald Green */
+.contract-pts.pts-neutral {
+  color: #3b82f6 !important;
+} /* Royal Blue */
+.contract-pts.pts-negative {
+  color: #ef4444 !important;
+} /* Crimson Red */
 
 /* 5. Core Content Label Typography */
 .contract-label {
@@ -78,18 +86,18 @@ section{
     gap: 16px !important;
   }
 
-  .contract-card{
+  .contract-card {
     margin-right: 15px !important;
   }
 }
 
 /* Mobile Screen Layout Optimization (Flattens completely into a solid 1-column stack) */
 @media (max-width: 640px) {
-  #sec-randomizer{
+  #sec-randomizer {
     padding-right: 5px !important;
   }
-  
-  body{
+
+  body {
     margin-right: 5px !important;
   }
 
@@ -103,4 +111,3 @@ section{
     min-height: auto !important; /* Allows layout to compress and stretch naturally */
   }
 }
-

@@ -107,7 +107,8 @@
    --------------------------------------------------------- */
 @media (max-width: 768px) {
   /* Strict zero-overflow viewport boundary */
-  html, body {
+  html,
+  body {
     overflow-x: hidden !important;
     max-width: 100vw !important;
     width: 100% !important;

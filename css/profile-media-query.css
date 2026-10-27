@@ -11,7 +11,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   max-width: 100%;
   overflow-x: hidden;
 }
@@ -247,7 +248,7 @@ section#sec-diagnostics {
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.72rem;
-    color: #94A3B8;
+    color: #94a3b8;
     text-align: left;
     padding-right: 0.75rem;
   }

@@ -9,7 +9,9 @@
 }
 
 /* Ensure padding and layout safety across all viewports */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -74,7 +76,7 @@
   .results-hero-grid {
     grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
   }
-  
+
   .audit-sections-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -95,11 +97,11 @@
 }
 
 @media (max-width: 767px) {
-  .latency-table, 
-  .latency-table thead, 
-  .latency-table tbody, 
-  .latency-table th, 
-  .latency-table td, 
+  .latency-table,
+  .latency-table thead,
+  .latency-table tbody,
+  .latency-table th,
+  .latency-table td,
   .latency-table tr {
     display: block;
     width: 100%;
@@ -144,7 +146,7 @@
     text-transform: uppercase;
     font-size: 0.725rem;
     letter-spacing: 0.05em;
-    color: #94A3B8;
+    color: #94a3b8;
     text-align: left;
     margin-right: 0.75rem;
     flex-shrink: 0;

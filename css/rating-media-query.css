@@ -3,42 +3,57 @@
    ========================================================================== */
 
 #card-current-rating {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 58, 138, 0.95) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.98) 0%,
+    rgba(30, 58, 138, 0.95) 100%
+  );
   border: 1.5px solid rgba(56, 189, 248, 0.8);
-  box-shadow: 0 10px 35px rgba(14, 165, 233, 0.35), inset 0 0 25px rgba(56, 189, 248, 0.25);
+  box-shadow:
+    0 10px 35px rgba(14, 165, 233, 0.35),
+    inset 0 0 25px rgba(56, 189, 248, 0.25);
 }
 
 #card-current-rating .rating-metric-kicker {
-  color: #7DD3FC;
+  color: #7dd3fc;
   font-weight: 800;
   text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
 }
 
-/* Crisp, high-contrast, non-blurry numeric rating styling */
+/* Crisp, high-contrast numeric rating styling */
 #card-current-rating .rating-metric-val,
 #metric-current-elo {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   font-weight: 900 !important;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif !important;
   letter-spacing: 0.04em !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.5) !important;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.8),
+    0 0 15px rgba(56, 189, 248, 0.5) !important;
   filter: none !important;
   opacity: 1 !important;
 }
 
 #metric-current-tier-title {
-  color: #FACC15 !important;
+  color: #facc15 !important;
   text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
 }
 
 #card-current-rating .rating-metric-subtext {
-  color: #E2E8F0;
+  color: #e2e8f0;
   font-weight: 500;
 }
 
-
 /* ==========================================================================
-   2. Media Query CSS: Responsive Matrix Table for Smaller Screens
+   2. Media Query CSS: Responsive 12-Tier Rank Matrix Table Layout
+      - RANK, TIER & SYMBOL, ELO THRESHOLD, COLOR TOKEN: Inline-blocked (side-by-side)
+      - FIREWALL LIMITS: Broken line (Title on 1st line, content on 2nd lines)
    ========================================================================== */
 
 @media (max-width: 768px) {
@@ -62,81 +77,129 @@
   }
 
   .rating-matrix-table tr {
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    border-radius: 0.75rem;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
   }
 
   .rating-matrix-table tr.active-tier-row {
     background: rgba(56, 189, 248, 0.15);
-    border: 1.5px solid #38BDF8;
-    border-left: 5px solid #38BDF8;
+    border: 1.5px solid #38bdf8;
+    border-left: 5px solid #38bdf8;
   }
 
+  /* Rows 1 to 4: RANK, TIER & SYMBOL, ELO THRESHOLD, COLOR TOKEN inline-blocked */
   .rating-matrix-table td {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
-    padding: 0.4rem 0;
+    padding: 0.6rem 0;
     border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
-    color: #E2E8F0;
-    font-size: 0.875rem;
+    color: #e2e8f0;
+    font-size: 0.9rem;
     word-break: break-word;
+    white-space: normal !important;
   }
 
-  .rating-matrix-table td:last-child {
-    border-bottom: none;
-  }
-
-  /* Inject mobile accessibility data labels via CSS generated content */
   .rating-matrix-table td::before {
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.725rem;
     letter-spacing: 0.05em;
-    color: #38BDF8;
-    min-width: 130px;
-    max-width: 130px;
-    flex-shrink: 0;
-    text-align: left;
+    color: #38bdf8;
   }
 
-  .rating-matrix-table td:nth-child(1)::before { content: "Rank:"; }
-  .rating-matrix-table td:nth-child(2)::before { content: "Tier & Symbol:"; }
-  .rating-matrix-table td:nth-child(3)::before { content: "ELO Threshold:"; }
-  .rating-matrix-table td:nth-child(4)::before { content: "Color Token:"; }
-  .rating-matrix-table td:nth-child(5)::before { content: "Firewall Limits:"; }
+  .rating-matrix-table td:nth-child(1)::before {
+    content: "Rank:";
+  }
+  .rating-matrix-table td:nth-child(2)::before {
+    content: "Tier & Symbol:";
+  }
+  .rating-matrix-table td:nth-child(3)::before {
+    content: "ELO Threshold:";
+  }
+  .rating-matrix-table td:nth-child(4)::before {
+    content: "Color Token:";
+  }
+
+  /* Row 5: FIREWALL LIMITS single row line break (Title on first line, content on second lines) */
+  .rating-matrix-table td:nth-child(5) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    border-bottom: none;
+  }
+
+  .rating-matrix-table td:nth-child(5)::before {
+    content: "Firewall Limits:";
+    width: 100%;
+    text-align: left;
+  }
 }
 
 /* ==========================================================================
-   3. Universal Clamped Responsive Layout: Blacklist Matrix Mobile Optimization
+   3. Responsive Vertical Stack Conversion for Blacklist Matrix on Mobile
+      (Allows red status lock elements to break into multiple lines without grid restrictions)
    ========================================================================== */
-@media (max-width: 600px) {
+
+@media (max-width: 860px) {
   .rating-blacklist-section {
-    width: 94vw !important;
+    width: 100% !important;
     margin-left: auto !important;
     margin-right: auto !important;
     box-sizing: border-box !important;
   }
 
   .rating-blacklist-card {
-    padding: 1rem !important;
+    padding: 1.25rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
 
-  .rating-blacklist-table-wrap {
-    width: 100% !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
+  .rating-blacklist-table tr {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    padding: 1.35rem !important;
   }
 
-  .rating-blacklist-table th,
-  .rating-blacklist-table td {
-    padding: 0.85rem 0.75rem !important;
-    font-size: 0.85rem !important;
+  .rating-blacklist-table td:nth-child(1) {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding-right: 0 !important;
+    padding-bottom: 1rem !important;
+    width: 100% !important;
+  }
+
+  .rating-blacklist-table td:nth-child(2),
+  .rating-blacklist-table td:nth-child(3) {
+    width: 100% !important;
+  }
+
+  .rating-blacklist-table td:nth-child(2) > div:nth-child(1) {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    white-space: normal !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .rating-blacklist-section {
+    width: 100% !important;
+  }
+
+  .rating-blacklist-table td:nth-child(2) > div:nth-child(1),
+  .rating-blacklist-table td:nth-child(2) > div:nth-child(2) {
+    font-size: 0.82rem;
+    padding: 0.4rem 0.7rem;
+    width: 100%;
+    white-space: normal !important;
+    flex-wrap: wrap !important;
   }
 }

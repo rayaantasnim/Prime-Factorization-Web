@@ -40,18 +40,36 @@
 }
 
 .rating-metric-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.94) 0%,
+    rgba(30, 41, 59, 0.96) 100%
+  );
+  border: 1px solid rgba(56, 189, 248, 0.35);
   border-radius: 1.25rem;
-  padding: 1.5rem 1.75rem;
+  padding: 1.75rem 2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(14, 165, 233, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.45),
+    inset 0 0 25px rgba(14, 165, 233, 0.08);
   position: relative;
   overflow: hidden;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.rating-metric-card:hover {
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.5),
+    inset 0 0 30px rgba(14, 165, 233, 0.15);
+  transform: translateY(-2px);
 }
 
 .rating-metric-head {
@@ -65,7 +83,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #38BDF8;
+  color: #38bdf8;
   font-weight: 700;
 }
 
@@ -73,14 +91,14 @@
   font-family: var(--font-math), monospace;
   font-size: clamp(2rem, 4vw, 2.5rem);
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   line-height: 1.1;
   margin-bottom: 0.4rem;
 }
 
 .rating-metric-subtext {
   font-size: 0.82rem;
-  color: #94A3B8;
+  color: #94a3b8;
   line-height: 1.4;
   margin: 0;
 }
@@ -98,7 +116,7 @@
   border: 1.5px solid rgba(56, 189, 248, 0.4);
   border-radius: 0.6rem;
   padding: 0.6rem 0.85rem;
-  color: #FFFFFF;
+  color: #ffffff;
   font-family: var(--font-math), monospace;
   font-size: 1.15rem;
   font-weight: 700;
@@ -108,13 +126,13 @@
 }
 
 .rating-goal-input:focus {
-  border-color: #38BDF8;
+  border-color: #38bdf8;
   box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
 }
 
 .rating-goal-btn {
-  background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+  color: #ffffff;
   border: none;
   border-radius: 0.6rem;
   padding: 0.6rem 1.15rem;
@@ -132,7 +150,7 @@
 
 .rating-goal-clear-btn {
   background: transparent;
-  color: #94A3B8;
+  color: #94a3b8;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 0.6rem;
   padding: 0.6rem 0.85rem;
@@ -143,13 +161,17 @@
 }
 
 .rating-goal-clear-btn:hover {
-  color: #EF4444;
+  color: #ef4444;
   border-color: rgba(239, 68, 68, 0.5);
 }
 
 /* 2. Middle Rank Matrix Chart */
 .rating-matrix-section {
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 15, 30, 0.98) 100%);
+  background: linear-gradient(
+    145deg,
+    rgba(15, 23, 42, 0.96) 0%,
+    rgba(10, 15, 30, 0.98) 100%
+  );
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1.25rem;
   padding: clamp(1.5rem, 3vw, 2.25rem);
@@ -184,8 +206,8 @@
 
 .rating-matrix-table th {
   background: rgba(15, 23, 42, 0.98);
-  color: #38BDF8;
-  padding: 0.85rem 1rem;
+  color: #38bdf8;
+  padding: 1rem 1.25rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -194,31 +216,160 @@
 }
 
 .rating-matrix-table td {
-  padding: 0.85rem 1rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: #CBD5E1;
+  color: #cbd5e1;
   vertical-align: middle;
+}
+
+/* Ensure the status of 'Locked' does not line break and stays inline with Range Firewall Limits */
+.rating-matrix-table td:nth-child(5) {
+  white-space: nowrap;
 }
 
 .rating-matrix-table tr.active-tier-row {
   background: rgba(56, 189, 248, 0.12);
-  border-left: 3px solid #38BDF8;
+  border-left: 3px solid #38bdf8;
 }
 
 .rating-matrix-table tr.active-tier-row td {
-  color: #FFFFFF;
+  color: #ffffff;
   font-weight: 600;
+}
+
+/* 2B. Advanced Arena Interface Restrictions & Button Blacklist Matrix */
+.rating-blacklist-table-wrap {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.rating-blacklist-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  text-align: left;
+  display: block;
+}
+
+.rating-blacklist-table thead {
+  display: none;
+}
+
+.rating-blacklist-table tbody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rating-blacklist-table tr {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1rem 2rem;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem 1.85rem;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.rating-blacklist-table tr:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 8px 30px rgba(14, 165, 233, 0.2);
+}
+
+.rating-blacklist-table td {
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-sizing: border-box;
+}
+
+/* Left column: Rating Bracket Range */
+.rating-blacklist-table td:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding-right: 1.5rem !important;
+}
+
+/* Right column Line 1: Deactivated Arena Utilities */
+.rating-blacklist-table td:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+/* Red status lock badge: allows multi-line breaking on overflow */
+.rating-blacklist-table td:nth-child(2) > div:nth-child(1) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.5rem;
+  color: #fca5a5;
+  font-size: 0.88rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.5;
+}
+
+.rating-blacklist-table td:nth-child(2) > div:nth-child(2) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
+  color: #34d399;
+  font-weight: 600;
+  box-sizing: border-box;
+  width: 100%;
+  white-space: normal;
+}
+
+/* Right column Line 2: Internal Mechanics Shift */
+.rating-blacklist-table td:nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
+  color: #cbd5e1;
+  line-height: 1.6;
+  font-size: 0.92rem;
 }
 
 /* 3. AI-Driven Advanced Suggestions Window */
 .rating-ai-suggestions-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 20, 38, 0.98) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.96) 0%,
+    rgba(10, 20, 38, 0.98) 100%
+  );
+  border: 1.5px solid rgba(56, 189, 248, 0.4);
   border-radius: 1.25rem;
   padding: clamp(1.5rem, 3vw, 2.25rem);
   width: 100%;
   box-sizing: border-box;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), inset 0 0 25px rgba(14, 165, 233, 0.1);
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.45),
+    inset 0 0 25px rgba(14, 165, 233, 0.1);
   position: relative;
   overflow: hidden;
 }
@@ -238,7 +389,7 @@
   gap: 0.5rem;
   background: rgba(56, 189, 248, 0.15);
   border: 1px solid rgba(56, 189, 248, 0.4);
-  color: #38BDF8;
+  color: #38bdf8;
   padding: 0.35rem 0.85rem;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -251,14 +402,21 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #38BDF8;
-  box-shadow: 0 0 10px #38BDF8;
+  background: #38bdf8;
+  box-shadow: 0 0 10px #38bdf8;
   animation: aiPulse 2s infinite ease-in-out;
 }
 
 @keyframes aiPulse {
-  0%, 100% { opacity: 0.4; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.2); }
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
 }
 
 .rating-ai-output-box {
@@ -267,12 +425,12 @@
   border-radius: 0.85rem;
   padding: 1.25rem 1.5rem;
   font-size: 1rem;
-  color: #F8FAFC;
+  color: #f8fafc;
   line-height: 1.65;
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
   position: relative;
 }
 
 .rating-ai-output-box strong {
-  color: #38BDF8;
+  color: #38bdf8;
 }
