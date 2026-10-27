@@ -5,7 +5,6 @@
       if (menuToggle && dropdownMenu) {
         menuToggle._hasToggleListener = true;
         menuToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
           dropdownMenu.classList.toggle('active');
           const isExpanded = dropdownMenu.classList.contains('active');
           menuToggle.setAttribute('aria-expanded', isExpanded);

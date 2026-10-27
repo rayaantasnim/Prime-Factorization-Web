@@ -358,7 +358,7 @@ export function initGlobalHeader(options = {}) {
   // If header doesn't already have its DOM baked in, populate it with desktop adaptive matrix
   if (!header.querySelector('.header-container')) {
     header.innerHTML = `
-      <div class="header-container">
+      <div class="header-container" style="position: relative;">
         <!-- Far Left: Brand Logo + Brand Text -->
         <a href="./index.html" class="brand-lockup">
           <span class="brand-symbol">Π</span>
@@ -367,7 +367,7 @@ export function initGlobalHeader(options = {}) {
 
         <!-- Absolute Center: Settings Gear Icon (Hidden on dedicated setup or mobile) -->
         ${!hideSettings ? `
-          <div class="header-center-settings">
+          <div class="header-center-settings" style="position: absolute; left: 50%; transform: translateX(-50%); z-index: 1000; top: 50%; margin-top: -1.25rem; display: flex; align-items: center; justify-content: center;">
             <button id="settings-toggle-btn" class="icon-btn header-settings-gear-btn" aria-label="Global Engine Settings">
               <svg class="gear-icon" width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
                 <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
@@ -377,7 +377,7 @@ export function initGlobalHeader(options = {}) {
         ` : ''}
 
         <!-- Far Right: Navigation Hamburger Menu Trigger -->
-        <div class="header-right-nav">
+        <div class="header-right-nav" style="margin-left: auto; display: flex; align-items: center; z-index: 1001;">
           <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Dashboard" aria-expanded="false">
             <div class="hamburger-bars">
               <span class="hamburger-bar"></span>
@@ -395,28 +395,61 @@ export function initGlobalHeader(options = {}) {
     if (headerContainer) {
       headerContainer.style.position = 'relative';
 
-      // Ensure settings gear is in the absolute center
-      const settingsBtn = headerContainer.querySelector('#settings-toggle-btn');
+      // 1. Isolate the Settings Gear button from right-hand header-actions flex containment wrapper
       const headerActions = headerContainer.querySelector('.header-actions');
-      if (settingsBtn) {
+      let settingsBtn = headerContainer.querySelector('#settings-toggle-btn') ||
+                        (headerActions ? headerActions.querySelector('.icon-btn, button, a') : null);
+
+      if (hideSettings) {
+        if (settingsBtn) settingsBtn.style.display = 'none';
+        if (headerActions) headerActions.remove();
+      } else {
+        if (!settingsBtn) {
+          // If no settings button exists in baked DOM, create standard button
+          settingsBtn = document.createElement('button');
+          settingsBtn.id = 'settings-toggle-btn';
+          settingsBtn.className = 'icon-btn header-settings-gear-btn';
+          settingsBtn.setAttribute('aria-label', 'Global Engine Settings');
+          settingsBtn.innerHTML = `
+            <svg class="gear-icon" width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+              <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+            </svg>
+          `;
+        }
+
         settingsBtn.classList.add('header-settings-gear-btn');
+        if (!settingsBtn.id) settingsBtn.id = 'settings-toggle-btn';
+
+        // Wrap or position it independently using explicit absolute desktop centering rules
+        let centerWrap = headerContainer.querySelector('.header-center-settings');
+        if (!centerWrap) {
+          centerWrap = document.createElement('div');
+          centerWrap.className = 'header-center-settings';
+          headerContainer.appendChild(centerWrap);
+        }
+        centerWrap.style.cssText = 'position: absolute; left: 50%; transform: translateX(-50%); z-index: 1000; top: 50%; margin-top: -1.25rem; display: flex; align-items: center; justify-content: center;';
+        centerWrap.appendChild(settingsBtn);
+
+        // Remove the decoupled headerActions wrapper from the right side flex flow
         if (headerActions) {
-          headerActions.classList.add('header-center-settings');
-        } else {
-          settingsBtn.classList.add('header-center-settings');
+          headerActions.remove();
         }
       }
 
-      // Shift hamburger navigation button to far right
+      // 2. Ensure Navigation Hamburger toggle remains cleanly floated on the far right
       const navBtn = headerContainer.querySelector('.nav-hamburger-btn, #menu-toggle');
       if (navBtn) {
         const navWrap = navBtn.parentElement;
         if (navWrap && navWrap !== headerContainer) {
           navWrap.classList.add('header-right-nav');
           navWrap.style.marginLeft = 'auto';
+          navWrap.style.display = 'flex';
+          navWrap.style.alignItems = 'center';
+          navWrap.style.zIndex = '1001';
         } else {
           navBtn.classList.add('header-right-nav');
           navBtn.style.marginLeft = 'auto';
+          navBtn.style.zIndex = '1001';
         }
       }
     }

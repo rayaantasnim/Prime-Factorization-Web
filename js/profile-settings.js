@@ -7,7 +7,7 @@
 
 import { getSettings, updateSettings } from './storage.js';
 import { playSound } from './audio.js';
-import { renderFooter } from './header.js';
+import { renderFooter, initGlobalHeader } from './header.js';
 import { getUserElo, getUserPeakElo, getTierByElo, reSignProfileDirectory, initServerlessOnboarding } from './elo-engine.js';
 
 const UNLOAD_WARNING_MESSAGE = "Changes you made may not be saved. Are you sure you want to leave?";
@@ -26,33 +26,18 @@ let initialState = {
 
 document.addEventListener('DOMContentLoaded', () => {
   initServerlessOnboarding();
+  initGlobalHeader();
   renderFooter();
-  initDropdownNavigation();
   initProfileSettingsEngine();
   initExitPreventionGuard();
 });
 
 /**
- * 1. UNIFIED TOP NAVIGATION DROPDOWN CONTROLLER
+ * 1. UNIFIED TOP NAVIGATION CONTROLLER
+ * Handled universally via initGlobalHeader() to eliminate event thread hijacking.
  */
 function initDropdownNavigation() {
-  const menuToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
-  const dropdownMenu = document.querySelector('.nav-dropdown-glass-container');
-  if (menuToggle && dropdownMenu) {
-    menuToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      playSound('click');
-      const isExpanded = dropdownMenu.classList.toggle('active');
-      menuToggle.setAttribute('aria-expanded', String(isExpanded));
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!dropdownMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-        dropdownMenu.classList.remove('active');
-        menuToggle.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
+  // Handled by initGlobalHeader()
 }
 
 /**
@@ -329,14 +314,21 @@ function initExitPreventionGuard() {
   // Client-Side Link Interception (Navbar links, return-to-profile anchor, brand logo)
   document.querySelectorAll('a[href]').forEach(anchor => {
     anchor.addEventListener('click', (e) => {
+      const href = anchor.getAttribute('href');
+      if (!href || href === '#' || href.startsWith('#')) return;
+
       if (isDirty) {
-        const allowLeave = window.confirm(UNLOAD_WARNING_MESSAGE);
+        let allowLeave = true;
+        try {
+          allowLeave = window.confirm(UNLOAD_WARNING_MESSAGE);
+        } catch {
+          allowLeave = true;
+        }
         if (!allowLeave) {
           e.preventDefault();
-          e.stopPropagation();
           return false;
         }
       }
-    }, true);
+    });
   });
 }

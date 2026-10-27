@@ -314,10 +314,15 @@ function initContestHub() {
   if (editEloBtn) {
     editEloBtn.addEventListener('click', () => {
       playSound('click');
-      const input = prompt(
-        `Enter simulated Competitor ELO rating (0 - 4000):\n\nOfficial Banning Thresholds:\n• ELO ≥ 900: Locks MAX_BOUND ≤ 200\n• ELO ≥ 1400: Locks MAX_BOUND ≤ 500\n• ELO ≥ 1800: Locks MAX_BOUND ≤ 1,000\n• ELO ≥ 2200: Locks MAX_BOUND ≤ 2,000\n• ELO ≥ 2700: Locks MAX_BOUND ≤ 5,000\n• ELO ≥ 3000: Locks MAX_BOUND ≤ 10,000`,
-        String(userElo)
-      );
+      let input = null;
+      try {
+        input = prompt(
+          `Enter simulated Competitor ELO rating (0 - 4000):\n\nOfficial Banning Thresholds:\n• ELO ≥ 900: Locks MAX_BOUND ≤ 200\n• ELO ≥ 1400: Locks MAX_BOUND ≤ 500\n• ELO ≥ 1800: Locks MAX_BOUND ≤ 1,000\n• ELO ≥ 2200: Locks MAX_BOUND ≤ 2,000\n• ELO ≥ 2700: Locks MAX_BOUND ≤ 5,000\n• ELO ≥ 3000: Locks MAX_BOUND ≤ 10,000`,
+          String(userElo)
+        );
+      } catch (err) {
+        console.warn('prompt() blocked or unavailable in iframe environment:', err);
+      }
       if (input !== null) {
         const val = Number(input.trim());
         if (!isNaN(val) && val >= 0 && val <= 4000) {
@@ -520,7 +525,14 @@ function initContestHub() {
     // Verify at least one division is eligible
     const validTiers = tiersWithLockout.filter(t => !t.isLocked);
     if (validTiers.length === 0) {
-      alert('All divisions are locked for your rating! Please calibrate your ELO rating.');
+      if (bannerText) {
+        bannerText.innerHTML = '<span style="color: #ef4444; font-weight: bold;">All divisions are locked for your rating! Please calibrate your ELO rating.</span>';
+      }
+      try {
+        alert('All divisions are locked for your rating! Please calibrate your ELO rating.');
+      } catch {
+        // Ignored in iframe
+      }
       return;
     }
 

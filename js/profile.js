@@ -6,10 +6,11 @@
 
 import { getLedger, getLastExamResult, getSettings } from './storage.js';
 import { playSound } from './audio.js';
-import { renderFooter } from './header.js';
+import { renderFooter, initGlobalHeader } from './header.js';
 import { getUserElo, getUserPeakElo, getTierByElo, formatLocalDateString } from './elo-engine.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  initGlobalHeader();
   renderFooter();
   initProfileSettingsRedirect();
   initCommandMatrixOverlay();
@@ -27,10 +28,9 @@ function initProfileSettingsRedirect() {
   if (settingsToggleBtn) {
     settingsToggleBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      e.stopPropagation();
       playSound('click');
       window.location.href = './profile-settings.html';
-    }, true);
+    });
   }
 }
 
