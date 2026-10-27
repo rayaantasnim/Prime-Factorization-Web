@@ -262,10 +262,10 @@ Clone the repository and install dependencies:
 
 ```bash
 # Clone the official repository
-git clone https://github.com/olympiad-edge/primefactor-app.git
+git clone https://github.com/rayaantasnim/Prime-Factorization-Web.git
 
 # Navigate to project directory
-cd primefactor-app
+cd Prime-Factorization-Web
 
 # Install all TypeScript, React, Vite, and Node dependencies
 npm install
