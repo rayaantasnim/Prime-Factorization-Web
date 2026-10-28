@@ -16,8 +16,9 @@ try {
 import { rollCompositeNumber, parseAndValidateFactorInput, generateConceptualHint, factorize } from './math-engine.js';
 import { getActiveExamParams, setLastExamResult, recordExamCompletion, getLedger } from './storage.js';
 import { triggerFlash, renderFooter } from './header.js';
-import { playSound } from './audio.js';
+import { playSound, startExamTensionAtmosphere, stopExamTensionAtmosphere, updateExamTensionTelemetry } from './audio.js';
 import { getUserElo, isRangeBannedForElo, getTierBaselineFromRange, reSignProfileDirectory } from './elo-engine.js';
+import { evaluateMove, computeExpectedBaselineSeconds, MOVE_EVALUATION_POOLS } from './move-evaluator.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   renderFooter();
@@ -320,30 +321,33 @@ function initExamArena() {
     }
   }
 
-  // 1-Second Dynamic Transition Feedback Engine
-  function triggerTransitionFeedback(condition) {
+  // Chess-Style Dynamic Move Evaluation Engine (Fluid Multi-Axis Curve & 50-Comment Matrix)
+  function triggerTransitionFeedback(context) {
     if (!transitionFeedbackOverlay) return;
-    let pool = [];
-    let className = '';
 
-    if (condition === 'A') {
-      pool = ["⚡ Brilliant!", "👑 Flawless Speed!", "🚀 Supersonic Solver!"];
-      className = 'feedback-cyber-cyan';
-    } else if (condition === 'B') {
-      pool = ["✔️ Excellent!", "🎯 Precise Target!", "🧠 Great Breakdown!"];
-      className = 'feedback-mint-amber';
-    } else if (condition === 'C') {
-      pool = ["🔍 Good (Speed Slump)", "🐢 Pace Cleared", "⏸️ Safe Factor."];
-      className = 'feedback-platinum-gray';
+    let evalReport;
+    if (typeof context === 'object' && context !== null) {
+      evalReport = evaluateMove(context);
     } else {
-      // Condition D
-      pool = ["🚨 Not Expected!", "⚠️ Miscalculated!", "🪵 Try Later!"];
-      className = 'feedback-scarlet-shake';
+      // Compatibility fallback for direct condition codes ('A', 'B', 'C', 'D')
+      const fallbackPayload = {
+        isCorrect: context !== 'D',
+        isFirstAttempt: true,
+        responseDuration: context === 'A' ? 0.4 : (context === 'B' ? 1.8 : 6.0),
+        maxBound: state.max,
+        userElo,
+        hintActive: state.activeHintForCurrentQuestion,
+        slackTriggered: state.slackTriggeredForCurrentQuestion
+      };
+      if (context === 'D') {
+        fallbackPayload.isCorrect = false;
+      }
+      evalReport = evaluateMove(fallbackPayload);
     }
 
-    const text = pool[Math.floor(Math.random() * pool.length)];
-    transitionFeedbackOverlay.className = `transition-feedback-overlay active ${className}`;
-    transitionFeedbackOverlay.textContent = text;
+    transitionFeedbackOverlay.className = `transition-feedback-overlay active ${evalReport.className}`;
+    transitionFeedbackOverlay.textContent = evalReport.text;
+    return evalReport;
   }
 
   // HUD Update Helper
@@ -503,6 +507,15 @@ function initExamArena() {
     }
 
     updateHUD();
+
+    // Telemetry Sync: Thermodynamic Audio Tension Engine (Complexity, Time & Question Progress)
+    updateExamTensionTelemetry({
+      timeRemaining: state.timeRemaining,
+      primeFactors: currentItem.trueFactors || [],
+      userElo,
+      currentIndex: state.currentIndex,
+      totalQuestions: state.totalQuestions
+    });
   }
 
   // Check 3-Strike Penalty
@@ -551,18 +564,17 @@ function initExamArena() {
     // Behavioral Anti-Cheat Telemetry Tracker Audit
     evaluateAntiCheatTelemetry(isCorrect, currentItem.number, responseDuration);
 
-    // 1-Second Dynamic Transition Feedback Engine condition evaluation
-    if (isCorrect) {
-      if (responseDuration < 1.5) {
-        triggerTransitionFeedback('A');
-      } else if (responseDuration <= 5.5 && !state.slackTriggeredForCurrentQuestion && !state.activeHintForCurrentQuestion) {
-        triggerTransitionFeedback('B');
-      } else {
-        triggerTransitionFeedback('C');
-      }
-    } else {
-      triggerTransitionFeedback('D');
-    }
+    // Chess-Style Dynamic Move Evaluation Engine condition evaluation
+    triggerTransitionFeedback({
+      isCorrect,
+      isFirstAttempt: !state.isSecondChanceLoop,
+      isSecondChance: state.isSecondChanceLoop,
+      responseDuration,
+      maxBound: state.max,
+      userElo,
+      hintActive: state.activeHintForCurrentQuestion,
+      slackTriggered: state.slackTriggeredForCurrentQuestion
+    });
 
     if (!state.isSecondChanceLoop) {
       // FIRST ATTEMPT
@@ -748,7 +760,15 @@ function initExamArena() {
       currentItem.attempt2Correct = false;
     }
 
-    triggerTransitionFeedback('D');
+    triggerTransitionFeedback({
+      isCorrect: false,
+      isSkip: true,
+      isFirstAttempt: !state.isSecondChanceLoop,
+      isSecondChance: state.isSecondChanceLoop,
+      responseDuration: (performance.now() - state.questionStartTime) / 1000,
+      maxBound: state.max,
+      userElo
+    });
     registerError();
 
     if (inputFeedbackEl) {
@@ -809,6 +829,7 @@ function initExamArena() {
   // Lifeline: Restart (Flushes points, resets clock, restores all 6 lifelines, fresh 10 questions)
   function handleLifelineRestart() {
     playSound('click');
+    stopExamTensionAtmosphere();
     clearInterval(state.timerInterval);
     clearTimeout(state.freezeTimeout);
     clearTimeout(state.pauseTimeout);
@@ -1124,6 +1145,13 @@ function initExamArena() {
     const penalty = 5;
     state.score -= penalty;
 
+    triggerTransitionFeedback({
+      isCorrect: false,
+      isIntegrityViolation: true,
+      maxBound: state.max,
+      userElo
+    });
+
     registerError();
 
     if (inputFeedbackEl) {
@@ -1158,6 +1186,7 @@ function initExamArena() {
   function executeAbruptExitRoutine() {
     if (state.examEnded || abruptExitHandled) return;
     abruptExitHandled = true;
+    stopExamTensionAtmosphere();
 
     try {
       // Write status = "ABRUPT_EXIT"
@@ -1274,6 +1303,9 @@ function initExamArena() {
     state.timeRemaining--;
     updateHUD();
 
+    // Telemetry Sync: Real-time time decay for tension atmosphere
+    updateExamTensionTelemetry({ timeRemaining: state.timeRemaining });
+
     if (state.timeRemaining <= 0) {
       clearInterval(state.timerInterval);
       finishExam();
@@ -1284,6 +1316,7 @@ function initExamArena() {
   function finishExam() {
     if (state.examEnded) return;
     state.examEnded = true;
+    stopExamTensionAtmosphere();
     clearInterval(state.timerInterval);
     clearInterval(state.bypassInterval);
     clearInterval(state.sandboxInterval);
@@ -1465,6 +1498,7 @@ function initExamArena() {
     });
   }
 
-  // Initial render
+  // Initial render & Thermodynamic Audio Tension Atmosphere initialization
   renderActiveQuestion();
+  startExamTensionAtmosphere(totalDuration);
 }

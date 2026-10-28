@@ -6,6 +6,8 @@
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+@import "./css/notifications.css";
+@import "./css/faq.css";
 
 :root {
   /* 60% Canvas Dominant (Uniform Light Theme) */
@@ -4283,5 +4285,3 @@ img{
 .nav-dashboard-card:hover .nav-card-arrow {
   transform: translateX(4px) !important;
 }
-
-@import "./css/notifications.css";

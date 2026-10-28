@@ -271,7 +271,16 @@ export function saveNotifications(notifications) {
   }
 }
 
-export function addNotification({ type = 'system', title = 'System Notice', message = '', timestamp = null }) {
+export function addNotification({
+  type = 'system',
+  title = 'System Notice',
+  message = '',
+  timestamp = null,
+  eloTracker = null,
+  performance = null,
+  details = null,
+  narrative = null
+}) {
   try {
     const list = getNotifications();
     const timeStr = timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + new Date().toLocaleDateString([], { month: 'short', day: 'numeric' });
@@ -281,7 +290,11 @@ export function addNotification({ type = 'system', title = 'System Notice', mess
       title,
       message,
       timestamp: timeStr,
-      isRead: false
+      isRead: false,
+      eloTracker,
+      performance,
+      details,
+      narrative
     };
     // LIFO Stack: New notifications at absolute top of view
     list.unshift(newNotif);

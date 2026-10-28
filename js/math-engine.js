@@ -189,15 +189,94 @@ export function formatExponentialString(expArr, useSuperscript = true) {
   }).join(' × ');
 }
 
+/**
+ * Deceptive Symmetry Pass
+ * Identifies visually neat or palindromic numbers that carry dense, large hidden prime factor
+ * components with no single-digit divisors (such as 10,001 which evaluates exclusively to 73 × 137).
+ * These must be actively retained in the question pool.
+ *
+ * @param {number} n Candidate integer
+ * @returns {boolean} True if deceptive symmetric candidate
+ */
+export function isDeceptiveSymmetricCandidate(n) {
+  const s = String(n);
+  // Must be at least 3 digits and palindromic
+  const isPalindromic = s.length >= 3 && s === s.split('').reverse().join('');
+  if (!isPalindromic) return false;
+
+  // Must have no single-digit divisors (2, 3, 5, 7)
+  if (n % 2 === 0 || n % 3 === 0 || n % 5 === 0 || n % 7 === 0) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * High-Bound Honey Spot Suppression Gate
+ * Runs within < 1ms inside client native memory threads.
+ *
+ * @param {number} candidate Candidate composite number
+ * @param {number} maxBound Maximum bound parameter for active division
+ * @returns {boolean} True if candidate is suppressed (rejected)
+ */
+export function isHoneySpotSuppressed(candidate, maxBound) {
+  // Tier-Based Gating Activation: Dormant for lower divisions (Bounds <= 1000, Tiers 1-3)
+  if (maxBound <= 1000) {
+    return false;
+  }
+
+  // Deceptive Symmetry Pass: Visually neat or palindromic numbers with no single-digit divisors
+  // must be actively retained in the question pool
+  if (isDeceptiveSymmetricCandidate(candidate)) {
+    return false;
+  }
+
+  // 1. The Consecutive Trailing Zero Trap:
+  // Reject any number containing more than exactly one trailing zero digit
+  // (e.g., 10,000, 20,000, and 35,000 are blocked; while 24,150 or 15,260 are permitted)
+  let temp = candidate;
+  let trailingZeros = 0;
+  while (temp > 0 && temp % 10 === 0) {
+    trailingZeros++;
+    temp = Math.floor(temp / 10);
+  }
+  if (trailingZeros > 1) {
+    return true; // Suppressed: Point-farming trailing zero honey spot
+  }
+
+  // 2. The Small-Base Perfect Power Trap:
+  // Compute if candidate is a perfect power of any base integer less than 10 (b in [2, 9])
+  // (e.g., 2^14 = 16,384 must be stripped as it collapses to a single repeating reflex input sequence)
+  for (let b = 2; b < 10; b++) {
+    let powerVal = b * b;
+    while (powerVal <= candidate) {
+      if (powerVal === candidate) {
+        return true; // Suppressed: Small-base repeating reflex power
+      }
+      powerVal *= b;
+    }
+  }
+
+  return false;
+}
+
 // Composite Rule: Generator must NEVER pick a prime number as a question!
+// High-Bound Honey Spot Suppression Gate: Active for elite divisions (Bounds >= 2,000, Tiers 5-8)
 export function rollCompositeNumber(min, max) {
   min = Math.max(4, Math.floor(min));
   max = Math.max(min + 1, Math.floor(max));
 
+  const isHighBoundGated = max >= 2000;
   let attempts = 0;
-  while (attempts < 2000) {
+  while (attempts < 3000) {
     const candidate = Math.floor(Math.random() * (max - min + 1)) + min;
     if (!isPrime(candidate)) {
+      // High-Bound Honey Spot Suppression Gate
+      if (isHighBoundGated && isHoneySpotSuppressed(candidate, max)) {
+        attempts++;
+        continue;
+      }
       return candidate;
     }
     attempts++;
@@ -205,7 +284,11 @@ export function rollCompositeNumber(min, max) {
 
   // Fallback: search iteratively for first composite if range is very narrow
   for (let c = min; c <= max; c++) {
-    if (!isPrime(c)) return c;
+    if (!isPrime(c)) {
+      if (!isHighBoundGated || !isHoneySpotSuppressed(c, max)) {
+        return c;
+      }
+    }
   }
   return min % 2 === 0 ? min : min + 1;
 }

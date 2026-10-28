@@ -569,6 +569,27 @@
   box-shadow: 0 0 14px rgba(14, 165, 233, 0.2);
 }
 
+.badge-rank-shift {
+  background: rgba(245, 158, 11, 0.22);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.55);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.22);
+}
+
+.badge-streak {
+  background: rgba(249, 115, 22, 0.22);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.55);
+  box-shadow: 0 0 14px rgba(249, 115, 22, 0.22);
+}
+
+.badge-pr {
+  background: rgba(168, 85, 247, 0.22);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.22);
+}
+
 .btn-mark-single-read {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -792,4 +813,555 @@
     width: 100% !important;
     justify-content: space-between !important;
   }
+}
+
+/* ================= 8. ACCORDION VIEW & DETAIL MINI-REPORT ENGINE ================= */
+
+/* Accordion Toggle Chevron Button */
+.btn-accordion-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.6rem;
+  color: #38bdf8;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  user-select: none;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn-accordion-toggle:hover {
+  background: rgba(56, 189, 248, 0.22);
+  border-color: rgba(56, 189, 248, 0.55);
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+}
+
+.btn-accordion-toggle:active {
+  transform: scale(0.96);
+}
+
+.accordion-chevron {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.notif-card.expanded .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+/* Title row inside header */
+.notif-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* Brief 1-line teaser row inside header */
+.notif-brief-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.notif-brief-dot {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.notif-brief-teaser {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Smooth Accordion Body Expansion */
+.notif-accordion-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.32s ease,
+              margin-top 0.32s ease;
+  margin-top: 0;
+}
+
+.notif-card.expanded .notif-accordion-content {
+  max-height: 950px;
+  opacity: 1;
+  margin-top: 1.5rem;
+}
+
+.notif-card.expanded {
+  border-color: rgba(56, 189, 248, 0.65) !important;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.45),
+    0 0 30px rgba(6, 182, 212, 0.22) !important;
+}
+
+/* Card Body Mini-Report Container */
+.notif-mini-report {
+  background: rgba(10, 15, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.85rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  box-sizing: border-box;
+}
+
+.notif-report-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.report-section-label {
+  font-family: var(--font-heading, "Rajdhani", sans-serif);
+  font-size: 0.775rem;
+  font-weight: 800;
+  color: #38bdf8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.notif-desc-section .notif-message-text {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ================= 9. ELO SHIFT TRACKER (PREV -> DELTA -> UPDATED) ================= */
+.notif-elo-tracker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.75rem;
+  padding: 1.15rem 1.35rem;
+  flex-wrap: wrap;
+}
+
+.elo-track-box {
+  flex: 1 1 120px;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.6rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.25rem;
+}
+
+.elo-track-label {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.elo-track-val {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.elo-track-arrow {
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.elo-track-box.elo-shift-pos {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+}
+
+.elo-track-box.elo-shift-pos .elo-track-label {
+  color: #34d399;
+}
+
+.elo-track-box.elo-shift-pos .elo-track-val {
+  color: #10b981;
+}
+
+.elo-track-box.elo-shift-neg {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+}
+
+.elo-track-box.elo-shift-neg .elo-track-label {
+  color: #f87171;
+}
+
+.elo-track-box.elo-shift-neg .elo-track-val {
+  color: #ef4444;
+}
+
+.elo-track-box.elo-live-box {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: rgba(56, 189, 248, 0.55);
+  box-shadow: 0 0 16px rgba(14, 165, 233, 0.2);
+}
+
+.elo-track-box.elo-live-box .elo-track-label {
+  color: #38bdf8;
+}
+
+.elo-track-box.elo-live-box .elo-track-val {
+  color: #38bdf8;
+}
+
+/* ================= 10. PERFORMANCE METRICS (DURATION & ACCURACY) ================= */
+.notif-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.85rem;
+}
+
+.metric-pod {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.65rem;
+  padding: 0.85rem 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.metric-pod .metric-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.metric-pod .metric-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.metric-sublabel {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.metric-num {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* ================= 11. REAL-TIME ACTIVE PAGE TOAST ALERTS ================= */
+.primefactor-toast-container {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  pointer-events: none;
+  width: min(92vw, 460px);
+}
+
+.primefactor-toast-banner {
+  pointer-events: auto;
+  position: relative;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  border-radius: 1rem;
+  box-shadow:
+    0 16px 42px rgba(0, 0, 0, 0.65),
+    0 0 25px rgba(6, 182, 212, 0.25);
+  padding: 1rem 1.15rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  color: #ffffff;
+  animation: toastSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.32s ease, transform 0.32s ease, max-height 0.32s ease;
+  box-sizing: border-box;
+}
+
+.primefactor-toast-banner.toast-elo-gain {
+  border-color: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.65), 0 0 25px rgba(16, 185, 129, 0.25);
+}
+
+.primefactor-toast-banner.toast-elo-loss {
+  border-color: rgba(239, 68, 68, 0.55);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.65), 0 0 25px rgba(239, 68, 68, 0.25);
+}
+
+.primefactor-toast-banner.toast-rank-shift {
+  border-color: rgba(245, 158, 11, 0.55);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.65), 0 0 25px rgba(245, 158, 11, 0.25);
+}
+
+.primefactor-toast-banner.toast-streak {
+  border-color: rgba(249, 115, 22, 0.55);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.65), 0 0 25px rgba(249, 115, 22, 0.25);
+}
+
+.primefactor-toast-banner.toast-pr {
+  border-color: rgba(168, 85, 247, 0.55);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.65), 0 0 25px rgba(168, 85, 247, 0.25);
+}
+
+.primefactor-toast-banner.toast-security {
+  border-color: rgba(220, 38, 38, 0.7);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.65), 0 0 25px rgba(220, 38, 38, 0.35);
+}
+
+.primefactor-toast-banner.toast-dismissing {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+  pointer-events: none;
+}
+
+@keyframes toastSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toast-icon-node {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.toast-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.toast-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.toast-title {
+  font-family: var(--font-heading, "Rajdhani", sans-serif);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.toast-time-label {
+  font-size: 0.75rem;
+  color: #38bdf8;
+  font-family: monospace;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.toast-preview-msg {
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  line-height: 1.45;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.toast-elo-shift-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.775rem;
+  font-weight: 700;
+  font-family: monospace;
+  padding: 0.25rem 0.65rem;
+  border-radius: 0.4rem;
+  margin-top: 0.2rem;
+  width: fit-content;
+}
+
+.toast-elo-shift-pos {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.45);
+}
+
+.toast-elo-shift-neg {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+}
+
+.toast-arrow {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.toast-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.toast-committed-tag {
+  font-size: 0.725rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+}
+
+.toast-feed-link {
+  font-size: 0.775rem;
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 800;
+  transition: color 0.15s ease;
+}
+
+.toast-feed-link:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+}
+
+.toast-dismiss-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.toast-dismiss-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ================= 12. HIGH-FIDELITY LONG-FORM NARRATIVE REPORT (>=100 WORDS) ================= */
+.notif-narrative-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.narrative-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.narrative-word-count-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(14, 165, 233, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.15);
+}
+
+.notif-narrative-card {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.88) 0%, rgba(20, 30, 48, 0.82) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-left: 4px solid #0284c7;
+  border-radius: 0.85rem;
+  padding: 1.45rem 1.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.narrative-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.narrative-subheading {
+  font-family: var(--font-heading, "Rajdhani", sans-serif);
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #38bdf8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.narrative-text {
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 0.935rem;
+  color: #e2e8f0;
+  line-height: 1.72;
+  margin: 0;
+  text-align: left;
+}
+
+/* Ensure dynamic height accommodation for expanded cards with long-form reports */
+.notif-card.expanded .notif-accordion-content {
+  max-height: 2500px !important;
+  opacity: 1 !important;
+  margin-top: 1.5rem !important;
 }

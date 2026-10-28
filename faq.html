@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture &amp; System Protocols FAQ — PrimeFactor.app</title>
+  <meta name="description" content="Massive 200-question technical directory covering ELO formulas, cryptographic storage shields, range firewalls, arena lifelines, Friday Clash, and computational number theory." />
+  <meta property="og:title" content="Architecture &amp; System Protocols FAQ — PrimeFactor.app" />
+  <meta property="og:description" content="200 enterprise-grade architectural questions, mathematical formulas, and internal technical policies." />
+  <meta property="author" content="Rayaan Tasnim" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./css/faq.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body style="background-color: #0B1120; color: #F8FAFC;">
+  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+  <div id="flash-overlay" aria-hidden="true"></div>
+
+  <!-- Persistent Global Top Header with Dropdown Navigation -->
+  <header class="fixed-header">
+    <div class="header-container">
+      <!-- Left: Minimalist Logo + Brand Text -->
+      <a href="./index.html" class="brand-lockup">
+        <span class="brand-symbol">Π</span>
+        <span class="brand-text" style="color:white;">Prime Factor<span class="dot-app">.app</span></span>
+      </a>
+
+      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+      <div style="position: relative;">
+        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <div class="hamburger-bars">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </div>
+          <span>Navigation</span>
+        </button>
+
+        <!-- Dropdown Box (Frosted Glass) -->
+        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
+          <a href="./index.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span>Home Page</span>
+            </div>
+            <span class="dropdown-badge">Hub</span>
+          </a>
+
+          <a href="./rules.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <span>Rules</span>
+            </div>
+            <span class="dropdown-badge">Policies</span>
+          </a>
+
+          <a href="./rating.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+              <span>Rating</span>
+            </div>
+            <span class="dropdown-badge">Matrix</span>
+          </a>
+
+          <a href="./edu.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <path d="M6 10h10"></path>
+              </svg>
+              <span>Edu</span>
+            </div>
+            <span class="dropdown-badge">Training</span>
+          </a>
+
+          <a href="./services.html" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span>Services</span>
+            </div>
+            <span class="dropdown-badge">Facilities</span>
+          </a>
+
+          <a href="./contest.html" id="dropdown-contest-main" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+              </svg>
+              <span>Contest</span>
+            </div>
+            <span class="dropdown-badge">Arena</span>
+          </a>
+
+          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Profile</span>
+            </div>
+            <span class="dropdown-badge">Overview</span>
+          </a>
+
+          <a href="./notifications.html" class="dropdown-link-item" id="dropdown-notification-trigger">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span>Notification</span>
+              <span id="notif-row-unread-dot" class="subpixel-unread-dot" style="display: none; background: #DC2626; box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000; border-radius: 50%; width: 8px; height: 8px; margin-left: 8px; vertical-align: middle;"></span>
+            </div>
+            <span class="dropdown-badge">Logs</span>
+          </a>
+
+          <a href="./faq.html" class="dropdown-link-item" id="dropdown-faq" style="color: #38BDF8;">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                <path d="M6 6h10"></path>
+                <circle cx="12" cy="14" r="1"></circle>
+                <path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"></path>
+              </svg>
+              <span style="font-family: var(--font-heading, sans-serif); color: #38BDF8; font-weight: 700;">FAQ</span>
+            </div>
+            <span class="dropdown-badge" style="background: rgba(14, 165, 233, 0.2); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.3);">Archive</span>
+          </a>
+
+          <!-- Desktop Settings Link -->
+          <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <span class="dropdown-badge">Options</span>
+          </a>
+
+          <!-- Mobile-only System link -->
+          <a href="#" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
+            <div class="dropdown-link-content">
+              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>System</span>
+            </div>
+            <span class="dropdown-badge">Engine</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Right: Standalone Settings Gear Icon -->
+      <div class="header-actions">
+        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
+          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main FAQ Content Container -->
+  <main class="faq-main-wrapper">
+    <!-- Hero Header -->
+    <section class="faq-hero-container">
+      <div class="faq-hero-badge" style="margin-top: 10% !important;">
+        <span class="pulse-dot"></span>
+        <span>System Architecture &amp; Protocols Directory</span>
+      </div>
+      <h1 class="faq-hero-title">Frequently Asked Questions</h1>
+      <p class="faq-hero-subtitle">
+        Explore 200 authoritative architectural inquiries covering Olympic ELO mathematics, cryptographic tamper shields, asymmetric range firewalls, arena lifelines, Friday Clash synchronization, and Pollard's Rho factorization engines.
+      </p>
+    </section>
+
+    <!-- Real-Time Fractional Metric Progress Tracker -->
+    <section class="faq-progress-card" aria-label="FAQ Reading Progress">
+      <div class="faq-progress-header">
+        <div class="faq-progress-meta">
+          <span class="faq-progress-label">Knowledge Metric Progress:</span>
+          <span class="faq-progress-fraction" id="faq-read-fraction">0 / 200 Read (0%)</span>
+        </div>
+        <div class="faq-progress-actions">
+          <button class="faq-progress-btn" id="faq-mark-all-read-btn" type="button" title="Mark all 200 questions as read in persistent cache">
+            Mark All Read
+          </button>
+          <button class="faq-progress-btn" id="faq-reset-read-btn" type="button" title="Clear reading history and restore fresh brightness">
+            Reset Progress
+          </button>
+        </div>
+      </div>
+      <div class="faq-bar-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+        <div class="faq-bar-fill" id="faq-bar-fill"></div>
+      </div>
+    </section>
+
+    <!-- Controls Bar: Search & Priority Filters -->
+    <section class="faq-controls-bar">
+      <!-- Search Box -->
+      <div class="faq-search-wrapper">
+        <svg class="faq-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          id="faq-search-input" 
+          class="faq-search-input" 
+          placeholder="Search formulas, algorithms, ELO, HMAC..." 
+          autocomplete="off" 
+          spellcheck="false"
+        />
+        <button type="button" id="faq-search-clear" class="faq-search-clear" aria-label="Clear search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Priority Filter Tabs -->
+      <div class="faq-filter-tabs" role="tablist" aria-label="Filter by Priority">
+        <button class="faq-tab-btn active" data-priority="all" role="tab" type="button">All Priorities</button>
+        <button class="faq-tab-btn" data-priority="5" role="tab" type="button"><span class="star-icon">★★★★★</span> Critical</button>
+        <button class="faq-tab-btn" data-priority="4" role="tab" type="button"><span class="star-icon">★★★★</span> Major</button>
+        <button class="faq-tab-btn" data-priority="3" role="tab" type="button"><span class="star-icon">★★★</span> Standard</button>
+        <button class="faq-tab-btn" data-priority="2" role="tab" type="button"><span class="star-icon">★★</span> Fundamental</button>
+      </div>
+    </section>
+
+    <!-- Dynamic Roadmap Chapter Banner Slot -->
+    <div id="faq-chapter-banner-slot"></div>
+
+    <!-- Questions Accordion List (Single-Open Constraint) -->
+    <section class="faq-questions-list" id="faq-questions-list" aria-label="Frequently Asked Questions Feed">
+      <!-- Injected by js/faq.js -->
+    </section>
+
+    <!-- 10-Page Pagination Controls -->
+    <nav class="faq-pagination-wrapper" id="faq-pagination" aria-label="Questions Pagination">
+      <!-- Injected by js/faq.js -->
+    </nav>
+  </main>
+
+  <!-- Site Footer Placeholder (injected by header.js renderFooter) -->
+  <div id="site-footer-slot"></div>
+
+  <!-- Primary FAQ Logic -->
+  <script type="module" src="./js/faq.js"></script>
+</body>
+</html>

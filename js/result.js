@@ -5,7 +5,7 @@
  * Redemption Track, and Compiler Latency Audit Table (Sub-Second Pollard's Rho Logs).
  */
 
-import { getLastExamResult, setLastExamResult, setActiveExamParams, getSettings, getLedger } from './storage.js';
+import { getLastExamResult, setLastExamResult, setActiveExamParams, getSettings, getLedger, addNotification } from './storage.js';
 import { initGlobalHeader, renderFooter } from './header.js';
 import { toExponentialForm, formatExponentialString, parseAndValidateFactorInput } from './math-engine.js';
 import { playSound } from './audio.js';
@@ -69,9 +69,14 @@ function renderResultDashboard() {
       result.eloKFactor = eloCalc.kFactor;
       result.isForcedUnrated = false;
       result.verdictComment = eloCalc.comment;
-      result.expectationStatus = eloCalc.expectationStatus || (eloCalc.deltaR > 0 ? '✔️ Passed' : '❌ Failed');
+      const prevElo = activeUserElo;
+      const prevTier = getTierByElo(prevElo);
+      const prevHighScore = ledger.highScore || 0;
+      const prevStreak = ledger.currentStreak || 0;
 
       const newElo = Math.max(0, activeUserElo + eloCalc.deltaR);
+      const newTier = getTierByElo(newElo);
+
       setUserElo(newElo);
       result.currentElo = `${newElo.toLocaleString()} ELO`;
       setLastExamResult(result);
@@ -84,8 +89,83 @@ function renderResultDashboard() {
         eloDelta: eloCalc.deltaR,
         correctCount: totalSolved,
         firstAttemptClears: (result.correctFirstAttempt !== undefined ? result.correctFirstAttempt : totalSolved),
-        totalQuestions: (result.totalQuestions || 10)
+        totalQuestions: (result.totalQuestions || 10),
+        prevElo: activeUserElo,
+        newElo: newElo
       });
+
+      // 1. Check Rank Shift (Tier Promotions or Demotions)
+      if (prevTier && newTier && prevTier.name !== newTier.name) {
+        const isPromotion = newElo > activeUserElo;
+        addNotification({
+          type: 'rank_shift',
+          title: isPromotion ? `Tier Promotion: ${newTier.name}` : `Tier Demotion: ${newTier.name}`,
+          message: isPromotion
+            ? `🏆 Tier Promotion Unlocked! You have ascended from ${prevTier.name} to ${newTier.name}. Live rating locked at ${newElo} ELO.`
+            : `📉 Rating Division Shift: Adjusted from ${prevTier.name} to ${newTier.name} (${newElo} ELO). Enter practice mode to reclaim standing.`,
+          eloTracker: {
+            prevElo: activeUserElo,
+            delta: eloCalc.deltaR,
+            nextElo: newElo
+          },
+          performance: {
+            duration: result.timeSpent || 30,
+            accuracy: accuracyPct
+          },
+          details: {
+            prevTier: prevTier.name,
+            nextTier: newTier.name,
+            direction: isPromotion ? 'promotion' : 'demotion',
+            tier: result.rangeTitle || 'Rated Competition Arena'
+          }
+        });
+      }
+
+      // 2. Check Continuous Practice Streaks Longevity Milestones
+      const currentStreak = ledger.currentStreak || 0;
+      if (currentStreak >= 2 && (currentStreak > prevStreak || currentStreak % 3 === 0)) {
+        addNotification({
+          type: 'streak',
+          title: `${currentStreak}-Match Win Streak!`,
+          message: `🔥 Longevity Milestone: Maintained consecutive flawless 10/10 execution across ${currentStreak} matches. Rapid mental factorization rhythm sustained.`,
+          eloTracker: {
+            prevElo: activeUserElo,
+            delta: eloCalc.deltaR,
+            nextElo: newElo
+          },
+          performance: {
+            duration: result.timeSpent || 30,
+            accuracy: accuracyPct
+          },
+          details: {
+            streak: currentStreak,
+            tier: result.rangeTitle || 'Rated Competition Arena'
+          }
+        });
+      }
+
+      // 3. Check Personal Record (PR - breaking previous speed/score records)
+      if (prevHighScore > 0 && (result.score || 0) > prevHighScore) {
+        addNotification({
+          type: 'pr',
+          title: 'Personal Record Broken!',
+          message: `⚡ Personal Record Shattered! Achieved new career high of ${result.score} pts in ${result.rangeTitle || 'Rated Arena'} (previous record: ${prevHighScore} pts).`,
+          eloTracker: {
+            prevElo: activeUserElo,
+            delta: eloCalc.deltaR,
+            nextElo: newElo
+          },
+          performance: {
+            duration: result.timeSpent || 30,
+            accuracy: accuracyPct
+          },
+          details: {
+            score: result.score,
+            prevHighScore,
+            tier: result.rangeTitle || 'Rated Competition Arena'
+          }
+        });
+      }
     }
   }
 

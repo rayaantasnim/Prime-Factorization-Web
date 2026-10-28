@@ -1,0 +1,255 @@
+/* --- High-Velocity Triumph Announcement Stage --- */
+.v3-triumph-stage {
+    position: relative;
+    max-width: 1000px;
+    margin: 45px auto 25px auto;
+    padding: 55px 40px;
+    background: radial-gradient(130% 130% at 50% 0%, rgba(16, 42, 92, 0.9) 0%, rgba(4, 8, 20, 0.99) 100%);
+    border: 2.5px solid #22d3ee;
+    border-radius: 24px;
+    /* Massive, vibrant initial drop shadow and outer glow */
+    box-shadow: 0 0 35px rgba(34, 211, 238, 0.3),
+                0 0 70px rgba(56, 189, 248, 0.15),
+                inset 0 0 35px rgba(34, 211, 238, 0.2),
+                0 35px 70px rgba(0, 0, 0, 0.85);
+    overflow: hidden;
+    text-align: center;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                border-color 0.4s ease, 
+                box-shadow 0.4s ease;
+}
+
+/* --- Dynamic High-Impact Hover State --- */
+.v3-triumph-stage:hover {
+    transform: translateY(-6px) scale(1.015);
+    border-color: #00ffff;
+    /* Explosive radioactive neon aura on hover expressing triumph */
+    box-shadow: 0 0 60px rgba(34, 211, 238, 0.6),
+                0 0 120px rgba(56, 189, 248, 0.3),
+                inset 0 0 50px rgba(0, 255, 255, 0.35),
+                0 40px 90px rgba(0, 0, 0, 0.9);
+}
+
+/* Background Grids & Blurs for Depth */
+.v3-glass-shield {
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(20px) saturate(200%);
+    z-index: 1;
+}
+
+.v3-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(34, 211, 238, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 211, 238, 0.12) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: center top;
+    z-index: 2;
+    mask-image: radial-gradient(ellipse at 50% 0%, black 70%, transparent 98%);
+    transition: opacity 0.4s ease;
+}
+
+.v3-triumph-stage:hover .v3-grid-overlay {
+    opacity: 0.85;
+}
+
+.v3-triumph-core {
+    position: relative;
+    z-index: 3;
+}
+
+/* Status Cluster Badge */
+.v3-status-cluster {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(2, 6, 23, 0.9);
+    border: 1.5px solid #38bdf8;
+    padding: 8px 22px;
+    border-radius: 40px;
+    margin-bottom: 32px;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.v3-triumph-stage:hover .v3-status-cluster {
+    border-color: #00ffff;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+}
+
+.v3-pulse-node {
+    width: 10px;
+    height: 10px;
+    background-color: #22d3ee;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #22d3ee;
+}
+
+.v3-pulse-node.active {
+    animation: activeFlash 1.2s infinite ease-in-out;
+}
+
+.v3-status-label {
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    color: #38bdf8;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+    transition: color 0.4s ease;
+}
+
+.v3-triumph-stage:hover .v3-status-label {
+    color: #00ffff;
+}
+
+/* Triumphant Main Headline with Enhanced Glow */
+.v3-triumph-headline {
+    font-size: 3.25rem;
+    font-weight: 950;
+    letter-spacing: 0.09em;
+    margin: 0 0 20px 0;
+    color: #ffffff;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #ffffff 30%, #e2e8f0 65%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Hyper-pronounced text glow matrix */
+    text-shadow: 0 0 20px rgba(34, 211, 238, 0.4),
+                 0 0 40px rgba(34, 211, 238, 0.2),
+                 0 4px 15px rgba(0, 0, 0, 0.6);
+    transition: text-shadow 0.4s ease;
+}
+
+.v3-triumph-stage:hover .v3-triumph-headline {
+    text-shadow: 0 0 30px rgba(0, 255, 255, 0.7),
+                 0 0 60px rgba(56, 189, 248, 0.4),
+                 0 0 90px rgba(56, 189, 248, 0.2);
+}
+
+/* High Contrast Descriptive Text */
+.v3-triumph-subtext {
+    font-size: 1.3rem;
+    line-height: 1.75;
+    color: #f8fafc;
+    max-width: 820px;
+    margin: 0 auto 38px auto;
+    font-weight: 500;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.v3-glow-version {
+    color: #00ffff;
+    font-weight: 900;
+    text-shadow: 0 0 25px rgba(0, 255, 255, 0.95), 
+                 0 0 10px rgba(0, 255, 255, 0.6);
+    border-bottom: 2.5px solid #00ffff;
+    padding-bottom: 2px;
+}
+
+/* Bottom Feature Badges */
+.v3-badge-tether {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.v3-tether-pill {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    padding: 12px 26px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(10, 18, 36, 0.95);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.v3-pill-blue {
+    border: 1.5px solid #38bdf8;
+    color: #38bdf8;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.v3-pill-cyan {
+    border: 1.5px solid #22d3ee;
+    color: #22d3ee;
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+}
+
+/* Pop the badges upward on main block hover */
+.v3-triumph-stage:hover .v3-tether-pill {
+    transform: translateY(-2px);
+}
+
+.v3-triumph-stage:hover .v3-pill-blue {
+    border-color: #00ffff;
+    color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.v3-triumph-stage:hover .v3-pill-cyan {
+    border-color: #00ffff;
+    color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.v3-pill-icon {
+    font-size: 1.1rem;
+}
+
+/* Status Node Pulse Animation */
+@keyframes activeFlash {
+    0%, 100% { opacity: 0.4; transform: scale(0.85); box-shadow: 0 0 8px #22d3ee; }
+    50% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 20px #00ffff, 0 0 35px rgba(0, 255, 255, 0.5); }
+}
+
+/* --- Responsive Media Queries --- */
+@media (max-width: 992px) {
+    .v3-triumph-stage {
+        margin: 35px 24px 20px 24px;
+        padding: 45px 30px;
+    }
+    .v3-triumph-headline {
+        font-size: 2.5rem;
+    }
+    .v3-triumph-subtext {
+        font-size: 1.15rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .v3-triumph-stage {
+        margin: 25px 16px 15px 16px;
+        padding: 35px 20px;
+        border-radius: 16px;
+    }
+    .v3-triumph-stage:hover {
+        transform: translateY(-3px) scale(1.01);
+    }
+    .v3-triumph-headline {
+        font-size: 1.85rem;
+        letter-spacing: 0.06em;
+    }
+    .v3-triumph-subtext {
+        font-size: 1rem;
+        line-height: 1.65;
+    }
+    .v3-badge-tether {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .v3-tether-pill {
+        width: 100%;
+        max-width: 250px;
+        justify-content: center;
+    }
+}

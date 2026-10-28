@@ -30,6 +30,7 @@ export default defineConfig(() => {
           rules: path.resolve(import.meta.dirname, 'rules.html'),
           rating: path.resolve(import.meta.dirname, 'rating.html'),
           notifications: path.resolve(import.meta.dirname, 'notifications.html'),
+          faq: path.resolve(import.meta.dirname, 'faq.html'),
         },
       },
     },

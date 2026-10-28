@@ -604,7 +604,16 @@ export function handleAbruptExitAudit() {
   addNotification({
     type: 'refresh_offense',
     title: 'Integrity Breach',
-    message: '🚨 Abrupt reload recorded. Mandatory -5 ELO applied.'
+    message: '🚨 Abrupt reload recorded during live match. Mandatory -5 ELO applied.',
+    eloTracker: {
+      prevElo: currentElo,
+      delta: totalDelta,
+      nextElo: newElo
+    },
+    performance: {
+      duration: abortedPayload?.actualSeconds || 0,
+      accuracy: 0
+    }
   });
 
   // Reset status = "NORMAL" and session locks
@@ -1038,20 +1047,36 @@ export function recordRatedMatchToProfile(matchData) {
 
     localStorage.setItem('primefactor_last_rated_date', new Date().toISOString());
 
-    // Dynamically generate and map content strings for ELO Gains & Losses
+    // Dynamically generate and map content strings for ELO Gains & Losses with rich mini-report
     if (typeof matchData.eloDelta === 'number') {
+      const prev = typeof matchData.prevElo === 'number' ? matchData.prevElo : Math.max(0, getUserElo() - matchData.eloDelta);
+      const next = typeof matchData.newElo === 'number' ? matchData.newElo : getUserElo();
+      const tracker = {
+        prevElo: prev,
+        delta: matchData.eloDelta,
+        nextElo: next
+      };
+      const perf = {
+        duration: typeof matchData.time === 'number' ? matchData.time : 0,
+        accuracy: typeof matchData.accuracy === 'number' ? matchData.accuracy : 100
+      };
+
       if (matchData.eloDelta > 0) {
         addNotification({
           type: 'elo_gain',
           title: 'Rating Gain',
-          message: `📈 Rating Increase: +${matchData.eloDelta} ELO earned in ${matchData.tier || 'Rated Arena'}.`
+          message: `📈 Rating Increase: +${matchData.eloDelta} ELO earned in ${matchData.tier || 'Rated Arena'}. Precision prime factoring execution under the clock.`,
+          eloTracker: tracker,
+          performance: perf
         });
       } else if (matchData.eloDelta < 0 && matchData.score !== -10) {
         // Exclude abrupt reload breach which logs its own specific offense string
         addNotification({
           type: 'elo_loss',
           title: 'Rating Adjustment',
-          message: `📉 Rating Adjustment: ${matchData.eloDelta} ELO in ${matchData.tier || 'Rated Arena'}.`
+          message: `📉 Rating Adjustment: ${matchData.eloDelta} ELO in ${matchData.tier || 'Rated Arena'}. Performance fell short of dynamic expectation model.`,
+          eloTracker: tracker,
+          performance: perf
         });
       }
     }
