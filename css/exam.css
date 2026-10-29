@@ -668,3 +668,245 @@ body.in-exam .main-wrapper {
 .soft-deterrent-toast .toast-icon {
   font-size: 1.1rem;
 }
+
+/* --------------------------------------------------------------------------
+   13. THREE.JS THERMODYNAMIC CANVAS & GLASS-MORPHIC NEON FLASH
+   -------------------------------------------------------------------------- */
+.three-hero-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.85;
+}
+
+.flash-glass-neon-combo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
+  background: radial-gradient(circle at center, rgba(14, 165, 233, 0.45) 0%, rgba(6, 182, 212, 0.25) 45%, rgba(59, 130, 246, 0.15) 75%, transparent 100%) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 100px rgba(14, 165, 233, 0.8), 0 0 80px rgba(56, 189, 248, 0.6) !important;
+}
+
+/* --------------------------------------------------------------------------
+   14. SUB-SECOND FACTOR COMBO STRIKE METER
+   -------------------------------------------------------------------------- */
+.combo-strike-meter-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(14, 165, 233, 0.35);
+  border-radius: 9999px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(14, 165, 233, 0.1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 10;
+}
+
+.combo-strike-meter-container.active-combo {
+  border-color: #38BDF8;
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.5), inset 0 0 15px rgba(56, 189, 248, 0.2);
+}
+
+.combo-strike-meter-container.combo-streak-3 {
+  border-color: #10B981;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.6), inset 0 0 20px rgba(16, 185, 129, 0.25);
+  animation: pulse-combo-glow 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-combo-glow {
+  0% { transform: scale(1); box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+  100% { transform: scale(1.03); box-shadow: 0 0 32px rgba(14, 165, 233, 0.8); }
+}
+
+.combo-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.combo-flame-icon {
+  font-size: 1.1rem;
+  filter: drop-shadow(0 0 8px #F59E0B);
+}
+
+.combo-title {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #94A3B8;
+}
+
+.combo-counter-val {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.combo-indicator-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.combo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.25s ease;
+}
+
+.combo-dot.filled {
+  background: #0EA5E9;
+  box-shadow: 0 0 8px #38BDF8;
+  border-color: #38BDF8;
+}
+
+.combo-dot.streak-gold {
+  background: #10B981;
+  box-shadow: 0 0 10px #34D399;
+  border-color: #34D399;
+}
+
+.combo-reward-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10B981;
+  color: #34D399;
+}
+
+.combo-reward-pill.hidden {
+  display: none;
+}
+
+.combo-subtext-hint {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+@media (max-width: 640px) {
+  .combo-subtext-hint {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   14. DYNAMIC LIFELINE THROTTLE: ORGANIC REFLEX ANCHOR (ANTI-SIDEKICK)
+   ========================================================================== */
+.organic-reflex-anchor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0.85rem auto;
+  width: 100%;
+  max-width: 380px;
+  animation: reflexPulseGlow 1.8s infinite ease-in-out;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 20;
+}
+
+.organic-reflex-anchor-container.hidden {
+  display: none !important;
+}
+
+.btn-organic-reflex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: rgba(14, 165, 233, 0.18);
+  border: 1.5px solid #0EA5E9;
+  border-radius: 9999px;
+  padding: 0.55rem 1.35rem;
+  color: #FFFFFF !important;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.45), inset 0 0 10px rgba(14, 165, 233, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+}
+
+.btn-organic-reflex:hover {
+  background: rgba(14, 165, 233, 0.35);
+  box-shadow: 0 0 28px rgba(14, 165, 233, 0.75), inset 0 0 14px rgba(14, 165, 233, 0.4);
+  transform: scale(1.03);
+}
+
+.btn-organic-reflex:active {
+  transform: scale(0.97);
+}
+
+.reflex-glow-spark {
+  color: #38BDF8;
+  font-size: 1.05rem;
+  animation: reflexSparkFlicker 1s infinite alternate;
+}
+
+.reflex-shortcut-badge {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.75rem;
+  color: #7DD3FC;
+  font-family: monospace;
+  font-weight: 700;
+}
+
+.reflex-timer-bar-wrap {
+  width: 100%;
+  max-width: 260px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.reflex-timer-progress {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #0EA5E9, #38BDF8);
+  box-shadow: 0 0 8px #38BDF8;
+  transform-origin: left center;
+  transition: width 3.8s linear;
+}
+
+@keyframes reflexPulseGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(14, 165, 233, 0.85));
+  }
+}
+
+@keyframes reflexSparkFlicker {
+  0% { opacity: 0.7; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1.15); }
+}

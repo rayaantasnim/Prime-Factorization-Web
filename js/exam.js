@@ -14,11 +14,24 @@ try {
 }
 
 import { rollCompositeNumber, parseAndValidateFactorInput, generateConceptualHint, factorize } from './math-engine.js';
-import { getActiveExamParams, setLastExamResult, recordExamCompletion, getLedger } from './storage.js';
+import {
+  getActiveExamParams,
+  setLastExamResult,
+  recordExamCompletion,
+  getLedger,
+  getConsecutiveFlags,
+  incrementConsecutiveFlags,
+  resetConsecutiveFlags,
+  isPenaltyLockdownActive,
+  setPenaltyLockdown,
+  addNotification
+} from './storage.js';
 import { triggerFlash, renderFooter } from './header.js';
 import { playSound, startExamTensionAtmosphere, stopExamTensionAtmosphere, updateExamTensionTelemetry } from './audio.js';
-import { getUserElo, isRangeBannedForElo, getTierBaselineFromRange, reSignProfileDirectory } from './elo-engine.js';
+import { getUserElo, setUserElo, isRangeBannedForElo, getTierBaselineFromRange, reSignProfileDirectory } from './elo-engine.js';
 import { evaluateMove, computeExpectedBaselineSeconds, MOVE_EVALUATION_POOLS } from './move-evaluator.js';
+import { activeComboStrikeState, triggerGlassmorphicComboFlash, behavioralAntiCheatEngine, evaluateAntiCheatTelemetry } from './exam-arena-controller.js';
+import { initHeroParticles, updateThermodynamicState } from './three-particles.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   renderFooter();
@@ -270,10 +283,115 @@ function initExamArena() {
   const anticheatToast = document.getElementById('anticheat-deterrent-toast');
   const anticheatToastText = document.getElementById('anticheat-toast-text');
 
+  // Initialize Three.js Geometric Particle Mesh with Thermodynamic Engine
+  initHeroParticles('three-hero-canvas');
+
+  // Sub-Second Factor Combo Strike Meter DOM Elements
+  const comboContainer = document.getElementById('combo-strike-meter-container');
+  const comboCounterEl = document.getElementById('combo-streak-counter');
+  const comboRewardEl = document.getElementById('combo-reward-pill');
+  const comboDots = document.querySelectorAll('.combo-dot');
+
+  window.addEventListener('combostrike:update', (e) => {
+    const detail = e.detail || {};
+    const streak = detail.comboStreak || 0;
+    if (comboCounterEl) comboCounterEl.textContent = `${streak}x`;
+
+    comboDots.forEach((dot) => {
+      const step = Number(dot.getAttribute('data-step')) || 1;
+      const rem = streak % 3;
+      if (streak >= 3) {
+        dot.className = 'combo-dot streak-gold';
+      } else if (rem >= step || (streak > 0 && rem === 0)) {
+        dot.className = 'combo-dot filled';
+      } else {
+        dot.className = 'combo-dot';
+      }
+    });
+
+    if (comboContainer) {
+      if (streak >= 3) {
+        comboContainer.classList.add('combo-streak-3', 'active-combo');
+        if (comboRewardEl) {
+          comboRewardEl.classList.remove('hidden');
+          comboRewardEl.textContent = `🔥 +${detail.bonusEloPoints || 2} ELO Bonus Locked!`;
+        }
+      } else if (streak > 0) {
+        comboContainer.classList.add('active-combo');
+        comboContainer.classList.remove('combo-streak-3');
+        if (comboRewardEl) comboRewardEl.classList.add('hidden');
+      } else {
+        comboContainer.classList.remove('active-combo', 'combo-streak-3');
+        if (comboRewardEl) comboRewardEl.classList.add('hidden');
+      }
+    }
+  });
+
   // Behavioral Anti-Cheat Telemetry Tracker state
+  behavioralAntiCheatEngine.reset();
   let keystrokeDeltas = [];
   let lastKeydownTime = null;
   let deterrentToastTimeout = null;
+
+  const organicReflexContainer = document.getElementById('organic-reflex-anchor-container');
+  const btnConfirmReflex = document.getElementById('btn-confirm-organic-reflex');
+  const reflexTimerProgress = document.getElementById('reflex-timer-progress');
+
+  function showOrganicReflexAnchor(timeoutMs = 3800) {
+    if (!organicReflexContainer) return;
+    organicReflexContainer.classList.remove('hidden');
+    if (reflexTimerProgress) {
+      reflexTimerProgress.style.transition = 'none';
+      reflexTimerProgress.style.width = '100%';
+      void reflexTimerProgress.offsetWidth;
+      reflexTimerProgress.style.transition = `width ${timeoutMs}ms linear`;
+      reflexTimerProgress.style.width = '0%';
+    }
+  }
+
+  function hideOrganicReflexAnchor() {
+    if (!organicReflexContainer) return;
+    organicReflexContainer.classList.add('hidden');
+    if (reflexTimerProgress) {
+      reflexTimerProgress.style.transition = 'none';
+      reflexTimerProgress.style.width = '100%';
+    }
+  }
+
+  function confirmOrganicReflexAction() {
+    if (organicReflexContainer && !organicReflexContainer.classList.contains('hidden')) {
+      behavioralAntiCheatEngine.confirmOrganicReflex();
+      hideOrganicReflexAnchor();
+      playSound('correct');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '⚡ Organic reflex verified! Screen anchor confirmed.';
+        inputFeedbackEl.className = 'exam-feedback text-mint';
+      }
+    }
+  }
+
+  if (btnConfirmReflex) {
+    btnConfirmReflex.addEventListener('click', (e) => {
+      e.preventDefault();
+      confirmOrganicReflexAction();
+      if (inputEl) inputEl.focus();
+    });
+  }
+
+  const onSpawnReflex = (e) => {
+    const ms = (e.detail && e.detail.timeoutMs) || 3800;
+    showOrganicReflexAnchor(ms);
+  };
+  const onConfirmedReflex = () => {
+    hideOrganicReflexAnchor();
+  };
+  const onMissedReflex = () => {
+    hideOrganicReflexAnchor();
+  };
+
+  window.addEventListener('anticheat:spawn_reflex_anchor', onSpawnReflex);
+  window.addEventListener('anticheat:reflex_anchor_confirmed', onConfirmedReflex);
+  window.addEventListener('anticheat:reflex_anchor_missed', onMissedReflex);
 
   function showSoftDeterrentToast(message = "Are you a human calculator or using a sidekick device? 😉") {
     if (!anticheatToast) return;
@@ -286,39 +404,23 @@ function initExamArena() {
   }
 
   function evaluateAntiCheatTelemetry(isCorrect, targetNumber, responseDuration) {
-    let isAnomaly = false;
-    let isOrganic = false;
+    // Multi-axis human-vs-machine validation matrix
+    const res = behavioralAntiCheatEngine.evaluateQuestionSolve({
+      isCorrect,
+      targetNumber,
+      responseDuration,
+      maxBound: state.max,
+      keystrokeDeltas
+    });
 
-    // Keystroke Variance Audit across manual factorization typing sequence
-    if (keystrokeDeltas.length >= 3) {
-      const mean = keystrokeDeltas.reduce((a, b) => a + b, 0) / keystrokeDeltas.length;
-      const variance = keystrokeDeltas.reduce((acc, d) => acc + Math.pow(d - mean, 2), 0) / keystrokeDeltas.length;
-
-      // Variance near zero across factorization typing sequence (< 15 ms^2)
-      if (variance < 15) {
-        isAnomaly = true;
-      } else if (variance > 200) {
-        isOrganic = true;
-      }
-    }
-
-    // Impossible Response Time (IRT) limit violation:
-    // Multi-digit number (>= 10) cleared flawlessly in under 2.5 seconds
-    if (isCorrect && targetNumber >= 10 && responseDuration < 2.5) {
-      isAnomaly = true;
-    }
-
-    // Anomaly Calculation Matrix & Suspicion Score Adjustments
-    if (isAnomaly) {
-      state.suspicionScore += 1.0;
-    } else if (isOrganic && !isAnomaly) {
-      state.suspicionScore = Math.max(0, state.suspicionScore - 0.5);
-    }
+    state.suspicionScore = behavioralAntiCheatEngine.suspicionScore;
 
     // Soft Deterrent Toast: fires the moment suspicionScore hits >= 2.0
     if (state.suspicionScore >= 2.0) {
       showSoftDeterrentToast("Are you a human calculator or using a sidekick device? 😉");
     }
+
+    return res;
   }
 
   // Chess-Style Dynamic Move Evaluation Engine (Fluid Multi-Axis Curve & 50-Comment Matrix)
@@ -347,6 +449,12 @@ function initExamArena() {
 
     transitionFeedbackOverlay.className = `transition-feedback-overlay active ${evalReport.className}`;
     transitionFeedbackOverlay.textContent = evalReport.text;
+
+    // Thermodynamic Canvas Particle Theme Response (Cyan acceleration vs Gray cold deceleration)
+    if (evalReport && evalReport.categoryName) {
+      updateThermodynamicState(evalReport.categoryName);
+    }
+
     return evalReport;
   }
 
@@ -496,6 +604,10 @@ function initExamArena() {
       return;
     }
 
+    // Reset Sub-Second Factor Combo Strike State for Active Question
+    const fCount = (currentItem.trueFactors && currentItem.trueFactors.length) || 1;
+    activeComboStrikeState.resetForQuestion(currentItem.number, fCount);
+
     if (targetNumberEl) {
       targetNumberEl.textContent = currentItem.number.toLocaleString();
       if (window.gsap) {
@@ -574,6 +686,35 @@ function initExamArena() {
       userElo,
       hintActive: state.activeHintForCurrentQuestion,
       slackTriggered: state.slackTriggeredForCurrentQuestion
+    });
+
+    // Sub-Second Factor Combo Strike Evaluation (<1.0s/factor, 0 backspaces, complete valid factorization)
+    const factorCount = (currentItem.trueFactors && currentItem.trueFactors.length) || 1;
+    const comboEval = activeComboStrikeState.evaluateSubmission({
+      isCorrect,
+      factorCount,
+      responseDuration
+    });
+    if (comboEval.rewarded) {
+      playSound('fanfare');
+    }
+
+    // Compute micro-latency snapshot for every discrete prime factor extracted during this question
+    const totalMs = Math.round(responseDuration * 1000);
+    const factors = currentItem.trueFactors && currentItem.trueFactors.length > 0 
+      ? currentItem.trueFactors 
+      : (factorize(currentItem.number) || [currentItem.number]);
+    const weights = factors.map(f => Math.max(1, Math.log2(f)));
+    const sumWeights = weights.reduce((a, b) => a + b, 0);
+    currentItem.discreteFactorLatencies = factors.map((p, idx) => {
+      const frac = sumWeights > 0 ? (weights[idx] / sumWeights) : (1 / factors.length);
+      const factorMs = Math.round(totalMs * frac);
+      return {
+        factor: p,
+        latencyMs: Math.max(15, factorMs),
+        questionNumber: currentItem.number,
+        isProblematic: false
+      };
     });
 
     if (!state.isSecondChanceLoop) {
@@ -1275,6 +1416,11 @@ function initExamArena() {
   // Global document listener for hotkeys during active exam
   const onDocKeyDown = (e) => {
     if (state.examEnded || state.isFrozen) return;
+    if ((e.key === 'r' || e.key === 'R') && organicReflexContainer && !organicReflexContainer.classList.contains('hidden')) {
+      e.preventDefault();
+      confirmOrganicReflexAction();
+      return;
+    }
     if ((e.code === 'Space' || e.key === ' ') && document.activeElement !== inputEl && !document.activeElement?.matches('button, a, input')) {
       e.preventDefault();
       if (inputEl) {
@@ -1329,6 +1475,10 @@ function initExamArena() {
     window.removeEventListener('keydown', onReloadKeyTrap, true);
     document.removeEventListener('keydown', onReloadKeyTrap, true);
     window.removeEventListener('beforeunload', onBeforeUnload);
+    window.removeEventListener('anticheat:spawn_reflex_anchor', onSpawnReflex);
+    window.removeEventListener('anticheat:reflex_anchor_confirmed', onConfirmedReflex);
+    window.removeEventListener('anticheat:reflex_anchor_missed', onMissedReflex);
+    hideOrganicReflexAnchor();
 
     // Clear active exam lock flags upon legitimate completion
     sessionStorage.setItem('exam_in_progress', 'false');
@@ -1373,6 +1523,74 @@ function initExamArena() {
 
     const lifelinesUsedTotal = state.lifelines.pauseUsed + state.lifelines.regenUsed + state.lifelines.hintUsed + state.lifelines.extendUsed + state.lifelines.noiseUsed + state.lifelines.sandboxUsed;
 
+    // Aggregate comprehensive question factor micro-latency snapshot across execution
+    const factorLatencyAudit = [];
+    state.questionAudits.forEach(q => {
+      if (q.discreteFactorLatencies && q.discreteFactorLatencies.length > 0) {
+        factorLatencyAudit.push(...q.discreteFactorLatencies);
+      } else if (q.trueFactors && q.trueFactors.length > 0) {
+        const qLatency = Math.round((q.latencyMs || 0.04) * 1000);
+        q.trueFactors.forEach(p => {
+          factorLatencyAudit.push({
+            factor: p,
+            latencyMs: Math.max(15, qLatency),
+            questionNumber: q.number,
+            isProblematic: false
+          });
+        });
+      }
+    });
+
+    // Dynamically isolate, highlight, and flag the single most problematic integer factor
+    if (factorLatencyAudit.length > 0) {
+      let maxItem = factorLatencyAudit[0];
+      for (const item of factorLatencyAudit) {
+        if (item.latencyMs > maxItem.latencyMs) {
+          maxItem = item;
+        }
+      }
+      maxItem.isProblematic = true;
+    }
+
+    // 2. THREE-MATCH STRIKE CHAIN & DIRECT ELO EXCISE
+    const isRatedContest = state.participationMode === 'rated' && !state.isForcedUnrated;
+    const antiCheatVerdict = behavioralAntiCheatEngine.evaluateSessionVerdict();
+    let consecutiveFlags = getConsecutiveFlags();
+    let strikeExciseTriggered = false;
+
+    if (isRatedContest) {
+      if (antiCheatVerdict.isFlagged) {
+        consecutiveFlags = incrementConsecutiveFlags();
+        if (consecutiveFlags >= 3) {
+          strikeExciseTriggered = true;
+          const currentElo = getUserElo();
+          const penalizedElo = Math.max(0, currentElo - 20);
+          setUserElo(penalizedElo);
+          resetConsecutiveFlags();
+          setPenaltyLockdown(true);
+
+          addNotification({
+            type: 'security_tampering',
+            title: '🚨 THREE-MATCH CHEAT STRIKE: -20 ELO EXCISE',
+            message: 'Three consecutive rated matches triggered multi-axis behavioral anti-cheat violations. Flat -20 ELO excised directly from database. Penalty lockdown protocol engaged.',
+            eloTracker: {
+              prevElo: currentElo,
+              delta: -20,
+              nextElo: penalizedElo
+            },
+            performance: {
+              duration: state.totalTimeLimit - Math.max(0, state.timeRemaining),
+              accuracy: Math.round(((firstTryCorrect + secondTryCorrect) / state.totalQuestions) * 100)
+            }
+          });
+        }
+      } else {
+        // Clean rated match: resets consecutive flags immediately
+        resetConsecutiveFlags();
+        consecutiveFlags = 0;
+      }
+    }
+
     const resultPayload = {
       score: state.score,
       timeRemaining: Math.max(0, state.timeRemaining),
@@ -1391,6 +1609,10 @@ function initExamArena() {
       lifelines: { ...state.lifelines },
       failureStack,
       redemptionTrack,
+      comboStrikeBonusElo: activeComboStrikeState.bonusEloPoints,
+      comboStrikeTokens: activeComboStrikeState.bonusEloTokens,
+      maxComboStreak: activeComboStrikeState.maxStreak,
+      factorLatencyAudit,
       compilerLatencyAudit: state.questionAudits.map(q => ({
         id: q.id,
         number: q.number,
@@ -1401,7 +1623,10 @@ function initExamArena() {
       })),
       rangeTitle: state.title,
       min: state.min,
-      max: state.max
+      max: state.max,
+      antiCheatVerdict,
+      consecutiveFlags,
+      strikeExciseTriggered
     };
 
     setLastExamResult(resultPayload);
@@ -1421,6 +1646,19 @@ function initExamArena() {
 
   if (inputEl) {
     inputEl.addEventListener('keydown', (e) => {
+      // Sub-Second Factor Combo Strike Keystroke & Backspace Audit
+      activeComboStrikeState.logKey(e);
+
+      // Behavioral Anti-Cheat Telemetry backspace/delete logging
+      behavioralAntiCheatEngine.logKey(e);
+
+      // Shortcut [R] for reflex confirmation when active
+      if ((e.key === 'r' || e.key === 'R') && organicReflexContainer && !organicReflexContainer.classList.contains('hidden')) {
+        e.preventDefault();
+        confirmOrganicReflexAction();
+        return;
+      }
+
       // Keystroke Variance Audit: log precise millisecond delta between consecutive keydowns
       const now = performance.now();
       if (lastKeydownTime !== null) {

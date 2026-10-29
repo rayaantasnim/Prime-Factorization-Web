@@ -4,7 +4,7 @@
  * Asymmetric Tier-Banning Firewall, and Cryptographic 3-Strike Storage Integrity Hammer.
  */
 
-import { getLedger, addNotification, DEFAULT_LEDGER } from './storage.js';
+import { getLedger, addNotification, DEFAULT_LEDGER, isPenaltyLockdownActive, setPenaltyLockdown } from './storage.js';
 
 export const ENGINE_HMAC_SECRET = "YOUR_LOCAL_HMAC_SECRET_KEY_PLACEHOLDER";
 
@@ -966,12 +966,34 @@ export function calculateEloDelta(params) {
   }
   // Negative rating drops are left completely unshielded!
 
-  const finalDelta = Math.round(rawDelta);
+  // 6. Dynamic Sub-Second Factor Combo Strike Chain Bonus Tokens (+2 ELO per 3-flawless streak)
+  const comboBonus = Number(params.bonusEloPoints) || (Number(params.bonusEloTokens) ? Number(params.bonusEloTokens) * 2 : 0);
+  const computedDelta = Math.round(rawDelta) + comboBonus;
+
+  // 7. THE PLUS-RATING BLACKHOLE LOCKDOWN PROTOCOL
+  const isLockdown = isPenaltyLockdownActive();
+  let finalDelta = computedDelta;
+  let lockdownOutcome = null; // 'TERMINATED' | 'EXTENDED' | null
+  let absorbedDelta = 0;
+
+  if (isLockdown) {
+    if (computedDelta > 0) {
+      absorbedDelta = computedDelta;
+      finalDelta = 0; // Forcefully shred delta down to exactly ZERO (0 ELO reward committed)
+      setPenaltyLockdown(false);
+      lockdownOutcome = 'TERMINATED';
+    } else {
+      // Δ R <= 0: Negative Performance Enforcement applied directly; lockdown remains strictly ACTIVE
+      finalDelta = computedDelta;
+      setPenaltyLockdown(true);
+      lockdownOutcome = 'EXTENDED';
+    }
+  }
 
   const supportiveRemarks = ['Amazing!', 'Brilliant!', 'Flawless!', 'Spectacular!', 'Mastery!'];
   const criticalRemarks = ['Unexpected', 'Slumped', 'Sub-par', 'Velocity Slack', 'Hesitant'];
 
-  const isPassed = finalDelta > 0;
+  const isPassed = computedDelta > 0;
   const expectationStatus = isPassed ? '✔️ Passed' : '❌ Failed';
   const comment = isPassed
     ? supportiveRemarks[Math.floor(Math.random() * supportiveRemarks.length)]
@@ -979,10 +1001,16 @@ export function calculateEloDelta(params) {
 
   return {
     deltaR: finalDelta,
+    rawCalculatedDelta: computedDelta,
     expected: +(E * 100).toFixed(1),
     velocity: +V.toFixed(2),
     kFactor: +K.toFixed(1),
+    comboBonus,
+    bonusEloTokens: Number(params.bonusEloTokens) || 0,
     isForcedUnrated: false,
+    isLockdownMatch: isLockdown,
+    lockdownOutcome,
+    absorbedDelta,
     expectationStatus,
     comment
   };
@@ -1061,7 +1089,34 @@ export function recordRatedMatchToProfile(matchData) {
         accuracy: typeof matchData.accuracy === 'number' ? matchData.accuracy : 100
       };
 
-      if (matchData.eloDelta > 0) {
+      // 4. DYNAMIC CONDITIONAL LOCKDOWN NOTIFICATIONS
+      if (matchData.lockdownOutcome === 'TERMINATED') {
+        const deltaLabel = matchData.absorbedDelta ? `+${matchData.absorbedDelta} ELO` : '+Δ R';
+        addNotification({
+          type: 'security_tampering',
+          title: '⚙️ PENALTY LOCKDOWN TERMINATED',
+          message: `Your lockdown match positive rating (${deltaLabel}) has been absorbed as a system penalty. Flat 0 ELO added to your live rating. The penalty lockdown protocol is now officially deactivated. Future matches will receive normal rated credit.`,
+          eloTracker: tracker,
+          performance: perf,
+          details: {
+            absorbedDelta: matchData.absorbedDelta,
+            tier: matchData.tier || 'Rated Arena'
+          }
+        });
+      } else if (matchData.lockdownOutcome === 'EXTENDED') {
+        const deltaLabel = matchData.eloDelta !== undefined ? `${matchData.eloDelta} ELO` : '-Δ R';
+        addNotification({
+          type: 'security_tampering',
+          title: '⚠️ LOCKDOWN EXTENDED: NEGATIVE PERFORMANCE',
+          message: `A negative performance (${deltaLabel}) was recorded during your lockdown session and has been fully applied to your live ELO. Penalty lockdown remains ACTIVE. You must achieve a positive rating match to absorb and clear this security restriction.`,
+          eloTracker: tracker,
+          performance: perf,
+          details: {
+            eloDelta: matchData.eloDelta,
+            tier: matchData.tier || 'Rated Arena'
+          }
+        });
+      } else if (matchData.eloDelta > 0) {
         addNotification({
           type: 'elo_gain',
           title: 'Rating Gain',

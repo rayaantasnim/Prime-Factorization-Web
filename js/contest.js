@@ -528,11 +528,6 @@ function initContestHub() {
       if (bannerText) {
         bannerText.innerHTML = '<span style="color: #ef4444; font-weight: bold;">All divisions are locked for your rating! Please calibrate your ELO rating.</span>';
       }
-      try {
-        alert('All divisions are locked for your rating! Please calibrate your ELO rating.');
-      } catch {
-        // Ignored in iframe
-      }
       return;
     }
 

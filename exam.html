@@ -25,9 +25,13 @@
     }
   </style>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body class="in-exam">
+  <!-- 3D Geometric Thermodynamic Particle Mesh Background -->
+  <canvas id="three-hero-canvas" class="three-hero-canvas" aria-hidden="true"></canvas>
+
   <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
   <div id="flash-overlay" aria-hidden="true"></div>
 
@@ -257,6 +261,22 @@
           ⏸ Transition Freeze (1s)
         </span>
 
+        <!-- Sub-Second Factor Combo Strike Meter -->
+        <div id="combo-strike-meter-container" class="combo-strike-meter-container" aria-label="Combo Strike Multiplier">
+          <div class="combo-badge-group">
+            <span class="combo-flame-icon">⚡</span>
+            <span class="combo-title">FACTOR COMBO</span>
+            <span id="combo-streak-counter" class="combo-counter-val tabular-nums">0x</span>
+          </div>
+          <div class="combo-indicator-dots" id="combo-indicator-dots">
+            <span class="combo-dot" data-step="1" title="Chain 1"></span>
+            <span class="combo-dot" data-step="2" title="Chain 2"></span>
+            <span class="combo-dot" data-step="3" title="Chain 3 (+2 ELO Token)"></span>
+          </div>
+          <span id="combo-reward-pill" class="combo-reward-pill hidden">🔥 +2 ELO Token Locked!</span>
+          <span class="combo-subtext-hint">Sub-second (&lt;1.0s/factor) & zero-backspace streak</span>
+        </div>
+
         <!-- Question Status -->
         <div id="question-status-subtext" class="arena-status-subtext">
           Question 1 of 10 · Decompose completely
@@ -297,6 +317,18 @@
           <div id="inline-noise-warning" class="inline-neon-warning-box hidden" role="alert" aria-live="assertive">
             <span class="neon-warning-icon">⚡</span>
             <span id="inline-noise-text"></span>
+          </div>
+
+          <!-- Dynamic Lifeline Throttle: Anti-Sidekick Tension Layer Anchor -->
+          <div id="organic-reflex-anchor-container" class="organic-reflex-anchor-container hidden" role="region" aria-label="Organic Reflex Verification">
+            <button id="btn-confirm-organic-reflex" class="btn-organic-reflex" type="button" title="Confirm Organic Reflex (Press 'R' or Click)">
+              <span class="reflex-glow-spark">⚡</span>
+              <span class="reflex-label">CONFIRM ORGANIC REFLEX</span>
+              <span class="reflex-shortcut-badge">[R]</span>
+            </button>
+            <div class="reflex-timer-bar-wrap" aria-hidden="true">
+              <div id="reflex-timer-progress" class="reflex-timer-progress"></div>
+            </div>
           </div>
         </div>
 

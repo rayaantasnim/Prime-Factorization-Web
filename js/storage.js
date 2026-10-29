@@ -125,6 +125,15 @@ export function getLastExamResult() {
   return safeGet(LAST_RESULT_KEY, null);
 }
 
+// Micro-latency Factor Evaluation Snapshot accessor
+export function getFactorLatencySnapshot() {
+  const lastResult = getLastExamResult();
+  if (lastResult && Array.isArray(lastResult.factorLatencyAudit)) {
+    return lastResult.factorLatencyAudit;
+  }
+  return [];
+}
+
 // ============================================================================
 // Pre-flight Exam Lifecycle & Integrity Status tracking methods
 // ============================================================================
@@ -214,6 +223,54 @@ export function clearAbortedMatchPayload() {
     localStorage.removeItem(ABORTED_MATCH_KEY);
   } catch (e) {
     console.warn('Error clearing aborted match payload:', e);
+  }
+}
+
+// ============================================================================
+// Three-Match Strike Chain & Plus-Rating Blackhole Lockdown Storage Layer
+// ============================================================================
+const CONSECUTIVE_FLAGS_KEY = 'primefactor_consecutive_flags';
+const PENALTY_LOCKDOWN_KEY = 'primefactor_penalty_lockdown';
+
+export function getConsecutiveFlags() {
+  try {
+    return Number(localStorage.getItem(CONSECUTIVE_FLAGS_KEY) || 0);
+  } catch (e) {
+    return 0;
+  }
+}
+
+export function incrementConsecutiveFlags() {
+  try {
+    const current = getConsecutiveFlags() + 1;
+    localStorage.setItem(CONSECUTIVE_FLAGS_KEY, String(current));
+    return current;
+  } catch (e) {
+    return 1;
+  }
+}
+
+export function resetConsecutiveFlags() {
+  try {
+    localStorage.setItem(CONSECUTIVE_FLAGS_KEY, '0');
+  } catch (e) {
+    console.warn('Error resetting consecutive flags:', e);
+  }
+}
+
+export function isPenaltyLockdownActive() {
+  try {
+    return localStorage.getItem(PENALTY_LOCKDOWN_KEY) === 'true';
+  } catch (e) {
+    return false;
+  }
+}
+
+export function setPenaltyLockdown(active) {
+  try {
+    localStorage.setItem(PENALTY_LOCKDOWN_KEY, active ? 'true' : 'false');
+  } catch (e) {
+    console.warn('Error setting penalty lockdown:', e);
   }
 }
 

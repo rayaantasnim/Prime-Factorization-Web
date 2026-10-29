@@ -586,3 +586,129 @@ body {
     }
   }
 }
+
+/* ==========================================================================
+   MICRO-LATENCY EVALUATION GRAPH & BOTTLENECK MATRIX STYLES
+   ========================================================================== */
+.micro-latency-graph-card {
+  margin-bottom: 24px;
+}
+
+.micro-latency-chart-flex {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  height: 180px;
+  padding: 24px 12px 10px 12px;
+  background: rgba(11, 15, 23, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.micro-latency-bar-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 42px;
+  position: relative;
+  transition: transform 0.25s ease;
+}
+
+.micro-latency-bar-col:hover {
+  transform: translateY(-4px);
+}
+
+.micro-latency-val {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: #94A3B8;
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+
+.micro-latency-bar-track {
+  width: 22px;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px 6px 0 0;
+  overflow: visible;
+  position: relative;
+}
+
+.micro-latency-bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, #38BDF8 0%, #0284C7 100%);
+  border-radius: 6px 6px 0 0;
+  transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
+}
+
+/* Glowing Laser-Amber Warning Outline on Problematic Factor Bottleneck */
+.micro-latency-bar-col.is-bottleneck .micro-latency-bar-fill {
+  background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%) !important;
+  border: 2px solid #F59E0B !important;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.9), inset 0 0 10px rgba(251, 191, 36, 0.6) !important;
+  animation: pulse-laser-amber 1.8s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-laser-amber {
+  0% { box-shadow: 0 0 14px rgba(245, 158, 11, 0.7), inset 0 0 6px rgba(251, 191, 36, 0.4); }
+  100% { box-shadow: 0 0 26px rgba(245, 158, 11, 1), inset 0 0 12px rgba(251, 191, 36, 0.8); }
+}
+
+.micro-latency-bar-col.is-bottleneck .micro-latency-val {
+  color: #FBBF24 !important;
+  font-weight: 800 !important;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.micro-latency-factor-label {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-top: 6px;
+  white-space: nowrap;
+}
+
+.micro-latency-factor-label .p-symbol {
+  color: #38BDF8;
+  font-size: 0.75rem;
+}
+
+.micro-latency-bar-col.is-bottleneck .micro-latency-factor-label {
+  color: #FBBF24 !important;
+}
+
+.micro-latency-bar-col.is-bottleneck .micro-latency-factor-label .p-symbol {
+  color: #F59E0B !important;
+}
+
+.bottleneck-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: rgba(245, 158, 11, 0.25);
+  border: 1px solid #F59E0B;
+  color: #FBBF24;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-top: 2px;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.matrix-diagnosis-statement {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1.5px solid #F59E0B;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 18px;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.18);
+}
