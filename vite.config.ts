@@ -31,6 +31,7 @@ export default defineConfig(() => {
           rating: path.resolve(import.meta.dirname, 'rating.html'),
           notifications: path.resolve(import.meta.dirname, 'notifications.html'),
           faq: path.resolve(import.meta.dirname, 'faq.html'),
+          engine: path.resolve(import.meta.dirname, 'engine.html'),
         },
       },
     },

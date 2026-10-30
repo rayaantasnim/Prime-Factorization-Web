@@ -4,7 +4,7 @@
 
 import { getSettings, updateSettings, setActiveExamParams } from './storage.js';
 import { playSound } from './audio.js';
-import { initServerlessOnboarding } from './elo-engine.js';
+import { initServerlessOnboarding, getUserElo } from './elo-engine.js';
 import { updateUnreadStatusDots, initNotificationDotListeners } from './notification-engine.js';
 
 // Immediate Root Initialization Hook (within 1ms of module evaluation)
@@ -147,7 +147,7 @@ export const NAVIGATION_TOPOLOGY_OPTIONS = [
   },
   {
     id: 'nav-settings',
-    href: '#settings',
+    href: './engine.html',
     num: '11',
     title: 'Engine Configuration',
     subtitle: 'Tactical pauses, conceptual hints, audio synthesis & overtime lifelines.',
@@ -165,6 +165,16 @@ export const NAVIGATION_TOPOLOGY_OPTIONS = [
     badge: 'FAQ',
     badgeColor: '#0EA5E9',
     icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><circle cx="12" cy="14" r="1"/><path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"/></svg>`
+  },
+  {
+    id: 'nav-profile-settings',
+    href: './profile-settings.html',
+    num: '13',
+    title: 'Profile Settings',
+    subtitle: 'Cryptographic credential updates, local data clearance, preference configuration sync, and decentralized local storage ledger maintenance.',
+    badge: 'PROFILE',
+    badgeColor: '#6366F1',
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
   }
 ];
 
@@ -235,7 +245,7 @@ export function renderNavigationDashboard() {
             </div>
           </div>
           <p class="nav-dashboard-subtitle">
-            Full-spectrum cognitive factorization suite — 11 core facilities, competitive ranking matrices, training labs &amp; telemetry audits.
+            Full-spectrum cognitive factorization suite — 13 specialized facilities engineered for extreme speed-mathematics conditioning. This modular infrastructure coordinates real-time state telemetry, adaptive ELO calculation matrices, sandboxed cryptographic validation layers, custom procedural engines, and deep algorithmic profiles to systematically optimize mental prime decomposition latency for elite-tier Math Olympiad competitors.
           </p>
         </div>
 
@@ -609,8 +619,40 @@ export function initSettingsModal() {
   const triggerBtn = document.getElementById('settings-toggle-btn');
   const closeBtn = document.getElementById('close-settings-btn');
 
+  function auditModalFirewall() {
+    const elo = getUserElo();
+    const isRated = localStorage.getItem('primefactor_active_contest_mode') !== 'unrated';
+    if (!isRated) return;
+
+    const lockModalSwitch = (input) => {
+      if (!input) return;
+      input.disabled = true;
+      const row = input.closest('.settings-row');
+      if (row) {
+        row.classList.add('firewall-locked');
+        row.style.opacity = '0.35';
+        row.style.pointerEvents = 'none';
+        let badge = row.querySelector('.firewall-indicator-badge');
+        if (!badge) {
+          const info = row.querySelector('.settings-info');
+          if (info) {
+            const b = document.createElement('div');
+            b.style.marginTop = '0.35rem';
+            b.innerHTML = '<span class="firewall-indicator-badge">❌ FIREWALL DEACTIVATED (ELO PROHIBITED)</span>';
+            info.appendChild(b);
+          }
+        }
+      }
+    };
+
+    if (elo >= 1400) lockModalSwitch(document.getElementById('modal-toggle-hints'));
+    if (elo >= 2400) lockModalSwitch(document.getElementById('modal-toggle-pauses'));
+    if (elo >= 3000) lockModalSwitch(document.getElementById('modal-toggle-regen'));
+  }
+
   function openModal() {
     playSound('click');
+    auditModalFirewall();
     modal.classList.add('open');
   }
 

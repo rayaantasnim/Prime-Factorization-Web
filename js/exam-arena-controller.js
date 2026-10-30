@@ -373,14 +373,182 @@ export function evaluateAntiCheatTelemetry(options = {}, arg2, arg3) {
   return behavioralAntiCheatEngine.evaluateQuestionSolve(options);
 }
 
+/**
+ * 3. MODULE 3: THE LIFELINE BLACKLIST FIREWALL
+ * Progressively locks down interactive utility tools as competitor ELO reaches master thresholds.
+ * Bypassed entirely under "Unrated Practice" mode (Safe-Zone Exception).
+ */
+export const LifelineBlacklistFirewall = {
+  THRESHOLDS: {
+    SANDBOX: 900,     // Sieve Calibrator+
+    NOISE: 1200,      // Radix Scholar+
+    HINT: 1400,       // Modular Operator+
+    EXTEND: 1800,     // Logarithmic Vector+
+    PAUSE: 2400,      // Canonical Analyst+
+    ALL_HELP: 3000    // Prime Singularity
+  },
+
+  /**
+   * Evaluates active restrictions for given user ELO and contest mode.
+   * @param {number} userElo Active competitor ELO rating
+   * @param {boolean} isRated True if match is an official Rated Contest
+   */
+  getRestrictions(userElo, isRated = true) {
+    if (!isRated) {
+      // Safe-Zone Exception: bypass firewall entirely, leaving all utility tools 100% active
+      return {
+        isSafeZone: true,
+        sandboxBlocked: false,
+        noiseBlocked: false,
+        mistakePenaltyDoubled: false,
+        hintBlocked: false,
+        extendBlocked: false,
+        fermatClueBlocker: false,
+        dampenPositiveElo: false,
+        pauseBlocked: false,
+        subSecondPacingStrict: false,
+        regenBlocked: false,
+        skipBlocked: false,
+        allHelpBlocked: false,
+        maxVelocityIndex: 1.0,
+        activeTierName: 'Unrated Safe-Zone'
+      };
+    }
+
+    const elo = Math.max(0, Number(userElo) || 0);
+
+    return {
+      isSafeZone: false,
+      userElo: elo,
+      sandboxBlocked: elo >= 900,
+      noiseBlocked: elo >= 1200,
+      mistakePenaltyDoubled: elo >= 1200,
+      hintBlocked: elo >= 1400,
+      extendBlocked: elo >= 1800,
+      fermatClueBlocker: elo >= 1800,
+      dampenPositiveElo: elo >= 1800,
+      pauseBlocked: elo >= 2400,
+      subSecondPacingStrict: elo >= 2400,
+      regenBlocked: elo >= 3000,
+      skipBlocked: elo >= 3000,
+      allHelpBlocked: elo >= 3000,
+      maxVelocityIndex: elo >= 3000 ? 3.5 : (elo >= 2400 ? 2.5 : 1.5),
+      activeTierName: elo >= 3000 ? 'Prime Singularity' :
+                      elo >= 2400 ? 'Canonical Analyst+' :
+                      elo >= 1800 ? 'Logarithmic Vector+' :
+                      elo >= 1400 ? 'Modular Operator+' :
+                      elo >= 1200 ? 'Radix Scholar+' :
+                      elo >= 900 ? 'Sieve Calibrator+' : 'Base Track'
+    };
+  },
+
+  /**
+   * Helper to verify if an individual lifeline is blocked.
+   */
+  isBlocked(lifelineKey, userElo, isRated = true) {
+    if (!isRated) return false;
+    const elo = Number(userElo) || 0;
+    switch (lifelineKey) {
+      case 'sandbox':
+        return elo >= 900;
+      case 'noise':
+        return elo >= 1200;
+      case 'hint':
+        return elo >= 1400;
+      case 'extend':
+        return elo >= 1800;
+      case 'pause':
+        return elo >= 2400;
+      case 'regen':
+        return elo >= 3000;
+      case 'skip':
+        return elo >= 3000;
+      default:
+        return false;
+    }
+  },
+
+  /**
+   * Synchronously applies firewall hard-lock and fade-out rules to arena DOM elements.
+   */
+  applyToArenaDOM(options = {}) {
+    const { userElo, isRated } = options;
+    const r = this.getRestrictions(userElo, isRated);
+
+    const lockElement = (btn, reason, usesBadgeText = 'PROHIBITED') => {
+      if (!btn) return;
+      btn.disabled = true;
+      btn.style.opacity = '0.28';
+      btn.style.pointerEvents = 'none';
+      btn.style.cursor = 'not-allowed';
+      btn.classList.add('lifeline-firewall-locked');
+      btn.setAttribute('title', `❌ FIREWALL DEACTIVATED (ELO PROHIBITED): ${reason}`);
+      btn.setAttribute('data-firewall-locked', 'true');
+      const badge = btn.querySelector('.lifeline-uses');
+      if (badge) {
+        badge.textContent = usesBadgeText;
+      }
+    };
+
+    const unlockElement = (btn) => {
+      if (!btn) return;
+      btn.style.opacity = '';
+      btn.style.pointerEvents = '';
+      btn.style.cursor = '';
+      btn.classList.remove('lifeline-firewall-locked');
+      btn.removeAttribute('data-firewall-locked');
+    };
+
+    const btnSandbox = document.getElementById('lifeline-sandbox');
+    const btnNoise = document.getElementById('lifeline-noise');
+    const btnHint = document.getElementById('lifeline-hint');
+    const btnExtend = document.getElementById('lifeline-extend');
+    const btnPause = document.getElementById('lifeline-pause');
+    const btnRegen = document.getElementById('lifeline-regen');
+    const btnSkip = document.getElementById('lifeline-skip');
+
+    if (r.isSafeZone) {
+      // Safe-Zone Exception: unlock all
+      [btnSandbox, btnNoise, btnHint, btnExtend, btnPause, btnRegen, btnSkip].forEach(unlockElement);
+      return r;
+    }
+
+    if (r.sandboxBlocked) lockElement(btnSandbox, 'Scratchpad disabled for ELO ≥ 900', 'PROHIBITED (≥900)');
+    if (r.noiseBlocked) lockElement(btnNoise, 'Candidate noise filter disabled for ELO ≥ 1200', 'PROHIBITED (≥1200)');
+    if (r.hintBlocked) lockElement(btnHint, 'Conceptual pedagogical hints disabled for ELO ≥ 1400', 'PROHIBITED (≥1400)');
+    if (r.extendBlocked) lockElement(btnExtend, 'Clock extension disabled for ELO ≥ 1800', 'PROHIBITED (≥1800)');
+    if (r.pauseBlocked) lockElement(btnPause, 'Tactical pauses disabled for ELO ≥ 2400', 'PROHIBITED (≥2400)');
+    if (r.regenBlocked) lockElement(btnRegen, 'Regeneration suppressed for ELO ≥ 3000', 'PROHIBITED (≥3000)');
+    if (r.skipBlocked) lockElement(btnSkip, 'Skip protocol suppressed for ELO ≥ 3000', 'PROHIBITED (≥3000)');
+
+    return r;
+  }
+};
+
+export function applyLifelineFirewall(options) {
+  return LifelineBlacklistFirewall.applyToArenaDOM(options);
+}
+
+export function isLifelineBlocked(lifelineKey, userElo, isRated = true) {
+  return LifelineBlacklistFirewall.isBlocked(lifelineKey, userElo, isRated);
+}
+
+export function getFirewallRestrictions(userElo, isRated = true) {
+  return LifelineBlacklistFirewall.getRestrictions(userElo, isRated);
+}
+
 if (typeof window !== 'undefined') {
   window.ExamArenaController = {
     ...(window.ExamArenaController || {}),
-    version: '3.6.0',
+    version: '3.7.0',
     activeComboStrikeState,
     triggerGlassmorphicComboFlash,
     dispatchThermodynamicResponse,
     behavioralAntiCheatEngine,
-    evaluateAntiCheatTelemetry
+    evaluateAntiCheatTelemetry,
+    LifelineBlacklistFirewall,
+    applyLifelineFirewall,
+    isLifelineBlocked,
+    getFirewallRestrictions
   };
 }

@@ -30,7 +30,7 @@ import { triggerFlash, renderFooter } from './header.js';
 import { playSound, startExamTensionAtmosphere, stopExamTensionAtmosphere, updateExamTensionTelemetry } from './audio.js';
 import { getUserElo, setUserElo, isRangeBannedForElo, getTierBaselineFromRange, reSignProfileDirectory } from './elo-engine.js';
 import { evaluateMove, computeExpectedBaselineSeconds, MOVE_EVALUATION_POOLS } from './move-evaluator.js';
-import { activeComboStrikeState, triggerGlassmorphicComboFlash, behavioralAntiCheatEngine, evaluateAntiCheatTelemetry } from './exam-arena-controller.js';
+import { activeComboStrikeState, triggerGlassmorphicComboFlash, behavioralAntiCheatEngine, evaluateAntiCheatTelemetry, applyLifelineFirewall, isLifelineBlocked, getFirewallRestrictions, LifelineBlacklistFirewall } from './exam-arena-controller.js';
 import { initHeroParticles, updateThermodynamicState } from './three-particles.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -111,6 +111,10 @@ function initExamArena() {
   const initialMode = urlParams.get('mode') || rules.participationMode || 'rated';
   const isForcedUnrated = isBanned || urlParams.get('forcedUnrated') === 'true' || Boolean(rules.isForcedUnrated) || (initialMode === 'unrated');
   const participationMode = isForcedUnrated ? 'unrated' : 'rated';
+  const isRated = participationMode === 'rated' && !isForcedUnrated;
+
+  // Module 3: Lifeline Blacklist Firewall Initialization & Runtime Checks
+  const firewallRestrictions = applyLifelineFirewall({ userElo, isRated });
 
   const resolvedTitle = urlTitle || params.title || `Division: ${resolvedMin} - ${resolvedMax}`;
   const totalDuration = resolveTimeLimit(resolvedMin, resolvedMax, urlTime, params.timeLimit);
@@ -537,6 +541,9 @@ function initExamArena() {
       const countEl = btnHint.querySelector('.lifeline-uses');
       if (countEl) countEl.textContent = `${remaining} left`;
     }
+
+    // Re-enforce Module 3: Lifeline Blacklist Firewall restrictions
+    applyLifelineFirewall({ userElo, isRated });
   }
 
   // 1-Second Transition Timer Freeze
@@ -630,13 +637,20 @@ function initExamArena() {
     });
   }
 
-  // Check 3-Strike Penalty
+  // Check 3-Strike Penalty & ELO >= 1200 Doubled Mistake Penalty
   function registerError() {
     state.incorrectSubmissionsCount++;
     playSound('error');
 
-    // 🚨 3-Strike Rule: Flat -10 point penalty upon hitting multiples of 3 cumulative errors/skips
-    if (state.allowStrikePenalty && state.incorrectSubmissionsCount % 3 === 0) {
+    // Module 3 Firewall: ELO ≥ 1200 (Radix Scholar+) doubles standard operational mistake penalty to -10 net session points
+    if (isRated && userElo >= 1200) {
+      state.score -= 10;
+      triggerFlash('penalty');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = `🚨 OPERATIONAL MISTAKE PENALTY DOUBLED (ELO ≥ 1200): -10 NET POINTS APPLIED! (${state.incorrectSubmissionsCount} errors)`;
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+    } else if (state.allowStrikePenalty && state.incorrectSubmissionsCount % 3 === 0) {
       state.score -= 10;
       state.threeStrikePenaltiesApplied++;
       triggerFlash('penalty');
@@ -697,6 +711,19 @@ function initExamArena() {
     });
     if (comboEval.rewarded) {
       playSound('fanfare');
+    }
+
+    // Module 3 Firewall: ELO ≥ 2400 enforces strict sub-second pacing requiring <1.2 seconds per prime factor
+    if (isRated && userElo >= 2400) {
+      const pacePerFactor = responseDuration / Math.max(1, factorCount);
+      if (pacePerFactor >= 1.2) {
+        currentItem.pacingViolation = true;
+      }
+    }
+
+    // Module 3 Firewall: ELO ≥ 3000 scales internal velocity tracking index up to maximal 3.5x multiplier
+    if (isRated && userElo >= 3000) {
+      updateThermodynamicState('Prime Singularity');
     }
 
     // Compute micro-latency snapshot for every discrete prime factor extracted during this question
@@ -856,6 +883,16 @@ function initExamArena() {
 
   // Lifeline: Pause Timer (Pauses for exactly 5s, -2 pts, max 2 uses)
   function handleLifelinePause() {
+    if (isLifelineBlocked('pause', userElo, isRated)) {
+      playSound('error');
+      triggerFlash('penalty');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+      return;
+    }
+
     if (state.lifelines.pauseUsed >= state.lifelines.maxPause || state.isPausedByLifeline || state.isFrozen) return;
 
     state.slackTriggeredForCurrentQuestion = true;
@@ -881,6 +918,16 @@ function initExamArena() {
 
   // Lifeline: Skip (Applies -5 penalty, moves to next index, counts as error)
   function handleLifelineSkip() {
+    if (isLifelineBlocked('skip', userElo, isRated)) {
+      playSound('error');
+      triggerFlash('penalty');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+      return;
+    }
+
     if (state.isFrozen || state.examEnded) return;
 
     state.lifelines.skipsUsed++;
@@ -925,6 +972,16 @@ function initExamArena() {
 
   // Lifeline: Regenerate (Discards number, rolls new composite, -2 pts, max 1 use, bypasses freeze!)
   function handleLifelineRegenerate() {
+    if (isLifelineBlocked('regen', userElo, isRated)) {
+      playSound('error');
+      triggerFlash('penalty');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+      return;
+    }
+
     if (state.lifelines.regenUsed >= state.lifelines.maxRegen || state.isSecondChanceLoop || state.isFrozen) return;
 
     state.lifelines.regenUsed++;
@@ -979,6 +1036,16 @@ function initExamArena() {
 
   // Lifeline: Unlock Hints (Conceptual hint, max 1 use, disabled in second chance)
   function handleLifelineHint() {
+    if (isLifelineBlocked('hint', userElo, isRated)) {
+      playSound('error');
+      triggerFlash('penalty');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+      return;
+    }
+
     if (state.lifelines.hintUsed >= state.lifelines.maxHint || state.isSecondChanceLoop || state.activeHintForCurrentQuestion || state.isFrozen) return;
 
     state.lifelines.hintUsed++;
@@ -1014,6 +1081,16 @@ function initExamArena() {
 
   // Lifeline A: Extend Clock (+30s to countdown, -3 points, temporary multiplier dampener, grayscale state)
   function handleLifelineExtend() {
+    if (isLifelineBlocked('extend', userElo, isRated)) {
+      playSound('error');
+      triggerFlash('penalty');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+      return;
+    }
+
     if (state.lifelines.extendUsed >= state.lifelines.maxExtend || state.examEnded || state.isFrozen) return;
 
     state.lifelines.extendUsed++;
@@ -1039,6 +1116,16 @@ function initExamArena() {
 
   // Lifeline B: Eliminate Noise - Hardened (Max 2 usages per session, strictly max 1 per question, -4 pts)
   function handleLifelineNoise() {
+    if (isLifelineBlocked('noise', userElo, isRated)) {
+      playSound('error');
+      triggerFlash('penalty');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+      return;
+    }
+
     if (state.examEnded || state.isFrozen) return;
 
     if (state.lifelines.noiseUsed >= state.lifelines.maxNoise) {
@@ -1124,6 +1211,16 @@ function initExamArena() {
 
   // Lifeline C: Factor Sandbox (Max 1 use, 5s mental division scratchpad overlay, auto 5s fade-out, -5 pts)
   function handleLifelineSandbox() {
+    if (isLifelineBlocked('sandbox', userElo, isRated)) {
+      playSound('error');
+      triggerFlash('penalty');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+      return;
+    }
+
     if (state.lifelines.sandboxUsed >= state.lifelines.maxSandbox || state.examEnded || state.isFrozen) return;
 
     state.lifelines.sandboxUsed++;
@@ -1707,6 +1804,14 @@ function initExamArena() {
   // Scratchpad Real-time Division Testing
   if (sandboxCalcInput) {
     sandboxCalcInput.addEventListener('input', () => {
+      if (isLifelineBlocked('sandbox', userElo, isRated)) {
+        if (sandboxCalcResult) {
+          sandboxCalcResult.textContent = '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+          sandboxCalcResult.style.color = '#F87171';
+        }
+        return;
+      }
+
       const divisor = parseInt(sandboxCalcInput.value, 10);
       const currentItem = !state.isSecondChanceLoop 
         ? state.questionAudits[state.currentIndex] 
