@@ -425,6 +425,7 @@ export const LifelineBlacklistFirewall = {
       mistakePenaltyDoubled: elo >= 1200,
       hintBlocked: elo >= 1400,
       extendBlocked: elo >= 1800,
+      restartBlocked: elo >= 1800,
       fermatClueBlocker: elo >= 1800,
       dampenPositiveElo: elo >= 1800,
       pauseBlocked: elo >= 2400,
@@ -456,6 +457,8 @@ export const LifelineBlacklistFirewall = {
       case 'hint':
         return elo >= 1400;
       case 'extend':
+        return elo >= 1800;
+      case 'restart':
         return elo >= 1800;
       case 'pause':
         return elo >= 2400;
@@ -503,13 +506,14 @@ export const LifelineBlacklistFirewall = {
     const btnNoise = document.getElementById('lifeline-noise');
     const btnHint = document.getElementById('lifeline-hint');
     const btnExtend = document.getElementById('lifeline-extend');
+    const btnRestart = document.getElementById('lifeline-restart');
     const btnPause = document.getElementById('lifeline-pause');
     const btnRegen = document.getElementById('lifeline-regen');
     const btnSkip = document.getElementById('lifeline-skip');
 
     if (r.isSafeZone) {
       // Safe-Zone Exception: unlock all
-      [btnSandbox, btnNoise, btnHint, btnExtend, btnPause, btnRegen, btnSkip].forEach(unlockElement);
+      [btnSandbox, btnNoise, btnHint, btnExtend, btnRestart, btnPause, btnRegen, btnSkip].forEach(unlockElement);
       return r;
     }
 
@@ -517,6 +521,7 @@ export const LifelineBlacklistFirewall = {
     if (r.noiseBlocked) lockElement(btnNoise, 'Candidate noise filter disabled for ELO ≥ 1200', 'PROHIBITED (≥1200)');
     if (r.hintBlocked) lockElement(btnHint, 'Conceptual pedagogical hints disabled for ELO ≥ 1400', 'PROHIBITED (≥1400)');
     if (r.extendBlocked) lockElement(btnExtend, 'Clock extension disabled for ELO ≥ 1800', 'PROHIBITED (≥1800)');
+    if (r.restartBlocked) lockElement(btnRestart, 'Session restart is entirely prohibited for high-rated contestants (ELO ≥ 1800)', 'PROHIBITED (≥1800)');
     if (r.pauseBlocked) lockElement(btnPause, 'Tactical pauses disabled for ELO ≥ 2400', 'PROHIBITED (≥2400)');
     if (r.regenBlocked) lockElement(btnRegen, 'Regeneration suppressed for ELO ≥ 3000', 'PROHIBITED (≥3000)');
     if (r.skipBlocked) lockElement(btnSkip, 'Skip protocol suppressed for ELO ≥ 3000', 'PROHIBITED (≥3000)');

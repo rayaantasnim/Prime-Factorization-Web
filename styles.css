@@ -4138,6 +4138,7 @@ img{
   font-size: clamp(0.95rem, 1.6vw, 1.1rem);
   color: #CBD5E1 !important;
   max-width: 50rem;
+  text-align: justify;
   line-height: 1.5;
   margin: 0.5rem 0 0 0;
 }

@@ -134,6 +134,7 @@
 .v3-triumph-subtext {
     font-size: 1.3rem;
     line-height: 1.75;
+    text-align: justify;
     color: #f8fafc;
     max-width: 820px;
     margin: 0 auto 38px auto;

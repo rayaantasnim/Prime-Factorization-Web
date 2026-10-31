@@ -153,7 +153,7 @@ export const NAVIGATION_TOPOLOGY_OPTIONS = [
     subtitle: 'Tactical pauses, conceptual hints, audio synthesis & overtime lifelines.',
     badge: 'Options',
     badgeColor: '#64748B',
-    isSettings: true,
+    isSettings: false,
     icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`
   },
   {
@@ -273,22 +273,13 @@ export function renderNavigationDashboard() {
   cards.forEach(card => {
     card.addEventListener('click', (e) => {
       playSound('click');
-      if (card.getAttribute('data-is-settings') === 'true') {
+      if (card.id === 'nav-settings' || card.getAttribute('href') === './engine.html') {
         e.preventDefault();
         closeNavigationDashboard();
-        initSettingsModal();
-        const isProfilePage = window.location.pathname.endsWith('profile.html') || window.location.pathname.includes('/profile.html');
-        if (isProfilePage) {
-          window.location.href = './profile-settings.html';
-        } else {
-          const modal = document.getElementById('settings-modal');
-          if (modal) {
-            modal.classList.add('open');
-          }
-        }
-      } else {
-        closeNavigationDashboard();
+        window.location.href = './engine.html';
+        return;
       }
+      closeNavigationDashboard();
     });
   });
 
@@ -523,180 +514,51 @@ export function initGlobalHeader(options = {}) {
     });
   }
 
-  // Initialize Settings Modal structure for both header and dashboard triggers
-  initSettingsModal();
+  // Global Routing & Navigation Hardening: Node 11 ("Engine Configuration")
+  // The exact millisecond a competitor clicks Node 11, header gear, or system link,
+  // cleanly relocate directly to ./engine.html
+  document.querySelectorAll('#dropdown-open-settings, #dropdown-mobile-system, .dropdown-open-settings-trigger').forEach(trigger => {
+    trigger.setAttribute('href', './engine.html');
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      playSound('click');
+      window.location.href = './engine.html';
+    });
+  });
+
+  const headerSettingsBtn = document.getElementById('settings-toggle-btn');
+  if (headerSettingsBtn) {
+    headerSettingsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      playSound('click');
+      const isProfilePage = window.location.pathname.endsWith('profile.html') || window.location.pathname.includes('/profile.html');
+      if (isProfilePage) {
+        window.location.href = './profile-settings.html';
+      } else {
+        window.location.href = './engine.html';
+      }
+    });
+  }
+
+  // Deactivate and purge legacy modal if present
+  const legacyModal = document.getElementById('settings-modal');
+  if (legacyModal) legacyModal.remove();
+  const legacySlot = document.getElementById('settings-modal-slot');
+  if (legacySlot) legacySlot.innerHTML = '';
 
   // Synchronize unread dots across header and dashboard
   initNotificationDotListeners();
   updateUnreadStatusDots();
 }
 
-// Render and bind Global Settings Modal
+// Legacy popup modal deactivated — standalone engine.html enforced
 export function initSettingsModal() {
-  let modalContainer = document.getElementById('settings-modal-slot');
-  if (!modalContainer) {
-    modalContainer = document.createElement('div');
-    modalContainer.id = 'settings-modal-slot';
-    document.body.appendChild(modalContainer);
-  }
-
-  const current = getSettings();
-
-  modalContainer.innerHTML = `
-    <div id="settings-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-settings-title">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3 id="modal-settings-title" class="font-heading">Engine Configuration</h3>
-          <button id="close-settings-btn" class="icon-btn" aria-label="Close configuration modal">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-        
-        <div class="modal-body">
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Second Chance Loop</h4>
-              <p>Allows retrying missed numbers during the overtime loop</p>
-            </div>
-            <label class="switch" aria-label="Toggle second chance loop">
-              <input type="checkbox" id="modal-toggle-second-attempt" ${current.allowSecondAttempt ? 'checked' : ''}>
-              <span class="slider-round"></span>
-            </label>
-          </div>
-
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Timer Pauses (Max 2)</h4>
-              <p>Permits 5-second tactical countdown halts during active exams</p>
-            </div>
-            <label class="switch" aria-label="Toggle timer pauses">
-              <input type="checkbox" id="modal-toggle-pauses" ${current.allowPause ? 'checked' : ''}>
-              <span class="slider-round"></span>
-            </label>
-          </div>
-
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Regeneration Lifeline (Max 1)</h4>
-              <p>Permits discarding a question to roll a new composite (-2 pts)</p>
-            </div>
-            <label class="switch" aria-label="Toggle regeneration lifeline">
-              <input type="checkbox" id="modal-toggle-regen" ${current.allowRegenerate ? 'checked' : ''}>
-              <span class="slider-round"></span>
-            </label>
-          </div>
-
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Conceptual Hints (Max 1)</h4>
-              <p>Permits mathematical number theory clues (-50% point reward)</p>
-            </div>
-            <label class="switch" aria-label="Toggle conceptual hints">
-              <input type="checkbox" id="modal-toggle-hints" ${current.allowHint ? 'checked' : ''}>
-              <span class="slider-round"></span>
-            </label>
-          </div>
-
-          <div class="settings-row">
-            <div class="settings-info">
-              <h4>Synthesized Sound Effects</h4>
-              <p>Crisp harmonic feedback chimes via browser Web Audio API</p>
-            </div>
-            <label class="switch" aria-label="Toggle audio synthesis">
-              <input type="checkbox" id="modal-toggle-audio" ${current.soundEnabled ? 'checked' : ''}>
-              <span class="slider-round"></span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  const modal = document.getElementById('settings-modal');
-  const triggerBtn = document.getElementById('settings-toggle-btn');
-  const closeBtn = document.getElementById('close-settings-btn');
-
-  function auditModalFirewall() {
-    const elo = getUserElo();
-    const isRated = localStorage.getItem('primefactor_active_contest_mode') !== 'unrated';
-    if (!isRated) return;
-
-    const lockModalSwitch = (input) => {
-      if (!input) return;
-      input.disabled = true;
-      const row = input.closest('.settings-row');
-      if (row) {
-        row.classList.add('firewall-locked');
-        row.style.opacity = '0.35';
-        row.style.pointerEvents = 'none';
-        let badge = row.querySelector('.firewall-indicator-badge');
-        if (!badge) {
-          const info = row.querySelector('.settings-info');
-          if (info) {
-            const b = document.createElement('div');
-            b.style.marginTop = '0.35rem';
-            b.innerHTML = '<span class="firewall-indicator-badge">❌ FIREWALL DEACTIVATED (ELO PROHIBITED)</span>';
-            info.appendChild(b);
-          }
-        }
-      }
-    };
-
-    if (elo >= 1400) lockModalSwitch(document.getElementById('modal-toggle-hints'));
-    if (elo >= 2400) lockModalSwitch(document.getElementById('modal-toggle-pauses'));
-    if (elo >= 3000) lockModalSwitch(document.getElementById('modal-toggle-regen'));
-  }
-
-  function openModal() {
-    playSound('click');
-    auditModalFirewall();
-    modal.classList.add('open');
-  }
-
-  function closeModal() {
-    playSound('click');
-    modal.classList.remove('open');
-  }
-
-  if (triggerBtn) {
-    triggerBtn.addEventListener('click', (e) => {
-      const isProfilePage = window.location.pathname.endsWith('profile.html') || window.location.pathname.includes('/profile.html');
-      if (isProfilePage) {
-        e.preventDefault();
-        e.stopPropagation();
-        playSound('click');
-        window.location.href = './profile-settings.html';
-        return;
-      }
-      openModal();
-    });
-  }
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeModal);
-  }
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
-
-  // Wire switch changes
-  const bindSwitch = (id, key) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('change', () => {
-      playSound('click');
-      updateSettings({ [key]: el.checked });
-      window.dispatchEvent(new CustomEvent('primefactor_settings_changed', { detail: { [key]: el.checked } }));
-    });
-  };
-
-  bindSwitch('modal-toggle-second-attempt', 'allowSecondAttempt');
-  bindSwitch('modal-toggle-pauses', 'allowPause');
-  bindSwitch('modal-toggle-regen', 'allowRegenerate');
-  bindSwitch('modal-toggle-hints', 'allowHint');
-  bindSwitch('modal-toggle-audio', 'soundEnabled');
+  const legacyModal = document.getElementById('settings-modal');
+  if (legacyModal) legacyModal.remove();
+  const legacySlot = document.getElementById('settings-modal-slot');
+  if (legacySlot) legacySlot.innerHTML = '';
 }
 
 // Render persistent footer

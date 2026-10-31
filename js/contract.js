@@ -258,6 +258,9 @@ function initContractGatekeeper() {
     // instantly commit a state tracking variable exam_in_progress = "true" to local/session storage before any rendering timers ignite.
     try {
       sessionStorage.setItem('exam_in_progress', 'true');
+      sessionStorage.removeItem('primefactor_contest_restart_used');
+      sessionStorage.removeItem('primefactor_restarted_session');
+      sessionStorage.removeItem('primefactor_restart_penalty');
       localStorage.setItem('exam_in_progress', 'true');
       localStorage.setItem('status', 'NORMAL');
       localStorage.setItem('primefactor_status', 'NORMAL');

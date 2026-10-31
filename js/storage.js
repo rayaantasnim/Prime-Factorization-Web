@@ -13,7 +13,16 @@ export const DEFAULT_SETTINGS = {
   allowPause: true,
   allowRegenerate: true,
   allowHint: true,
-  soundEnabled: true
+  allowSandbox: true,
+  allowNoise: true,
+  allowComboTracker: true,
+  subSecondBoost: true,
+  allowSkip: true,
+  allowDeficitOverride: true,
+  soundEnabled: true,
+  masterVolume: 0.8,
+  eventChimePitch: 440,
+  participationMode: 'rated'
 };
 
 export const DEFAULT_LEDGER = {

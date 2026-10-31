@@ -101,7 +101,6 @@ function initExamArena() {
   const urlInitialPenalty = urlParams.get('initialPenalty') ? Number(urlParams.get('initialPenalty')) : null;
   const storedInitialPenalty = rules.initialPenalty !== undefined ? Number(rules.initialPenalty) : null;
   const isFocusTrackingDisabled = (!trackFocus) || (urlInitialPenalty === -10) || (storedInitialPenalty === -10) || (sessionStorage.getItem('primefactor_focus_tracking_off_penalty') === '10');
-  const initialStartingScore = isFocusTrackingDisabled ? -10 : 0;
 
   const resolvedMin = (urlMin && !isNaN(urlMin)) ? urlMin : (params.min || 1);
   const resolvedMax = (urlMax && !isNaN(urlMax)) ? urlMax : (params.max || 200);
@@ -112,6 +111,21 @@ function initExamArena() {
   const isForcedUnrated = isBanned || urlParams.get('forcedUnrated') === 'true' || Boolean(rules.isForcedUnrated) || (initialMode === 'unrated');
   const participationMode = isForcedUnrated ? 'unrated' : 'rated';
   const isRated = participationMode === 'rated' && !isForcedUnrated;
+
+  // Module 2: Live Exam Re-Initialization & Restart Penalty Matrix
+  const wasRestarted = sessionStorage.getItem('primefactor_restarted_session') === 'true';
+  const rawRestartPenalty = Number(sessionStorage.getItem('primefactor_restart_penalty') || 0);
+  const restartPenalty = (wasRestarted && rawRestartPenalty >= 5 && rawRestartPenalty <= 20)
+    ? rawRestartPenalty
+    : (wasRestarted ? 5 : 0);
+
+  // Consume one-time restart penalty context
+  sessionStorage.removeItem('primefactor_restarted_session');
+  sessionStorage.removeItem('primefactor_restart_penalty');
+
+  // Single match score scale is compressed: explicitly initialize with dynamic negative point deficit (-5 to -20)
+  const restartScoreDeficit = (isRated && wasRestarted) ? -restartPenalty : 0;
+  const initialStartingScore = (isFocusTrackingDisabled ? -10 : 0) + restartScoreDeficit;
 
   // Module 3: Lifeline Blacklist Firewall Initialization & Runtime Checks
   const firewallRestrictions = applyLifelineFirewall({ userElo, isRated });
@@ -156,6 +170,8 @@ function initExamArena() {
     allowStrikePenalty,
     trackFocus,
     isFocusTrackingDisabled,
+    isRestartedSession: wasRestarted && isRated,
+    restartPenalty: (wasRestarted && isRated) ? restartPenalty : 0,
     participationMode,
     isForcedUnrated,
     totalQuestions: totalQuestionsTarget,
@@ -185,6 +201,8 @@ function initExamArena() {
       maxRegen: rules.allowRegenerate ? 1 : 0,
       hintUsed: 0,
       maxHint: rules.allowHint ? 1 : 0,
+      restartUsed: (wasRestarted || sessionStorage.getItem('primefactor_contest_restart_used') === 'true') ? 1 : 0,
+      maxRestart: 1,
       skipsUsed: 0,
       extendUsed: 0,
       maxExtend: 1,
@@ -269,9 +287,34 @@ function initExamArena() {
   const btnExtend = document.getElementById('lifeline-extend');
   const btnNoise = document.getElementById('lifeline-noise');
   const btnSandbox = document.getElementById('lifeline-sandbox');
-  const btnRegen = document.getElementById('lifeline-regen');
   const btnRestart = document.getElementById('lifeline-restart');
   const btnHint = document.getElementById('lifeline-hint');
+
+  // Enforce Restart Lifeline Constraints: 1-Time Usage Limit & High-Rated Prohibition
+  if (btnRestart) {
+    if (isRated && (userElo >= 1800 || isLifelineBlocked('restart', userElo, isRated))) {
+      btnRestart.disabled = true;
+      btnRestart.style.opacity = '0.28';
+      btnRestart.style.pointerEvents = 'none';
+      btnRestart.style.cursor = 'not-allowed';
+      btnRestart.classList.add('lifeline-firewall-locked');
+      btnRestart.setAttribute('title', '❌ FIREWALL DEACTIVATED (ELO PROHIBITED): Session restart is entirely disabled and prohibited for high-rated contestants (ELO ≥ 1800)');
+      const badge = btnRestart.querySelector('.lifeline-uses');
+      if (badge) badge.textContent = 'PROHIBITED (≥1800)';
+    } else if (state.lifelines.restartUsed >= state.lifelines.maxRestart) {
+      btnRestart.disabled = true;
+      btnRestart.style.opacity = '0.35';
+      btnRestart.style.pointerEvents = 'none';
+      btnRestart.style.cursor = 'not-allowed';
+      btnRestart.classList.add('lifeline-exhausted');
+      btnRestart.setAttribute('title', 'Restart lifeline exhausted (Strict 1-time usage limit per contest)');
+      const badge = btnRestart.querySelector('.lifeline-uses');
+      if (badge) badge.textContent = '0 left';
+    } else {
+      const badge = btnRestart.querySelector('.lifeline-uses');
+      if (badge) badge.textContent = '1 left';
+    }
+  }
 
   // Noise Elimination & Factor Sandbox DOM Elements
   const inlineNoiseWarning = document.getElementById('inline-noise-warning');
@@ -1024,8 +1067,69 @@ function initExamArena() {
     updateHUD();
   }
 
-  // Lifeline: Restart (Flushes points, resets clock, restores all 6 lifelines, fresh 10 questions)
+  // Lifeline: Restart (Module 2: Live Exam Re-Initialization & Restart Penalty Matrix)
   function handleLifelineRestart() {
+    // 1. High-Rated Contestants Prohibition Check (Entirely disabled and prohibited for ELO >= 1800)
+    if (isRated && (userElo >= 1800 || isLifelineBlocked('restart', userElo, isRated))) {
+      playSound('error');
+      triggerFlash('penalty');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '❌ RESTART PROHIBITED: Session restart is entirely disabled and prohibited for high-rated contestants (ELO ≥ 1800) to maintain competitive integrity.';
+        inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+      }
+      return;
+    }
+
+    // 2. Strict One-Time Usage Limit Constraint (Max 1 restart per contest)
+    if (state.lifelines.restartUsed >= state.lifelines.maxRestart || sessionStorage.getItem('primefactor_contest_restart_used') === 'true') {
+      playSound('error');
+      triggerFlash('warning');
+      if (inputFeedbackEl) {
+        inputFeedbackEl.textContent = '❌ RESTART EXHAUSTED: Strict one-time usage limit reached for this contest session (0 left).';
+        inputFeedbackEl.className = 'exam-feedback text-amber font-bold';
+      }
+      return;
+    }
+
+    // Mark restart consumed for this contest session
+    state.lifelines.restartUsed += 1;
+    sessionStorage.setItem('primefactor_contest_restart_used', 'true');
+
+    if (isRated) {
+      // 1. Flat Core ELO Excise on Restart: The precise millisecond competitor clicks Restart,
+      // deduct flat -5 ELO directly from the local profile database before reloading/re-initializing
+      const prevElo = getUserElo();
+      const nextElo = setUserElo(Math.max(0, prevElo - 5));
+
+      // 2. Compute dynamic marks penalty (-5 to -20 pts) based on ELO tier difficulty bracket & real-time session accuracy
+      const attemptedCount = state.questionAudits.filter(q => q.attempt1 !== null).length;
+      const firstTryCorrect = state.questionAudits.filter(q => q.attempt1Correct === true).length;
+      const sessionAccuracy = attemptedCount > 0 
+        ? (firstTryCorrect / attemptedCount) * 100 
+        : (state.incorrectSubmissionsCount > 0 ? 0 : 100);
+
+      // Active ELO tier difficulty bracket scaling (500 ELO = 0.0, 2500+ ELO = 1.0)
+      const tierDifficulty = Math.min(1, Math.max(0, (prevElo - 500) / 2500));
+      // Real-time accuracy deficit (100% accuracy = 0.0 deficit, 0% accuracy = 1.0 deficit)
+      const accuracyDeficit = 1 - (sessionAccuracy / 100);
+
+      // Calculate exact dynamic penalty between -5 and -20 points
+      const dynamicMarksPenalty = Math.max(5, Math.min(20, Math.round(5 + (tierDifficulty * 8) + (accuracyDeficit * 7))));
+
+      // Store in sessionStorage to initialize newly re-initialized match context with this negative deficit
+      sessionStorage.setItem('primefactor_restarted_session', 'true');
+      sessionStorage.setItem('primefactor_restart_penalty', String(dynamicMarksPenalty));
+
+      addNotification({
+        type: 'penalty',
+        title: '🔄 Live Exam Restart Penalty Matrix',
+        message: `Manual session restart during active Rated Exam: Flat -5 ELO excised (Now: ${nextElo} ELO). Initializing match with dynamic -${dynamicMarksPenalty} mark deficit (Accuracy: ${Math.round(sessionAccuracy)}%).`,
+        timestamp: Date.now()
+      });
+
+      triggerFlash('penalty');
+    }
+
     playSound('click');
     stopExamTensionAtmosphere();
     clearInterval(state.timerInterval);
@@ -1054,7 +1158,7 @@ function initExamArena() {
     const currentItem = state.questionAudits[state.currentIndex];
     currentItem.hintActive = true;
 
-    const hintText = generateConceptualHint(currentItem.number, userElo);
+    const hintText = generateConceptualHint(currentItem.number, userElo, isRated);
 
     playSound('alert');
     triggerFlash('warning');
@@ -1579,6 +1683,9 @@ function initExamArena() {
 
     // Clear active exam lock flags upon legitimate completion
     sessionStorage.setItem('exam_in_progress', 'false');
+    sessionStorage.removeItem('primefactor_contest_restart_used');
+    sessionStorage.removeItem('primefactor_restarted_session');
+    sessionStorage.removeItem('primefactor_restart_penalty');
     localStorage.setItem('exam_in_progress', 'false');
     localStorage.setItem('status', 'NORMAL');
     localStorage.setItem('primefactor_status', 'NORMAL');
@@ -1723,7 +1830,9 @@ function initExamArena() {
       max: state.max,
       antiCheatVerdict,
       consecutiveFlags,
-      strikeExciseTriggered
+      strikeExciseTriggered,
+      isRestartedSession: Boolean(state.isRestartedSession),
+      restartPenalty: state.restartPenalty || 0
     };
 
     setLastExamResult(resultPayload);
@@ -1844,4 +1953,12 @@ function initExamArena() {
   // Initial render & Thermodynamic Audio Tension Atmosphere initialization
   renderActiveQuestion();
   startExamTensionAtmosphere(totalDuration);
+
+  // If match was re-initialized via restart, immediately notify and display dynamic deficit
+  if (state.isRestartedSession && state.restartPenalty > 0) {
+    if (inputFeedbackEl) {
+      inputFeedbackEl.textContent = `🔄 RESTARTED MATCH DEFICIT: -${state.restartPenalty} pts applied (-5 ELO excised)`;
+      inputFeedbackEl.className = 'exam-feedback text-crimson font-bold';
+    }
+  }
 }

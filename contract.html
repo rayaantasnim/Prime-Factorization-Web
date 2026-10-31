@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="icon" type="image/x-icon" href="./favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="css/contract.css" />
   <link rel="stylesheet" href="./styles.css" />
 
   <!-- GSAP for spatial interactions -->
@@ -147,7 +148,7 @@
           </a>
 
           <!-- Desktop Settings Link -->
-          <a href="#" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
+          <a href="./engine.html" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
             <div class="dropdown-link-content">
               <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"></circle>
@@ -159,7 +160,7 @@
           </a>
 
           <!-- Mobile-only System link -->
-          <a href="#" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
+          <a href="./engine.html" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
             <div class="dropdown-link-content">
               <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
@@ -450,6 +451,74 @@
             </div>
             <div style="font-size: 0.825rem; color: #000000;">
               Accumulating every 3 cumulative errors or skips incurs an immediate flat <strong>-10 point penalty</strong>. Terminating the session voluntarily prior to question 10 imposes an additional <strong>-5 point deduction</strong>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 2: Live Session Re-Initialization & Restart Penalty -->
+      <div class="contract-card" style="margin-bottom: 1.5rem; border-color: rgba(239, 68, 68, 0.35);">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: #000000; margin: 0;">🔄 Live Session Re-Initialization &amp; Restart Penalty</h3>
+        </div>
+        <p style="font-size: 0.9rem; color: #000000; margin-bottom: 1rem; line-height: 1.55;">
+          Under official Math Olympiad tournament regulations, triggering a manual session restart during an active Rated Live Exam is strictly regulated to prevent tactical score resets and bad-faith rating manipulation:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 0.85rem;">
+          <div style="background: rgba(220, 38, 38, 0.12); border: 1px solid rgba(220, 38, 38, 0.35); border-radius: 0.65rem; padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 700; color: #000000; font-size: 0.85rem;">Immediate Core ELO Excise</span>
+              <span style="font-family: var(--font-math); font-weight: 800; color: #EF4444; font-size: 0.8rem;">-5 ELO</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #000000;">
+              The exact millisecond the competitor clicks &quot;Restart&quot; during an active Rated Live Exam session, an immediate flat <strong>-5 ELO</strong> is excised directly from the local profile database.
+            </div>
+          </div>
+
+          <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 0.65rem; padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 700; color: #000000; font-size: 0.85rem;">Dynamic Marks Penalty Deficit</span>
+              <span style="font-family: var(--font-math); font-weight: 800; color: #F59E0B; font-size: 0.8rem;">-5 to -20 pts</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #000000;">
+              The single match score scale (100 marks max) is compressed. The newly re-initialized match context explicitly initializes with a dynamic negative starting deficit ranging from <strong>-5 to -20 points</strong>.
+            </div>
+          </div>
+
+          <!-- Strict 1-Time Usage Limit Constraint -->
+          <div style="background: rgba(2, 132, 199, 0.1); border: 1px solid rgba(2, 132, 199, 0.35); border-radius: 0.65rem; padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 700; color: #000000; font-size: 0.85rem;">Strict One-Time Usage Limit</span>
+              <span style="font-family: var(--font-math); font-weight: 800; color: #0284C7; font-size: 0.8rem;">Max 1 / Contest</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #000000;">
+              Competitors are granted a <strong>strict one-time usage limit</strong> for the &quot;Restart&quot; lifeline per contest session. Once invoked, the lifeline is permanently exhausted and disabled for the remainder of that contest attempt.
+            </div>
+          </div>
+
+          <!-- High-Rated Contestants Prohibition Lock -->
+          <div style="background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.5); border-radius: 0.65rem; padding: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 800; color: #991B1B; font-size: 0.85rem;">🚫 High-Rated Contestants Prohibition</span>
+              <span style="font-family: var(--font-math); font-weight: 800; color: #DC2626; font-size: 0.8rem;">ELO ≥ 1800 Banned</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #000000; text-align: justify !important;">
+              To maintain uncompromising competitive integrity, the restart functionality is <strong>entirely disabled and strictly prohibited for high-rated contestants (ELO ≥ 1800)</strong>. High-tier candidates must complete or forfeit matches without re-initialization lifelines.
+            </div>
+          </div>
+
+          <div style="background: rgba(15, 23, 42, 0.05); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 0.65rem; padding: 0.85rem; grid-column: 1 / -1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 800; color: #000000; font-size: 0.85rem;">⚖️ Bracket Difficulty &amp; Session Accuracy Formulation</span>
+              <span style="font-family: var(--font-math); font-weight: 700; color: #64748B; font-size: 0.85rem;">Module 2 Enforcement</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #000000; line-height: 1.5;">
+              The exact deduction penalty is computed based on the competitor's active ELO tier difficulty bracket and real-time session accuracy prior to restart. Higher difficulty brackets and lower problem accuracy scale the negative starting deficit toward the maximum -20 mark penalty.
             </div>
           </div>
         </div>

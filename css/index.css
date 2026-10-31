@@ -111,3 +111,33 @@ section {
     min-height: auto !important; /* Allows layout to compress and stretch naturally */
   }
 }
+
+
+.v3-tether-pill {
+    transition: all 0.35s ease;
+    cursor: pointer;
+}
+
+.v3-tether-pill:hover {
+    transform: translateY(-4px) scale(1.03);
+    border-color: #00e5ff;
+    background: rgba(0, 229, 255, 0.08);
+    box-shadow:
+        0 0 12px rgba(0, 229, 255, 0.45),
+        0 0 24px rgba(0, 229, 255, 0.25),
+        inset 0 0 10px rgba(0, 229, 255, 0.12);
+}
+
+.v3-tether-pill:hover .v3-pill-icon {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 8px #00e5ff);
+}
+
+.v3-tether-pill:hover span:not(.v3-pill-icon) {
+    color: #7ffcff;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+}
+
+.v3-pill-icon {
+    transition: all 0.35s ease;
+}

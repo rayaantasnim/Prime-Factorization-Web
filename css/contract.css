@@ -1,0 +1,477 @@
+/* ==========================================================================
+   PrimeFactor.app — Contract Main Content Production-Grade Stylesheet
+   Excludes Navigation Bar and Footer entirely (Main Content Only).
+   Ensures proper central alignment, generous consistent gaps between sections,
+   crisp white text, optimal font sizes, smooth timer progress bar,
+   2x2 grids for Deployment Specs and Restart Penalty, breaking into verticals.
+   ========================================================================== */
+
+:root {
+  --bg-primary: #0b0f19 !important;
+  --bg-card: rgba(15, 23, 42, 0.96) !important;
+  --border-color: rgba(56, 189, 248, 0.35) !important;
+  --accent-blue: #38bdf8 !important;
+  --accent-cyan: #0284c7 !important;
+  --accent-green: #10b981 !important;
+  --accent-amber: #f59e0b !important;
+  --accent-red: #ef4444 !important;
+  --text-main: #ffffff !important;
+  --text-muted: #e2e8f0 !important;
+  --font-heading:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  --font-math: "Fira Code", Consolas, Monaco, monospace !important;
+}
+
+/* Force pure white text globally within main wrapper contents for readability */
+.main-wrapper,
+.main-wrapper p,
+.main-wrapper span,
+.main-wrapper h1,
+.main-wrapper h2,
+.main-wrapper h3,
+.main-wrapper h4,
+.main-wrapper li,
+.main-wrapper div {
+  color: var(--text-main) !important;
+}
+
+/* Base Main Wrapper - Centered Alignment & Proper Padding */
+.main-wrapper {
+  background-color: var(--bg-primary) !important;
+  font-family: var(--font-heading) !important;
+  padding-top: 7rem !important;
+  padding-bottom: 6rem !important;
+  min-height: 100vh !important;
+  position: relative !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+/* Content Container - Strict Centering & Consistent Layout */
+.content-container {
+  max-width: 58rem !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 1.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+}
+
+/* Section Header Styling & Animations */
+.section-head {
+  margin-bottom: 2.75rem !important;
+  text-align: left !important;
+  animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.section-head .badge-lock {
+  background: rgba(14, 165, 233, 0.2) !important;
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+  color: var(--text-main) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  padding: 0.3rem 0.8rem !important;
+  border-radius: 9999px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.section-head .badge-lock:hover {
+  background: rgba(14, 165, 233, 0.35) !important;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.5) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 2.8rem) !important;
+  font-weight: 800 !important;
+  color: var(--text-main) !important;
+  letter-spacing: -0.03em !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.section-desc {
+  max-width: 52rem !important;
+  font-size: 1.1rem !important;
+  color: var(--text-muted) !important;
+  line-height: 1.7 !important;
+  margin: 0 !important;
+}
+
+/* Contract Cards Universal Styling, Generous Gaps & Hover Effects */
+.contract-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 1.25rem !important;
+  padding: 2.25rem !important;
+  margin-bottom: 2.25rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s ease !important;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.contract-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(56, 189, 248, 0.7) !important;
+  box-shadow:
+    0 22px 45px rgba(14, 165, 233, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Background Image Overlay inside Cards */
+.section-bg-image-wrap {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  overflow: hidden !important;
+  opacity: 0.12 !important;
+  pointer-events: none !important;
+}
+
+.section-bg-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.contract-card:hover .section-bg-image {
+  transform: scale(1.05) !important;
+}
+
+.section-bg-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.95) 0%,
+    rgba(10, 15, 30, 0.98) 100%
+  ) !important;
+}
+
+/* ==========================================================================
+   1. TARGET CONTINUITY DECK ("Deployment Specification")
+   Strict 2x2 Grid Layout, breaking into verticals on smaller screens
+   ========================================================================== */
+
+.contract-card:nth-of-type(1) div[style*="grid"],
+.contract-card:has(#contract-bounds-val) div[style*="grid"] {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 1.25rem !important;
+}
+
+@media (max-width: 768px) {
+  .contract-card:nth-of-type(1) div[style*="grid"],
+  .contract-card:has(#contract-bounds-val) div[style*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.contract-card:nth-of-type(1) div[style*="background"],
+.contract-card:has(#contract-bounds-val) div[style*="background"] {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 0.85rem !important;
+  padding: 1.25rem !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.contract-card:nth-of-type(1) div[style*="font-family: var(--font-math)"],
+.contract-card:nth-of-type(1) div[style*="font-family: var(--font-heading)"],
+.contract-card:has(#contract-bounds-val) div[style*="font-family"] {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  word-break: break-word !important;
+}
+
+.contract-card:nth-of-type(1) div[style*="background"]:hover,
+.contract-card:has(#contract-bounds-val) div[style*="background"]:hover {
+  transform: translateY(-3px) scale(1.01) !important;
+  border-color: rgba(56, 189, 248, 0.6) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* ==========================================================================
+   2. LIVE SESSION RE-INITIALIZATION & RESTART PENALTY
+   Strict 2x2 Grid Layout for Cards 1-4, and Full Span for Card 5 underneath,
+   breaking into verticals on smaller screens.
+   ========================================================================== */
+
+.contract-card:has(svg stroke="#EF4444"),
+.contract-card:nth-of-type(5) {
+  border: 1px solid rgba(239, 68, 68, 0.45) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(25, 15, 20, 0.96) 0%,
+    rgba(10, 15, 30, 0.98) 100%
+  ) !important;
+  box-shadow:
+    0 15px 40px rgba(239, 68, 68, 0.15),
+    inset 0 0 25px rgba(239, 68, 68, 0.08) !important;
+  animation: pulseGlowRed 4s infinite alternate !important;
+}
+
+.contract-card:has(svg stroke="#EF4444"):hover,
+.contract-card:nth-of-type(5):hover {
+  border-color: rgba(239, 68, 68, 0.8) !important;
+  box-shadow:
+    0 25px 50px rgba(239, 68, 68, 0.3),
+    inset 0 0 35px rgba(239, 68, 68, 0.18) !important;
+}
+
+/* Strict 2x2 Grid Layout for Module 2 Container */
+.contract-card:nth-of-type(5) div[style*="grid"],
+.contract-card:has(svg stroke="#EF4444") div[style*="grid"] {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1.25rem !important;
+}
+
+@media (max-width: 768px) {
+  .contract-card:nth-of-type(5) div[style*="grid"],
+  .contract-card:has(svg stroke="#EF4444") div[style*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Restart Penalty Individual Grid Item Styling */
+.contract-card:nth-of-type(5) div[style*="background"],
+.contract-card:has(svg stroke="#EF4444") div[style*="background"] {
+  border-radius: 0.85rem !important;
+  padding: 1.25rem !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  backdrop-filter: blur(10px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+/* Sub-card 1: Immediate Core ELO Excise */
+.contract-card:nth-of-type(5) div[style*="background"]:nth-child(1) {
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.28) 0%,
+    rgba(15, 23, 42, 0.95) 100%
+  ) !important;
+  border: 1px solid rgba(220, 38, 38, 0.5) !important;
+  grid-column: 1 / 2 !important;
+  grid-row: 1 / 2 !important;
+}
+
+/* Sub-card 2: Dynamic Marks Penalty Deficit */
+.contract-card:nth-of-type(5) div[style*="background"]:nth-child(2) {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.28) 0%,
+    rgba(15, 23, 42, 0.95) 100%
+  ) !important;
+  border: 1px solid rgba(245, 158, 11, 0.5) !important;
+  grid-column: 2 / 3 !important;
+  grid-row: 1 / 2 !important;
+}
+
+/* Sub-card 3: Strict One-Time Usage Limit */
+.contract-card:nth-of-type(5) div[style*="background"]:nth-child(3) {
+  background: linear-gradient(
+    135deg,
+    rgba(2, 132, 199, 0.28) 0%,
+    rgba(15, 23, 42, 0.95) 100%
+  ) !important;
+  border: 1px solid rgba(2, 132, 199, 0.5) !important;
+  grid-column: 1 / 2 !important;
+  grid-row: 2 / 3 !important;
+}
+
+/* Sub-card 4: High-Rated Contestants Prohibition */
+.contract-card:nth-of-type(5) div[style*="background"]:nth-child(4) {
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.35) 0%,
+    rgba(35, 10, 10, 0.98) 100%
+  ) !important;
+  border: 1px solid rgba(220, 38, 38, 0.7) !important;
+  grid-column: 2 / 3 !important;
+  grid-row: 2 / 3 !important;
+}
+
+/* Sub-card 5: Bracket Difficulty & Session Accuracy Formulation (Full Width Span Row 3) */
+.contract-card:nth-of-type(5) div[style*="grid-column: 1 / -1"] {
+  grid-column: 1 / -1 !important;
+  grid-row: 3 / 4 !important;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.96) 0%,
+    rgba(15, 23, 42, 0.99) 100%
+  ) !important;
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+}
+
+@media (max-width: 768px) {
+  .contract-card:nth-of-type(5) div[style*="background"]:nth-child(1),
+  .contract-card:nth-of-type(5) div[style*="background"]:nth-child(2),
+  .contract-card:nth-of-type(5) div[style*="background"]:nth-child(3),
+  .contract-card:nth-of-type(5) div[style*="background"]:nth-child(4),
+  .contract-card:nth-of-type(5) div[style*="grid-column: 1 / -1"] {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+}
+
+/* Optimized Proper Font Size for ELO / Max Usage Values to prevent wrapping/overflow */
+.contract-card:nth-of-type(5) span[style*="font-family: var(--font-math)"],
+.contract-card:has(svg stroke="#EF4444")
+  span[style*="font-family: var(--font-math)"] {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  white-space: nowrap !important;
+}
+
+.contract-card:nth-of-type(5) span,
+.contract-card:nth-of-type(5) div,
+.contract-card:has(svg stroke="#EF4444") span,
+.contract-card:has(svg stroke="#EF4444") div {
+  color: #ffffff !important;
+}
+
+.contract-card:nth-of-type(5) div[style*="font-size: 0.8rem"],
+.contract-card:has(svg stroke="#EF4444") div[style*="font-size: 0.8rem"] {
+  color: #f1f5f9 !important;
+  font-size: 0.9rem !important;
+  line-height: 1.7 !important;
+}
+
+/* Restart Penalty Grid Item Hover Effects */
+.contract-card:nth-of-type(5) div[style*="background"]:hover {
+  transform: translateY(-5px) scale(1.01) !important;
+  box-shadow:
+    0 15px 30px rgba(0, 0, 0, 0.7),
+    0 0 25px rgba(239, 68, 68, 0.35) !important;
+  border-color: rgba(239, 68, 68, 0.9) !important;
+}
+
+/* ==========================================================================
+   Smooth Timer Progress Bar Animation
+   ========================================================================== */
+
+#contract-progress-bar {
+  background: linear-gradient(
+    90deg,
+    #0284c7 0%,
+    #38bdf8 50%,
+    #10b981 100%
+  ) !important;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.6) !important;
+  transition: width 1s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  will-change: width !important;
+}
+
+/* ==========================================================================
+   Interactive Controls, Modes & Action Buttons
+   ========================================================================== */
+
+.mode-selector-card {
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+.radio-mode-group label {
+  transition: all 0.3s ease !important;
+}
+
+.radio-mode-group label:hover {
+  background: rgba(56, 189, 248, 0.15) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+#unrated-jade-banner {
+  animation: pulseGlowGreen 3s infinite alternate !important;
+}
+
+button,
+.btn-primary,
+.btn-secondary {
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 0 30px rgba(14, 165, 233, 0.7) !important;
+  filter: brightness(1.15) !important;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-3px) scale(1.02) !important;
+}
+
+/* ==========================================================================
+   Keyframe Animations
+   ========================================================================== */
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlowRed {
+  0% {
+    box-shadow:
+      0 15px 40px rgba(239, 68, 68, 0.15),
+      inset 0 0 25px rgba(239, 68, 68, 0.08);
+  }
+  100% {
+    box-shadow:
+      0 20px 50px rgba(239, 68, 68, 0.32),
+      inset 0 0 35px rgba(239, 68, 68, 0.18);
+  }
+}
+
+@keyframes pulseGlowGreen {
+  0% {
+    box-shadow:
+      0 0 30px rgba(16, 185, 129, 0.35),
+      inset 0 0 20px rgba(16, 185, 129, 0.18);
+  }
+  100% {
+    box-shadow:
+      0 0 45px rgba(16, 185, 129, 0.55),
+      inset 0 0 30px rgba(16, 185, 129, 0.28);
+  }
+}

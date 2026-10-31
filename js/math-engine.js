@@ -467,74 +467,113 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
 
 /**
  * Conceptual Mathematical Hint Generator
- * Generates insightful number theory hints without revealing the full answer.
- * Enforces Fermat Clue Blocker for ELO ≥ 1800 semiprime composites (N = p * q).
+ * Generates hyper-theoretical, cryptic number theory statements scaled dynamically by competitor ELO.
+ * Strictly adheres to 15-20 words max, 1-2 punchy sentences, and firewall lockouts.
+ *
+ * @param {number} targetNumber Target composite number
+ * @param {number|null} userElo Competitor ELO rating
+ * @param {boolean|null} isRated Match participation mode (rated vs unrated practice)
+ * @returns {string} Mathematical hint or firewall rejection string
  */
-export function generateConceptualHint(targetNumber, userElo = null) {
+export function generateConceptualHint(targetNumber, userElo = null, isRated = null) {
   const factors = factorize(targetNumber);
   const smallestPrime = factors[0];
-  const distinctPrimes = [...new Set(factors)];
-  const currentElo = Number(userElo !== null && userElo !== undefined ? userElo : (localStorage.getItem('primefactor_elo') || 500));
+  const eloSource = (userElo !== null && userElo !== undefined)
+    ? Number(userElo)
+    : Number(localStorage.getItem('primefactor_elo') || 500);
+  const currentElo = isNaN(eloSource) ? 500 : eloSource;
 
-  // ==========================================================================
-  // FERMAT CLUE BLOCKER (ELO ≥ 1800):
-  // For any 2-factor composites (N = p * q), intercepts and blocks standard
-  // difference-of-squares clues. Enforces complex alternative number theory hints
-  // (Euler's Totient identities or Chinese Remainder Theorem residues).
-  // ==========================================================================
-  if (currentElo >= 1800 && factors.length === 2) {
-    const p = factors[0];
-    const q = factors[1];
-    const phi = (p - 1) * (q - 1);
-    const sumPQ = p + q;
+  // Resolve rated mode (explicit boolean argument, or inspect session state, default true)
+  let rated = true;
+  if (typeof isRated === 'boolean') {
+    rated = isRated;
+  } else {
+    try {
+      const stored = sessionStorage.getItem('primefactor_active_exam_params');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.participationMode === 'practice' || parsed.participationMode === 'unrated' || parsed.isForcedUnrated) {
+          rated = false;
+        }
+      }
+    } catch (_) {
+      rated = true;
+    }
+  }
 
+  // 7. ELO ≥ 3000 (Prime Singularity - Hard Absolute Suppression):
+  // Hard-lock regardless of mode returning critical fault string
+  if (currentElo >= 3000) {
+    return '❌ CRITICAL FAULT: Full-bandwidth unassisted integer decomposition required. Cognitive singularity has suppressed all heuristics.';
+  }
+
+  // RATED CONTEST GATEKEEPER (ELO ≥ 1400):
+  // If the match is a "Rated Contest" and competitor ELO is ≥ 1400, strictly locked out.
+  // Advanced competitors can ONLY view advanced hints in "Unrated Practice" mode (Safe-Zone Exception).
+  if (rated && currentElo >= 1400) {
+    return '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+  }
+
+  // 6. 2400 ≤ ELO < 3000 (Canonical Analyst Domain - Unrated Practice Only)
+  if (currentElo >= 2400) {
+    if (targetNumber % 2 !== 0 && targetNumber % 3 !== 0) {
+      return "Apply Hensel's p-adic Lemma to lift local roots into high-order structures Z_p. Isolate the ramified ideal.";
+    }
+    return "Ramified prime ideal valuations govern local decomposition. Lift singular modular roots via Hensel's p-adic lemma in Z_p.";
+  }
+
+  // 5. 1800 ≤ ELO < 2400 (Eulerian Sentinel Bracket - Unrated Practice Only)
+  if (currentElo >= 1800) {
+    if (factors.length === 2 && targetNumber % 2 !== 0) {
+      return "Universal Carmichael exponent λ(N) obeys the Selberg Trace Formula. Map factors via quadratic residue invariants.";
+    }
+    return "Dedekind Zeta functional poles dictate modular forms. Compute Carmichael exponent λ(N) via high-order Selberg trace invariants.";
+  }
+
+  // 4. 1400 ≤ ELO < 1800 (Logarithmic Vector Arena - Unrated Practice Only)
+  if (currentElo >= 1400) {
+    if (factors.length === 2) {
+      return "Fermat Clue Blocker engaged. Totient identity satisfies φ(N) = (p-1)(q-1). Derive roots from the local quadratic ring.";
+    }
+    return "Standard Fermat difference blocked. Totient mapping φ(N) governs divisors; compute quadratic roots in the modular coordinate ring.";
+  }
+
+  // 3. 1200 ≤ ELO < 1400 (Modular Operator Fields)
+  if (currentElo >= 1200) {
     if (targetNumber % 2 !== 0) {
-      return `🛡️ Fermat Clue Blocker Engaged (ELO ≥ 1800): Target is semiprime N = p × q. Totient identity reveals φ(N) = (p-1)(q-1) = ${phi}, with factor sum (p+q) = ${sumPQ}. Deduce p and q from quadratic roots of x² - (${sumPQ})x + ${targetNumber} = 0.`;
-    } else {
-      const rem = targetNumber % (q - 1);
-      return `🛡️ Fermat Clue Blocker Engaged (ELO ≥ 1800): Target is semiprime N = p × q. CRT residue analysis: N ≡ ${rem} (mod ${q - 1}). Reconstruct prime divisors using Euler totient residue congruences.`;
+      return "Integer maps onto a non-trivial algebraic norm. Apply continued fraction convergents p_k/q_k to split the composite.";
     }
+    return "Algebraic norm satisfies Pell equation convergents. Resolve continued fraction quotients p_k/q_k to split composite factors.";
   }
 
-  // Strategy 1: Even number
+  // 2. 900 ≤ ELO < 1200 (Radix Scholar Heuristics)
+  if (currentElo >= 900) {
+    if (targetNumber % 2 !== 0) {
+      return "Modulo verification confirms the Legendre Symbol shifts for explicit prime bases. Audit the Jacobi residue.";
+    }
+    return "Even parity shifts quadratic character bounds. Evaluate Legendre symbol transitions across fundamental prime density limits.";
+  }
+
+  // 1. 700 ≤ ELO < 900 (Sieve Calibrator Floor)
+  if (currentElo >= 700) {
+    if (targetNumber % 2 !== 0) {
+      return "The composite exhibits a primitive Dirichlet density mapping. Evaluate the lowest non-trivial residue class.";
+    }
+    return "Residue spectrum n ≡ 0 (mod 2) bounds arithmetic progressions. Audit the primary Dirichlet density bound.";
+  }
+
+  // Fallback for ELO < 700 (Classical basic checks - short, punchy)
   if (targetNumber % 2 === 0) {
-    let powerOfTwo = 0;
-    let temp = targetNumber;
-    while (temp % 2 === 0) {
-      powerOfTwo++;
-      temp /= 2;
-    }
-    if (powerOfTwo > 1) {
-      return `Target is a multiple of ${Math.pow(2, powerOfTwo)} (2^${powerOfTwo}). Extract powers of 2 first.`;
-    }
-    return `Target is an even integer (ends in ${targetNumber % 10}), meaning 2 is its smallest prime factor.`;
+    return "Target is an even integer. Extract prime factor 2 first.";
   }
-
-  // Strategy 2: Ends in 5
   if (targetNumber % 5 === 0) {
-    return `Target ends in ${targetNumber % 10}, revealing that 5 is a prime divisor. Divide by 5 to isolate the remaining factors.`;
+    return "Terminal digit is 5. Target is divisible by prime factor 5.";
   }
-
-  // Strategy 3: Sum of digits rule (divisible by 3 or 9)
   const digitSum = String(targetNumber).split('').reduce((acc, d) => acc + Number(d), 0);
-  if (digitSum % 9 === 0) {
-    return `The sum of digits is ${digitSum} (divisible by 9), meaning target contains at least 3² = 9.`;
-  }
   if (digitSum % 3 === 0) {
-    return `The sum of digits is ${digitSum} (divisible by 3), guaranteeing 3 as a prime divisor.`;
+    return "Sum of digits is divisible by 3. Extract factor 3.";
   }
-
-  // Strategy 4: Difference of squares check: n ~ a^2 - b^2
-  const root = Math.ceil(Math.sqrt(targetNumber));
-  for (let a = root; a <= root + 15; a++) {
-    const b2 = a * a - targetNumber;
-    const b = Math.round(Math.sqrt(b2));
-    if (b * b === b2 && b > 0) {
-      return `Algebraic clue: Target equals ${a}² - ${b}² = (${a}-${b})(${a}+${b}). Investigate ${a - b} and ${a + b}.`;
-    }
-  }
-
-  // Strategy 5: Smallest prime divisor
-  return `Olympiad clue: The smallest prime factor dividing this number is ${smallestPrime}. Target decomposes into ${factors.length} total prime factors.`;
+  return `Target has ${factors.length} prime factors. Lowest prime divisor is ${smallestPrime}.`;
 }
+
 
