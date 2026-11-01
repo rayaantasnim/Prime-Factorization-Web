@@ -1,70 +1,556 @@
-/* মোবাইল এবং ছোট স্ক্রিনের জন্য প্রিসাইজ ভার্টিক্যাল লেআউট */
+/* =================================================================
+   PrimeFactor.app — Advanced Number Theory Training Arena (edu.css)
+   Elite Modern Glassmorphic & Mathematical Pedagogical CSS Architecture
+   ================================================================= */
+
+:root {
+  /* Core Color Palette */
+  --bg-core: #030712;
+  --bg-surface: #0b0f19;
+  
+  /* Light High-Contrast Card System */
+  --bg-card-light: #FFFFFF;
+  --bg-card-light-hover: #F8FAFC;
+  --border-card-light: #E2E8F0;
+  
+  /* High-Contrast Text Tokens */
+  --text-dark-primary: #0F172A;
+  --text-dark-secondary: #334155;
+  --text-dark-muted: #475569;
+  
+  --text-light-primary: #F8FAFC;
+  --text-light-muted: #94A3B8;
+  
+  /* Brand Accents */
+  --accent-cyan: #0284C7;
+  --accent-cyan-light: #38BDF8;
+  --accent-blue: #0EA5E9;
+  --accent-emerald: #059669;
+  --accent-amber: #D97706;
+  
+  /* Typography & Dynamics */
+  --font-heading: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-math: 'Fira Code', Consolas, Monaco, monospace;
+  
+  --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Base Body Styling */
+body {
+  background-color: var(--bg-core);
+  color: var(--text-light-primary);
+  font-family: var(--font-heading);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =================================================================
+   SECTION & TYPOGRAPHY HEADERS
+   ================================================================ */
+.section-head {
+  position: relative;
+  text-align: center;
+  max-width: 52rem;
+  margin: 0 auto 3rem auto;
+  animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.section-kicker {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-cyan-light);
+  background: rgba(56, 189, 248, 0.12);
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  margin-bottom: 1rem;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+  transition: var(--transition-smooth);
+}
+
+.section-kicker:hover {
+  background: rgba(56, 189, 248, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 900;
+  color: var(--text-light-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #FFFFFF 40%, #38BDF8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-desc {
+  font-size: 1.05rem;
+  color: var(--text-light-muted);
+  line-height: 1.7;
+}
+
+.heading-section {
+  font-size: 1.65rem;
+  color: var(--text-light-primary);
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* =================================================================
+   EDU BLOCKS (MAIN CONTAINERS)
+   ================================================================ */
+.edu-block {
+  position: relative;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 1.5rem;
+  padding: 2.25rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: var(--transition-smooth);
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.edu-block:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(56, 189, 248, 0.25);
+}
+
+.section-bg-image-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.section-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.15;
+  transform: scale(1.05);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.edu-block:hover .section-bg-image {
+  transform: scale(1.12);
+}
+
+.section-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(3, 7, 18, 0.85) 0%, rgba(3, 7, 18, 0.95) 100%);
+}
+
+.edu-block > *:not(.section-bg-image-wrap) {
+  position: relative;
+  z-index: 1;
+}
+
+.edu-block-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.edu-block-num {
+  font-family: var(--font-math);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--accent-cyan-light);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+  transition: var(--transition-spring);
+}
+
+.edu-block:hover .edu-block-num {
+  transform: scale(1.1) rotate(5deg);
+  background: rgba(56, 189, 248, 0.25);
+}
+
+.edu-block-title-wrap h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-light-primary);
+  margin: 0 0 0.25rem 0;
+}
+
+.edu-block-title-wrap p {
+  font-size: 0.9rem;
+  color: var(--text-light-muted);
+  margin: 0;
+}
+
+/* =================================================================
+   HIGH CONTRAST WHITE CARDS & GRID
+   ================================================================ */
+.edu-subcards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Pure White High-Contrast Card */
+.edu-subcard {
+  position: relative;
+  background: var(--bg-card-light);
+  border: 1px solid var(--border-card-light);
+  border-radius: 1.15rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: var(--transition-spring);
+  overflow: hidden;
+}
+
+.edu-subcard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #0284C7, #38BDF8);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.edu-subcard:hover {
+  transform: translateY(-5px) scale(1.01);
+  background: var(--bg-card-light-hover);
+  border-color: #CBD5E1;
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.35), 0 0 20px rgba(56, 189, 248, 0.2);
+}
+
+.edu-subcard:hover::before {
+  opacity: 1;
+}
+
+/* Text Readability inside White Cards */
+.edu-subcard h3,
+.edu-subcard h4 {
+  font-size: 1.15rem;
+  color: var(--text-dark-primary) !important;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.35;
+}
+
+.edu-subcard p {
+  font-size: 0.9rem;
+  color: var(--text-dark-secondary) !important;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+  text-align: justify;
+}
+
+.edu-subcard p strong {
+  color: var(--text-dark-primary) !important;
+  font-weight: 700;
+}
+
+.edu-subcard p em {
+  color: var(--text-dark-muted) !important;
+}
+
+/* Card Badge/Tag Styling */
+.edu-subcard-tag {
+  display: inline-block;
+  font-size: 0.725rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #0369A1;
+  background: #E0F2FE;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid #BAE6FD;
+  margin-bottom: 0.75rem;
+  width: max-content;
+}
+
+/* Math Display Equations inside White Cards */
+.edu-math-example {
+  font-family: var(--font-math);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A !important;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.75rem;
+  margin: 0.75rem 0;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* =================================================================
+   INTERACTIVE SANDBOX SECTION
+   ================================================================ */
+.edu-sandbox-card {
+  position: relative;
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(3, 7, 18, 0.95));
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 1.75rem;
+  padding: 2.5rem;
+  margin-top: 3rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.15);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.sandbox-strategy-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.sandbox-strat-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-light-muted);
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition-spring);
+}
+
+.sandbox-strat-btn:hover {
+  background: rgba(30, 41, 59, 0.9);
+  color: var(--text-light-primary);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-2px);
+}
+
+.sandbox-strat-btn.active {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  color: #FFFFFF;
+  border-color: #38BDF8;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+  transform: translateY(-2px);
+}
+
+.sandbox-input-row {
+  display: flex;
+  gap: 1rem;
+  max-width: 32rem;
+  margin: 0 auto 1.5rem auto;
+}
+
+.sandbox-input {
+  flex: 1;
+  background: rgba(3, 7, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.85rem;
+  color: var(--text-light-primary);
+  font-family: var(--font-math);
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 0.85rem 1.25rem;
+  outline: none;
+  transition: var(--transition-smooth);
+}
+
+.sandbox-input:focus {
+  border-color: var(--accent-cyan-light);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  color: #FFFFFF;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 0.85rem 1.75rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  cursor: pointer;
+  transition: var(--transition-spring);
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+  border-color: #FFFFFF;
+}
+
+.sandbox-steps-output {
+  background: rgba(3, 7, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.sandbox-step-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  transition: var(--transition-smooth);
+}
+
+.sandbox-step-item:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(56, 189, 248, 0.3);
+  transform: translateX(4px);
+}
+
+.step-badge {
+  font-family: var(--font-math);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--accent-cyan-light);
+  text-transform: uppercase;
+}
+
+/* =================================================================
+   ANIMATIONS & KEYFRAMES
+   ================================================================ */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =================================================================
+   RESPONSIVE DESIGN (BREAKPOINTS FOR SMALL SCREENS & MOBILE)
+   ================================================================ */
+@media screen and (max-width: 1024px) {
+  .edu-block {
+    padding: 1.75rem;
+  }
+}
+
 @media screen and (max-width: 768px) {
-  /* প্যারেন্ট কন্টেইনারকে জোরপূর্বক সিঙ্গেল কলাম ভার্টিক্যাল গ্রিডে রূপান্তর */
+  /* Force single column card layout on mobile with low padding/margins */
   .edu-subcards-grid {
     display: grid !important;
     grid-template-columns: 1fr !important;
     grid-template-rows: auto !important;
-    gap: 20px !important;
+    gap: 12px !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    margin: 0 !important;
   }
 
-  /* প্রতিটি কার্ডের হাইট অটো করা হলো যেন ভেতরের টেক্সট অনুযায়ী হাইট বাড়ে এবং ওভারল্যাপ না হয় */
+  /* Compact Card Layout for Mobile Screens */
   .edu-subcard {
     width: 100% !important;
     height: auto !important;
     min-height: min-content !important;
-    display: flex !important;
-    flex-direction: column !important;
-    position: relative !important;
+    padding: 1rem !important;
+    margin: 0 !important;
     box-sizing: border-box !important;
-    overflow: hidden !important; /* ভেতরের উপাদান বাইরে ছিটকে যাওয়া রোধ করতে */
+    border-radius: 0.85rem !important;
   }
 
-  /* ম্যাথ ইকুয়েশন যেন কার্ডের বর্ডার ভেঙে বাইরে না যায় */
+  .edu-subcard p {
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .edu-block {
+    padding: 1rem !important;
+    margin-bottom: 1.25rem !important;
+    border-radius: 1rem !important;
+  }
+
+  .edu-sandbox-card {
+    padding: 1.25rem !important;
+    margin-top: 2rem !important;
+    border-radius: 1rem !important;
+  }
+
+  .sandbox-input-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .sandbox-strategy-select {
+    flex-direction: column;
+  }
+
+  .sandbox-strat-btn {
+    width: 100%;
+    text-align: center;
+  }
+
   .edu-math-example {
     width: 100% !important;
     white-space: nowrap !important;
-    overflow-x: auto !important; /* ইকুয়েশন বড় হলে কার্ডের ভেতরেই স্ক্রল হবে, লেআউট ভাঙবে না */
-    font-size: 1.2rem !important;
-    margin: 10px 0 !important;
+    overflow-x: auto !important;
+    font-size: 0.925rem !important;
+    padding: 0.5rem 0.65rem !important;
+    margin: 0.5rem 0 !important;
   }
 
-  /* প্যারাগ্রাফের টেক্সট র‍্যাপ নিশ্চিত করা */
-  .edu-subcard p {
-    white-space: normal !important;
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-    margin: 0 !important;
-  }
-}
-
-/* Base styles for desktop / large screens */
-.heading-section {
-  font-size: 1.65rem;
-  color: #000000;
-  font-weight: 800;
-  margin: 0;
-}
-
-/* Tablets and small laptops (max-width: 768px) */
-@media screen and (max-width: 768px) {
   .heading-section {
-    font-size: 1.45rem;
+    font-size: 1.35rem !important;
+  }
+
+  .section-title {
+    font-size: 1.8rem !important;
   }
 }
 
-/* Mobile devices in landscape and larger phones (max-width: 576px) */
-@media screen and (max-width: 576px) {
-  .heading-section {
-    font-size: 1.25rem;
+@media screen and (max-width: 480px) {
+  .edu-block,
+  .edu-subcard,
+  .edu-sandbox-card {
+    padding: 0.75rem !important;
   }
-}
 
-/* Small mobile devices (max-width: 375px) */
-@media screen and (max-width: 375px) {
-  .heading-section {
-    font-size: 1.1rem;
+  .section-head {
+    margin-bottom: 1.75rem !important;
   }
 }

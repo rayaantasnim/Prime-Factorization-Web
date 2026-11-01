@@ -1,672 +1,2652 @@
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Number Theory Training Arena — PrimeFactor.app</title>
-  <meta name="description" content="Exhaustive textbook-style pedagogical resource for Math Olympiad competitors: Absolute Basics, Core Divisibility Rules (2-10), Advanced Cognitive Heuristics, and Zero-Timer Calculation Sandbox." />
-  <meta property="og:title" content="Number Theory Training Arena — PrimeFactor.app" />
-  <meta property="og:description" content="Textbook pedagogical guide: Prime definitions, Fundamental Theorem of Arithmetic, Divisibility Rules 2-10, and Olympiad heuristics." />
-  <meta property="og:type" content="website" />
-  <meta property="author" content="Rayaan Tasnim" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Number Theory Training Arena — PrimeFactor.app</title>
+    <!-- Standard Meta Tags -->
+    <meta
+      name="description"
+      content="Master Math Olympiad number theory with PrimeFactor.app. Explore comprehensive guides on prime factorization, quick divisibility rules, modular arithmetic, Diophantine equations, and cryptographic frameworks like RSA."
+    />
+    <meta
+      name="keywords"
+      content="number theory, prime factor, math olympiad, unique factorization theorem, divisibility rules, fermat difference of squares, euler totient, chinese remainder theorem, diophantine equations, rsa encryption, rayaan tasnim"
+    />
+    <meta name="author" content="Rayaan Tasnim, Olympiad Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
-  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="css/edu.css"/>
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://rayaantasnim.github.io/Prime-Factorization-Web/"
+    />
+    <meta property="og:site_name" content="PrimeFactor.app" />
+    <meta
+      property="og:description"
+      content="An exhaustive, textbook-style pedagogical resource for number theory. Progress sequentially from foundational arithmetic axioms to hyper-advanced Math Olympiad speed shortcuts."
+    />
+    <meta
+      property="og:image"
+      content="https://images.pexels.com/photos/5905965/pexels-photo-5905965.jpeg"
+    />
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-</head>
-<body>
-  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
-  <div id="flash-overlay" aria-hidden="true"></div>
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:description"
+      content="Decompose integers and master advanced modular congruences with our step-by-step mathematical guides built for competition math."
+    />
+    <meta
+      name="twitter:image"
+      content="https://images.pexels.com/photos/5905965/pexels-photo-5905965.jpeg"
+    />
 
-  <!-- Persistent Global Top Header with Dropdown Navigation -->
-  <header class="fixed-header">
-    <div class="header-container">
-      <!-- Left: Minimalist Logo + Brand Text -->
-      <a href="./index.html" class="brand-lockup">
-        <span class="brand-symbol">Π</span>
-        <span class="brand-text"  style="color:white;">Prime Factor<span class="dot-app">.app</span></span>
-      </a>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="css/edu.css" />
 
-      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
-      <div style="position: relative;">
-        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
-          <div class="hamburger-bars">
-            <span class="hamburger-bar"></span>
-            <span class="hamburger-bar"></span>
-            <span class="hamburger-bar"></span>
-          </div>
-          <span>Navigation</span>
-        </button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  </head>
+  <body>
+    <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+    <div id="flash-overlay" aria-hidden="true"></div>
 
-        <!-- Dropdown Box (Frosted Glass with 6 links + mobile System link) -->
-        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
-          <a href="./index.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-              <span>Home Page</span>
+    <!-- Persistent Global Top Header with Dropdown Navigation -->
+    <header class="fixed-header">
+      <div class="header-container">
+        <!-- Left: Minimalist Logo + Brand Text -->
+        <a href="./index.html" class="brand-lockup">
+          <span class="brand-symbol">Π</span>
+          <span class="brand-text" style="color: white"
+            >Prime Factor<span class="dot-app">.app</span></span
+          >
+        </a>
+
+        <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+        <div style="position: relative">
+          <button
+            id="menu-toggle"
+            class="nav-hamburger-btn nav-dropdown-trigger"
+            aria-label="Toggle Navigation Menu"
+            aria-expanded="false"
+          >
+            <div class="hamburger-bars">
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
             </div>
-            <span class="dropdown-badge">Hub</span>
-          </a>
-
-          <a href="./rules.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-              <span>Rules</span>
-            </div>
-            <span class="dropdown-badge">Policies</span>
-          </a>
-
-          <a href="./rating.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="20" x2="18" y2="10"></line>
-                <line x1="12" y1="20" x2="12" y2="4"></line>
-                <line x1="6" y1="20" x2="6" y2="14"></line>
-              </svg>
-              <span>Rating</span>
-            </div>
-            <span class="dropdown-badge">Matrix</span>
-          </a>
-
-          <a href="./edu.html" class="dropdown-link-item active" style="background: rgba(14, 165, 233, 0.15); border-left: 3px solid #38BDF8;">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                <path d="M6 6h10"></path>
-                <path d="M6 10h10"></path>
-              </svg>
-              <span>Edu</span>
-            </div>
-            <span class="dropdown-badge" style="background: #0284C7; color: #FFFFFF;">Training</span>
-          </a>
-
-          <a href="./services.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-              </svg>
-              <span>Services</span>
-            </div>
-            <span class="dropdown-badge">Facilities</span>
-          </a>
-
-          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                <path d="M4 22h16"></path>
-                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
-                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-              </svg>
-              <span>Contest</span>
-            </div>
-            <span class="dropdown-badge">Arena</span>
-          </a>
-
-          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              <span>Profile</span>
-            </div>
-            <span class="dropdown-badge">Overview</span>
-          </a>
-
-                    <a href="./faq.html" class="dropdown-link-item" id="dropdown-faq">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                <path d="M6 6h10"></path>
-                <circle cx="12" cy="14" r="1"></circle>
-                <path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"></path>
-              </svg>
-              <span>FAQ</span>
-            </div>
-            <span class="dropdown-badge">Archive</span>
-          </a>
-
-          <!-- Desktop Settings Link -->
-          <a href="./engine.html" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span>Settings</span>
-            </div>
-            <span class="dropdown-badge">Options</span>
-          </a>
-
-          <!-- Mobile-only System link -->
-          <a href="./engine.html" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span>System</span>
-            </div>
-            <span class="dropdown-badge">Engine</span>
-          </a>
-        </nav>
-      </div>
-
-      <!-- Right: Standalone Settings Gear Icon -->
-      <div class="header-actions">
-        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
-          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
-            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Global Settings Modal Slot -->
-  <div id="settings-modal-slot"></div>
-
-  <main class="main-wrapper" style="padding-top: 5.5rem; padding-bottom: 4rem;">
-    <div class="content-container">
-      
-      <!-- Section Header -->
-      <div class="section-head" style="margin-bottom: 2.5rem;">
-        <span class="section-kicker">Theoretical Foundations &amp; Competition Shortcuts</span>
-        <h1 class="section-title">Number Theory Training Arena</h1>
-        <p class="section-desc">
-          An exhaustive, textbook-style pedagogical resource. Progress sequentially from foundational arithmetic axioms to rapid mental divisibility laws and hyper-advanced Math Olympiad speed shortcuts.
-        </p>
-      </div>
-
-      <!-- =========================================================
-           SECTION A: ABSOLUTE BASICS (TARGET: BEGINNERS)
-           ========================================================= -->
-      <div style="margin-bottom: 3.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
-          <span style="background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color: #FFFFFF; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; letter-spacing: 0.06em; white-space: nowrap !important;">SECTION A</span>
-
-          <h2 class="heading-section">Absolute Basics · Foundational Axioms</h2>
-        </div>
-        <p style="color:#000000; font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 54rem;">
-          The building blocks of integer arithmetic. Before deploying speed shortcuts, every competitor must solidify the conceptual core of primes, composites, and canonical factorization trees.
-        </p>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 1.5rem;">
-          
-          <!-- Card A1: Primes vs Composites -->
-          <div class="edu-block" style="margin-bottom: 0;">
-            <div class="section-bg-image-wrap">
-              <img class="section-bg-image" src="https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Chalkboard math formulas" loading="lazy" />
-              <div class="section-bg-overlay"></div>
-            </div>
-            <div style="position: relative; z-index: 1;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                <span class="edu-subcard-tag" style="background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4);">Axiom 1.1</span>
-                <span class="font-math font-bold" style="color: #10B981;">p &gt; 1</span>
-              </div>
-              <h3 style="font-size: 1.35rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.75rem;">Prime vs. Composite Numbers</h3>
-              <p style="font-size: 0.925rem; color: white; text-align: justify; line-height: 1.6; margin-bottom: 1rem;">
-                A <strong>prime number</strong> is an integer strictly greater than 1 whose only positive divisors are 1 and itself. A <strong>composite number</strong> possesses at least one divisor other than 1 and itself, meaning it can be fractured into smaller integer factors.
-              </p>
-              <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 0.75rem; padding: 0.85rem; margin-bottom: 0.75rem;">
-                <div style="font-size: 0.75rem; color: #38BDF8; font-weight: 700; text-transform: uppercase; margin-bottom: 0.35rem;">First 10 Prime Atoms:</div>
-                <div class="font-math font-bold" style="font-size: 1.15rem; color: #FFFFFF; letter-spacing: 0.05em;">2, 3, 5, 7, 11, 13, 17, 19, 23, 29</div>
-              </div>
-              <p style="font-size: 0.825rem; color: white; text-align: justify; line-height: 1.5;">
-                <em>Crucial Note:</em> The integer <strong>1</strong> is neither prime nor composite by definition. The number <strong>2</strong> is the only even prime in existence.
-              </p>
-            </div>
-          </div>
-
-          <!-- Card A2: Fundamental Theorem of Arithmetic -->
-          <div class="edu-block" style="margin-bottom: 0;">
-            <div class="section-bg-image-wrap">
-              <img class="section-bg-image" src="https://images.pexels.com/photos/3747468/pexels-photo-3747468.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Geometric blueprints" loading="lazy" />
-              <div class="section-bg-overlay"></div>
-            </div>
-            <div style="position: relative; z-index: 1;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                <span class="edu-subcard-tag" style="background: rgba(14, 165, 233, 0.2); color: #38BDF8; border: 1px solid rgba(14, 165, 233, 0.4);">Axiom 1.2</span>
-                <span class="font-math font-bold" style="color: #38BDF8;">n = ∏ pᵢ^aᵢ</span>
-              </div>
-              <h3 style="font-size: 1.35rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.75rem;">Fundamental Theorem of Arithmetic</h3>
-              <p style="font-size: 0.925rem; color: white; text-align: justify; line-height: 1.6; margin-bottom: 1rem;">
-                Also known as the <strong>Unique Factorization Theorem</strong>: Every integer $n &gt; 1$ can be represented as a product of prime numbers in <em>exactly one way</em>, disregarding the order of the multipliers.
-              </p>
-              <div class="edu-math-example" style="font-size: 1.2rem; margin-bottom: 0.75rem;">
-                n = p₁ᵃ¹ &times; p₂ᵃ² &times; ... &times; pₖᵃᵏ
-              </div>
-              <p style="font-size: 0.85rem; color: #FFFFFF; text-align: justify; line-height: 1.5;">
-                Because prime decomposition is immutable and unique, factorization provides the mathematical "DNA" of every number. If two competitors factorize <strong>360</strong>, both must inevitably derive $2³ \times 3² \times 5$.
-              </p>
-            </div>
-          </div>
-
-          <!-- Card A3: Factorization Trees -->
-          <div class="edu-block" style="margin-bottom: 0;">
-            <div class="section-bg-image-wrap">
-              <img class="section-bg-image" src="https://images.pexels.com/photos/3825586/pexels-photo-3825586.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Technical drawing instruments" loading="lazy" />
-              <div class="section-bg-overlay"></div>
-            </div>
-            <div style="position: relative; z-index: 1;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                <span class="edu-subcard-tag" style="background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.4);">Axiom 1.3</span>
-                <span class="font-math font-bold" style="color: #F59E0B;">Branching Tree</span>
-              </div>
-              <h3 style="font-size: 1.35rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.75rem;">Prime Factorization Trees</h3>
-              <p style="font-size: 0.925rem; color: #FFFFFF; text-align: justify; line-height: 1.6; margin-bottom: 1rem;">
-                A factor tree decomposes a composite recursively into two convenient non-trivial factors until every terminal leaf is a prime atom.
-              </p>
-              <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 0.75rem; padding: 0.85rem; font-family: var(--font-math); margin-bottom: 0.75rem;">
-                <div style="color: #38BDF8; font-weight: 700; margin-bottom: 0.25rem;">Visual Tree Walk: 60</div>
-                <div style="color: #FFFFFF; font-size: 0.95rem; line-height: 1.5;">
-                  60 &rarr; 6 &times; 10<br />
-                  &nbsp;&nbsp;&bull; 6 &rarr; <span style="color: #10B981; font-weight: 700;">2</span> &times; <span style="color: #10B981; font-weight: 700;">3</span><br />
-                  &nbsp;&nbsp;&bull; 10 &rarr; <span style="color: #10B981; font-weight: 700;">2</span> &times; <span style="color: #10B981; font-weight: 700;">5</span><br />
-                  Collate leaves: <span style="color: #FBBF24; font-weight: 800;">2² &times; 3 &times; 5</span>
-                </div>
-              </div>
-              <p style="font-size: 0.825rem; color: #FFFFFF; text-align: justify;">
-                Any initial branch split (e.g. $4 \times 15$ or $2 \times 30$) always converges to the exact same prime product.
-              </p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- =========================================================
-           SECTION B: CORE DIVISIBILITY RULES (2, 3, 4, 5, 6, 8, 9, 10)
-           ========================================================= -->
-      <div style="margin-bottom: 3.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
-          <span style="background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color: #FFFFFF; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; letter-spacing: 0.06em; white-space: nowrap !important;">SECTION B</span>
-
-          <h2 class="heading-section">Core Divisibility Rules · Case Studies (2 through 10)</h2>
-        </div>
-        <p style="color: #000000; font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 54rem;">
-          Divisibility tests eliminate sluggish trial division. By inspecting terminal digits or modular digit sums, a competitor immediately isolates factors within 200 milliseconds.
-        </p>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1.25rem;">
-
-          <!-- Rule 2 -->
-          <div class="edu-subcard" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
-              <span class="edu-subcard-tag">Divisibility by 2</span>
-              <span class="font-math font-bold" style="color: #10B981;">Mod 2</span>
-            </div>
-            <h4 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.4rem;">Even Terminal Digit</h4>
-            <div class="edu-math-example" style="font-size: 1.05rem;">1,476 &rarr; Ends in 6 (Even)</div>
-            <p style="font-size: 0.88rem; color: #000000; line-height: 1.5;">
-              <strong>Rule:</strong> The integer is divisible by 2 if and only if its last digit is even: {0, 2, 4, 6, 8}. Continuously divide by 2 until the remaining quotient becomes odd.
-            </p>
-          </div>
-
-          <!-- Rule 3 -->
-          <div class="edu-subcard" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
-              <span class="edu-subcard-tag">Divisibility by 3</span>
-              <span class="font-math font-bold" style="color: #38BDF8;">Mod 3</span>
-            </div>
-            <h4 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.4rem;">Sum of Digits Multiple of 3</h4>
-            <div class="edu-math-example" style="font-size: 1.05rem;">831 &rarr; 8 + 3 + 1 = 12</div>
-            <p style="font-size: 0.88rem; color: #000000; line-height: 1.5;">
-              <strong>Rule:</strong> If the sum of all digits is divisible by 3, the entire number is divisible by 3. Since 12 &divide; 3 = 4, 831 &divide; 3 = 277 (prime).
-            </p>
-          </div>
-
-          <!-- Rule 4 -->
-          <div class="edu-subcard" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
-              <span class="edu-subcard-tag">Divisibility by 4</span>
-              <span class="font-math font-bold" style="color: #0EA5E9;">2² Isolation</span>
-            </div>
-            <h4 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.4rem;">Last Two Digits Divisible by 4</h4>
-            <div class="edu-math-example" style="font-size: 1.05rem;">3,524 &rarr; Last 2 Digits: 24</div>
-            <p style="font-size: 0.88rem; color: #000000; line-height: 1.5;">
-              <strong>Rule:</strong> Since 100 = 4 &times; 25, hundreds are always divisible by 4. Only inspect the last two digits. 24 &divide; 4 = 6 &rarr; 3,524 contains 2² = 4.
-            </p>
-          </div>
-
-          <!-- Rule 5 -->
-          <div class="edu-subcard" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
-              <span class="edu-subcard-tag">Divisibility by 5</span>
-              <span class="font-math font-bold" style="color: #10B981;">Mod 5</span>
-            </div>
-            <h4 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.4rem;">Terminal 0 or 5</h4>
-            <div class="edu-math-example" style="font-size: 1.05rem;">2,875 &rarr; Ends in 5</div>
-            <p style="font-size: 0.88rem; color: #000000; line-height: 1.5;">
-              <strong>Rule:</strong> Any integer ending in 0 or 5 contains 5 as a prime divisor. Divide 2,875 by 5 &rarr; 575; by 5 &rarr; 115; by 5 &rarr; 23 (yielding 5³ &times; 23).
-            </p>
-          </div>
-
-          <!-- Rule 6 -->
-          <div class="edu-subcard" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
-              <span class="edu-subcard-tag">Divisibility by 6</span>
-              <span class="font-math font-bold" style="color: #F59E0B;">2 &times; 3 Composite</span>
-            </div>
-            <h4 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.4rem;">Joint 2 and 3 Divisibility</h4>
-            <div class="edu-math-example" style="font-size: 1.05rem;">918 &rarr; Even &amp; 9+1+8 = 18</div>
-            <p style="font-size: 0.88rem; color: #000000; line-height: 1.5;">
-              <strong>Rule:</strong> 6 = 2 &times; 3. The number must be both even (divisible by 2) AND have a digit sum divisible by 3. 918 is even and 18 &divide; 3 = 6 &rarr; divisible by 6.
-            </p>
-          </div>
-
-          <!-- Rule 8 -->
-          <div class="edu-subcard" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
-              <span class="edu-subcard-tag">Divisibility by 8</span>
-              <span class="font-math font-bold" style="color: #38BDF8;">2³ Isolation</span>
-            </div>
-            <h4 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.4rem;">Last Three Digits Divisible by 8</h4>
-            <div class="edu-math-example" style="font-size: 1.05rem;">5,128 &rarr; Last 3 Digits: 128</div>
-            <p style="font-size: 0.88rem; color: #000000; line-height: 1.5;">
-              <strong>Rule:</strong> Since 1,000 = 8 &times; 125, test the last 3 digits. 128 &divide; 8 = 16. Fast shortcut: If hundreds digit is odd, test if last 2 digits + 4 is divisible by 8 (28+4 = 32).
-            </p>
-          </div>
-
-          <!-- Rule 9 -->
-          <div class="edu-subcard" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
-              <span class="edu-subcard-tag">Divisibility by 9</span>
-              <span class="font-math font-bold" style="color: #F59E0B;">3² Root</span>
-            </div>
-            <h4 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.4rem;">Digital Sum Multiple of 9</h4>
-            <div class="edu-math-example" style="font-size: 1.05rem;">4,725 &rarr; 4+7+2+5 = 18</div>
-            <p style="font-size: 0.88rem; color: #000000; line-height: 1.5;">
-              <strong>Rule:</strong> If the digital root is 9 (sum of digits divisible by 9), the number contains 3² = 9. 4,725 &divide; 9 = 525. Digit sum of 525 is 12 (not div by 9, but div by 3 &rarr; 525 &divide; 3 = 175 = 5² &times; 7).
-            </p>
-          </div>
-
-          <!-- Rule 10 -->
-          <div class="edu-subcard" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
-              <span class="edu-subcard-tag">Divisibility by 10</span>
-              <span class="font-math font-bold" style="color: #10B981;">2 &times; 5 Stripping</span>
-            </div>
-            <h4 style="font-size: 1.15rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.4rem;">Terminal Zero Isolation</h4>
-            <div class="edu-math-example" style="font-size: 1.05rem;">4,930 &rarr; Ends in 0</div>
-            <p style="font-size: 0.88rem; color: #000000; line-height: 1.5;">
-              <strong>Rule:</strong> Any integer ending in zero contains 10 = 2 &times; 5. Instantly slice off the trailing zero, record 2 &times; 5, and factor the remaining quotient (493 = 17 &times; 29).
-            </p>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- =========================================================
-           SECTION C: ADVANCED COGNITIVE STRATEGY (OLYMPIAD SPEED MECHANISMS)
-           ========================================================= -->
-      <div style="margin-bottom: 3.5rem;">
-        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
-          <span style="background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color: #FFFFFF; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.85rem; border-radius: 9999px; letter-spacing: 0.06em; white-space: nowrap !important;">SECTION C</span>
-
-          <h2 class="heading-section">Advanced Cognitive Strategy · Olympiad Peak Speed Mechanisms</h2>
-        </div>
-        <p style="color: #000000; font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 54rem;">
-          Mastery heuristics utilized by Olympiad finalists to decompose integers in sub-second bursts without electronic calculators.
-        </p>
-
-        <!-- STRATEGY BLOCK 01: Parity & Modulo 5 Isolation -->
-        <section class="edu-block">
-          <div class="section-bg-image-wrap">
-            <img class="section-bg-image" src="https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Mathematical formulas background" loading="lazy" />
-            <div class="section-bg-overlay"></div>
-          </div>
-
-          <div class="edu-block-header">
-            <div class="edu-block-num">01</div>
-            <div class="edu-block-title-wrap">
-              <h3>Strategy 01: Parity &amp; Modulo 5 Isolation</h3>
-              <p>Immediate extraction of powers of 2 and 5 by terminal digit inspection</p>
-            </div>
-          </div>
-
-          <div class="edu-subcards-grid">
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 1.1</span>
-              <h4>Even Composite Stripping</h4>
-              <div class="edu-math-example">360 &rarr; 2³ &times; 45</div>
-              <p>
-                When the last digit is {0, 2, 4, 6, 8}, divide continuously by 2. 360 &rarr; 180 &rarr; 90 &rarr; 45. Stripping 2³ drops the composite from 360 to an odd 45 in three quick mental operations.
-              </p>
-            </div>
-
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 1.2</span>
-              <h4>Terminal 5 Factor Extraction</h4>
-              <div class="edu-math-example">875 &rarr; 5³ &times; 7</div>
-              <p>
-                Any integer ending in 5 contains 5 as a divisor. 875 &divide; 5 = 175; 175 &divide; 5 = 35; 35 &divide; 5 = 7. Three consecutive divisions leave the single prime 7.
-              </p>
-            </div>
-
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 1.3</span>
-              <h4>Decadic Zero Pairing (10 = 2 &times; 5)</h4>
-              <div class="edu-math-example">4,200 &rarr; 2² &times; 5² &times; 42</div>
-              <p>
-                Every trailing zero represents a factor of 10 = 2 &times; 5. Two trailing zeros in 4,200 immediately provide 2² &times; 5², leaving 42 = 2 &times; 3 &times; 7.
-              </p>
-            </div>
-
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 1.4</span>
-              <h4>Odd Non-5 Quotient Isolation</h4>
-              <div class="edu-math-example">1,020 &rarr; 2² &times; 5 &times; 51</div>
-              <p>
-                Dividing 1,020 by 20 yields 51. Since 51 ends in 1, it has zero factors of 2 and 5. This allows immediate transition to Modulo 3 and digit sum tests.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <!-- STRATEGY BLOCK 02: Sum of Digits & Modulo 9 -->
-        <section class="edu-block">
-          <div class="section-bg-image-wrap">
-            <img class="section-bg-image" src="https://images.pexels.com/photos/3747468/pexels-photo-3747468.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Abstract geometric blackboard" loading="lazy" />
-            <div class="section-bg-overlay"></div>
-          </div>
-
-          <div class="edu-block-header">
-            <div class="edu-block-num">02</div>
-            <div class="edu-block-title-wrap">
-              <h3>Strategy 02: Sum of Digits &amp; Modulo 9 Heuristics</h3>
-              <p>Digital root heuristics for rapid identification of 3 and 3² = 9 divisors</p>
-            </div>
-          </div>
-
-          <div class="edu-subcards-grid">
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 2.1</span>
-              <h4>Modulo 9 Digital Root Test</h4>
-              <div class="edu-math-example">1,458 &rarr; 1+4+5+8 = 18</div>
-              <p>
-                18 is divisible by 9, proving 1,458 contains 9. 1,458 &divide; 9 = 162. Digital sum of 162 is 1+6+2 = 9, so 162 &divide; 9 = 18. Thus 1,458 = 2 &times; 3⁶.
-              </p>
-            </div>
-
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 2.2</span>
-              <h4>Modulo 3 Single Extraction</h4>
-              <div class="edu-math-example">438 &rarr; 4+3+8 = 15</div>
-              <p>
-                15 mod 9 = 6 &ne; 0, but 15 is divisible by 3. This guarantees exactly one initial factor of 3. 438 &divide; 3 = 146. Parity reveals 146 &divide; 2 = 73 (prime).
-              </p>
-            </div>
-
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 2.3</span>
-              <h4>Casting Out Nines Shortcut</h4>
-              <div class="edu-math-example">9,522 &rarr; (9) + 5 + 2 + 2 = 9</div>
-              <p>
-                Cast out digits summing to 9 to accelerate mental checks: ignore 9, then 5+2+2 = 9. 9,522 is divisible by 9 &rarr; 9,522 &divide; 9 = 1,058 = 2 &times; 23².
-              </p>
-            </div>
-
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 2.4</span>
-              <h4>Fast Elimination of Non-Multiples</h4>
-              <div class="edu-math-example">1,217 &rarr; 1+2+1+7 = 11</div>
-              <p>
-                11 mod 3 = 2. You instantly eliminate 3 and 9 from all factorization trees without ever attempting trial division. Move directly to primes &ge; 7.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <!-- STRATEGY BLOCK 03: Fermat's Difference of Squares (a² - b²) -->
-        <section class="edu-block">
-          <div class="section-bg-image-wrap">
-            <img class="section-bg-image" src="https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Algebraic chalk equations" loading="lazy" />
-            <div class="section-bg-overlay"></div>
-          </div>
-
-          <div class="edu-block-header">
-            <div class="edu-block-num">03</div>
-            <div class="edu-block-title-wrap">
-              <h3>Strategy 03: Fermat's Difference of Squares (a² - b²)</h3>
-              <p>Decomposition of odd composites via algebraic difference of squares identity</p>
-            </div>
-          </div>
-
-          <div class="edu-subcards-grid">
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 3.1</span>
-              <h4>Nearby Square Decomposition</h4>
-              <div class="edu-math-example">899 = 30² - 1²</div>
-              <p>
-                899 is one less than 900 = 30². By the identity a² - b² = (a-b)(a+b), 899 = (30 - 1)(30 + 1) = 29 &times; 31. Solved in 2 seconds without trial division.
-              </p>
-            </div>
-
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 3.2</span>
-              <h4>Two-Step Square Proximity</h4>
-              <div class="edu-math-example">2,496 = 50² - 2²</div>
-              <p>
-                2,496 is four less than 2,500 = 50². Using a² - b², 2,496 = (50 - 2)(50 + 2) = 48 &times; 52. Further factor 48 = 2⁴ &times; 3 and 52 = 2² &times; 13 &rarr; 2⁶ &times; 3 &times; 13.
-              </p>
-            </div>
-
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 3.3</span>
-              <h4>Twin Prime Factorization Clue</h4>
-              <div class="edu-math-example">3,599 = 60² - 1²</div>
-              <p>
-                3,599 is one less than 3,600 = 60². Therefore 3,599 = (60 - 1)(60 + 1) = 59 &times; 61. Both 59 and 61 are prime numbers, completing the decomposition.
-              </p>
-            </div>
-
-            <div class="edu-subcard">
-              <span class="edu-subcard-tag">Case Study 3.4</span>
-              <h4>Fermat Iterative Testing</h4>
-              <div class="edu-math-example">1,517 + 2² = 39²</div>
-              <p>
-                Ceiling root of 1,517 is 39 (39² = 1,521). 1,521 - 1,517 = 4 = 2². Thus 1,517 = 39² - 2² = (39 - 2)(39 + 2) = 37 &times; 41. Solved on the first Fermat step.
-              </p>
-            </div>
-          </div>
-        </section>
-
-      </div>
-
-      <!-- =========================================================
-           ZERO-TIMER CALCULATION PRACTICE SANDBOX
-           ========================================================= -->
-      <section id="sandbox-anchor" class="edu-sandbox-card">
-        <div class="section-bg-image-wrap">
-          <img class="section-bg-image" src="https://images.pexels.com/photos/374918/pexels-photo-374918.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Geometric matrix architectural layout" loading="lazy" />
-          <div class="section-bg-overlay"></div>
-        </div>
-
-        <div class="section-head" style="margin-bottom: 1.5rem;">
-          <span class="section-kicker">Interactive Drill</span>
-          <h2 style="font-size: 1.85rem; margin-bottom: 0.5rem;">Zero-Timer Strategy Sandbox</h2>
-          <p class="section-desc" style="font-size: 0.95rem;">
-            Select a strategy model, enter any positive integer, and watch the step-by-step mathematical decomposition without timer pressure.
-          </p>
-        </div>
-
-        <!-- Strategy Selection Tabs -->
-        <div class="sandbox-strategy-select">
-          <button type="button" class="sandbox-strat-btn active" data-strat="strat1">
-            01. Parity &amp; Modulo 5
+            <span>Navigation</span>
           </button>
-          <button type="button" class="sandbox-strat-btn" data-strat="strat2">
-            02. Sum of Digits (Mod 9)
-          </button>
-          <button type="button" class="sandbox-strat-btn" data-strat="strat3">
-            03. Difference of Squares (a² - b²)
-          </button>
+
+          <!-- Dropdown Box (Frosted Glass with 6 links + mobile System link) -->
+          <nav
+            id="global-dropdown-menu"
+            class="nav-dropdown-glass-container global-nav-dropdown"
+            aria-label="Main Navigation"
+          >
+            <a href="./index.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                  ></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home Page</span>
+              </div>
+              <span class="dropdown-badge">Hub</span>
+            </a>
+
+            <a href="./rules.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  ></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Rules</span>
+              </div>
+              <span class="dropdown-badge">Policies</span>
+            </a>
+
+            <a href="./rating.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Rating</span>
+              </div>
+              <span class="dropdown-badge">Matrix</span>
+            </a>
+
+            <a
+              href="./edu.html"
+              class="dropdown-link-item active"
+              style="
+                background: rgba(14, 165, 233, 0.15);
+                border-left: 3px solid #38bdf8;
+              "
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                  ></path>
+                  <path d="M6 6h10"></path>
+                  <path d="M6 10h10"></path>
+                </svg>
+                <span>Edu</span>
+              </div>
+              <span
+                class="dropdown-badge"
+                style="background: #0284c7; color: #ffffff"
+                >Training</span
+              >
+            </a>
+
+            <a href="./services.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <span>Services</span>
+              </div>
+              <span class="dropdown-badge">Facilities</span>
+            </a>
+
+            <a
+              href="./contest.html"
+              id="dropdown-contest"
+              class="dropdown-link-item"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                  <path d="M4 22h16"></path>
+                  <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                  <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                </svg>
+                <span>Contest</span>
+              </div>
+              <span class="dropdown-badge">Arena</span>
+            </a>
+
+            <a
+              href="./profile.html"
+              id="dropdown-profile"
+              class="dropdown-link-item"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Profile</span>
+              </div>
+              <span class="dropdown-badge">Overview</span>
+            </a>
+
+            <a href="./faq.html" class="dropdown-link-item" id="dropdown-faq">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                  ></path>
+                  <path d="M6 6h10"></path>
+                  <circle cx="12" cy="14" r="1"></circle>
+                  <path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"></path>
+                </svg>
+                <span>FAQ</span>
+              </div>
+              <span class="dropdown-badge">Archive</span>
+            </a>
+
+            <!-- Desktop Settings Link -->
+            <a
+              href="./engine.html"
+              id="dropdown-open-settings"
+              class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  ></path>
+                </svg>
+                <span>Settings</span>
+              </div>
+              <span class="dropdown-badge">Options</span>
+            </a>
+
+            <!-- Mobile-only System link -->
+            <a
+              href="./engine.html"
+              id="dropdown-mobile-system"
+              class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger"
+              aria-label="System Configuration"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  ></path>
+                </svg>
+                <span>System</span>
+              </div>
+              <span class="dropdown-badge">Engine</span>
+            </a>
+          </nav>
         </div>
 
-        <!-- Number Entry Row -->
-        <div class="sandbox-input-row">
-          <input 
-            id="sandbox-num-input" 
-            class="sandbox-input" 
-            type="number" 
-            value="899" 
-            min="2" 
-            max="1000000" 
-            aria-label="Number for strategy breakdown" 
-          />
-          <button id="sandbox-calc-btn" class="btn-primary" type="button" style="padding: 0.85rem 1.75rem;">
-            <span>Decompose</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
+        <!-- Right: Standalone Settings Gear Icon -->
+        <div class="header-actions">
+          <button
+            id="settings-toggle-btn"
+            class="icon-btn"
+            aria-label="Global Engine Settings"
+          >
+            <svg
+              class="gear-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"
+              />
             </svg>
           </button>
         </div>
-
-        <!-- Step-by-Step Breakdown Output -->
-        <div style="margin-bottom: 0.75rem; font-family: var(--font-heading); font-size: 0.9rem; font-weight: 700; color: #FFFFFF; text-align: center;" id="sandbox-summary-text">
-          Strategy 03: Difference of Squares (a² - b²)
-        </div>
-
-        <div id="sandbox-steps-output" class="sandbox-steps-output">
-          <!-- Populated by edu.js -->
-        </div>
-      </section>
-
-    </div>
-  </main>
-
-  <div id="site-footer-slot">
-    <footer class="site-footer">
-      <div class="footer-container">
-        <p class="footer-line highlight">© Olympiad Edge</p>
-        <p class="footer-line">Authorized By Rayaan Tasnim</p>
-        <p class="footer-line" style="font-size: 0.75rem; color: #000000;">All rights reserved</p>
       </div>
-    </footer>
-  </div>
+    </header>
 
-  <!-- Hardcoded Navbar Toggle Script Block -->
-  <script type="module" src="integrated-js/edu.js"></script>
-  <script type="module" src="./js/edu.js"></script>
-</body>
+    <!-- Global Settings Modal Slot -->
+    <div id="settings-modal-slot"></div>
+
+    <main
+      class="main-wrapper"
+      style="padding-top: 5.5rem; padding-bottom: 4rem"
+    >
+      <div class="content-container">
+        <!-- Section Header -->
+        <div class="section-head" style="margin-bottom: 2.5rem">
+          <span class="section-kicker"
+            >Theoretical Foundations &amp; Competition Shortcuts</span
+          >
+          <h1 class="section-title">Number Theory Training Arena</h1>
+          <p class="section-desc">
+            An exhaustive, textbook-style pedagogical resource. Progress
+            sequentially from foundational arithmetic axioms to rapid mental
+            divisibility laws and hyper-advanced Math Olympiad speed shortcuts.
+          </p>
+        </div>
+
+        <!-- =========================================================
+           SECTION A: ABSOLUTE BASICS (TARGET: BEGINNERS)
+           ========================================================= -->
+        <div style="margin-bottom: 3.5rem">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              margin-bottom: 1.25rem;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+                color: #ffffff;
+                font-family: var(--font-heading);
+                font-size: 0.85rem;
+                font-weight: 800;
+                padding: 0.3rem 0.85rem;
+                border-radius: 9999px;
+                letter-spacing: 0.06em;
+                white-space: nowrap !important;
+              "
+              >SECTION A</span
+            >
+
+            <h2 class="heading-section">
+              Absolute Basics · Foundational Axioms
+            </h2>
+          </div>
+          <p
+            style="
+              color: #000000;
+              font-size: 0.95rem;
+              margin-bottom: 1.5rem;
+              max-width: 54rem;
+            "
+          >
+            The building blocks of integer arithmetic. Before deploying speed
+            shortcuts, every competitor must solidify the conceptual core of
+            primes, composites, and canonical factorization trees.
+          </p>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(
+                auto-fit,
+                minmax(min(100%, 340px), 1fr)
+              );
+              gap: 1.5rem;
+            "
+          >
+            <!-- Card A1: Primes vs Composites -->
+            <div class="edu-block" style="margin-bottom: 0">
+              <div class="section-bg-image-wrap">
+                <img
+                  class="section-bg-image"
+                  src="https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Chalkboard math formulas"
+                  loading="lazy"
+                />
+                <div class="section-bg-overlay"></div>
+              </div>
+              <div style="position: relative; z-index: 1">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  <span
+                    class="edu-subcard-tag"
+                    style="
+                      background: rgba(16, 185, 129, 0.2);
+                      color: #10b981;
+                      border: 1px solid rgba(16, 185, 129, 0.4);
+                    "
+                    >Axiom 1.1</span
+                  >
+                  <span class="font-math font-bold" style="color: #10b981"
+                    ><i>p</i> &gt; 1</span
+                  >
+                </div>
+                <h3
+                  style="
+                    font-size: 1.35rem;
+                    color: #ffffff;
+                    font-weight: 800;
+                    margin-bottom: 0.75rem;
+                  "
+                >
+                  Prime vs. Composite Numbers
+                </h3>
+                <p
+                  style="
+                    font-size: 0.925rem;
+                    color: white;
+                    text-align: justify;
+                    line-height: 1.6;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  A <strong>prime number</strong> is an integer strictly greater
+                  than 1 whose only positive divisors are 1 and itself. A
+                  <strong>composite number</strong> possesses at least one
+                  divisor other than 1 and itself, meaning it can be fractured
+                  into smaller integer factors.
+                </p>
+                <div
+                  style="
+                    background: rgba(15, 23, 42, 0.8);
+                    border: 1px solid rgba(255, 255, 255, 0.12);
+                    border-radius: 0.75rem;
+                    padding: 0.85rem;
+                    margin-bottom: 0.75rem;
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 0.75rem;
+                      color: #38bdf8;
+                      font-weight: 700;
+                      text-transform: uppercase;
+                      margin-bottom: 0.35rem;
+                    "
+                  >
+                    First 10 Prime Atoms:
+                  </div>
+                  <div
+                    class="font-math font-bold"
+                    style="
+                      font-size: 1.15rem;
+                      color: #ffffff;
+                      letter-spacing: 0.05em;
+                    "
+                  >
+                    2, 3, 5, 7, 11, 13, 17, 19, 23, 29
+                  </div>
+                </div>
+                <p
+                  style="
+                    font-size: 0.825rem;
+                    color: white;
+                    text-align: justify;
+                    line-height: 1.5;
+                  "
+                >
+                  <em>Crucial Note:</em> The integer <strong>1</strong> is
+                  neither prime nor composite by definition. The number
+                  <strong>2</strong> is the only even prime in existence.
+                </p>
+              </div>
+            </div>
+
+            <!-- Card A2: Fundamental Theorem of Arithmetic -->
+            <div class="edu-block" style="margin-bottom: 0">
+              <div class="section-bg-image-wrap">
+                <img
+                  class="section-bg-image"
+                  src="https://images.pexels.com/photos/3747468/pexels-photo-3747468.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Geometric blueprints"
+                  loading="lazy"
+                />
+                <div class="section-bg-overlay"></div>
+              </div>
+              <div style="position: relative; z-index: 1">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  <span
+                    class="edu-subcard-tag"
+                    style="
+                      background: rgba(14, 165, 233, 0.2);
+                      color: #38bdf8;
+                      border: 1px solid rgba(14, 165, 233, 0.4);
+                    "
+                    >Axiom 1.2</span
+                  >
+                  <span class="font-math font-bold" style="color: #38bdf8"
+                    ><i>n</i> = &prod; <i>p</i><sub><i>i</i></sub
+                    ><sup
+                      ><i>a</i><sub><i>i</i></sub></sup
+                    ></span
+                  >
+                </div>
+                <h3
+                  style="
+                    font-size: 1.35rem;
+                    color: #ffffff;
+                    font-weight: 800;
+                    margin-bottom: 0.75rem;
+                  "
+                >
+                  Fundamental Theorem of Arithmetic
+                </h3>
+                <p
+                  style="
+                    font-size: 0.925rem;
+                    color: white;
+                    text-align: justify;
+                    line-height: 1.6;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  Also known as the
+                  <strong>Unique Factorization Theorem</strong>: Every integer
+                  <i>n</i> &gt; 1 can be represented as a product of prime
+                  numbers in <em>exactly one way</em>, disregarding the order of
+                  the multipliers.
+                </p>
+                <div
+                  class="edu-math-example"
+                  style="font-size: 1.2rem; margin-bottom: 0.75rem"
+                >
+                  <i>n</i> = <i>p</i><sub>1</sub
+                  ><sup><i>a</i><sub>1</sub></sup> &times; <i>p</i><sub>2</sub
+                  ><sup><i>a</i><sub>2</sub></sup> &times; &hellip; &times;
+                  <i>p</i><sub><i>k</i></sub
+                  ><sup
+                    ><i>a</i><sub><i>k</i></sub></sup
+                  >
+                </div>
+                <p
+                  style="
+                    font-size: 0.85rem;
+                    color: #ffffff;
+                    text-align: justify;
+                    line-height: 1.5;
+                  "
+                >
+                  Because prime decomposition is immutable and unique,
+                  factorization provides the mathematical "DNA" of every number.
+                  If two competitors factorize <strong>360</strong>, both must
+                  inevitably derive 2<sup>3</sup> &times; 3<sup>2</sup> &times;
+                  5.
+                </p>
+              </div>
+            </div>
+
+            <!-- Card A3: Factorization Trees -->
+            <div class="edu-block" style="margin-bottom: 0">
+              <div class="section-bg-image-wrap">
+                <img
+                  class="section-bg-image"
+                  src="https://images.pexels.com/photos/3825586/pexels-photo-3825586.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Technical drawing instruments"
+                  loading="lazy"
+                />
+                <div class="section-bg-overlay"></div>
+              </div>
+              <div style="position: relative; z-index: 1">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  <span
+                    class="edu-subcard-tag"
+                    style="
+                      background: rgba(245, 158, 11, 0.2);
+                      color: #f59e0b;
+                      border: 1px solid rgba(245, 158, 11, 0.4);
+                    "
+                    >Axiom 1.3</span
+                  >
+                  <span class="font-math font-bold" style="color: #f59e0b"
+                    >Branching Tree</span
+                  >
+                </div>
+                <h3
+                  style="
+                    font-size: 1.35rem;
+                    color: #ffffff;
+                    font-weight: 800;
+                    margin-bottom: 0.75rem;
+                  "
+                >
+                  Prime Factorization Trees
+                </h3>
+                <p
+                  style="
+                    font-size: 0.925rem;
+                    color: #ffffff;
+                    text-align: justify;
+                    line-height: 1.6;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  A factor tree decomposes a composite recursively into two
+                  convenient non-trivial factors until every terminal leaf is a
+                  prime atom.
+                </p>
+                <div
+                  style="
+                    background: rgba(15, 23, 42, 0.85);
+                    border: 1px solid rgba(255, 255, 255, 0.12);
+                    border-radius: 0.75rem;
+                    padding: 0.85rem;
+                    font-family: var(--font-math);
+                    margin-bottom: 0.75rem;
+                  "
+                >
+                  <div
+                    style="
+                      color: #38bdf8;
+                      font-weight: 700;
+                      margin-bottom: 0.25rem;
+                    "
+                  >
+                    Visual Tree Walk: 60
+                  </div>
+                  <div
+                    style="color: #ffffff; font-size: 0.95rem; line-height: 1.5"
+                  >
+                    60 &rarr; 6 &times; 10<br />
+                    &nbsp;&nbsp;&bull; 6 &rarr;
+                    <span style="color: #10b981; font-weight: 700">2</span>
+                    &times;
+                    <span style="color: #10b981; font-weight: 700">3</span
+                    ><br />
+                    &nbsp;&nbsp;&bull; 10 &rarr;
+                    <span style="color: #10b981; font-weight: 700">2</span>
+                    &times;
+                    <span style="color: #10b981; font-weight: 700">5</span
+                    ><br />
+                    Collate leaves:
+                    <span style="color: #fbbf24; font-weight: 800"
+                      >2<sup>2</sup> &times; 3 &times; 5</span
+                    >
+                  </div>
+                </div>
+                <p
+                  style="
+                    font-size: 0.825rem;
+                    color: #ffffff;
+                    text-align: justify;
+                  "
+                >
+                  Any initial branch split (e.g. 4 &times; 15 or 2 &times; 30)
+                  always converges to the exact same prime product.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- =========================================================
+           SECTION B: CORE DIVISIBILITY RULES (2, 3, 4, 5, 6, 8, 9, 10, 7, 11, 13, 17, 19)
+           ========================================================= -->
+        <div style="margin-bottom: 3.5rem">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              margin-bottom: 1.25rem;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+                color: #ffffff;
+                font-family: var(--font-heading);
+                font-size: 0.85rem;
+                font-weight: 800;
+                padding: 0.3rem 0.85rem;
+                border-radius: 9999px;
+                letter-spacing: 0.06em;
+                white-space: nowrap !important;
+              "
+              >SECTION B</span
+            >
+
+            <h2 class="heading-section">
+              Core Divisibility Rules · Case Studies (2 through 10)
+            </h2>
+          </div>
+          <p
+            style="
+              color: #000000;
+              font-size: 0.95rem;
+              margin-bottom: 1.5rem;
+              max-width: 54rem;
+            "
+          >
+            Divisibility tests eliminate sluggish trial division. By inspecting
+            terminal digits or modular digit sums, a competitor immediately
+            isolates factors within 200 milliseconds.
+          </p>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(
+                auto-fit,
+                minmax(min(100%, 280px), 1fr)
+              );
+              gap: 1.25rem;
+            "
+          >
+            <!-- Rule 2 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 2</span>
+                <span class="font-math font-bold" style="color: #10b981"
+                  >Mod 2</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                Even Terminal Digit
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                1,476 &rarr; Ends in 6 (Even)
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> The integer is divisible by 2 if and only
+                if its last digit is even: {0, 2, 4, 6, 8}. Continuously divide
+                by 2 until the remaining quotient becomes odd.
+              </p>
+            </div>
+
+            <!-- Rule 3 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 3</span>
+                <span class="font-math font-bold" style="color: #38bdf8"
+                  >Mod 3</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                Sum of Digits Multiple of 3
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                831 &rarr; 8 + 3 + 1 = 12
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> If the sum of all digits is divisible by
+                3, the entire number is divisible by 3. Since 12 &divide; 3 = 4,
+                831 &divide; 3 = 277 (prime).
+              </p>
+            </div>
+
+            <!-- Rule 4 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 4</span>
+                <span class="font-math font-bold" style="color: #0ea5e9"
+                  >2<sup>2</sup> Isolation</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                Last Two Digits Divisible by 4
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                3,524 &rarr; Last 2 Digits: 24
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> Since 100 = 4 &times; 25, hundreds are
+                always divisible by 4. Only inspect the last two digits. 24
+                &divide; 4 = 6 &rarr; 3,524 contains 2<sup>2</sup> = 4.
+              </p>
+            </div>
+
+            <!-- Rule 5 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 5</span>
+                <span class="font-math font-bold" style="color: #10b981"
+                  >Mod 5</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                Terminal 0 or 5
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                2,875 &rarr; Ends in 5
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> Any integer ending in 0 or 5 contains 5
+                as a prime divisor. Divide 2,875 by 5 &rarr; 575; by 5 &rarr;
+                115; by 5 &rarr; 23 (yielding 5<sup>3</sup> &times; 23).
+              </p>
+            </div>
+
+            <!-- Rule 6 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 6</span>
+                <span class="font-math font-bold" style="color: #f59e0b"
+                  >2 &times; 3 Composite</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                Joint 2 and 3 Divisibility
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                918 &rarr; Even &amp; 9+1+8 = 18
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> 6 = 2 &times; 3. The number must be both
+                even (divisible by 2) AND have a digit sum divisible by 3. 918
+                is even and 18 &divide; 3 = 6 &rarr; divisible by 6.
+              </p>
+            </div>
+
+            <!-- Rule 8 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 8</span>
+                <span class="font-math font-bold" style="color: #38bdf8"
+                  >2<sup>3</sup> Isolation</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                Last Three Digits Divisible by 8
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                5,128 &rarr; Last 3 Digits: 128
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> Since 1,000 = 8 &times; 125, test the
+                last 3 digits. 128 &divide; 8 = 16. Fast shortcut: If hundreds
+                digit is odd, test if last 2 digits + 4 is divisible by 8 (28+4
+                = 32).
+              </p>
+            </div>
+
+            <!-- Rule 9 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 9</span>
+                <span class="font-math font-bold" style="color: #f59e0b"
+                  >3<sup>2</sup> Root</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                Digital Sum Multiple of 9
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                4,725 &rarr; 4+7+2+5 = 18
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> If the digital root is 9 (sum of digits
+                divisible by 9), the number contains 3<sup>2</sup> = 9. 4,725
+                &divide; 9 = 525. Digit sum of 525 is 12 (not div by 9, but div
+                by 3 &rarr; 525 &divide; 3 = 175 = 5<sup>2</sup> &times; 7).
+              </p>
+            </div>
+
+            <!-- Rule 10 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 10</span>
+                <span class="font-math font-bold" style="color: #10b981"
+                  >2 &times; 5 Stripping</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                Terminal Zero Isolation
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                4,930 &rarr; Ends in 0
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> Any integer ending in zero contains 10 =
+                2 &times; 5. Instantly slice off the trailing zero, record 2
+                &times; 5, and factor the remaining quotient (493 = 17 &times;
+                29).
+              </p>
+            </div>
+
+            <!-- Rule 7 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 7</span>
+                <span class="font-math font-bold" style="color: #38bdf8"
+                  >Truncate &amp; Double</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                Truncate &amp; Double Osculator
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                343 &rarr; 34 - (3 &times; 2) = 28
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> Chop off the terminal digit, double it,
+                and subtract it from the remaining truncated number. Repeat
+                recursively. If the result is a multiple of 7, the number is
+                divisible.
+              </p>
+            </div>
+
+            <!-- Rule 11 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 11</span>
+                <span class="font-math font-bold" style="color: #f59e0b"
+                  >Alternating Sum</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                The Alternating Sum Mechanism
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                2,838 &rarr; 8 - 3 + 8 - 2 = 11
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> Compute the alternating sum of the digits
+                from right to left (subtracting and adding sequentially). If the
+                final result is a multiple of 11 (including 0), it contains 11.
+              </p>
+            </div>
+
+            <!-- Rule 13 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 13</span>
+                <span class="font-math font-bold" style="color: #10b981"
+                  >+4 Osculator</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                The +4 Universal Osculator
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                507 &rarr; 50 + (7 &times; 4) = 78
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> Isolate the last digit, multiply it by 4,
+                and add it to the remaining truncated number. Since 78 = 13
+                &times; 6, 507 contains 13.
+              </p>
+            </div>
+
+            <!-- Rule 17 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 17</span>
+                <span class="font-math font-bold" style="color: #38bdf8"
+                  >-5 Osculator</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                The -5 Universal Osculator
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                493 &rarr; 49 - (3 &times; 5) = 34
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> Isolate the last digit, multiply it by 5,
+                and subtract it from the remaining truncated integer balance.
+                Since 34 = 17 &times; 2, 493 = 17 &times; 29.
+              </p>
+            </div>
+
+            <!-- Rule 19 -->
+            <div class="edu-subcard" style="margin-bottom: 0">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <span class="edu-subcard-tag">Divisibility by 19</span>
+                <span class="font-math font-bold" style="color: #f59e0b"
+                  >+2 Osculator</span
+                >
+              </div>
+              <h4
+                style="
+                  font-size: 1.15rem;
+                  color: #ffffff;
+                  font-weight: 800;
+                  margin-bottom: 0.4rem;
+                "
+              >
+                The +2 Universal Osculator
+              </h4>
+              <div class="edu-math-example" style="font-size: 1.05rem">
+                1,007 &rarr; 100 + (7 &times; 2) = 114
+              </div>
+              <p style="font-size: 0.88rem; color: #000000; line-height: 1.5">
+                <strong>Rule:</strong> Isolate the last digit, multiply it by 2,
+                and add it to the remaining truncated integer balance. 114
+                &rarr; 11 + (4 &times; 2) = 19 (Divisible by 19).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- =========================================================
+           SECTION C: ADVANCED COGNITIVE STRATEGY (OLYMPIAD SPEED MECHANISMS)
+           ========================================================= -->
+        <div style="margin-bottom: 3.5rem">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              margin-bottom: 1.25rem;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+                color: #ffffff;
+                font-family: var(--font-heading);
+                font-size: 0.85rem;
+                font-weight: 800;
+                padding: 0.3rem 0.85rem;
+                border-radius: 9999px;
+                letter-spacing: 0.06em;
+                white-space: nowrap !important;
+              "
+              >SECTION C</span
+            >
+
+            <h2 class="heading-section">
+              Advanced Cognitive Strategy · Olympiad Peak Speed Mechanisms
+            </h2>
+          </div>
+          <p
+            style="
+              color: #000000;
+              font-size: 0.95rem;
+              margin-bottom: 1.5rem;
+              max-width: 54rem;
+            "
+          >
+            Mastery heuristics utilized by Olympiad finalists to decompose
+            integers in sub-second bursts without electronic calculators.
+          </p>
+
+          <!-- STRATEGY BLOCK 01: Parity & Modulo 5 Isolation -->
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Mathematical formulas background"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">01</div>
+              <div class="edu-block-title-wrap">
+                <h3>Strategy 01: Parity &amp; Modulo 5 Isolation</h3>
+                <p>
+                  Immediate extraction of powers of 2 and 5 by terminal digit
+                  inspection
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 1.1</span>
+                <h4>Even Composite Stripping</h4>
+                <div class="edu-math-example">
+                  360 &rarr; 2<sup>3</sup> &times; 45
+                </div>
+                <p>
+                  When the last digit is {0, 2, 4, 6, 8}, divide continuously by
+                  2. 360 &rarr; 180 &rarr; 90 &rarr; 45. Stripping 2<sup>3</sup>
+                  drops the composite from 360 to an odd 45 in three quick
+                  mental operations.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 1.2</span>
+                <h4>Terminal 5 Factor Extraction</h4>
+                <div class="edu-math-example">
+                  875 &rarr; 5<sup>3</sup> &times; 7
+                </div>
+                <p>
+                  Any integer ending in 5 contains 5 as a divisor. 875 &divide;
+                  5 = 175; 175 &divide; 5 = 35; 35 &divide; 5 = 7. Three
+                  consecutive divisions leave the single prime 7.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 1.3</span>
+                <h4>Decadic Zero Pairing (10 = 2 &times; 5)</h4>
+                <div class="edu-math-example">
+                  4,200 &rarr; 2<sup>2</sup> &times; 5<sup>2</sup> &times; 42
+                </div>
+                <p>
+                  Every trailing zero represents a factor of 10 = 2 &times; 5.
+                  Two trailing zeros in 4,200 immediately provide 2<sup>2</sup>
+                  &times; 5<sup>2</sup>, leaving 42 = 2 &times; 3 &times; 7.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 1.4</span>
+                <h4>Odd Non-5 Quotient Isolation</h4>
+                <div class="edu-math-example">
+                  1,020 &rarr; 2<sup>2</sup> &times; 5 &times; 51
+                </div>
+                <p>
+                  Dividing 1,020 by 20 yields 51. Since 51 ends in 1, it has
+                  zero factors of 2 and 5. This allows immediate transition to
+                  Modulo 3 and digit sum tests.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- STRATEGY BLOCK 02: Sum of Digits & Modulo 9 -->
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3747468/pexels-photo-3747468.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Abstract geometric blackboard"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">02</div>
+              <div class="edu-block-title-wrap">
+                <h3>Strategy 02: Sum of Digits &amp; Modulo 9 Heuristics</h3>
+                <p>
+                  Digital root heuristics for rapid identification of 3 and
+                  3<sup>2</sup> = 9 divisors
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 2.1</span>
+                <h4>Modulo 9 Digital Root Test</h4>
+                <div class="edu-math-example">1,458 &rarr; 1+4+5+8 = 18</div>
+                <p>
+                  18 is divisible by 9, proving 1,458 contains 9. 1,458 &divide;
+                  9 = 162. Digital sum of 162 is 1+6+2 = 9, so 162 &divide; 9 =
+                  18. Thus 1,458 = 2 &times; 3<sup>6</sup>.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 2.2</span>
+                <h4>Modulo 3 Single Extraction</h4>
+                <div class="edu-math-example">438 &rarr; 4+3+8 = 15</div>
+                <p>
+                  15 mod 9 = 6 &ne; 0, but 15 is divisible by 3. This guarantees
+                  exactly one initial factor of 3. 438 &divide; 3 = 146. Parity
+                  reveals 146 &divide; 2 = 73 (prime).
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 2.3</span>
+                <h4>Casting Out Nines Shortcut</h4>
+                <div class="edu-math-example">
+                  9,522 &rarr; (9) + 5 + 2 + 2 = 9
+                </div>
+                <p>
+                  Cast out digits summing to 9 to accelerate mental checks:
+                  ignore 9, then 5+2+2 = 9. 9,522 is divisible by 9 &rarr; 9,522
+                  &divide; 9 = 1,058 = 2 &times; 23<sup>2</sup>.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 2.4</span>
+                <h4>Fast Elimination of Non-Multiples</h4>
+                <div class="edu-math-example">1,217 &rarr; 1+2+1+7 = 11</div>
+                <p>
+                  11 mod 3 = 2. You instantly eliminate 3 and 9 from all
+                  factorization trees without ever attempting trial division.
+                  Move directly to primes &ge; 7.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- STRATEGY BLOCK 03: Fermat's Difference of Squares (a² - b²) -->
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Algebraic chalk equations"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">03</div>
+              <div class="edu-block-title-wrap">
+                <h3>
+                  Strategy 03: Fermat's Difference of Squares (<i>a</i
+                  ><sup>2</sup> &minus; <i>b</i><sup>2</sup>)
+                </h3>
+                <p>
+                  Decomposition of odd composites via algebraic difference of
+                  squares identity
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 3.1</span>
+                <h4>Nearby Square Decomposition</h4>
+                <div class="edu-math-example">
+                  899 = 30<sup>2</sup> &minus; 1<sup>2</sup>
+                </div>
+                <p>
+                  899 is one less than 900 = 30<sup>2</sup>. By the identity
+                  <i>a</i><sup>2</sup> &minus; <i>b</i><sup>2</sup> = (<i>a</i>
+                  &minus; <i>b</i>)(<i>a</i> + <i>b</i>), 899 = (30 &minus;
+                  1)(30 + 1) = 29 &times; 31. Solved in 2 seconds without trial
+                  division.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 3.2</span>
+                <h4>Two-Step Square Proximity</h4>
+                <div class="edu-math-example">
+                  2,496 = 50<sup>2</sup> &minus; 2<sup>2</sup>
+                </div>
+                <p>
+                  2,496 is four less than 2,500 = 50<sup>2</sup>. Using <i>a</i
+                  ><sup>2</sup> &minus; <i>b</i><sup>2</sup>, 2,496 = (50
+                  &minus; 2)(50 + 2) = 48 &times; 52. Further factor 48 = 2<sup
+                    >4</sup
+                  >
+                  &times; 3 and 52 = 2<sup>2</sup> &times; 13 &rarr; 2<sup
+                    >6</sup
+                  >
+                  &times; 3 &times; 13.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 3.3</span>
+                <h4>Twin Prime Factorization Clue</h4>
+                <div class="edu-math-example">
+                  3,599 = 60<sup>2</sup> &minus; 1<sup>2</sup>
+                </div>
+                <p>
+                  3,599 is one less than 3,600 = 60<sup>2</sup>. Therefore 3,599
+                  = (60 &minus; 1)(60 + 1) = 59 &times; 61. Both 59 and 61 are
+                  prime numbers, completing the decomposition.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 3.4</span>
+                <h4>Fermat Iterative Testing</h4>
+                <div class="edu-math-example">
+                  1,517 + 2<sup>2</sup> = 39<sup>2</sup>
+                </div>
+                <p>
+                  Ceiling root of 1,517 is 39 (39<sup>2</sup> = 1,521). 1,521
+                  &minus; 1,517 = 4 = 2<sup>2</sup>. Thus 1,517 = 39<sup>2</sup>
+                  &minus; 2<sup>2</sup> = (39 &minus; 2)(39 + 2) = 37 &times;
+                  41. Solved on the first Fermat step.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- =========================================================
+           SECTION D: MULTIPLICATIVE FUNCTIONS & ARITHMETIC DYNAMICS
+           ========================================================= -->
+        <div style="margin-bottom: 3.5rem">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              margin-bottom: 1.25rem;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+                color: #ffffff;
+                font-family: var(--font-heading);
+                font-size: 0.85rem;
+                font-weight: 800;
+                padding: 0.3rem 0.85rem;
+                border-radius: 9999px;
+                letter-spacing: 0.06em;
+                white-space: nowrap !important;
+              "
+              >SECTION D</span
+            >
+
+            <h2 class="heading-section">
+              Multiplicative Functions &amp; Arithmetic Dynamics
+            </h2>
+          </div>
+          <p
+            style="
+              color: #000000;
+              font-size: 0.95rem;
+              margin-bottom: 1.5rem;
+              max-width: 54rem;
+            "
+          >
+            The structural distribution and properties of divisors across
+            coordinate systems.
+          </p>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Mathematical formulas background"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">01</div>
+              <div class="edu-block-title-wrap">
+                <h3>Euler’s Totient Function &phi;(<i>n</i>)</h3>
+                <p>
+                  Count of coprime integers up to <i>n</i> using the immutable
+                  product formula
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 1.1</span>
+                <h4>Totient Product Formula</h4>
+                <div class="edu-math-example">
+                  &phi;(<i>n</i>) = <i>n</i> &times; &prod;(1 &minus; 1/<i>p</i
+                  ><sub><i>i</i></sub
+                  >)
+                </div>
+                <p>
+                  Calculates the exact count of positive integers up to
+                  <i>n</i> that are coprime to <i>n</i>. Essential for reducing
+                  exponents in advanced modular arithmetic systems.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 1.2</span>
+                <h4>Totient Calculation for 360</h4>
+                <div class="edu-math-example">
+                  &phi;(360) = 360 &times; (1 - 1/2) &times; (1 - 1/3) &times;
+                  (1 - 1/5) = 96
+                </div>
+                <p>
+                  Applying the prime factorization of 360 (2<sup>3</sup> &times;
+                  3<sup>2</sup> &times; 5), we extract the distinct prime
+                  factors to yield exactly 96 coprime integers.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3747468/pexels-photo-3747468.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Abstract geometric blackboard"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">02</div>
+              <div class="edu-block-title-wrap">
+                <h3>
+                  Divisor Counters &amp; Sigma Metrics (&tau; and &sigma;)
+                </h3>
+                <p>
+                  Rapid mental calculation of total divisors and divisor sums
+                  directly from prime exponents
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 2.1</span>
+                <h4>Total Divisors Function &tau;(<i>n</i>)</h4>
+                <div class="edu-math-example">
+                  &tau;(<i>n</i>) = &prod;(<i>a</i><sub><i>i</i></sub> + 1)
+                </div>
+                <p>
+                  The total number of divisors is found by adding 1 to each
+                  exponent in the canonical prime factorization and taking the
+                  product of those sums.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 2.2</span>
+                <h4>Divisor Count for 60</h4>
+                <div class="edu-math-example">
+                  60 = 2<sup>2</sup> &times; 3<sup>1</sup> &times; 5<sup>1</sup>
+                  &rarr; (2+1)(1+1)(1+1) = 12
+                </div>
+                <p>
+                  60 possesses exactly 12 total divisors. This formula bypasses
+                  listing out every single factor manually.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Algebraic chalk equations"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">03</div>
+              <div class="edu-block-title-wrap">
+                <h3>M&ouml;bius Inversion Function &mu;(<i>n</i>)</h3>
+                <p>
+                  Structural classification of square-free integers to analyze
+                  sequence filters
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 3.1</span>
+                <h4>M&ouml;bius Values {&minus;1, 0, 1}</h4>
+                <div class="edu-math-example">
+                  &mu;(<i>n</i>) = 0 if squared prime exists; (&minus;1)<sup
+                    ><i>k</i></sup
+                  >
+                  if <i>k</i> distinct primes
+                </div>
+                <p>
+                  Evaluates to 0 if <i>n</i> has a squared prime factor, 1 if
+                  <i>n</i> = 1, and (&minus;1)<sup><i>k</i></sup> if <i>n</i> is
+                  the product of <i>k</i> distinct primes.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 3.2</span>
+                <h4>Evaluating &mu;(30) and &mu;(12)</h4>
+                <div class="edu-math-example">
+                  &mu;(30) = &mu;(2&times;3&times;5) = (&minus;1)<sup>3</sup> =
+                  &minus;1; &mu;(12) = 0
+                </div>
+                <p>
+                  &mu;(30) returns &minus;1 due to three distinct prime factors.
+                  &mu;(12) returns 0 because 12 contains 2<sup>2</sup>,
+                  violating square-free status.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- =========================================================
+           ZERO-TIMER CALCULATION PRACTICE SANDBOX
+           ========================================================= -->
+        <section id="sandbox-anchor" class="edu-sandbox-card">
+          <div class="section-bg-image-wrap">
+            <img
+              class="section-bg-image"
+              src="https://images.pexels.com/photos/374918/pexels-photo-374918.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="Geometric matrix architectural layout"
+              loading="lazy"
+            />
+            <div class="section-bg-overlay"></div>
+          </div>
+
+          <div class="section-head" style="margin-bottom: 1.5rem">
+            <span class="section-kicker">Interactive Drill</span>
+            <h2 style="font-size: 1.85rem; margin-bottom: 0.5rem">
+              Zero-Timer Strategy Sandbox
+            </h2>
+            <p class="section-desc" style="font-size: 0.95rem">
+              Select a strategy model, enter any positive integer, and watch the
+              step-by-step mathematical decomposition without timer pressure.
+            </p>
+          </div>
+
+          <!-- Strategy Selection Tabs -->
+          <div class="sandbox-strategy-select">
+            <button
+              type="button"
+              class="sandbox-strat-btn active"
+              data-strat="strat1"
+            >
+              01. Parity &amp; Modulo 5
+            </button>
+            <button type="button" class="sandbox-strat-btn" data-strat="strat2">
+              02. Sum of Digits (Mod 9)
+            </button>
+            <button type="button" class="sandbox-strat-btn" data-strat="strat3">
+              03. Difference of Squares (<i>a</i><sup>2</sup> &minus; <i>b</i
+              ><sup>2</sup>)
+            </button>
+          </div>
+
+          <!-- Number Entry Row -->
+          <div class="sandbox-input-row">
+            <input
+              id="sandbox-num-input"
+              class="sandbox-input"
+              type="number"
+              value="899"
+              min="2"
+              max="1000000"
+              aria-label="Number for strategy breakdown"
+            />
+            <button
+              id="sandbox-calc-btn"
+              class="btn-primary"
+              type="button"
+              style="padding: 0.85rem 1.75rem"
+            >
+              <span>Decompose</span>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Step-by-Step Breakdown Output -->
+          <div
+            style="
+              margin-bottom: 0.75rem;
+              font-family: var(--font-heading);
+              font-size: 0.9rem;
+              font-weight: 700;
+              color: #ffffff;
+              text-align: center;
+            "
+            id="sandbox-summary-text"
+          >
+            Strategy 03: Difference of Squares (<i>a</i><sup>2</sup> &minus;
+            <i>b</i><sup>2</sup>)
+          </div>
+
+          <div id="sandbox-steps-output" class="sandbox-steps-output">
+            <!-- Populated by edu.js -->
+          </div>
+        </section>
+        <br /><br />
+
+        <!-- =========================================================
+           SECTION E: ADVANCED MODULAR CONGRUENCES & POWER RESIDUES
+           ========================================================= -->
+        <div style="margin-bottom: 3.5rem">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              margin-bottom: 1.25rem;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+                color: #ffffff;
+                font-family: var(--font-heading);
+                font-size: 0.85rem;
+                font-weight: 800;
+                padding: 0.3rem 0.85rem;
+                border-radius: 9999px;
+                letter-spacing: 0.06em;
+                white-space: nowrap !important;
+              "
+              >SECTION E</span
+            >
+
+            <h2 class="heading-section">
+              Advanced Modular Congruences &amp; Power Residues
+            </h2>
+          </div>
+          <p
+            style="
+              color: #000000;
+              font-size: 0.95rem;
+              margin-bottom: 1.5rem;
+              max-width: 54rem;
+            "
+          >
+            Transitioning arithmetic into cyclical clock systems for elite speed
+            proofs.
+          </p>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Mathematical formulas background"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">01</div>
+              <div class="edu-block-title-wrap">
+                <h3>Fermat’s Little Theorem</h3>
+                <p>
+                  Eliminating massive exponents mentally when computing modulo a
+                  prime <i>p</i>
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 1.1</span>
+                <h4>Congruence Identity</h4>
+                <div class="edu-math-example">
+                  <i>a</i><sup><i>p</i>&minus;1</sup> &equiv; 1 (mod <i>p</i>)
+                </div>
+                <p>
+                  If <i>p</i> is a prime and <i>a</i> is an integer not
+                  divisible by <i>p</i>, raising <i>a</i> to the power of
+                  <i>p</i> &minus; 1 leaves a remainder of 1 modulo <i>p</i>.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 1.2</span>
+                <h4>Compute 3<sup>50</sup> mod 7</h4>
+                <div class="edu-math-example">
+                  3<sup>6</sup> &equiv; 1 (mod 7) &rarr; 3<sup>50</sup> =
+                  (3<sup>6</sup>)<sup>8</sup> &times; 3<sup>2</sup> &equiv; 2
+                  (mod 7)
+                </div>
+                <p>
+                  Since 3<sup>6</sup> &equiv; 1 (mod 7), 50 divided by 6 leaves
+                  a remainder of 2. 3<sup>2</sup> = 9 &equiv; 2 (mod 7).
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3747468/pexels-photo-3747468.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Abstract geometric blackboard"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">02</div>
+              <div class="edu-block-title-wrap">
+                <h3>Euler’s Generalization (Euler's Theorem)</h3>
+                <p>
+                  Extending modular exponent reduction to composite moduli using
+                  the totient boundary
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 2.1</span>
+                <h4>Composite Modulus Identity</h4>
+                <div class="edu-math-example">
+                  <i>a</i><sup>&phi;(<i>n</i>)</sup> &equiv; 1 (mod <i>n</i>)
+                  when gcd(<i>a</i>, <i>n</i>) = 1
+                </div>
+                <p>
+                  Generalizes Fermat’s Little Theorem for any composite modulus
+                  <i>n</i> by substituting <i>p</i> &minus; 1 with Euler’s
+                  totient function &phi;(<i>n</i>).
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 2.2</span>
+                <h4>Compute 7<sup>42</sup> mod 10</h4>
+                <div class="edu-math-example">
+                  &phi;(10) = 4 &rarr; 7<sup>4</sup> &equiv; 1 (mod 10) &rarr;
+                  7<sup>42</sup> &equiv; 9 (mod 10)
+                </div>
+                <p>
+                  Since &phi;(10) = 4, 7<sup>4</sup> &equiv; 1 (mod 10). 42 mod
+                  4 = 2. 7<sup>2</sup> = 49 &equiv; 9 (mod 10).
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Algebraic chalk equations"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">03</div>
+              <div class="edu-block-title-wrap">
+                <h3>The Chinese Remainder Theorem (CRT)</h3>
+                <p>
+                  Breaking complex composite modulus systems down into unique
+                  coprime prime-power systems
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 3.1</span>
+                <h4>Simultaneous Congruence Solver</h4>
+                <div class="edu-math-example">
+                  <i>x</i> &equiv; <i>a</i><sub><i>i</i></sub> (mod <i>m</i
+                  ><sub><i>i</i></sub
+                  >)
+                </div>
+                <p>
+                  Guarantees a unique solution modulo the product of pairwise
+                  coprime moduli <i>m</i><sub><i>i</i></sub
+                  >.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 3.2</span>
+                <h4>Solving Dual Moduli</h4>
+                <div class="edu-math-example">
+                  <i>x</i> &equiv; 2 (mod 3) &amp; <i>x</i> &equiv; 3 (mod 5)
+                  &rarr; <i>x</i> &equiv; 8 (mod 15)
+                </div>
+                <p>
+                  Testing numbers congruent to 3 mod 5 yields 3, 8, 13. Among
+                  these, 8 mod 3 = 2, confirming 8 is the unique solution modulo
+                  15.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- =========================================================
+           SECTION F: DIOPHANTINE EQUATIONS & INTEGER SOLVERS
+           ========================================================= -->
+        <div style="margin-bottom: 3.5rem">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              margin-bottom: 1.25rem;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+                color: #ffffff;
+                font-family: var(--font-heading);
+                font-size: 0.85rem;
+                font-weight: 800;
+                padding: 0.3rem 0.85rem;
+                border-radius: 9999px;
+                letter-spacing: 0.06em;
+                white-space: nowrap !important;
+              "
+              >SECTION F</span
+            >
+
+            <h2 class="heading-section">
+              Diophantine Equations &amp; Integer Solvers
+            </h2>
+          </div>
+          <p
+            style="
+              color: #000000;
+              font-size: 0.95rem;
+              margin-bottom: 1.5rem;
+              max-width: 54rem;
+            "
+          >
+            Exact coordinate constraints for solving algebraic structures within
+            integers.
+          </p>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Mathematical formulas background"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">01</div>
+              <div class="edu-block-title-wrap">
+                <h3>
+                  Linear Diophantine Lattices (<i>ax</i> + <i>by</i> = <i>c</i>)
+                </h3>
+                <p>
+                  Deploying the Extended Euclidean Algorithm to solve integer
+                  lines
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 1.1</span>
+                <h4>Solvability Condition</h4>
+                <div class="edu-math-example">
+                  gcd(<i>a</i>, <i>b</i>) divides <i>c</i>
+                </div>
+                <p>
+                  A linear Diophantine equation has integer solutions if and
+                  only if gcd(<i>a</i>, <i>b</i>) cleanly divides <i>c</i>.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 1.2</span>
+                <h4>Verifying 15<i>x</i> + 6<i>y</i> = 9</h4>
+                <div class="edu-math-example">
+                  gcd(15, 6) = 3 &rarr; 3 divides 9 (Solvable)
+                </div>
+                <p>
+                  Since the greatest common divisor of 15 and 6 is 3, and 3
+                  divides 9, integer solutions are guaranteed to exist.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3747468/pexels-photo-3747468.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Abstract geometric blackboard"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">02</div>
+              <div class="edu-block-title-wrap">
+                <h3>Pythagorean Triples Generator</h3>
+                <p>
+                  Deconstructing primitive integer right triangles via Euclid’s
+                  parameterized formula
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 2.1</span>
+                <h4>Euclid’s Parameterization</h4>
+                <div class="edu-math-example">
+                  (<i>m</i><sup>2</sup> &minus; <i>n</i><sup>2</sup>,
+                  2<i>mn</i>, <i>m</i><sup>2</sup> + <i>n</i><sup>2</sup>)
+                </div>
+                <p>
+                  Generates all primitive Pythagorean triples using coprime
+                  integers <i>m</i> &gt; <i>n</i> with opposite parities.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 2.2</span>
+                <h4>Generating (3, 4, 5)</h4>
+                <div class="edu-math-example">
+                  <i>m</i> = 2, <i>n</i> = 1 &rarr; (2<sup>2</sup> &minus;
+                  1<sup>2</sup>, 2(2)(1), 2<sup>2</sup> + 1<sup>2</sup>) = (3,
+                  4, 5)
+                </div>
+                <p>
+                  Substituting <i>m</i> = 2 and <i>n</i> = 1 yields the
+                  fundamental (3, 4, 5) right triangle atom.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Algebraic chalk equations"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">03</div>
+              <div class="edu-block-title-wrap">
+                <h3>Vieta Jumping (Root Flipping)</h3>
+                <p>
+                  Math Olympiad technique used to prove quotient integrity by
+                  treating solutions as alternative roots
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 3.1</span>
+                <h4>Quadratic Vieta Relations</h4>
+                <div class="edu-math-example">
+                  <i>x</i><sub>1</sub> + <i>x</i><sub>2</sub> =
+                  &minus;<i>b</i>/<i>a</i>, &nbsp; <i>x</i><sub>1</sub><i>x</i
+                  ><sub>2</sub> = <i>c</i>/<i>a</i>
+                </div>
+                <p>
+                  Exploits quadratic root properties to construct smaller valid
+                  integer solutions from assumed minimal counterexamples.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 3.2</span>
+                <h4>Descent Proof Mechanism</h4>
+                <div class="edu-math-example">
+                  Assume minimal (<i>A</i>, <i>B</i>) &rarr; construct
+                  (<i>A</i>', <i>B</i>') &lt; (<i>A</i>, <i>B</i>)
+                </div>
+                <p>
+                  Contradiction is achieved by showing that a smaller positive
+                  solution exists, completing the Olympiad descent proof.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- =========================================================
+           SECTION G: COMBINATORIAL & ANALYTICAL NUMBER THEORY
+           ========================================================= -->
+        <div style="margin-bottom: 3.5rem">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              margin-bottom: 1.25rem;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+                color: #ffffff;
+                font-family: var(--font-heading);
+                font-size: 0.85rem;
+                font-weight: 800;
+                padding: 0.3rem 0.85rem;
+                border-radius: 9999px;
+                letter-spacing: 0.06em;
+                white-space: nowrap !important;
+              "
+              >SECTION G</span
+            >
+
+            <h2 class="heading-section">
+              Combinatorial &amp; Analytical Number Theory
+            </h2>
+          </div>
+          <p
+            style="
+              color: #000000;
+              font-size: 0.95rem;
+              margin-bottom: 1.5rem;
+              max-width: 54rem;
+            "
+          >
+            Exploring prime distributions, counting principles, and asymptotic
+            density bounds.
+          </p>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Mathematical formulas background"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">01</div>
+              <div class="edu-block-title-wrap">
+                <h3>Pigeonhole Residue Classes</h3>
+                <p>
+                  Proving that subset sequences inevitably share modular bounds
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 1.1</span>
+                <h4>Modulus Pigeonhole Principle</h4>
+                <div class="edu-math-example">
+                  Set of <i>n</i>+1 integers &rarr; &ge; 2 share mod
+                  <i>n</i> remainder
+                </div>
+                <p>
+                  In any set of <i>n</i> + 1 integers, at least two share the
+                  exact same remainder when divided by <i>n</i>, guaranteeing
+                  modular differences divisible by <i>n</i>.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 1.2</span>
+                <h4>Consecutive Sum Sequences</h4>
+                <div class="edu-math-example">
+                  Sub-sums mod <i>n</i> collision proof
+                </div>
+                <p>
+                  Used extensively in combinatorial proofs to isolate contiguous
+                  sub-sequences whose sum is a strict multiple of <i>n</i>.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3747468/pexels-photo-3747468.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Abstract geometric blackboard"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">02</div>
+              <div class="edu-block-title-wrap">
+                <h3>Prime Number Theorem (PNT) Asymptotics</h3>
+                <p>
+                  Estimating the actual density of primes near any arbitrary
+                  scale using logarithmic limits
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 2.1</span>
+                <h4>Asymptotic Prime Density</h4>
+                <div class="edu-math-example">
+                  &pi;(<i>n</i>) &approx; <i>n</i> / ln(<i>n</i>)
+                </div>
+                <p>
+                  Describes the asymptotic distribution of prime numbers among
+                  the positive integers, establishing that the probability of a
+                  random integer near <i>n</i> being prime is roughly 1 /
+                  ln(<i>n</i>).
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 2.2</span>
+                <h4>Density Approximation</h4>
+                <div class="edu-math-example">
+                  &pi;(10<sup>6</sup>) &approx; 10<sup>6</sup> /
+                  ln(10<sup>6</sup>) &approx; 72,382
+                </div>
+                <p>
+                  Provides a reliable analytical approximation for prime
+                  counting functions across massive numerical ranges.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Algebraic chalk equations"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">03</div>
+              <div class="edu-block-title-wrap">
+                <h3>Bertrand’s Postulate</h3>
+                <p>
+                  Mathematical guarantee of prime existence within scaled
+                  intervals
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 3.1</span>
+                <h4>Interval Prime Guarantee</h4>
+                <div class="edu-math-example">
+                  &forall; <i>n</i> &gt; 1, &nbsp; &exist; <i>p</i> such that
+                  <i>n</i> &lt; <i>p</i> &lt; 2<i>n</i>
+                </div>
+                <p>
+                  Proves that for any integer <i>n</i> &gt; 1, there is always
+                  at least one prime number strictly between <i>n</i> and
+                  2<i>n</i>.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 3.2</span>
+                <h4>Interval Bounds for <i>n</i> = 10</h4>
+                <div class="edu-math-example">
+                  10 &lt; <i>p</i> &lt; 20 &rarr; Primes: 11, 13, 17, 19
+                </div>
+                <p>
+                  Confirms multiple prime solutions exist within the designated
+                  interval for <i>n</i> = 10.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- =========================================================
+           SECTION H: CRYPTOGRAPHIC ARCHITECTURES & PRIMALITY VERIFICATION
+           ========================================================= -->
+        <div style="margin-bottom: 3.5rem">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              margin-bottom: 1.25rem;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+                color: #ffffff;
+                font-family: var(--font-heading);
+                font-size: 0.85rem;
+                font-weight: 800;
+                padding: 0.3rem 0.85rem;
+                border-radius: 9999px;
+                letter-spacing: 0.06em;
+                white-space: nowrap !important;
+              "
+              >SECTION H</span
+            >
+
+            <h2 class="heading-section">
+              Cryptographic Architectures &amp; Primality Verification
+            </h2>
+          </div>
+          <p
+            style="
+              color: #000000;
+              font-size: 0.95rem;
+              margin-bottom: 1.5rem;
+              max-width: 54rem;
+            "
+          >
+            Real-world deployment of pure number theory to maintain
+            international data privacy networks.
+          </p>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/6238050/pexels-photo-6238050.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Mathematical formulas background"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">01</div>
+              <div class="edu-block-title-wrap">
+                <h3>The RSA Asymmetric Encryption Framework</h3>
+                <p>
+                  Utilizing the extreme mathematical difficulty of factoring
+                  mega-composites
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 1.1</span>
+                <h4>Modulus Factorization Security</h4>
+                <div class="edu-math-example">
+                  <i>n</i> = <i>p</i> &times; <i>q</i> &nbsp; &amp; &nbsp;
+                  &phi;(<i>n</i>) = (<i>p</i> &minus; 1)(<i>q</i> &minus; 1)
+                </div>
+                <p>
+                  Public keys rely on the product of two massive primes
+                  <i>n</i>. Decryption requires knowing the private key, which
+                  depends on computing &phi;(<i>n</i>) via secret prime factors
+                  <i>p</i> and <i>q</i>.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 1.2</span>
+                <h4>Trapdoor One-Way Function</h4>
+                <div class="edu-math-example">
+                  Easy multiplication, intractable factoring
+                </div>
+                <p>
+                  Multiplying two 300-digit primes takes milliseconds, but
+                  factoring their product back into prime components is
+                  computationally infeasible for classical computers.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3747468/pexels-photo-3747468.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Abstract geometric blackboard"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">02</div>
+              <div class="edu-block-title-wrap">
+                <h3>Diffie-Hellman &amp; Discrete Logarithms</h3>
+                <p>
+                  Trading encrypted keys across open channels using modular
+                  exponent asymmetry
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 2.1</span>
+                <h4>Discrete Logarithm Problem</h4>
+                <div class="edu-math-example">
+                  <i>g</i><sup><i>x</i></sup> &equiv; <i>h</i> (mod <i>p</i>)
+                </div>
+                <p>
+                  Computing modular exponentiations is straightforward, but
+                  recovering the exponent <i>x</i> from the result <i>h</i> is
+                  exceptionally difficult.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 2.2</span>
+                <h4>Secure Key Exchange</h4>
+                <div class="edu-math-example">
+                  Shared secret establishment over public networks
+                </div>
+                <p>
+                  Allows two parties to establish a shared secret over an
+                  unsecured channel without transmitting the secret itself.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="edu-block">
+            <div class="section-bg-image-wrap">
+              <img
+                class="section-bg-image"
+                src="https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Algebraic chalk equations"
+                loading="lazy"
+              />
+              <div class="section-bg-overlay"></div>
+            </div>
+
+            <div class="edu-block-header">
+              <div class="edu-block-num">03</div>
+              <div class="edu-block-title-wrap">
+                <h3>Probabilistic Primality Verifiers (Miller-Rabin)</h3>
+                <p>
+                  High-speed randomized screening algorithms to verify primes
+                  instantly
+                </p>
+              </div>
+            </div>
+
+            <div class="edu-subcards-grid">
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Concept 3.1</span>
+                <h4>Randomized Witness Testing</h4>
+                <div class="edu-math-example">
+                  <i>a</i><sup><i>d</i></sup> &equiv; 1 (mod <i>n</i>) or
+                  <i>a</i
+                  ><sup
+                    >2<sup><i>r</i></sup
+                    ><i>d</i></sup
+                  >
+                  &equiv; &minus;1 (mod <i>n</i>)
+                </div>
+                <p>
+                  Bypasses slow trial division trees by running randomized tests
+                  to determine if a massive integer is composite with extremely
+                  high confidence.
+                </p>
+              </div>
+
+              <div class="edu-subcard">
+                <span class="edu-subcard-tag">Case Study 3.2</span>
+                <h4>Cryptographic Prime Generation</h4>
+                <div class="edu-math-example">
+                  Instant prime validation for RSA keys
+                </div>
+                <p>
+                  Employed universally by modern operating systems and
+                  cryptographic libraries to generate prime keys in
+                  milliseconds.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <div id="site-footer-slot">
+      <footer class="site-footer">
+        <div class="footer-container">
+          <p class="footer-line highlight">&copy; Olympiad Edge</p>
+          <p class="footer-line">Authorized By Rayaan Tasnim</p>
+          <p class="footer-line" style="font-size: 0.75rem; color: #000000">
+            All rights reserved
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Hardcoded Navbar Toggle Script Block -->
+    <script type="module" src="integrated-js/edu.js"></script>
+    <script type="module" src="./js/edu.js"></script>
+  </body>
 </html>
