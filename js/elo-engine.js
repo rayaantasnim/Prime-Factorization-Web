@@ -384,6 +384,59 @@ export function renderPermanentBanScreen() {
   document.body.style.overflow = 'hidden';
 }
 
+/**
+ * Renders the 30-Day Temporal Account Lockout countdown screen (Strike 4).
+ * Enforces a strict technical lockdown with zero appeal authority across any page boot.
+ */
+export function renderTemporalLockoutScreen(lockoutUntil) {
+  function formatRemaining(ms) {
+    if (ms <= 0) return '00d 00h 00m 00s';
+    const totalSec = Math.floor(ms / 1000);
+    const days = Math.floor(totalSec / 86400);
+    const hours = Math.floor((totalSec % 86400) / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+    const secs = totalSec % 60;
+    return `${days}d ${String(hours).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+  }
+
+  const initialRemaining = Math.max(0, Number(lockoutUntil) - Date.now());
+
+  document.body.innerHTML = `
+    <div style="position: fixed; inset: 0; background: #030712; color: #F59E0B; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: monospace; padding: 2rem; box-sizing: border-box;">
+      <div style="font-size: 3.5rem; margin-bottom: 1rem; text-shadow: 0 0 25px rgba(245, 158, 11, 0.4);">⏳</div>
+      <h1 style="font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 800; color: #F59E0B; text-shadow: 0 0 15px rgba(245, 158, 11, 0.5); margin-bottom: 0.75rem;">
+        TEMPORAL ACCOUNT LOCKOUT ACTIVE
+      </h1>
+      <p style="font-size: 1rem; color: #94A3B8; max-width: 600px; line-height: 1.6; margin-bottom: 1.5rem;">
+        A strict 30-day temporal account lockout has been enforced on this browser profile following repeated cryptographic backup integrity violations. Zero appeal authority granted.
+      </p>
+      <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(245, 158, 11, 0.5); padding: 1.25rem 2rem; border-radius: 12px; box-shadow: 0 0 25px rgba(245, 158, 11, 0.15); margin-bottom: 1.5rem;">
+        <div style="font-size: 0.8rem; text-transform: uppercase; color: #CBD5E1; letter-spacing: 0.1em; margin-bottom: 0.5rem;">
+          Lockout Expiration Countdown
+        </div>
+        <div id="lockout-countdown-display" style="font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 800; color: #FBBF24; font-variant-numeric: tabular-nums;">
+          ${formatRemaining(initialRemaining)}
+        </div>
+      </div>
+      <div style="font-size: 0.75rem; color: #64748B;">
+        PrimeFactor Disciplinary Enforcement · Code 0x77LOCK · Status: ENFORCED
+      </div>
+    </div>
+  `;
+  document.body.style.overflow = 'hidden';
+
+  const timer = setInterval(() => {
+    const rem = Number(lockoutUntil) - Date.now();
+    const el = document.getElementById('lockout-countdown-display');
+    if (el) el.textContent = formatRemaining(rem);
+    if (rem <= 0) {
+      clearInterval(timer);
+      localStorage.removeItem('primefactor_lockout_until');
+      window.location.reload();
+    }
+  }, 1000);
+}
+
 function renderSecurityWarningModal(title, msg) {
   let modal = document.getElementById('security-strike-modal');
   if (!modal) {
@@ -430,8 +483,13 @@ export function initServerlessOnboarding() {
   let isPermanentlyBanned = false;
   try {
     if (localStorage.getItem('prime_factor_security_verdict') === 'PERMANENTLY_BANNED' ||
+        localStorage.getItem('primefactor_banned') === 'PERMANENTLY_BANNED' ||
         sessionStorage.getItem('prime_factor_security_verdict') === 'PERMANENTLY_BANNED' ||
-        (typeof document !== 'undefined' && document.cookie && document.cookie.includes('primefactor_security_verdict=PERMANENTLY_BANNED'))) {
+        sessionStorage.getItem('primefactor_banned') === 'PERMANENTLY_BANNED' ||
+        (typeof document !== 'undefined' && document.cookie && (
+          document.cookie.includes('primefactor_security_verdict=PERMANENTLY_BANNED') ||
+          document.cookie.includes('primefactor_banned=PERMANENTLY_BANNED')
+        ))) {
       isPermanentlyBanned = true;
     }
   } catch (e) {}
@@ -439,10 +497,28 @@ export function initServerlessOnboarding() {
   if (isPermanentlyBanned) {
     try {
       localStorage.setItem('prime_factor_security_verdict', 'PERMANENTLY_BANNED');
+      localStorage.setItem('primefactor_banned', 'PERMANENTLY_BANNED');
       sessionStorage.setItem('prime_factor_security_verdict', 'PERMANENTLY_BANNED');
+      sessionStorage.setItem('primefactor_banned', 'PERMANENTLY_BANNED');
     } catch (e) {}
     renderPermanentBanScreen();
     throw new Error('Hard Lockout Active');
+  }
+
+  // 1.5. Temporal 30-Day Lockout Check (Strike 4)
+  let lockoutUntil = 0;
+  try {
+    const rawLockout = localStorage.getItem('primefactor_lockout_until');
+    if (rawLockout) lockoutUntil = Number(rawLockout);
+    if (!lockoutUntil && typeof document !== 'undefined' && document.cookie) {
+      const match = document.cookie.match(/primefactor_lockout_until=(\d+)/);
+      if (match) lockoutUntil = Number(match[1]);
+    }
+  } catch (e) {}
+
+  if (lockoutUntil && lockoutUntil > Date.now()) {
+    renderTemporalLockoutScreen(lockoutUntil);
+    throw new Error('Temporal Account Lockout Active');
   }
 
   // 2. FAIL-SAFE ASYMMETRIC TRAP & STRIKE COUNTER ROLLBACK INTERCEPTION:

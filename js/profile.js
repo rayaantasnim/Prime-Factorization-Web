@@ -4,10 +4,21 @@
  * 10-Contests Registry Matrix, and Precision Clipboard Telemetry Multi-Buttons.
  */
 
-import { getLedger, getLastExamResult, getSettings } from './storage.js';
+import { getLedger, getLastExamResult, getSettings, compute64BitBackupHash, ENGINE_HMAC_SECRET, addNotification, clearLedger } from './storage.js';
 import { playSound } from './audio.js';
-import { renderFooter, initGlobalHeader } from './header.js';
-import { getUserElo, getUserPeakElo, getTierByElo, formatLocalDateString } from './elo-engine.js';
+import { renderFooter, initGlobalHeader, triggerFlash } from './header.js';
+import {
+  getUserElo,
+  getUserPeakElo,
+  setUserElo,
+  getTierByElo,
+  formatLocalDateString,
+  reSignProfileDirectory,
+  renderPermanentBanScreen,
+  renderTemporalLockoutScreen,
+  generateUniqueTokenHandle
+} from './elo-engine.js';
+import { MEDALS_CATALOG } from './medals-catalog.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initGlobalHeader();
@@ -110,30 +121,570 @@ function initCommandMatrixOverlay() {
 }
 
 /**
- * Diagnostics JSON Backup Download Generator
+ * 64-BIT MASHED HASH BACKUP INTEGRITY CONTROL GATE & RECOVERY SYSTEM
  */
-function exportDiagnosticsBackup() {
+
+function countEarnedMedals(ctx) {
+  let earned = 0;
+  if (!Array.isArray(MEDALS_CATALOG)) return 0;
+  for (const m of MEDALS_CATALOG) {
+    try {
+      if (typeof m.check === 'function' && m.check(ctx)) {
+        earned++;
+      }
+    } catch {
+      // safe fallback
+    }
+  }
+  return earned;
+}
+
+function buildEvaluationContext(metrics = {}) {
+  const ledger = metrics.ledger || getLedger();
+  const currentElo = Number(metrics.elo !== undefined ? metrics.elo : getUserElo());
+  const peakElo = Number(metrics.peak_elo !== undefined ? metrics.peak_elo : getUserPeakElo());
+  const activeTier = getTierByElo(currentElo);
+  const securityStrikes = Number(metrics.active_security_strikes !== undefined ? metrics.active_security_strikes : (localStorage.getItem('primefactor_security_strikes') || 0));
+
+  let matchRegistry = [];
+  if (Array.isArray(metrics.match_logs)) {
+    matchRegistry = metrics.match_logs;
+  } else {
+    try {
+      const raw = localStorage.getItem('primefactor_match_logs');
+      if (raw) matchRegistry = JSON.parse(raw);
+      if (!Array.isArray(matchRegistry)) matchRegistry = [];
+    } catch (e) {
+      matchRegistry = [];
+    }
+  }
+
+  let fastestMatch = null;
+  let minTime = Infinity;
+  for (const m of matchRegistry) {
+    const t = parseFloat(m.time);
+    if (!isNaN(t) && t > 0 && t < minTime) {
+      minTime = t;
+      fastestMatch = m;
+    }
+  }
+
+  let sumClears = 0;
+  for (const m of matchRegistry) {
+    const c = (Number(m.firstAttemptClears || 0) + Number(m.secondAttemptClears || 0)) ||
+              Number(m.correctCount || 0) ||
+              (m.accuracy ? Math.round((m.accuracy / 100) * (m.totalQuestions || 10)) : 0);
+    sumClears += c;
+  }
+
+  const totalSolved = Math.max(
+    Number(ledger.totalSolved || 0),
+    Number(metrics.total_solved || localStorage.getItem('primefactor_total_solved') || 0),
+    sumClears
+  );
+  const bestStreak = Math.max(Number(ledger.bestStreak || 0), Number(ledger.currentStreak || 0));
+
+  return {
+    ledger,
+    lastResult: metrics.lastResult || getLastExamResult(),
+    currentElo,
+    peakElo,
+    activeTier,
+    securityStrikes,
+    matchRegistry,
+    fastestMatch,
+    totalSolved,
+    bestStreak
+  };
+}
+
+/**
+ * Diagnostics JSON Backup Download Generator with 64-Bit Sealed HMAC Hash
+ */
+export function exportDiagnosticsBackup() {
   try {
+    const currentElo = getUserElo();
+    const peakElo = getUserPeakElo();
+    const ledger = getLedger();
+    const settings = getSettings();
+    const lastResult = getLastExamResult();
+    const username = localStorage.getItem('primefactor_profile_username') || 'Rayaan Tasnim';
+    const token = localStorage.getItem('primefactor_profile_token') || 'OLY-PF-746525000545';
+    const activeStrikes = Number(localStorage.getItem('primefactor_security_strikes') || 0);
+
+    let matchLogs = [];
+    try {
+      const raw = localStorage.getItem('primefactor_match_logs');
+      if (raw) matchLogs = JSON.parse(raw);
+      if (!Array.isArray(matchLogs)) matchLogs = [];
+    } catch (e) {
+      matchLogs = [];
+    }
+
+    const totalSolved = Math.max(
+      Number(ledger.totalSolved || 0),
+      Number(localStorage.getItem('primefactor_total_solved') || 0)
+    );
+    const examsCompleted = Math.max(
+      Number(ledger.examsCompleted || 0),
+      Number(localStorage.getItem('primefactor_total_matches') || 0)
+    );
+    const currentWinStreak = Number(ledger.currentStreak || 0);
+
+    const evalCtx = buildEvaluationContext({
+      elo: currentElo,
+      peak_elo: peakElo,
+      ledger,
+      match_logs: matchLogs,
+      active_security_strikes: activeStrikes,
+      total_solved: totalSolved
+    });
+
+    const earnedMedalsCount = countEarnedMedals(evalCtx);
+
+    const payload = {
+      elo: currentElo,
+      peak_elo: peakElo,
+      total_solved: totalSolved,
+      exams_completed: examsCompleted,
+      active_security_strikes: activeStrikes,
+      current_win_streak: currentWinStreak,
+      medals: earnedMedalsCount
+    };
+
+    // Calculate exact 64-bit verification hash sealed with ENGINE_HMAC_SECRET
+    const hash = compute64BitBackupHash(payload, ENGINE_HMAC_SECRET);
+
     const backupData = {
+      backup_verification_hash: hash,
       app: 'Prime-Factor.app',
+      version: '3.0.0',
       certifier: 'Rayaan Tasnim',
       organization: 'Olympiad Edge',
       timestamp: new Date().toISOString(),
-      ledger: getLedger(),
-      lastResult: getLastExamResult(),
-      settings: getSettings()
+      candidate: {
+        username,
+        token,
+        elo: currentElo,
+        peak_elo: peakElo,
+        active_security_strikes: activeStrikes
+      },
+      elo: currentElo,
+      peak_elo: peakElo,
+      total_solved: totalSolved,
+      exams_completed: examsCompleted,
+      active_security_strikes: activeStrikes,
+      current_win_streak: currentWinStreak,
+      medals: earnedMedalsCount,
+      metrics: payload,
+      ledger,
+      settings,
+      lastResult,
+      match_logs: matchLogs
     };
 
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupData, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `primefactor-profile-diagnostics-${Date.now()}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `primefactor-profile-diagnostics-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   } catch (err) {
     console.error('Failed to export diagnostics:', err);
   }
+}
+
+/**
+ * Strict Import Validation Pipeline & Integrity Gateway
+ */
+export function importDiagnosticsBackup(file) {
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const content = e.target.result;
+      let data;
+      try {
+        data = JSON.parse(content);
+      } catch {
+        executeDishonestyLadder('Malformed JSON Syntax');
+        return;
+      }
+
+      if (!data || typeof data !== 'object') {
+        executeDishonestyLadder('Invalid JSON Object Schema');
+        return;
+      }
+
+      const providedHash = data.backup_verification_hash;
+      if (!providedHash || typeof providedHash !== 'string' || providedHash.trim().length !== 16) {
+        executeDishonestyLadder('Missing or Malformed 64-Bit Verification Hash');
+        return;
+      }
+
+      // Extract metrics
+      const elo = Number(data.elo ?? data.metrics?.elo ?? data.candidate?.elo ?? 500);
+      const peak_elo = Number(data.peak_elo ?? data.metrics?.peak_elo ?? data.candidate?.peak_elo ?? elo);
+      const total_solved = Number(data.total_solved ?? data.metrics?.total_solved ?? (data.ledger?.totalSolved ?? 0));
+      const exams_completed = Number(data.exams_completed ?? data.metrics?.exams_completed ?? (data.ledger?.examsCompleted ?? 0));
+      const active_security_strikes = Number(data.active_security_strikes ?? data.metrics?.active_security_strikes ?? (data.candidate?.active_security_strikes ?? 0));
+      const current_win_streak = Number(data.current_win_streak ?? data.metrics?.current_win_streak ?? (data.ledger?.currentStreak ?? 0));
+
+      let medals = 0;
+      if (Array.isArray(data.medals)) medals = data.medals.length;
+      else if (typeof data.medals === 'number') medals = data.medals;
+      else if (data.metrics && typeof data.metrics.medals === 'number') medals = data.metrics.medals;
+
+      // Bound & Sanity Checks
+      if (isNaN(elo) || isNaN(peak_elo) || isNaN(total_solved) || isNaN(exams_completed) ||
+          isNaN(active_security_strikes) || isNaN(current_win_streak) || isNaN(medals)) {
+        executeDishonestyLadder('Corrupted Numerical Types');
+        return;
+      }
+
+      if (elo < 0 || peak_elo < 0 || total_solved < 0 || exams_completed < 0 ||
+          active_security_strikes < 0 || current_win_streak < 0 || medals < 0) {
+        executeDishonestyLadder('Negative Metric Bounds Violation');
+        return;
+      }
+
+      if (peak_elo < elo) {
+        executeDishonestyLadder('Peak ELO Below Current Rating');
+        return;
+      }
+
+      if (current_win_streak > exams_completed) {
+        executeDishonestyLadder('Streak Exceeds Total Completed Matches');
+        return;
+      }
+
+      // Re-calculate expected 64-bit verification hash using client's ENGINE_HMAC_SECRET
+      const expectedHash = compute64BitBackupHash({
+        elo,
+        peak_elo,
+        total_solved,
+        exams_completed,
+        active_security_strikes,
+        current_win_streak,
+        medals
+      }, ENGINE_HMAC_SECRET);
+
+      if (providedHash.toUpperCase() !== expectedHash.toUpperCase()) {
+        executeDishonestyLadder('Cryptographic Signature Mismatch');
+        return;
+      }
+
+      // Verification passed! Commit verified state cleanly
+      localStorage.setItem('primefactor_elo', String(elo));
+      localStorage.setItem('primefactor_peak_elo', String(peak_elo));
+      localStorage.setItem('primefactor_total_solved', String(total_solved));
+      localStorage.setItem('primefactor_total_matches', String(exams_completed));
+      localStorage.setItem('primefactor_security_strikes', String(active_security_strikes));
+
+      if (data.candidate?.username || data.username) {
+        localStorage.setItem('primefactor_profile_username', data.candidate?.username || data.username);
+      }
+      if (data.candidate?.token || data.token) {
+        localStorage.setItem('primefactor_profile_token', data.candidate?.token || data.token);
+      }
+      if (data.ledger && typeof data.ledger === 'object') {
+        localStorage.setItem('primefactor_ledger', JSON.stringify(data.ledger));
+      }
+      if (data.settings && typeof data.settings === 'object') {
+        localStorage.setItem('primefactor_settings', JSON.stringify(data.settings));
+      }
+      if (data.match_logs && Array.isArray(data.match_logs)) {
+        localStorage.setItem('primefactor_match_logs', JSON.stringify(data.match_logs));
+      }
+      if (data.lastResult && typeof data.lastResult === 'object') {
+        localStorage.setItem('primefactor_last_result', JSON.stringify(data.lastResult));
+      }
+
+      reSignProfileDirectory();
+      playSound('correct');
+
+      renderImportSuccessOverlay();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+
+    } catch (err) {
+      console.error('Import processing error:', err);
+      executeDishonestyLadder('Runtime State Parse Failure');
+    }
+  };
+
+  reader.onerror = () => {
+    executeDishonestyLadder('Disk Read Stream Error');
+  };
+
+  reader.readAsText(file);
+}
+
+/**
+ * Escalating Dishonesty Hammer Penalty Ladder
+ */
+export function executeDishonestyLadder(reason = 'Cryptographic Hash Mismatch') {
+  let tamperCount = Number(localStorage.getItem('primefactor_tamper_import_count') || 0);
+  tamperCount += 1;
+  localStorage.setItem('primefactor_tamper_import_count', String(tamperCount));
+
+  playSound('wrong');
+
+  if (tamperCount === 1) {
+    // TIER 1 (1st Mismatch): Flat -50 ELO penalty, in-app push notification, technical warning overlay
+    const current = getUserElo();
+    const newElo = Math.max(0, current - 50);
+    setUserElo(newElo);
+    reSignProfileDirectory();
+
+    addNotification({
+      type: 'security_tampering',
+      title: 'SECURITY TAMPER ADVISORY',
+      message: '🚨 SECURITY TAMPER ADVISORY: Invalid or fabricated backup hash detected. 50 ELO deducted.'
+    });
+
+    renderDishonestyFreezeOverlay(
+      '🚨 SECURITY TAMPER ADVISORY (TIER 1)',
+      `An invalid, tampered, or fabricated 64-bit backup verification hash was detected (${reason}). A disciplinary flat -50 ELO deduction has been applied to your candidate ledger.`
+    );
+  } else if (tamperCount === 2) {
+    // TIER 2 (2nd Mismatch): Flat -100 ELO penalty, collapse peak ELO to current, append permanent disciplinary record to match logs
+    const current = getUserElo();
+    const newElo = Math.max(0, current - 100);
+    setUserElo(newElo);
+    localStorage.setItem('primefactor_peak_elo', String(newElo));
+
+    try {
+      const rawLogs = localStorage.getItem('primefactor_match_logs');
+      const logs = rawLogs ? JSON.parse(rawLogs) : [];
+      logs.unshift({
+        id: `tamper-${Date.now()}`,
+        tier: 'DISCIPLINARY TAMPER INFRACTION',
+        score: -100,
+        eloDelta: -100,
+        accuracy: 0,
+        time: '0.0',
+        date: formatLocalDateString(),
+        notes: `Tier 2 Repeated Tamper Violation: ${reason}.`
+      });
+      localStorage.setItem('primefactor_match_logs', JSON.stringify(logs));
+    } catch (e) {}
+
+    reSignProfileDirectory();
+
+    addNotification({
+      type: 'security_tampering',
+      title: 'REPEATED TAMPER VIOLATION',
+      message: '🚨 REPEATED TAMPER VIOLATION: Disciplinary -100 ELO and Peak ELO revoked.'
+    });
+
+    renderDishonestyFreezeOverlay(
+      '🚨 REPEATED TAMPER VIOLATION (TIER 2)',
+      `Repeated cryptographic hash failure detected (${reason}). Disciplinary penalty of -100 ELO applied, Peak ELO revoked to current ELO, and a permanent violation record entered into your competition registry.`
+    );
+  } else if (tamperCount === 3) {
+    // TIER 3 (3rd Mismatch — Ledger Liquidation): Wipe career ledger, reset streaks, drop ELO to 0, zero medals
+    clearLedger();
+    localStorage.setItem('primefactor_total_solved', '0');
+    localStorage.setItem('primefactor_total_matches', '0');
+    localStorage.setItem('primefactor_historical_accuracy', '0');
+    localStorage.setItem('primefactor_elo', '0');
+    localStorage.setItem('primefactor_peak_elo', '0');
+    reSignProfileDirectory();
+
+    addNotification({
+      type: 'security_tampering',
+      title: 'DISCIPLINARY LEDGER LIQUIDATION',
+      message: '🚨 DISCIPLINARY LEDGER LIQUIDATION: 3rd Tamper strike. Career ledger liquidated to 0 ELO.'
+    });
+
+    renderDishonestyFreezeOverlay(
+      '🚨 CAREER LEDGER LIQUIDATION (TIER 3)',
+      `3rd Cryptographic Tamper Strike Detected (${reason}). Complete Ledger Liquidation enforced: All career milestones, streaks, and composite clears have been purged, and your rating has been dropped to 0 ELO.`
+    );
+  } else if (tamperCount === 4) {
+    // TIER 4 (4th Mismatch — Temporal Lockout): 1-Month (30-day) lockout marker in storage and cookies
+    const lockoutUntil = Date.now() + (30 * 24 * 60 * 60 * 1000);
+    localStorage.setItem('primefactor_lockout_until', String(lockoutUntil));
+    try {
+      document.cookie = `primefactor_lockout_until=${lockoutUntil}; path=/; max-age=${30 * 24 * 3600}; SameSite=Strict`;
+    } catch (e) {}
+
+    renderTemporalLockoutScreen(lockoutUntil);
+  } else {
+    // TIER 5 (5th Mismatch — Permanent Blacklist Ban)
+    localStorage.setItem('primefactor_banned', 'PERMANENTLY_BANNED');
+    sessionStorage.setItem('primefactor_banned', 'PERMANENTLY_BANNED');
+    try {
+      document.cookie = `primefactor_banned=PERMANENTLY_BANNED; path=/; max-age=315360000; SameSite=Strict`;
+    } catch (e) {}
+
+    renderPermanentBanScreen();
+  }
+}
+
+/**
+ * Disciplinary Freeze Overlay
+ */
+function renderDishonestyFreezeOverlay(title, description) {
+  const existing = document.getElementById('tamper-freeze-overlay');
+  if (existing) existing.remove();
+
+  const tamperCount = Number(localStorage.getItem('primefactor_tamper_import_count') || 1);
+
+  const overlay = document.createElement('div');
+  overlay.id = 'tamper-freeze-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 15, 30, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  overlay.innerHTML = `
+    <div style="
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 50px rgba(239, 68, 68, 0.3), inset 0 0 30px rgba(239, 68, 68, 0.1);
+      border-radius: 16px;
+      max-width: 580px;
+      width: 100%;
+      padding: 2.25rem;
+      text-align: center;
+      color: #F8FAFC;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    ">
+      <div style="font-size: 3rem; margin-bottom: 0.75rem;">🛡️⚠️</div>
+      <div style="
+        display: inline-block;
+        padding: 0.3rem 0.85rem;
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid #EF4444;
+        border-radius: 9999px;
+        color: #FCA5A5;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+      ">
+        Integrity Control Gate Breach (Strike ${tamperCount} of 5)
+      </div>
+      <h2 style="
+        color: #EF4444;
+        font-size: 1.4rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+      ">
+        ${title}
+      </h2>
+      <p style="
+        color: #CBD5E1;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.75rem;
+      ">
+        ${description}
+      </p>
+      <div style="
+        background: rgba(0, 0, 0, 0.4);
+        border-left: 3px solid #EF4444;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-family: monospace;
+        font-size: 0.8rem;
+        color: #94A3B8;
+        margin-bottom: 1.75rem;
+      ">
+        <div>> TAMPER_COUNT: ${tamperCount}</div>
+        <div>> AUDIT_STATUS: REJECTED_SIGNATURE_MISMATCH</div>
+        <div>> DISCIPLINARY_ACTION: APPLIED</div>
+      </div>
+      <button id="btn-acknowledge-tamper" style="
+        background: #DC2626;
+        color: #FFFFFF;
+        border: none;
+        padding: 0.85rem 2rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+      ">
+        Acknowledge &amp; Refresh State
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const btnAck = document.getElementById('btn-acknowledge-tamper');
+  if (btnAck) {
+    btnAck.addEventListener('click', () => {
+      window.location.reload();
+    });
+  }
+}
+
+/**
+ * Import Success Overlay
+ */
+function renderImportSuccessOverlay() {
+  const overlay = document.createElement('div');
+  overlay.id = 'import-success-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 15, 30, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  `;
+  overlay.innerHTML = `
+    <div style="
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 40px rgba(56, 189, 248, 0.25);
+      border-radius: 16px;
+      padding: 2.5rem 3rem;
+      text-align: center;
+      color: #F8FAFC;
+    ">
+      <div style="font-size: 3rem; margin-bottom: 0.75rem;">✔️🔐</div>
+      <h2 style="color: #38BDF8; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">
+        Integrity Gate Verified
+      </h2>
+      <p style="color: #94A3B8; font-size: 0.95rem; margin-bottom: 0;">
+        64-Bit cryptographic seal verified. Re-signing directory and refreshing state...
+      </p>
+    </div>
+  `;
+  document.body.appendChild(overlay);
 }
 
 /**
@@ -607,6 +1158,24 @@ function initClipboardButtons() {
         btnExport.innerHTML = originalHTML;
         btnExport.classList.remove('btn-neon-copied-glow');
       }, 2000);
+    });
+  }
+
+  // Diagnostics Import Button & System File Input Binding
+  const btnImport = document.getElementById('btn-import-diagnostics');
+  const inputImport = document.getElementById('input-import-backup');
+  if (btnImport && inputImport) {
+    btnImport.addEventListener('click', () => {
+      playSound('click');
+      inputImport.value = ''; // Reset file input to allow re-uploading identical file
+      inputImport.click();
+    });
+
+    inputImport.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        importDiagnosticsBackup(file);
+      }
     });
   }
 }

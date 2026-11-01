@@ -430,3 +430,46 @@ export function hasUnreadNotifications() {
   return list.some(item => item.isRead === false);
 }
 
+// ============================================================================
+// 64-BIT MASHED HASH BACKUP INTEGRITY CONTROL GATE
+// ============================================================================
+export const ENGINE_HMAC_SECRET = "YOUR_LOCAL_HMAC_SECRET_KEY_PLACEHOLDER";
+
+/**
+ * Computes a sealed 64-bit verification hash for JSON state backups.
+ * Strictly mashes: elo, peak_elo, total_solved, exams_completed, active_security_strikes,
+ * current_win_streak, and cumulative earned medals, keyed by ENGINE_HMAC_SECRET.
+ *
+ * @param {object} payload - The extracted profile metrics
+ * @param {string} [secret] - Cryptographic HMAC secret
+ * @returns {string} 16-character (64-bit) uppercase hexadecimal verification hash
+ */
+export function compute64BitBackupHash(payload, secret = ENGINE_HMAC_SECRET) {
+  const elo = Number(payload.elo ?? 500);
+  const peakElo = Number(payload.peak_elo ?? elo);
+  const totalSolved = Number(payload.total_solved ?? 0);
+  const examsCompleted = Number(payload.exams_completed ?? 0);
+  const securityStrikes = Number(payload.active_security_strikes ?? 0);
+  const winStreak = Number(payload.current_win_streak ?? 0);
+  const medals = Array.isArray(payload.medals) ? payload.medals.length : Number(payload.medals ?? 0);
+
+  // Strictly mash together the exact candidate metrics
+  const mashedString = `ELO:${elo}#PEAK:${peakElo}#SOLVED:${totalSolved}#EXAMS:${examsCompleted}#STRIKES:${securityStrikes}#STREAK:${winStreak}#MEDALS:${medals}`;
+
+  // Deterministic 64-bit FNV-1a + Murmur/DJB2 hybrid hash generator
+  let hash1 = 0x811c9dc5;
+  let hash2 = 0x55555555;
+  const combined = secret + '::' + mashedString + '::' + secret.length;
+
+  for (let i = 0; i < combined.length; i++) {
+    const code = combined.charCodeAt(i);
+    hash1 ^= code;
+    hash1 = (Math.imul(hash1, 0x01000193)) >>> 0;
+    hash2 = ((hash2 << 5) - hash2 + code) >>> 0;
+    hash2 ^= (hash1 >>> 16);
+  }
+
+  // Exact 64-bit hex string representation (16 characters, 8 for hash1 + 8 for hash2)
+  return (hash1.toString(16).padStart(8, '0') + hash2.toString(16).padStart(8, '0')).toUpperCase();
+}
+

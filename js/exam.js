@@ -1131,9 +1131,25 @@ function initExamArena() {
       triggerFlash('penalty');
     }
 
+    // =========================================================================
+    // ASYMMETRIC 70% TIME RESTORATION RULE
+    // =========================================================================
+    // 1. Calculate the 70% baseline of the match limit
+    const baseline70 = state.totalTimeLimit * 0.7;
+
+    // 2. Apply Asymmetric Time Mutation upon restart execution:
+    // - Condition A (High-Time): If current state.timeRemaining >= baseline70, keep the time COMPLETELY UNCHANGED.
+    // - Condition B (Guaranteed Buffer): If state.timeRemaining < baseline70, forcefully increase it to exactly 70%.
+    if (state.timeRemaining < baseline70) {
+      state.timeRemaining = baseline70;
+    }
+
     playSound('click');
     stopExamTensionAtmosphere();
+
+    // 4. Thread Safety: Clear the old state.timerInterval before re-initializing to prevent clock thread memory leaks
     clearInterval(state.timerInterval);
+    state.timerInterval = null;
     clearTimeout(state.freezeTimeout);
     clearTimeout(state.pauseTimeout);
     initExamArena();

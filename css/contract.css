@@ -424,6 +424,34 @@ button,
   transform: translateY(-3px) scale(1.02) !important;
 }
 
+/* Single-Line Compact Progress Message Layer */
+.contract-progress-msg-layer {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: clamp(0.75rem, 2.2vw, 0.95rem) !important;
+  color: #38bdf8 !important;
+  font-weight: 600 !important;
+  margin-bottom: 0.5rem !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.35) !important;
+  line-height: 1.4 !important;
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Strict Input Freeze Gate State Layer */
+#contract-enter-btn.btn-frozen,
+#contract-enter-btn:disabled {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  filter: grayscale(0.2) !important;
+}
+
 /* ==========================================================================
    Keyframe Animations
    ========================================================================== */

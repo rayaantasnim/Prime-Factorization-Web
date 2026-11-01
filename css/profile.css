@@ -839,3 +839,163 @@ body.profile-view {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   CONTAINER: ডিফল্ট ফ্লেক্স লেআউট
+   ========================================== */
+.backup-btn-container {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ==========================================
+   BASE STYLE: দুটি বাটনই হুবহু এক এবং নিখুঁত
+   ========================================== */
+.btn-export-neon,
+.btn-import-neon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  
+  /* ড্যাশবোর্ডের সাথে ম্যাচিং পারফেক্ট সাইজ ও প্যাডিং */
+  padding: 0 24px;
+  height: 44px;
+  min-width: 185px;
+  
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  user-select: none;
+  
+  /* প্রিমিয়াম ডার্ক গ্লাস ব্যাকগ্রাউন্ড */
+  background: rgba(15, 23, 42, 0.75) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* আইকন ও স্প্যানের লেয়ার ম্যানেজমেন্ট */
+.btn-export-neon svg,
+.btn-export-neon span,
+.btn-import-neon span {
+  position: relative;
+  z-index: 3;
+}
+
+/* ==========================================
+   NEON COLOR HARMONY: একই রকম আকর্ষণীয় নিওন বর্ডার
+   ========================================== */
+
+/* ১. Export Button Style */
+.btn-export-neon {
+  color: #38bdf8; /* ড্যাশবোর্ড সায়ান */
+  border: 1.5px solid rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.1),
+              inset 0 0 8px rgba(56, 189, 248, 0.05);
+}
+
+/* ২. Import Button Style */
+.btn-import-neon {
+  color: #00f2fe; /* আল্ট্রা ব্রাইট সায়ান */
+  border: 1.5px solid rgba(0, 242, 254, 0.5) !important;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.1),
+              inset 0 0 8px rgba(0, 242, 254, 0.05);
+}
+
+/* ==========================================
+   HOVER EFFECTS: আল্ট্রা নিওন গ্লো (উভয় বাটনের জন্য সমান)
+   ========================================== */
+.btn-export-neon:hover {
+  color: #ffffff;
+  border-color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.15) !important;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.5),
+              inset 0 0 10px rgba(56, 189, 248, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn-import-neon:hover {
+  color: #ffffff;
+  border-color: #00f2fe !important;
+  background: rgba(0, 242, 254, 0.15) !important;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.55),
+              inset 0 0 10px rgba(0, 242, 254, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Active Press State */
+.btn-export-neon:active,
+.btn-import-neon:active {
+  transform: translateY(1px);
+  box-shadow: 0 0 8px rgba(0, 242, 254, 0.4);
+}
+
+/* ==========================================
+   AMAZING FEATURE: সাইবারপাঙ্ক সাইন রে (Light Ray)
+   ========================================== */
+.btn-export-neon::before,
+.btn-import-neon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+}
+
+.btn-export-neon:hover::before,
+.btn-import-neon:hover::before {
+  left: 150%;
+}
+
+/* ==========================================
+   MEDIA QUERY: মোবাইলের জন্য inline-block এবং রেসপন্সিভ
+   ========================================== */
+@media (max-width: 640px) {
+  .backup-btn-container {
+    display: block; /* ফ্লেক্স ডিজেবল */
+    text-align: center;
+  }
+  
+  .btn-export-neon,
+  .btn-import-neon {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 44px; /* টেক্সট খাড়াখাড়ি মাঝে রাখার জন্য */
+    width: 90%; /* মোবাইল স্ক্রিনে বাটনগুলো যেন চওড়া হয় */
+    margin: 8px auto; /* ওপর-নিচে স্পেসিং */
+    padding: 0;
+  }
+}
