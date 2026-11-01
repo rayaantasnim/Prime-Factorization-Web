@@ -249,7 +249,7 @@ function initContractGatekeeper() {
   }
 
   // ============================================================================
-  // 30-SECOND AUTOMATED ESCALATION & INPUT FREEZE GATE
+  // TWO-PHASE TICK TIMING STRATEGY & ESCALATION ROUTER
   // ============================================================================
   const PREPARATION_MESSAGES = [
     '⏳ Initializing Memory...',
@@ -262,13 +262,13 @@ function initContractGatekeeper() {
     '🚀 Finalizing Contract...'
   ];
 
-  let timeRemaining = 30;
+  let timeRemaining = 30; // Absolute timeout countdown from 30s to 0s
   let isTransitLocked = false;
   let countdownTimer = null;
   let failsafeEmergencyTimeout = null;
 
-  // 1. Gate Accessibility Lockout: Freeze entry button during active escalation countdown
-  const freezeEntryButton = (buttonText = 'Getting Ready...') => {
+  // 1. Gate Accessibility Lockout: Freeze entry button during Phase 1
+  const freezeEntryButton = (buttonText = '🔒 Prep Wall Active (15s)...') => {
     if (!btnEnter) return;
     btnEnter.disabled = true;
     btnEnter.setAttribute('aria-disabled', 'true');
@@ -286,8 +286,8 @@ function initContractGatekeeper() {
     }
   };
 
-  // 2. Failsafe Emergency Unlock Gate: Lift freeze if browser thread/network stalls transit
-  const unlockEntryButtonForManualBypass = () => {
+  // 2. Dynamic Unlock Gate: Phase 2 transition when hitting 15s remaining
+  const unlockEntryButtonForActiveWindow = () => {
     if (!btnEnter) return;
     isTransitLocked = false; // Allow manual click execution
 
@@ -302,18 +302,18 @@ function initContractGatekeeper() {
     btnEnter.style.filter = 'none';
 
     btnEnter.innerHTML = `
-      <span>Authorize &amp; Enter Arena &gt;</span>
+      <span>Authorize &amp; Enter Arena </span>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 0.5rem; vertical-align: middle;">
         <polyline points="9 18 15 12 9 6"></polyline>
       </svg>
     `;
 
     if (elProgressMsg) {
-      elProgressMsg.textContent = '🚀 Subsystems Ready — Click to Enter Arena manually';
+      elProgressMsg.textContent = '🚀 Subsystems Ready — Manual Action Window Open';
     }
   };
 
-  // 3. Execution of Secure Transit to exam.html with Anti-Duplicate Protection
+  // 3. Execution of Secure Transit to exam.html with Multi-Click Protection
   const proceedToArena = () => {
     if (isTransitLocked) return;
     isTransitLocked = true; // Anti-duplicate double-click lock
@@ -321,8 +321,24 @@ function initContractGatekeeper() {
     // Stop active timers
     if (countdownTimer) clearInterval(countdownTimer);
 
+    // Dual-Button Intercept Lock: Disable BOTH Enter and Cancel buttons immediately
+    if (btnEnter) {
+      btnEnter.disabled = true;
+      btnEnter.style.pointerEvents = 'none';
+      btnEnter.style.opacity = '0.5';
+    }
+    if (btnCancel) {
+      btnCancel.disabled = true;
+      btnCancel.style.pointerEvents = 'none';
+      btnCancel.style.opacity = '0.5';
+    }
+
     // Freeze button with mandatory redirection text strictly: "⚡ Redirecting to Live Arena..."
-    freezeEntryButton('⚡ Redirecting to Live Arena...');
+    if (btnEnterText) {
+      btnEnterText.textContent = '⚡ Redirecting to Live Arena...';
+    } else if (btnEnter) {
+      btnEnter.innerHTML = '<span>⚡ Redirecting to Live Arena...</span>';
+    }
 
     // Pre-Flight Lock Flag: Commit state tracking before navigation
     try {
@@ -343,11 +359,11 @@ function initContractGatekeeper() {
     // Failsafe Emergency Listener: If browser thread block halts redirect after 2000ms, unlock
     if (failsafeEmergencyTimeout) clearTimeout(failsafeEmergencyTimeout);
     failsafeEmergencyTimeout = setTimeout(() => {
-      unlockEntryButtonForManualBypass();
+      unlockEntryButtonForActiveWindow();
     }, 2000);
   };
 
-  // Manual bypass handler (active ONLY after Failsafe Emergency Unlock)
+  // Manual bypass handler for Phase 2
   if (btnEnter) {
     btnEnter.addEventListener('click', (e) => {
       e.preventDefault();
@@ -359,6 +375,7 @@ function initContractGatekeeper() {
   if (btnCancel) {
     btnCancel.addEventListener('click', (e) => {
       e.preventDefault();
+      if (isTransitLocked) return;
       if (countdownTimer) clearInterval(countdownTimer);
       if (failsafeEmergencyTimeout) clearTimeout(failsafeEmergencyTimeout);
       playSound('click');
@@ -366,8 +383,8 @@ function initContractGatekeeper() {
     });
   }
 
-  // Initialize UI in frozen state with first preparation message
-  freezeEntryButton('Getting Ready...');
+  // Initialize UI in Phase 1 frozen state with first preparation message
+  freezeEntryButton('🔒 Preparing (15s)...');
   if (elProgressMsg) {
     elProgressMsg.textContent = PREPARATION_MESSAGES[0];
   }
@@ -378,7 +395,7 @@ function initContractGatekeeper() {
     elCountdownNum.textContent = '30s';
   }
 
-  // 4. Automated 30s Countdown & Sequential Preparation Message Rotation
+  // 4. Two-Phase Countdown & Sequential Preparation Message Rotation Engine
   countdownTimer = setInterval(() => {
     timeRemaining--;
 
@@ -387,23 +404,34 @@ function initContractGatekeeper() {
       elCountdownNum.textContent = `${Math.max(0, timeRemaining)}s`;
     }
 
-    // Update progress bar percentage smoothly
+    // Update progress bar percentage smoothly across 30s
     if (elProgress) {
       const pct = Math.min(100, Math.max(0, ((30 - timeRemaining) / 30) * 100));
       elProgress.style.width = `${pct}%`;
     }
 
-    // Rotate 8 Sequential Compact Preparation Messages every 3.5 seconds
+    // Phase 1 (First 15 seconds): Elapsed time goes from 0s to 15s.
+    // Map elapsed time (0 to 15) strictly to index 0 through 7.
     const elapsedSeconds = 30 - timeRemaining;
-    const msgIndex = Math.min(
-      PREPARATION_MESSAGES.length - 1,
-      Math.floor(elapsedSeconds / 3.5)
-    );
-    if (elProgressMsg && !isTransitLocked) {
-      elProgressMsg.textContent = PREPARATION_MESSAGES[msgIndex];
+    if (elapsedSeconds <= 15) {
+      const msgIndex = Math.min(
+        PREPARATION_MESSAGES.length - 1,
+        Math.floor((elapsedSeconds / 15) * PREPARATION_MESSAGES.length)
+      );
+      if (elProgressMsg && !isTransitLocked) {
+        elProgressMsg.textContent = PREPARATION_MESSAGES[msgIndex];
+      }
     }
 
-    // The exact millisecond the 30 seconds expire: trigger automatic forward redirection
+    // Phase 2 Transition Trigger: Exact millisecond countdown hits 15s remaining (elapsed = 15s)
+    if (timeRemaining === 15) {
+      if (elProgressMsg) {
+        elProgressMsg.textContent = PREPARATION_MESSAGES[PREPARATION_MESSAGES.length - 1];
+      }
+      unlockEntryButtonForActiveWindow();
+    }
+
+    // Absolute Timeout Escalation: Exact millisecond countdown hits 0s remaining
     if (timeRemaining <= 0) {
       clearInterval(countdownTimer);
       proceedToArena();
