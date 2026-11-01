@@ -286,6 +286,7 @@ function initExamArena() {
   const btnSkip = document.getElementById('lifeline-skip');
   const btnExtend = document.getElementById('lifeline-extend');
   const btnNoise = document.getElementById('lifeline-noise');
+  const btnRegen = document.getElementById('lifeline-regen');
   const btnSandbox = document.getElementById('lifeline-sandbox');
   const btnRestart = document.getElementById('lifeline-restart');
   const btnHint = document.getElementById('lifeline-hint');
