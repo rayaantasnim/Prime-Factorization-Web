@@ -175,6 +175,16 @@ export const NAVIGATION_TOPOLOGY_OPTIONS = [
     badge: 'PROFILE',
     badgeColor: '#6366F1',
     icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
+  },
+  {
+    id: 'nav-cognitive-matrix',
+    href: './cognitive-matrix.html',
+    num: '14',
+    title: 'Candidate Telemetry Diagnostics Matrix',
+    subtitle: 'Comprehensive cognitive deficit architecture, real-time latency analytics, neural processing load & topic taxonomy.',
+    badge: 'DIAGNOSTICS',
+    badgeColor: '#10B981',
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/><path d="m13 15 2 2 4-4"/></svg>`
   }
 ];
 
@@ -245,7 +255,7 @@ export function renderNavigationDashboard() {
             </div>
           </div>
           <p class="nav-dashboard-subtitle">
-            Full-spectrum cognitive factorization suite — 13 specialized facilities engineered for extreme speed-mathematics conditioning. This modular infrastructure coordinates real-time state telemetry, adaptive ELO calculation matrices, sandboxed cryptographic validation layers, custom procedural engines, and deep algorithmic profiles to systematically optimize mental prime decomposition latency for elite-tier Math Olympiad competitors.
+            Full-spectrum cognitive factorization suite — 14 specialized facilities engineered for extreme speed-mathematics conditioning. This modular infrastructure coordinates real-time state telemetry, adaptive ELO calculation matrices, sandboxed cryptographic validation layers, custom procedural engines, and deep algorithmic profiles to systematically optimize mental prime decomposition latency for elite-tier Math Olympiad competitors.
           </p>
         </div>
 

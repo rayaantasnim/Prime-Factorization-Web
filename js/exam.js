@@ -24,14 +24,18 @@ import {
   resetConsecutiveFlags,
   isPenaltyLockdownActive,
   setPenaltyLockdown,
-  addNotification
+  addNotification,
+  recordMobileAbruptExitOffense
 } from './storage.js';
 import { triggerFlash, renderFooter } from './header.js';
 import { playSound, startExamTensionAtmosphere, stopExamTensionAtmosphere, updateExamTensionTelemetry } from './audio.js';
-import { getUserElo, setUserElo, isRangeBannedForElo, getTierBaselineFromRange, reSignProfileDirectory } from './elo-engine.js';
+import { getUserElo, setUserElo, isRangeBannedForElo, getTierBaselineFromRange, reSignProfileDirectory, initServerlessOnboarding, handleAbruptExitAudit } from './elo-engine.js';
 import { evaluateMove, computeExpectedBaselineSeconds, MOVE_EVALUATION_POOLS } from './move-evaluator.js';
-import { activeComboStrikeState, triggerGlassmorphicComboFlash, behavioralAntiCheatEngine, evaluateAntiCheatTelemetry, applyLifelineFirewall, isLifelineBlocked, getFirewallRestrictions, LifelineBlacklistFirewall } from './exam-arena-controller.js';
+import { activeComboStrikeState, triggerGlassmorphicComboFlash, triggerLiveArenaCelebrationFreeze, mobileOrientationGuard, isOrientationGraceActive, behavioralAntiCheatEngine, evaluateAntiCheatTelemetry, applyLifelineFirewall, isLifelineBlocked, getFirewallRestrictions, LifelineBlacklistFirewall } from './exam-arena-controller.js';
 import { initHeroParticles, updateThermodynamicState } from './three-particles.js';
+
+// Immediate Root Initialization Hook
+initServerlessOnboarding();
 
 document.addEventListener('DOMContentLoaded', () => {
   renderFooter();
@@ -39,9 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initExamArena() {
-  // Abrupt Exit Check: If an abrupt exit was detected on page boot, suspend normal loops!
+  // Abrupt Exit Check: If an abrupt exit was detected on page boot, execute full audit & suspend normal loops!
   const currentStatus = localStorage.getItem('status') || localStorage.getItem('primefactor_status');
   if (currentStatus === 'ABRUPT_EXIT') {
+    handleAbruptExitAudit();
     return;
   }
   // Logo & Branding Lockdown: The absolute microsecond exam page initializes,
@@ -178,6 +183,8 @@ function initExamArena() {
     timerInterval: null,
     isFrozen: false,
     freezeTimeout: null,
+    isCelebrationFrozen: false,
+    pendingFinishAfterCelebration: false,
     isPausedByLifeline: false,
     pauseTimeout: null,
     
@@ -612,6 +619,75 @@ function initExamArena() {
     }, 1000);
   }
 
+  // Live Arena Celebration Freeze Transition Layer (Consecutive 3-Flawless Combo Milestone)
+  function executeCelebrationFreezeTransition() {
+    state.isCelebrationFrozen = true;
+    state.isFrozen = true;
+
+    // 1. Lock and suppress all inputs and forms
+    if (inputEl) {
+      inputEl.disabled = true;
+      inputEl.blur();
+    }
+    if (submitBtn) submitBtn.disabled = true;
+
+    if (freezeNoticeEl) {
+      freezeNoticeEl.textContent = '⚡ +2 ELO BONUS CELEBRATION FREEZE (2s)';
+      freezeNoticeEl.style.display = 'inline-block';
+      freezeNoticeEl.style.background = 'rgba(245, 158, 11, 0.25)';
+      freezeNoticeEl.style.borderColor = '#F59E0B';
+      freezeNoticeEl.style.color = '#FDE68A';
+    }
+
+    // Lock all lifelines during the celebration freeze window
+    const lifelineButtons = [btnPause, btnEnd, btnSkip, btnExtend, btnNoise, btnSandbox, btnRegen, btnRestart, btnHint, btnBypass];
+    lifelineButtons.forEach(b => {
+      if (b) b.disabled = true;
+    });
+
+    if (inputFeedbackEl) {
+      inputFeedbackEl.textContent = '🌟 CONSECUTIVE 3-COMBO STRIKE! +2 ELO BONUS LOCKED!';
+      inputFeedbackEl.className = 'exam-feedback text-amber font-bold';
+    }
+
+    // 2. High-Density Canvas Confetti FX Overlay + Marquee Text Replacement
+    triggerLiveArenaCelebrationFreeze({
+      targetNumberEl,
+      onComplete: () => {
+        // 3. Resume Lifecycle Seamless Interlock
+        state.isCelebrationFrozen = false;
+        state.isFrozen = false;
+
+        if (freezeNoticeEl) {
+          freezeNoticeEl.style.display = 'none';
+          freezeNoticeEl.textContent = '⏸ Transition Freeze (1s)';
+          freezeNoticeEl.style.background = '';
+          freezeNoticeEl.style.borderColor = '';
+          freezeNoticeEl.style.color = '';
+        }
+
+        // 4. Edge-Case Boundary Enforcement: Final 10th Question or 0:00 Timeout
+        const isTimeExpired = state.timeRemaining <= 0;
+        if (state.pendingFinishAfterCelebration || isTimeExpired) {
+          finishExam(true);
+          return;
+        }
+
+        // Release keyboard input lock and re-enable input field
+        if (inputEl) {
+          inputEl.disabled = false;
+          inputEl.value = '';
+          inputEl.focus();
+        }
+        if (submitBtn) submitBtn.disabled = false;
+        updateHUD();
+
+        // Advance the board seamlessly to next targeted question node
+        advanceToNextQuestion();
+      }
+    });
+  }
+
   // Display Current Question
   function renderActiveQuestion() {
     if (state.examEnded) return;
@@ -660,6 +736,7 @@ function initExamArena() {
     activeComboStrikeState.resetForQuestion(currentItem.number, fCount);
 
     if (targetNumberEl) {
+      targetNumberEl.classList.remove('celebration-marquee-active');
       targetNumberEl.textContent = currentItem.number.toLocaleString();
       if (window.gsap) {
         window.gsap.fromTo(targetNumberEl,
@@ -709,7 +786,7 @@ function initExamArena() {
 
   // Submit Answer Logic
   function handleSubmission() {
-    if (state.isFrozen || state.examEnded) return;
+    if (state.isFrozen || state.isCelebrationFrozen || state.examEnded) return;
 
     const currentItem = !state.isSecondChanceLoop 
       ? state.questionAudits[state.currentIndex] 
@@ -815,9 +892,13 @@ function initExamArena() {
         }
 
         updateHUD();
-        setTransitionFreeze(() => {
-          advanceToNextQuestion();
-        });
+        if (comboEval.rewarded) {
+          executeCelebrationFreezeTransition();
+        } else {
+          setTransitionFreeze(() => {
+            advanceToNextQuestion();
+          });
+        }
       } else {
         // Incorrect on first attempt (-5 pts standard error)
         currentItem.attempt1Correct = false;
@@ -859,9 +940,13 @@ function initExamArena() {
         }
 
         updateHUD();
-        setTransitionFreeze(() => {
-          advanceToNextQuestion();
-        });
+        if (comboEval.rewarded) {
+          executeCelebrationFreezeTransition();
+        } else {
+          setTransitionFreeze(() => {
+            advanceToNextQuestion();
+          });
+        }
       } else {
         // Incorrect on second attempt (-5 pts)
         currentItem.attempt2Correct = false;
@@ -1500,6 +1585,12 @@ function initExamArena() {
   function handleIntegrityViolation(reason) {
     if (state.examEnded || state.bypassActive || state.isFrozen || !state.trackFocus) return;
 
+    // Mobile Orientation Lock Focus Filter:
+    // If a smartphone orientation transition / device tilt grace period is active, suppress false anti-cheat flag!
+    if (mobileOrientationGuard.isGracePeriodActive()) {
+      return;
+    }
+
     state.antiCheatViolationsCount++;
     const penalty = 5;
     state.score -= penalty;
@@ -1522,43 +1613,16 @@ function initExamArena() {
     updateHUD();
   }
 
-  const onVisibilityChange = () => {
-    if (document.hidden) {
-      handleIntegrityViolation('Tab switch or app minimized');
-    }
-  };
-
-  const onWindowBlur = () => {
-    // Only trigger if not already hidden to avoid double penalty in same blur event
-    if (!document.hidden) {
-      handleIntegrityViolation('Window focus lost');
-    }
-  };
-
-  document.addEventListener('visibilitychange', onVisibilityChange);
-  window.addEventListener('blur', onWindowBlur);
-
-  // 2. Hardware-Level Refresh & Window Interception:
-  // Hook into browser native unload and intercept keyboard reload macros
+  // 1. MOBILE & IOS UNBLOCKABLE OFFENSE PROTOCOL
   let abruptExitHandled = false;
 
-  function executeAbruptExitRoutine() {
+  function executeAbruptExitRoutine(triggerSource = 'unload') {
     if (state.examEnded || abruptExitHandled) return;
     abruptExitHandled = true;
     stopExamTensionAtmosphere();
 
     try {
-      // Write status = "ABRUPT_EXIT"
-      localStorage.setItem('status', 'ABRUPT_EXIT');
-      localStorage.setItem('primefactor_status', 'ABRUPT_EXIT');
-      sessionStorage.setItem('status', 'ABRUPT_EXIT');
-      sessionStorage.setItem('primefactor_status', 'ABRUPT_EXIT');
-
-      // Increment persistent integer primefactor_offense_count by 1
-      const currentOffenses = Number(localStorage.getItem('primefactor_offense_count') || 0) + 1;
-      localStorage.setItem('primefactor_offense_count', String(currentOffenses));
-
-      // Calculate and snapshot mid-match telemetry
+      // Snapshot current mid-match telemetry
       const firstTryCount = state.questionAudits.filter(q => q.attempt1Correct === true).length;
       const attemptedCount = state.questionAudits.filter(q => q.attempt1 !== null).length;
       const accuracyPct = attemptedCount > 0 ? (firstTryCount / attemptedCount) * 100 : 0;
@@ -1575,16 +1639,55 @@ function initExamArena() {
         score: state.score,
         questionsCount: state.totalQuestions,
         tier: state.title,
+        triggerSource,
         timestamp: Date.now()
       };
-      localStorage.setItem('primefactor_aborted_match_payload', JSON.stringify(snapshot));
 
-      // Immediately invoke reSignProfileDirectory() using serverless ENGINE_HMAC_SECRET key
+      // Synchronously serialize status = "ABRUPT_EXIT", increment primefactor_offense_count, and write payload
+      recordMobileAbruptExitOffense(snapshot);
+
+      // Immediately re-sign cryptographic profile directory with serverless ENGINE_HMAC_SECRET
       reSignProfileDirectory();
     } catch (err) {
-      console.warn('Error executing abrupt exit routine:', err);
+      console.warn('[Security Protocol] Error executing unblockable abrupt exit routine:', err);
     }
   }
+
+  // Mobile & iOS Lifecycle Events: Concurrently bind to pagehide & visibilitychange
+  const onVisibilityChange = () => {
+    if (state.examEnded) return;
+    const inProgress = sessionStorage.getItem('exam_in_progress') === 'true' || localStorage.getItem('exam_in_progress') === 'true';
+    if (!inProgress) return;
+
+    if (document.hidden || document.visibilityState === 'hidden') {
+      // Exact millisecond user minimizes browser, switches tabs, or triggers mobile hardware navigation
+      executeAbruptExitRoutine('visibilitychange_hidden');
+      handleIntegrityViolation('Tab switch or app minimized');
+    }
+  };
+
+  const onPageHide = (e) => {
+    if (state.examEnded) return;
+    const inProgress = sessionStorage.getItem('exam_in_progress') === 'true' || localStorage.getItem('exam_in_progress') === 'true';
+    if (!inProgress) return;
+    executeAbruptExitRoutine(e.persisted ? 'pagehide_persisted' : 'pagehide');
+  };
+
+  const onWindowBlur = () => {
+    // Mobile Orientation Lock Focus Filter:
+    // Suppress blur integrity penalty if mobile device tilt/rotation transition occurred
+    if (mobileOrientationGuard.isGracePeriodActive()) {
+      return;
+    }
+    // Only trigger if not already hidden to avoid double penalty in same blur event
+    if (!document.hidden) {
+      handleIntegrityViolation('Window focus lost');
+    }
+  };
+
+  window.addEventListener('pagehide', onPageHide);
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  window.addEventListener('blur', onWindowBlur);
 
   // Trap keyboard macros: F5, Ctrl + R, and Ctrl + F5
   const onReloadKeyTrap = (e) => {
@@ -1607,7 +1710,7 @@ function initExamArena() {
       }
 
       // Execute background routine to secure storage immediately
-      executeAbruptExitRoutine();
+      executeAbruptExitRoutine('keyboard_macro');
       return false;
     }
   };
@@ -1621,7 +1724,7 @@ function initExamArena() {
     const inProgress = sessionStorage.getItem('exam_in_progress') === 'true' || localStorage.getItem('exam_in_progress') === 'true';
     if (!inProgress) return;
 
-    executeAbruptExitRoutine();
+    executeAbruptExitRoutine('beforeunload');
 
     const warningMsg = '🚨 Integrity Breach Warning: Reloading or closing this active Olympiad exam is registered as an Abrupt Exit offense and applies an immediate ELO penalty.';
     e.preventDefault();
@@ -1633,7 +1736,10 @@ function initExamArena() {
 
   // Global document listener for hotkeys during active exam
   const onDocKeyDown = (e) => {
-    if (state.examEnded || state.isFrozen) return;
+    if (state.examEnded || state.isFrozen || state.isCelebrationFrozen) {
+      e.preventDefault();
+      return;
+    }
     if ((e.key === 'r' || e.key === 'R') && organicReflexContainer && !organicReflexContainer.classList.contains('hidden')) {
       e.preventDefault();
       confirmOrganicReflexAction();
@@ -1662,7 +1768,7 @@ function initExamArena() {
 
   // Countdown Timer
   state.timerInterval = setInterval(() => {
-    if (state.isFrozen || state.isPausedByLifeline || state.examEnded) return;
+    if (state.isFrozen || state.isCelebrationFrozen || state.isPausedByLifeline || state.examEnded) return;
 
     state.timeRemaining--;
     updateHUD();
@@ -1671,14 +1777,25 @@ function initExamArena() {
     updateExamTensionTelemetry({ timeRemaining: state.timeRemaining });
 
     if (state.timeRemaining <= 0) {
+      if (state.isCelebrationFrozen) {
+        state.pendingFinishAfterCelebration = true;
+        return;
+      }
       clearInterval(state.timerInterval);
       finishExam();
     }
   }, 1000);
 
   // Terminate and redirect to Results Dashboard
-  function finishExam() {
+  function finishExam(force = false) {
     if (state.examEnded) return;
+
+    // Critical Boundary Rule: Defer termination until 2-second celebration freeze concludes
+    if (state.isCelebrationFrozen && !force) {
+      state.pendingFinishAfterCelebration = true;
+      return;
+    }
+
     state.examEnded = true;
     stopExamTensionAtmosphere();
     clearInterval(state.timerInterval);
@@ -1688,6 +1805,7 @@ function initExamArena() {
     clearTimeout(state.pauseTimeout);
 
     document.removeEventListener('visibilitychange', onVisibilityChange);
+    window.removeEventListener('pagehide', onPageHide);
     window.removeEventListener('blur', onWindowBlur);
     document.removeEventListener('keydown', onDocKeyDown);
     window.removeEventListener('keydown', onReloadKeyTrap, true);
@@ -1863,12 +1981,20 @@ function initExamArena() {
   if (submitBtn) {
     submitBtn.addEventListener('click', (e) => {
       e.preventDefault();
+      if (state.isCelebrationFrozen || state.isFrozen || state.examEnded) return;
       handleSubmission();
     });
   }
 
   if (inputEl) {
     inputEl.addEventListener('keydown', (e) => {
+      // Complete input lock & suppression during 2-second celebration freeze window
+      if (state.isCelebrationFrozen || state.isFrozen || state.examEnded) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
       // Sub-Second Factor Combo Strike Keystroke & Backspace Audit
       activeComboStrikeState.logKey(e);
 

@@ -261,13 +261,57 @@ export function isHoneySpotSuppressed(candidate, maxBound) {
   return false;
 }
 
+/**
+ * Stochastic Adaptive Deficit Base Hooks
+ * Allows the Cognitive Deficit Architecture to inject targeted composites matching the user's highest isolated weakness.
+ */
+export function getAdaptiveCognitiveDeficitBase() {
+  try {
+    const raw = localStorage.getItem('primefactor_highest_deficit_base');
+    if (raw) {
+      const val = parseInt(raw, 10);
+      if (!isNaN(val) && val > 1) return val;
+    }
+  } catch (e) {}
+  return null;
+}
+
+export function setAdaptiveCognitiveDeficitBase(basePrime) {
+  try {
+    if (basePrime && Number(basePrime) > 1) {
+      localStorage.setItem('primefactor_highest_deficit_base', String(basePrime));
+    } else {
+      localStorage.removeItem('primefactor_highest_deficit_base');
+    }
+  } catch (e) {}
+}
+
 // Composite Rule: Generator must NEVER pick a prime number as a question!
 // High-Bound Honey Spot Suppression Gate: Active for elite divisions (Bounds >= 2,000, Tiers 5-8)
+// Stochastic Adaptive Injection (30/70 Split): 30% of questions are targeted composites matching the user's isolated deficit base
 export function rollCompositeNumber(min, max) {
   min = Math.max(4, Math.floor(min));
   max = Math.max(min + 1, Math.floor(max));
 
   const isHighBoundGated = max >= 2000;
+
+  // 1. Stochastic Adaptive Question Injection (30/70 Split)
+  const deficitBase = getAdaptiveCognitiveDeficitBase();
+  if (deficitBase && Math.random() < 0.30) {
+    const kMin = Math.max(2, Math.ceil(min / deficitBase));
+    const kMax = Math.floor(max / deficitBase);
+    if (kMax >= kMin) {
+      const k = Math.floor(Math.random() * (kMax - kMin + 1)) + kMin;
+      const targetCandidate = k * deficitBase;
+      if (!isPrime(targetCandidate) && targetCandidate >= min && targetCandidate <= max) {
+        if (!isHighBoundGated || !isHoneySpotSuppressed(targetCandidate, max)) {
+          return targetCandidate;
+        }
+      }
+    }
+  }
+
+  // 2. Standard Random Composite Roll (70% nominal or fallback)
   let attempts = 0;
   while (attempts < 3000) {
     const candidate = Math.floor(Math.random() * (max - min + 1)) + min;

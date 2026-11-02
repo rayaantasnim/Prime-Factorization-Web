@@ -562,7 +562,7 @@ function renderResultDashboard() {
 
         <!-- Visual Bar Chart Container -->
         <div class="micro-latency-chart-wrapper" style="overflow-x: auto; padding-bottom: 8px;">
-          <div class="micro-latency-chart-flex" style="display: flex; align-items: flex-end; gap: 14px; min-width: ${Math.max(480, latencyData.length * 52)}px; height: 180px; padding: 28px 12px 10px 12px; background: rgba(11, 15, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
+          <div class="micro-latency-chart-flex" style="display: inline-flex; width: max-content; align-items: flex-end; gap: 14px; min-width: ${Math.max(480, latencyData.length * 52)}px; height: 180px; padding: 28px 12px 10px 12px; background: rgba(11, 15, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
             ${chartBarsHtml}
           </div>
         </div>
@@ -647,7 +647,16 @@ function renderResultDashboard() {
       failureStackHtml = `<div class="empty-audit-notice">Zero computational faults recorded. Pure mathematical execution.</div>`;
     }
 
-    failureContainer.innerHTML = microLatencyHtml + failureStackHtml;
+    if (failureContainer && failureContainer.parentElement) {
+      let graphWrapper = document.getElementById('micro-latency-graph-wrapper-node');
+      if (!graphWrapper) {
+        graphWrapper = document.createElement('div');
+        graphWrapper.id = 'micro-latency-graph-wrapper-node';
+        failureContainer.parentElement.insertBefore(graphWrapper, failureContainer);
+      }
+      graphWrapper.innerHTML = microLatencyHtml;
+    }
+    failureContainer.innerHTML = failureStackHtml;
   }
 
   // Populate Redemption Track

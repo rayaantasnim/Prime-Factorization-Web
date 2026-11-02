@@ -961,3 +961,78 @@ body.in-exam .main-wrapper {
     border-color: #EF4444;
   }
 }
+
+/* ==========================================================================
+   MODULE 4: LIVE ARENA CELEBRATION FREEZE & MARQUEE ANIMATION
+   ========================================================================== */
+.celebration-marquee-active {
+  font-family: var(--font-heading) !important;
+  font-size: clamp(1.25rem, 3.8vw, 2.6rem) !important;
+  font-weight: 800 !important;
+  color: #FACC15 !important;
+  text-shadow: 
+    0 0 15px rgba(250, 204, 21, 0.9),
+    0 0 35px rgba(245, 158, 11, 0.7),
+    0 0 60px rgba(239, 68, 68, 0.5),
+    0 2px 10px rgba(0, 0, 0, 0.9) !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  animation: celebrationPulseGlow 0.65s ease-in-out infinite alternate, celebrationMarqueeEntrance 0.35s ease-out !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  line-height: 1.25 !important;
+  padding: 0.5rem 1rem !important;
+  background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.18) 0%, rgba(15, 23, 42, 0) 70%) !important;
+  border-radius: 1rem !important;
+  border: 1px solid rgba(250, 204, 21, 0.3) !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.25), inset 0 0 15px rgba(250, 204, 21, 0.15) !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+@keyframes celebrationPulseGlow {
+  0% {
+    transform: scale(0.985);
+    filter: brightness(1);
+    text-shadow: 
+      0 0 15px rgba(250, 204, 21, 0.8),
+      0 0 30px rgba(245, 158, 11, 0.5);
+    border-color: rgba(250, 204, 21, 0.3);
+  }
+  100% {
+    transform: scale(1.025);
+    filter: brightness(1.25);
+    text-shadow: 
+      0 0 25px rgba(250, 204, 21, 1),
+      0 0 50px rgba(245, 158, 11, 0.9),
+      0 0 80px rgba(239, 68, 68, 0.7);
+    border-color: rgba(250, 204, 21, 0.85);
+    box-shadow: 0 0 40px rgba(245, 158, 11, 0.5), inset 0 0 25px rgba(250, 204, 21, 0.3);
+  }
+}
+
+@keyframes celebrationMarqueeEntrance {
+  0% {
+    transform: translateY(12px) scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.live-arena-celebration-canvas {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 999999 !important;
+}
+

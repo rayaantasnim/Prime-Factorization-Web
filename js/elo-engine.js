@@ -677,10 +677,18 @@ export function handleAbruptExitAudit() {
     eloDelta: totalDelta
   });
 
+  const isMobileOffense = Boolean(
+    abortedPayload?.isMobileOffense ||
+    abortedPayload?.triggerSource?.includes('visibility') ||
+    abortedPayload?.triggerSource?.includes('pagehide')
+  );
+
   addNotification({
     type: 'refresh_offense',
-    title: 'Integrity Breach',
-    message: '🚨 Abrupt reload recorded during live match. Mandatory -5 ELO applied.',
+    title: isMobileOffense ? '📱 Mobile Integrity Breach' : 'Integrity Breach',
+    message: isMobileOffense
+      ? '🚨 Mobile & iOS Unblockable Offense: App minimization, mobile tab switch, or background suspension during live rated contest. Mandatory -5 ELO applied.'
+      : '🚨 Abrupt reload recorded during live match. Mandatory -5 ELO applied.',
     eloTracker: {
       prevElo: currentElo,
       delta: totalDelta,
@@ -711,12 +719,13 @@ export function handleAbruptExitAudit() {
     newElo,
     finalDelta,
     hammerPenalty,
-    isHammerTriggered
+    isHammerTriggered,
+    isMobileOffense
   });
 }
 
 export function renderIntegrityBreachModal(data) {
-  const { offenseCount, currentElo, newElo, finalDelta, isHammerTriggered } = data;
+  const { offenseCount, currentElo, newElo, finalDelta, isHammerTriggered, isMobileOffense } = data;
 
   const existing = document.getElementById('integrity-breach-modal');
   if (existing) existing.remove();
@@ -755,11 +764,13 @@ export function renderIntegrityBreachModal(data) {
         margin: 0 0 1.25rem 0;
         letter-spacing: 0.02em;
       ">
-        🚨 Integrity Breach: Abrupt page refresh or window closure detected! Offense recorded.
+        ${isMobileOffense ? '📱 Mobile Sandboxing Breach: App Minimized or Tab Switched!' : '🚨 Integrity Breach: Abrupt page refresh or window closure detected!'}
       </h2>
 
       <p style="font-size: 0.95rem; line-height: 1.6; color: #CBD5E1; margin-bottom: 1.25rem;">
-        Competitive integrity enforcement identified an unverified session termination or active browser reload. Mid-match ratings are secured via serverless cryptographic signatures.
+        ${isMobileOffense 
+          ? 'Mobile & iOS Unblockable Offense Protocol detected that the active browser was minimized, placed in the background, or a mobile tab switch occurred. Mid-match ratings are secured via serverless cryptographic signatures.' 
+          : 'Competitive integrity enforcement identified an unverified session termination or active browser reload. Mid-match ratings are secured via serverless cryptographic signatures.'}
       </p>
 
       <div style="

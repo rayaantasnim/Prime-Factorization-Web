@@ -542,12 +542,137 @@ export function getFirewallRestrictions(userElo, isRated = true) {
   return LifelineBlacklistFirewall.getRestrictions(userElo, isRated);
 }
 
+// Live Arena Celebration Freeze Module Export
+export {
+  triggerLiveArenaCelebrationFreeze,
+  CELEBRATION_FREEZE_DURATION_MS,
+  CELEBRATION_MARQUEE_TEXT
+} from './celebration-freeze.js';
+
+import { triggerLiveArenaCelebrationFreeze } from './celebration-freeze.js';
+
+/**
+ * 4. MOBILE ORIENTATION LOCK FOCUS FILTER
+ * Device-level focus safeguard layer designed exclusively to eliminate false anti-cheat flags
+ * inside mobile and smartphone viewports during layout tilt transitions (portrait/landscape rotation).
+ *
+ * Parameters:
+ * - Listens to screen.orientation 'change' and window 'orientationchange'
+ * - Activates a 1200ms grace period window upon detecting a device rotation
+ * - Suspends strict window blur integrity checks during this layout recalculation window
+ */
+export const mobileOrientationGuard = {
+  isGraceActive: false,
+  graceTimeoutId: null,
+  lastOrientation: null,
+  GRACE_DURATION_MS: 1200,
+  initialized: false,
+
+  init() {
+    if (this.initialized || typeof window === 'undefined') return;
+    this.initialized = true;
+
+    this.lastOrientation = this.getCurrentOrientation();
+
+    // 1. Modern Screen Orientation API
+    if (typeof window !== 'undefined' && window.screen && window.screen.orientation && window.screen.orientation.addEventListener) {
+      window.screen.orientation.addEventListener('change', () => {
+        this.triggerGracePeriod('screen.orientation.change');
+      });
+    }
+
+    // 2. Mobile Safari / WebKit orientationchange event
+    if (typeof window !== 'undefined') {
+      window.addEventListener('orientationchange', () => {
+        this.triggerGracePeriod('window.orientationchange');
+      });
+
+      // 3. Fallback: Viewport dimension flip (mobile device tilt resize)
+      window.addEventListener('resize', () => {
+        const cur = this.getCurrentOrientation();
+        if (this.lastOrientation !== null && cur !== this.lastOrientation) {
+          this.triggerGracePeriod('viewport.tilt.resize');
+        }
+        this.lastOrientation = cur;
+      });
+    }
+  },
+
+  getCurrentOrientation() {
+    if (typeof window === 'undefined') return 'unknown';
+    if (window.screen && window.screen.orientation) {
+      return window.screen.orientation.type || String(window.screen.orientation.angle);
+    }
+    if (typeof window.orientation !== 'undefined') {
+      return String(window.orientation);
+    }
+    return window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+  },
+
+  triggerGracePeriod(reason = 'device_rotation') {
+    this.isGraceActive = true;
+    if (this.graceTimeoutId) {
+      clearTimeout(this.graceTimeoutId);
+    }
+
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(new CustomEvent('orientation:grace_start', {
+        detail: {
+          reason,
+          durationMs: this.GRACE_DURATION_MS,
+          timestamp: performance.now()
+        }
+      }));
+    }
+
+    this.graceTimeoutId = setTimeout(() => {
+      this.isGraceActive = false;
+      this.graceTimeoutId = null;
+
+      if (typeof window !== 'undefined' && window.dispatchEvent) {
+        window.dispatchEvent(new CustomEvent('orientation:grace_end', {
+          detail: { timestamp: performance.now() }
+        }));
+      }
+    }, this.GRACE_DURATION_MS);
+  },
+
+  isGracePeriodActive() {
+    return Boolean(this.isGraceActive);
+  },
+
+  reset() {
+    this.isGraceActive = false;
+    if (this.graceTimeoutId) {
+      clearTimeout(this.graceTimeoutId);
+      this.graceTimeoutId = null;
+    }
+  }
+};
+
+// Initialize immediately if in browser environment
+if (typeof window !== 'undefined') {
+  mobileOrientationGuard.init();
+}
+
+export function isOrientationGraceActive() {
+  return mobileOrientationGuard.isGracePeriodActive();
+}
+
+export function triggerOrientationGrace(durationMs) {
+  return mobileOrientationGuard.triggerGracePeriod('manual_trigger');
+}
+
 if (typeof window !== 'undefined') {
   window.ExamArenaController = {
     ...(window.ExamArenaController || {}),
-    version: '3.7.0',
+    version: '3.9.0',
     activeComboStrikeState,
     triggerGlassmorphicComboFlash,
+    triggerLiveArenaCelebrationFreeze,
+    mobileOrientationGuard,
+    isOrientationGraceActive,
+    triggerOrientationGrace,
     dispatchThermodynamicResponse,
     behavioralAntiCheatEngine,
     evaluateAntiCheatTelemetry,
@@ -557,3 +682,5 @@ if (typeof window !== 'undefined') {
     getFirewallRestrictions
   };
 }
+
+

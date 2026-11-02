@@ -235,6 +235,46 @@ export function clearAbortedMatchPayload() {
   }
 }
 
+/**
+ * Mobile & iOS Unblockable Offense Protocol
+ * Synchronously serializes status = "ABRUPT_EXIT", increments primefactor_offense_count,
+ * and snapshots the mid-match telemetry cache directly into localStorage.
+ */
+export function recordMobileAbruptExitOffense(telemetrySnapshot = null) {
+  try {
+    // 1. Synchronously serialize status = "ABRUPT_EXIT" across both storage scopes
+    localStorage.setItem(STATUS_KEY, 'ABRUPT_EXIT');
+    localStorage.setItem(PRIMEFACTOR_STATUS_KEY, 'ABRUPT_EXIT');
+    sessionStorage.setItem(STATUS_KEY, 'ABRUPT_EXIT');
+    sessionStorage.setItem(PRIMEFACTOR_STATUS_KEY, 'ABRUPT_EXIT');
+
+    // 2. Atomically increment persistent integer primefactor_offense_count
+    const current = Number(localStorage.getItem(OFFENSE_COUNT_KEY) || 0) + 1;
+    localStorage.setItem(OFFENSE_COUNT_KEY, String(current));
+
+    // 3. Snapshot mid-match telemetry cache directly into localStorage
+    if (telemetrySnapshot) {
+      safeSet(ABORTED_MATCH_KEY, {
+        ...telemetrySnapshot,
+        isMobileOffense: true,
+        abruptExitTimestamp: Date.now()
+      });
+    }
+
+    return {
+      success: true,
+      offenseCount: current,
+      status: 'ABRUPT_EXIT'
+    };
+  } catch (err) {
+    console.warn('[Security Protocol] Error recording mobile unblockable offense:', err);
+    return {
+      success: false,
+      error: err
+    };
+  }
+}
+
 // ============================================================================
 // Three-Match Strike Chain & Plus-Rating Blackhole Lockdown Storage Layer
 // ============================================================================
