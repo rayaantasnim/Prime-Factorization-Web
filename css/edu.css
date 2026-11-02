@@ -7,31 +7,32 @@
   /* Core Color Palette */
   --bg-core: #030712;
   --bg-surface: #0b0f19;
-  
+
   /* Light High-Contrast Card System */
-  --bg-card-light: #FFFFFF;
-  --bg-card-light-hover: #F8FAFC;
-  --border-card-light: #E2E8F0;
-  
+  --bg-card-light: #ffffff;
+  --bg-card-light-hover: #f8fafc;
+  --border-card-light: #e2e8f0;
+
   /* High-Contrast Text Tokens */
-  --text-dark-primary: #0F172A;
+  --text-dark-primary: #0f172a;
   --text-dark-secondary: #334155;
   --text-dark-muted: #475569;
-  
-  --text-light-primary: #F8FAFC;
-  --text-light-muted: #94A3B8;
-  
+
+  --text-light-primary: #f8fafc;
+  --text-light-muted: #94a3b8;
+
   /* Brand Accents */
-  --accent-cyan: #0284C7;
-  --accent-cyan-light: #38BDF8;
-  --accent-blue: #0EA5E9;
+  --accent-cyan: #0284c7;
+  --accent-cyan-light: #38bdf8;
+  --accent-blue: #0ea5e9;
   --accent-emerald: #059669;
-  --accent-amber: #D97706;
-  
+  --accent-amber: #d97706;
+
   /* Typography & Dynamics */
-  --font-heading: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-math: 'Fira Code', Consolas, Monaco, monospace;
-  
+  --font-heading:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-math: "Fira Code", Consolas, Monaco, monospace;
+
   --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-spring: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -84,7 +85,7 @@ body {
   color: var(--text-light-primary);
   letter-spacing: -0.02em;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #FFFFFF 40%, #38BDF8 100%);
+  background: linear-gradient(135deg, #ffffff 40%, #38bdf8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -151,7 +152,11 @@ body {
 .section-bg-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(3, 7, 18, 0.85) 0%, rgba(3, 7, 18, 0.95) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(3, 7, 18, 0.85) 0%,
+    rgba(3, 7, 18, 0.95) 100%
+  );
 }
 
 .edu-block > *:not(.section-bg-image-wrap) {
@@ -222,19 +227,21 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.08);
   transition: var(--transition-spring);
   overflow: hidden;
 }
 
 .edu-subcard::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, #0284C7, #38BDF8);
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -242,8 +249,10 @@ body {
 .edu-subcard:hover {
   transform: translateY(-5px) scale(1.01);
   background: var(--bg-card-light-hover);
-  border-color: #CBD5E1;
-  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.35), 0 0 20px rgba(56, 189, 248, 0.2);
+  border-color: #cbd5e1;
+  box-shadow:
+    0 15px 35px -10px rgba(0, 0, 0, 0.35),
+    0 0 20px rgba(56, 189, 248, 0.2);
 }
 
 .edu-subcard:hover::before {
@@ -284,11 +293,11 @@ body {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #0369A1;
-  background: #E0F2FE;
+  color: #0369a1;
+  background: #e0f2fe;
   padding: 0.3rem 0.75rem;
   border-radius: 9999px;
-  border: 1px solid #BAE6FD;
+  border: 1px solid #bae6fd;
   margin-bottom: 0.75rem;
   width: max-content;
 }
@@ -298,13 +307,13 @@ body {
   font-family: var(--font-math);
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0F172A !important;
-  background: #F1F5F9;
-  border: 1px solid #CBD5E1;
+  color: #0f172a !important;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
   padding: 0.65rem 0.85rem;
   border-radius: 0.75rem;
   margin: 0.75rem 0;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
   overflow-x: auto;
   white-space: nowrap;
 }
@@ -314,12 +323,18 @@ body {
    ================================================================ */
 .edu-sandbox-card {
   position: relative;
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(3, 7, 18, 0.95));
+  background: linear-gradient(
+    145deg,
+    rgba(15, 23, 42, 0.9),
+    rgba(3, 7, 18, 0.95)
+  );
   border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: 1.75rem;
   padding: 2.5rem;
   margin-top: 3rem;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.15);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(56, 189, 248, 0.15);
   overflow: hidden;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -354,9 +369,9 @@ body {
 }
 
 .sandbox-strat-btn.active {
-  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-  color: #FFFFFF;
-  border-color: #38BDF8;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  border-color: #38bdf8;
   box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
   transform: translateY(-2px);
 }
@@ -392,8 +407,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
   font-family: var(--font-heading);
   font-size: 0.95rem;
   font-weight: 800;
@@ -406,10 +421,10 @@ body {
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
-  border-color: #FFFFFF;
+  border-color: #ffffff;
 }
 
 .sandbox-steps-output {
@@ -452,13 +467,25 @@ body {
    ANIMATIONS & KEYFRAMES
    ================================================================ */
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* =================================================================
@@ -554,3 +581,4 @@ body {
     margin-bottom: 1.75rem !important;
   }
 }
+

@@ -1,0 +1,195 @@
+/* =================================================================
+   ১. বেস ব্যাজ স্টাইল (ডেস্কটপ এবং সাধারণ ভিউ-এর জন্য)
+   ================================================================= */
+.section-badge {
+  /* স্ট্রাকচার এবং লেআউট */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: auto !important;
+  width: max-content !important;
+  min-width: max-content !important;
+  
+  /* ব্যাকগ্রাউন্ড ও ভিজ্যুয়াল স্টাইল */
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  border-radius: 9999px !important;
+  padding: 0.3rem 0.85rem !important;
+  
+  /* টেক্সট এবং ভিজিবিলিটি রিসেট (টেক্সট যেন অদৃশ্য বা সংকুচিত না হয়) */
+  color: #ffffff !important; 
+  -webkit-background-clip: border-box !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-family: var(--font-heading), sans-serif !important;
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  
+  /* সাধারণ অবস্থায় মার্জিন জিরো */
+  margin: 0 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* ব্যাজের ভেতরের কোনো চাইল্ড ট্যাগ (যেমন span, strong) থাকলে সেটির কালার সুরক্ষায় */
+.section-badge * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  visibility: visible !important;
+}
+
+/* =================================================================
+   ২. রেসপনসিভ এবং স্প্লিট-স্ক্রিন ফিক্স (১০২৪ পিক্সেল ব্রেকপয়েন্ট)
+   ================================================================= */
+@media screen and (max-width: 1024px) {
+  
+  /* :has() সিলেক্টর ব্যবহার করে ব্যাজের প্যারেন্ট গ্রিড/ফ্লেক্স লেআউট ভেঙে ফেলা হলো */
+  *:has(> .section-badge) {
+    display: block !important;
+    grid-template-columns: none !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  /* স্প্লিট স্ক্রিন বা মোবাইলে ব্যাজের পজিশন এবং মার্জিন ফিক্স */
+  .section-badge {
+    display: inline-flex !important; 
+    margin-top: 1.5rem !important;    /* স্প্লিট স্ক্রিনে ওপরের এলিমেন্ট থেকে পর্যাপ্ত গ্যাপ */
+    margin-bottom: 0.75rem !important; /* নিচের হেডিং থেকে সুন্দর দূরত্ব */
+    white-space: nowrap !important;
+  }
+
+  /* ব্যাজের পরবর্তী হেডিং বা টাইটেলকে জোরপূর্বক নিচের লাইনে পুশ করা */
+  .section-badge + h1,
+  .section-badge + h2,
+  .section-badge + h3,
+  .section-badge + .section-title {
+    display: block !important;
+    float: none !important;
+    clear: both !important;
+    width: max-content !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =================================================================
+   ১. মেইন টাইটেল এবং ফ্লোয়িং আন্ডারলাইন (Desktop & General)
+   ================================================================= */
+.site-section-title {
+  display: block !important;
+  font-family: var(--font-heading), sans-serif !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  
+  /* রেসপনসিভ ফন্ট সাইজ মেকানিজম (মোবাইল থেকে ডেস্কটপে স্মুথ স্কেলিং) */
+  font-size: clamp(1.85rem, 4.5vw, 3.25rem) !important;
+  margin-bottom: 2rem !important; /* আন্ডারলাইনের জন্য অতিরিক্ত স্পেস */
+
+  /* ফ্লোয়িং গ্রেডিয়েন্ট টেক্সট */
+  background: linear-gradient(
+    120deg,
+    #ffffff 0%,
+    #38bdf8 30%,
+    #0284c7 50%,
+    #38bdf8 70%,
+    #ffffff 100%
+  ) !important;
+  background-size: 200% auto !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+
+  /* অ্যানিমেশন ট্র্রিগার */
+  animation: 
+    titleGradientFlow 6s linear infinite, 
+    titleAirFloat 4s ease-in-out infinite !important;
+
+  /* ফ্লোয়িং আন্ডারলাইনের জন্য পজিশনিং রেডি করা */
+  position: relative !important;
+  width: fit-content !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* --- ফ্লোয়িং আন্ডারলাইন তৈরির মেকানিজম (Pseudo-element) --- */
+.site-section-title::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: -10px !important; /* টেক্সট থেকে ১০ পিক্সেল নিচে বসবে */
+  left: 10% !important;
+  width: 80% !important; /* শিরোনামের নিচে একটি নির্দিষ্ট চওড়া দাগ */
+  height: 4px !important; /* আন্ডারলাইনের পুরুত্ব */
+  border-radius: 9999px !important;
+  
+  /* আন্ডারলাইনের ভেতরের ফ্লোয়িং গ্রেডিয়েন্ট কালার */
+  background: linear-gradient(
+    90deg,
+    #0284c7 0%,
+    #38bdf8 50%,
+    #059669 100%
+  ) !important;
+  background-size: 200% auto !important;
+  
+  /* আন্ডারলাইনের ফ্লোয়িং অ্যানিমেশন */
+  animation: underlineFlow 4s linear infinite !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6) !important;
+}
+
+/* =================================================================
+   ২. অ্যানিমেশন কিফ্রেম (Keyframes)
+   ================================================================= */
+
+/* টেক্সট গ্রেডিয়েন্ট প্রবাহ ও গ্লো */
+@keyframes titleGradientFlow {
+  0% { background-position: 0% center; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.2)); }
+  50% { background-position: 200% center; filter: drop-shadow(0 0 16px rgba(14, 165, 233, 0.4)); }
+  100% { background-position: 400% center; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.2)); }
+}
+
+/* বাতাস ভেসে থাকার (Floating) প্রভাব */
+@keyframes titleAirFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* আন্ডারলাইন প্রবাহ (Flowing Underline) */
+@keyframes underlineFlow {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* =================================================================
+   ৩. রেসপনসিভ মিডিয়া কোয়েরি (Small Screens / Split View)
+   ================================================================= */
+@media screen and (max-width: 768px) {
+  .site-section-title {
+    /* ছোট স্ক্রিনে ফন্ট সাইজ আরও হ্রাস করে সুরক্ষিত করা হলো */
+    font-size: 1.65rem !important; 
+    margin-bottom: 1.5rem !important;
+    letter-spacing: -0.01em !important;
+  }
+  
+  .site-section-title::after {
+    height: 3px !important; /* ছোট স্ক্রিনে আন্ডারলাইন একটু চিকন হবে */
+    bottom: -6px !important;
+  }
+}
