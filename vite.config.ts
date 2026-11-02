@@ -32,6 +32,7 @@ export default defineConfig(() => {
           notifications: path.resolve(import.meta.dirname, 'notifications.html'),
           faq: path.resolve(import.meta.dirname, 'faq.html'),
           engine: path.resolve(import.meta.dirname, 'engine.html'),
+          'cognitive-matrix': path.resolve(import.meta.dirname, 'cognitive-matrix.html'),
         },
       },
     },

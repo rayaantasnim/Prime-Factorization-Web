@@ -289,6 +289,26 @@
               <span class="dropdown-badge">Archive</span>
             </a>
 
+            <a href="./cognitive-matrix.html" class="dropdown-link-item" id="dropdown-diagnostics">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M18 20V10"></path>
+                  <path d="M12 20V4"></path>
+                  <path d="M6 20v-6"></path>
+                </svg>
+                <span>Diagnostics</span>
+              </div>
+              <span class="dropdown-badge" style="background: #0284c7; color: #ffffff;">Matrix</span>
+            </a>
+
             <!-- Desktop Settings Link -->
             <a
               href="./profile-settings.html"
@@ -519,6 +539,22 @@
               </p>
             </div>
           </div>
+
+          <!-- Portal 8 -->
+          <a
+            href="./cognitive-matrix.html"
+            id="matrix-portal-cognitive"
+            class="matrix-routing-card"
+            style="text-decoration: none;"
+          >
+            <span class="routing-card-index">08</span>
+            <div class="routing-card-body">
+              <h4>Quantum Diagnostics Matrix</h4>
+              <p>
+                Candidate deficit telemetry, latency slump logs &amp; therapeutic number theory heuristics.
+              </p>
+            </div>
+          </a>
         </div>
       </div>
     </div>
@@ -556,29 +592,43 @@
           </div>
         </div>
 
-        <!-- Precision Clipboard Button 1 [Copy Academic Profile] -->
-        <button
-          id="btn-copy-academic-profile"
-          class="btn-clipboard-neon"
-          aria-label="Copy Academic Profile Credentials"
-        >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+        <!-- Identity Actions -->
+        <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+          <!-- Precision Clipboard Button 1 [Copy Academic Profile] -->
+          <button
+            id="btn-copy-academic-profile"
+            class="btn-clipboard-neon"
+            aria-label="Copy Academic Profile Credentials"
           >
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path
-              d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-            ></path>
-          </svg>
-          <span>Copy Academic Profile</span>
-        </button>
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              ></path>
+            </svg>
+            <span>Copy Academic Profile</span>
+          </button>
+
+          <!-- Action Button: Open Diagnostics Matrix -->
+          <a
+            href="./cognitive-matrix.html"
+            id="btn-open-diagnostics-matrix"
+            class="btn-clipboard-neon"
+            aria-label="Open Diagnostics Matrix"
+            style="text-decoration: none;"
+          >
+            <span>📊 Open Diagnostics Matrix →</span>
+          </a>
+        </div>
       </section>
 
       <!-- 2. Historical PB Milestones (6 Cards) -->
@@ -1060,6 +1110,16 @@
           >
             <span>📥 Import JSON Backup</span>
           </button>
+
+          <a
+            href="./cognitive-matrix.html"
+            id="btn-diagnostics-hub-action"
+            class="btn-clipboard-neon"
+            aria-label="Open Diagnostics Matrix Hub"
+            style="text-decoration: none;"
+          >
+            <span>📊 Open Diagnostics Matrix →</span>
+          </a>
 
           <input
             type="file"
