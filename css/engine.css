@@ -295,7 +295,7 @@
 /* =================================================================telemetry grid */
 .telemetry-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 1.5rem;
   box-sizing: border-box;
   width: 100%;
@@ -420,7 +420,7 @@
 /* =================================================================lifelines grid */
 .lifelines-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 1.5rem;
   box-sizing: border-box;
   width: 100%;
@@ -554,7 +554,7 @@
 /* =================================================================audio synthesizer calibration panel */
 .audio-panel-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 1.75rem;
   box-sizing: border-box;
   width: 100%;
@@ -708,7 +708,7 @@
   .lifelines-grid,
   .telemetry-grid,
   .audio-panel-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   }
 }
 

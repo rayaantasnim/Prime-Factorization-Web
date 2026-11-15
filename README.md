@@ -380,3 +380,17 @@ npm run preview
 - **Ranges**: spring-physics 3D cards with cursor glow (`js/ranges-3d.js`, `css/ranges-3d.css`), bento stats, 60/40 spotlight hero.
 - **Responsive**: `css/contract-media-query.css`, extended `css/result-media-query.css`, global safety net in `aurora-pro.css`.
 - **Firebase speed**: persistent multi-tab Firestore cache, lazy auth popup resolver, instant cached-session header, parallel profile fetch, single-transaction match commit, preconnect hints, `firestore.indexes.json` (deploy with `firebase deploy --only firestore:indexes`).
+
+---
+
+## ✨ Visual Upgrade — Observatory Edition (index.html)
+
+| Layer | Files |
+|---|---|
+| **WebGL (raw, zero-dependency)** — hero cardioid "orrery", Ulam-spiral GPU primality, times-table envelopes, Sieve of Eratosthenes, digit-spark particles | `js/pf-gl-core.js`, `js/pf-orrery.js`, `js/pf-observatory.js`, `js/pf-sparks.js` |
+| **Framer Motion** (`motion` package; jsDelivr fallback) — spring reveals, 3D tilt, counters, decode kickers, prime-ruler HUD, number-curtain intro | `js/pf-motion.js`, `js/pf-motion-loader.js` |
+| **12-Tier Hierarchy Matrix** — interactive ELO gauge, live tier readout, synced to `profile.elo` | `js/pf-ladder.js` |
+| **UI theme** — math-olympiad styling, crop marks, § numbering, container queries | `css/math-ui.css` |
+| **Responsive layer for all 18 pages** (xs 320 → 4K, landscape, coarse pointer, contrast, print) | `css/responsive-global.css` |
+
+Entry point: `js/index-fx.js`. Every layer degrades independently (no WebGL → inspector still works; no Motion → content is never hidden; `prefers-reduced-motion` → static).

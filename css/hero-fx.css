@@ -63,15 +63,6 @@ html.fx-pending .hero-scroll-cue { opacity: 0 !important; }
   100% { opacity: 0; transform: translateY(12px); }
 }
 
-/* Motion drives card transforms: keep CSS transitions off transform so frames don't lag */
-html.fx-motion .step-card,
-html.fx-motion .rank-card,
-html.fx-motion .mini-challenge-card {
-  transition-property: box-shadow, border-color, background, color !important;
-}
-html.fx-motion .step-card:hover,
-html.fx-motion .rank-card:hover { transform: none !important; }
-
 #fx-scroll-progress {
   position: fixed;
   top: 0;

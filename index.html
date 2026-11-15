@@ -44,6 +44,30 @@
     <link rel="stylesheet" href="css/index-media-query.css" />
     <link rel="stylesheet" href="css/version-launch.css" />
     <link rel="stylesheet" href="css/hero-fx.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Number-curtain intro: once per session, skipped for reduced motion; hard 3.4s safety net -->
+    <script>
+      (function () {
+        var r = document.documentElement, on = false;
+        try {
+          on = !sessionStorage.getItem('pf-curtain') &&
+            !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        } catch (e) {}
+        window.__pfIntroGate = new Promise(function (res) { window.__pfOpenGate = res; });
+        if (on) {
+          r.classList.add('pf-curtain-on');
+          setTimeout(function () {
+            r.classList.remove('pf-curtain-on');
+            var c = document.getElementById('pf-curtain'); if (c) c.remove();
+            window.__pfOpenGate();
+          }, 3400);
+        } else { window.__pfOpenGate(); }
+      })();
+    </script>
 
     <!-- Hide hero copy until the GSAP intro is ready (removed by js/hero-fx.js; 3.5s safety net) -->
     <script>
@@ -63,9 +87,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="./css/ux-core.css" />
     <link rel="stylesheet" href="./css/aurora-pro.css" />
+    <link rel="stylesheet" href="./css/math-ui.css" />
+    <link rel="stylesheet" href="./css/responsive-global.css" />
     <script type="module" src="./js/ux-core.js"></script>
+    <script type="module" src="./js/index-fx.js"></script>
   </head>
   <body>
+    <div id="pf-curtain" aria-hidden="true">
+      <div class="pf-curtain-half is-top"></div>
+      <div class="pf-curtain-half is-bot"></div>
+      <div class="pf-curtain-core">
+        <span class="pf-curtain-pi">Π</span>
+        <span class="pf-curtain-n">2</span>
+        <span class="pf-curtain-f">is prime</span>
+        <span class="pf-curtain-bar"><i></i></span>
+      </div>
+    </div>
     <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
     <div id="flash-overlay" aria-hidden="true"></div>
 
@@ -452,6 +489,13 @@
             <p>3-step visual guide to Olympiad mastery</p>
           </div>
         </div>
+        <div class="overlay-nav-card" data-target="sec-observatory">
+          <span class="overlay-card-num">★</span>
+          <div class="overlay-card-info">
+            <h4>Number Theory Observatory</h4>
+            <p>Live WebGL: Ulam spiral, times-table, Eratosthenes sieve</p>
+          </div>
+        </div>
         <div class="overlay-nav-card" data-target="sec-verdict">
           <span class="overlay-card-num">04</span>
           <div class="overlay-card-info">
@@ -557,6 +601,15 @@
           <div class="section-bg-overlay"></div>
         </div>
         <span class="hero-scroll-cue" aria-hidden="true"></span>
+        <div class="pf-hero-hud" aria-hidden="true">
+          <i class="pf-corner tl"></i><i class="pf-corner tr"></i><i class="pf-corner bl"></i><i class="pf-corner br"></i>
+          <span class="pf-hud-tag pf-hud-bl"><b>TIMES-TABLE ORRERY</b> <span id="hero-k-readout">×2.00 mod 210 · Cardioid · 1 cusp</span></span>
+          <span class="pf-hud-tag pf-hud-br">ζ(s) = ∏ (1 − p<sup>−s</sup>)<sup>−1</sup></span>
+          <span class="pf-eq pf-eq-1">n = p₁<sup>a₁</sup>·p₂<sup>a₂</sup>⋯p<sub>k</sub><sup>a<sub>k</sub></sup></span>
+          <span class="pf-eq pf-eq-2">a<sup>p−1</sup> ≡ 1 (mod p)</span>
+          <span class="pf-eq pf-eq-3">φ(n) = n∏(1 − 1/p)</span>
+          <span class="pf-eq pf-eq-4">π(x) ~ x / ln x</span>
+        </div>
 
         <div class="content-container hero-content text-center">
           <!-- Meta kicker badge -->
@@ -583,7 +636,7 @@
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
               "
-              >at Olympiad Speed.</span
+              >at Olympiad Speed.<svg class="pf-underline" viewBox="0 0 400 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9 C 70 2, 140 13, 205 7 S 330 3, 397 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span
             >
           </h1>
 
@@ -741,6 +794,22 @@
         </div>
       </section>
 
+
+      <!-- STATS BAND + NUMBER TAPE -->
+      <div class="pf-band" aria-label="Platform at a glance">
+        <ul class="pf-stats">
+          <li class="pf-stat"><b data-count="12">12</b><span>ELO tiers</span><em>Foundry Initiate → Prime Singularity</em></li>
+          <li class="pf-stat"><b data-count="100" data-suffix="+">100+</b><span>Olympiad medals</span><em>Certified in Cloud Firestore</em></li>
+          <li class="pf-stat"><b data-count="10">10</b><span>Problems / match</span><em>Ten progressive bounds</em></li>
+          <li class="pf-stat"><b data-count="50000" data-suffix="+">50,000+</b><span>Cosmic ceiling</span><em>Factor numbers up to 1–50,000+</em></li>
+        </ul>
+        <div class="pf-tape" aria-hidden="true">
+          <div class="pf-tape-track">
+            <span>360 = 2³ · 3² · 5</span><span>1260 = 2² · 3² · 5 · 7</span><span>7919 is prime</span><span>1024 = 2¹⁰</span><span>2520 = 2³ · 3² · 5 · 7</span><span>9973 is prime</span><span>8128 = 2⁶ · 127</span><span>30030 = 2 · 3 · 5 · 7 · 11 · 13</span><span>5040 = 2⁴ · 3² · 5 · 7</span><span>50000 = 2⁴ · 5⁵</span><span>360 = 2³ · 3² · 5</span><span>1260 = 2² · 3² · 5 · 7</span><span>7919 is prime</span><span>1024 = 2¹⁰</span><span>2520 = 2³ · 3² · 5 · 7</span><span>9973 is prime</span><span>8128 = 2⁶ · 127</span><span>30030 = 2 · 3 · 5 · 7 · 11 · 13</span><span>5040 = 2⁴ · 3² · 5 · 7</span><span>50000 = 2⁴ · 5⁵</span>
+          </div>
+        </div>
+      </div>
+
       <!-- 3. 3-STEP "HOW IT WORKS" VISUAL GUIDE (Item 4) -->
       <section
         id="sec-how-it-works"
@@ -838,6 +907,116 @@
               >
                 12 ELO Ranks · 100 Accolades
               </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- NUMBER THEORY OBSERVATORY (WebGL) -->
+      <section id="sec-observatory" class="home-section pf-obs">
+        <div class="content-container">
+          <div class="section-head text-center">
+            <span class="section-kicker">Number Theory Observatory</span>
+            <h2 class="section-title">See the Primes Move</h2>
+            <p class="section-desc">
+              Three live GPU instruments. Spiral through the integers, braid modular
+              multiplication into cardioids, and watch Eratosthenes sieve the first hundred
+              numbers. Tap any cell to factorise it.
+            </p>
+          </div>
+
+          <div class="obs-shell">
+            <div class="obs-stage-col">
+              <div class="obs-stage" id="obs-stage" data-mode="ulam">
+                <canvas id="obs-canvas" tabindex="0" role="img" aria-label="Ulam prime spiral"></canvas>
+                <i class="pf-corner tl"></i><i class="pf-corner tr"></i><i class="pf-corner bl"></i><i class="pf-corner br"></i>
+                <span class="obs-hud obs-hud-tl" id="obs-hud-tl" aria-hidden="true"></span>
+                <span class="obs-hud obs-hud-br" id="obs-hud-br" aria-hidden="true"></span>
+                <div class="obs-legend" data-obs-panel="ulam" aria-hidden="true">
+                  <span><i style="--c:#ffc744"></i>p ≡ 1 (mod 4)</span>
+                  <span><i style="--c:#43dbff"></i>p ≡ 3 (mod 4)</span>
+                  <span><i style="--c:#4a5d8c"></i>composite</span>
+                </div>
+                <div class="obs-toolbar" data-obs-panel="ulam">
+                  <button type="button" class="obs-btn obs-icon" id="obs-zoom-out" aria-label="Zoom out">−</button>
+                  <button type="button" class="obs-btn obs-icon" id="obs-zoom-in" aria-label="Zoom in">+</button>
+                  <button type="button" class="obs-btn" id="obs-reset">Reset</button>
+                </div>
+                <div class="obs-fallback" role="note">
+                  <b>WebGL isn't available in this browser.</b>
+                  <span>The inspector on the right still works — type any integer.</span>
+                </div>
+              </div>
+              <p class="obs-hint" id="obs-hint"></p>
+              <button type="button" class="obs-btn obs-engage" id="obs-engage" aria-pressed="false">Explore · drag freely</button>
+            </div>
+
+            <div class="obs-panel">
+              <div class="obs-tabs" role="tablist" aria-label="Instrument">
+                <span class="obs-tab-ind" id="obs-tab-ind" aria-hidden="true"></span>
+                <button type="button" role="tab" data-obs-mode="ulam" aria-selected="true">Ulam spiral</button>
+                <button type="button" role="tab" data-obs-mode="times" aria-selected="false">Times table</button>
+                <button type="button" role="tab" data-obs-mode="sieve" aria-selected="false">Sieve</button>
+              </div>
+
+              <div class="obs-controls" data-obs-panel="ulam">
+                <p class="obs-note">Integers wind outward from 1. Primes refuse to hide: they line up on diagonals, tracing quadratics such as n² + n + 41.</p>
+                <div class="obs-chips">
+                  <span class="obs-chip-label">Try</span>
+                  <button type="button" class="obs-chip" data-obs-try="41">41</button>
+                  <button type="button" class="obs-chip" data-obs-try="1763">1763</button>
+                  <button type="button" class="obs-chip" data-obs-try="7919">7919</button>
+                  <button type="button" class="obs-chip" data-obs-try="65537">65537</button>
+                </div>
+              </div>
+
+              <div class="obs-controls" data-obs-panel="times" hidden>
+                <label class="obs-slider"><span>Multiplier <b>k</b></span><output id="obs-k-val">2.00</output>
+                  <input type="range" id="obs-k-range" min="2" max="100" step="0.01" value="2" aria-label="Multiplier k" /></label>
+                <label class="obs-slider"><span>Modulus <b>n</b></span><output id="obs-n-val">200</output>
+                  <input type="range" id="obs-n-range" min="24" max="400" step="1" value="200" aria-label="Modulus n" /></label>
+                <div class="obs-chips">
+                  <span class="obs-chip-label">Presets</span>
+                  <button type="button" class="obs-chip" data-k="2">×2</button>
+                  <button type="button" class="obs-chip" data-k="3">×3</button>
+                  <button type="button" class="obs-chip" data-k="4">×4</button>
+                  <button type="button" class="obs-chip" data-k="5">×5</button>
+                  <button type="button" class="obs-chip" data-k="6">×6</button>
+                  <button type="button" class="obs-chip" data-k="34">×34</button>
+                  <button type="button" class="obs-btn obs-chip-wide" id="obs-tt-play" aria-pressed="false">Morph k</button>
+                </div>
+              </div>
+
+              <div class="obs-controls" data-obs-panel="sieve" hidden>
+                <p class="obs-note" id="obs-sv-status">Press play.</p>
+                <div class="obs-chips">
+                  <button type="button" class="obs-btn" id="obs-sv-play" aria-pressed="false">Play</button>
+                  <button type="button" class="obs-btn" id="obs-sv-step">Step</button>
+                  <button type="button" class="obs-btn" id="obs-sv-reset">Reset</button>
+                </div>
+                <label class="obs-slider"><span>Speed</span><output>×</output>
+                  <input type="range" id="obs-sv-speed" min="0.4" max="3" step="0.1" value="1" aria-label="Sieve speed" /></label>
+              </div>
+
+              <div class="obs-inspector" aria-live="off">
+                <div class="obs-ins-head"><span>Inspector</span><span class="obs-ins-sub">n =</span></div>
+                <div class="obs-ins-n" id="obs-n">41</div>
+                <div class="obs-ins-fact" id="obs-fact"></div>
+                <div class="obs-badges" id="obs-badges"></div>
+                <dl class="obs-stats">
+                  <div><dt>τ(n)</dt><dd id="obs-stat-tau">—</dd><small>divisors</small></div>
+                  <div><dt>σ(n)</dt><dd id="obs-stat-sigma">—</dd><small>sum of divisors</small></div>
+                  <div><dt>φ(n)</dt><dd id="obs-stat-phi">—</dd><small>totient</small></div>
+                  <div><dt>π(n)</dt><dd id="obs-stat-pi">—</dd><small>primes ≤ n</small></div>
+                </dl>
+                <form id="obs-inspect-form" class="obs-form" autocomplete="off">
+                  <label for="obs-inspect-input" class="visually-hidden">Integer to inspect</label>
+                  <input id="obs-inspect-input" type="number" inputmode="numeric" min="1" max="2000000000" placeholder="Inspect any integer…" />
+                  <button type="submit" class="obs-btn obs-go">Go</button>
+                </form>
+              </div>
+              <p id="obs-live" class="visually-hidden" aria-live="polite"></p>
             </div>
           </div>
         </div>
@@ -1064,563 +1243,131 @@
       </section>
 
       <!-- 5. THE 12-TIER COMPETITIVE HIERARCHY MATRIX (Preserved Intact) -->
-      <section
-        id="sec-elo-matrix"
-        style="padding: 2.5rem 1rem; background: #0f172a"
-      >
-        <div style="max-width: 1200px; margin: 0 auto">
+      <!-- 5. THE 12-TIER COMPETITIVE HIERARCHY MATRIX -->
+      <section id="sec-elo-matrix" class="home-section pf-ladder">
+        <div class="content-container">
           <div class="section-head">
             <span class="section-kicker">Competitive Ladder</span>
-            <h2
-              style="
-                font-size: 1.75rem;
-                font-weight: 700;
-                color: #ffffff;
-                margin-bottom: 0.5rem;
-              "
-            >
-              👑 The 12‑Tier Competitive Hierarchy Matrix
-            </h2>
-            <p
-              style="font-size: 0.95rem; color: #94a3b8; margin-bottom: 1.5rem"
-            >
-              Governs automated matchmaking limits, profile standings, and the
-              Asymmetric Tier‑Banning Firewall across all rated contests.
-              Initialized at 500 ELO upon first sign-in.
+            <h2 class="section-title">The 12‑Tier Competitive Hierarchy Matrix</h2>
+            <p class="section-desc">
+              Governs automated matchmaking limits, profile standings, and the Asymmetric
+              Tier‑Banning Firewall across all rated contests. Initialized at 500 ELO upon first
+              sign-in.
             </p>
           </div>
 
-          <div
-            style="
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-              gap: 1rem;
-            "
-          >
-            <!-- Tier 1 -->
-            <div
-              style="
-                background: rgba(236, 72, 153, 0.1);
-                border: 1px solid rgba(236, 72, 153, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #ec4899"
-                  >Tier 1 · 3000+ ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #ec4899"
-                  >Nebula Pink</span
-                >
+          <div class="pf-ladder-console">
+            <div class="pf-lr">
+              <div class="pf-lr-elo">
+                <span class="pf-lr-tag" id="pf-lr-tag">Preview · drag to explore</span>
+                <output id="pf-elo-val" class="pf-lr-val">500</output>
+                <span class="pf-lr-unit">ELO</span>
               </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                Prime Singularity
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Constraint: Tiers 1–6 locked from Rated play. Strict 95%+
-                Accuracy required.
+              <div class="pf-lr-tier">
+                <span class="pf-lr-num" id="pf-lr-tier-num" aria-hidden="true">11</span>
+                <div>
+                  <strong id="pf-lr-tier-name">Composite Apprentice</strong>
+                  <small id="pf-lr-next"></small>
+                </div>
               </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Absolute apex. Only Unrated practice allowed below this ceiling
-                to prevent point‑farming."
-              </p>
+              <p class="pf-lr-note" id="pf-lr-note"></p>
             </div>
 
-            <!-- Tier 2 -->
-            <div
-              style="
-                background: rgba(220, 38, 38, 0.1);
-                border: 1px solid rgba(220, 38, 38, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #dc2626"
-                  >Tier 2 · 2700–2999 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #dc2626"
-                  >Crimson Scarlet</span
-                >
+            <div class="pf-gauge-wrap">
+              <div class="pf-gauge" id="pf-gauge">
+                <div class="pf-gauge-track"><span class="pf-seg" style="--c:#e5e7eb" data-tier="12"><b>12</b></span><span class="pf-seg" style="--c:#8aa4c8" data-tier="11"><b>11</b></span><span class="pf-seg" style="--c:#cd7f32" data-tier="10"><b>10</b></span><span class="pf-seg" style="--c:#9ca3af" data-tier="9"><b>9</b></span><span class="pf-seg" style="--c:#84cc16" data-tier="8"><b>8</b></span><span class="pf-seg" style="--c:#10b981" data-tier="7"><b>7</b></span><span class="pf-seg" style="--c:#3b82f6" data-tier="6"><b>6</b></span><span class="pf-seg" style="--c:#f59e0b" data-tier="5"><b>5</b></span><span class="pf-seg" style="--c:#8b5cf6" data-tier="4"><b>4</b></span><span class="pf-seg" style="--c:#06b6d4" data-tier="3"><b>3</b></span><span class="pf-seg" style="--c:#dc2626" data-tier="2"><b>2</b></span><span class="pf-seg" style="--c:#ec4899" data-tier="1"><b>1</b></span></div>
+                <div class="pf-gauge-marker" id="pf-gauge-marker" aria-hidden="true"><i></i></div>
               </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                Riemann Transcendentalist
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Constraint: Tiers 1–5 locked from Rated play. Matches forced
-                into Unrated simulation.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Transcendental mastery. Rated play restricted to higher strata
-                only."
-              </p>
+              <div class="pf-ticks" aria-hidden="true"><span>0</span><span>500</span><span>900</span><span>1,200</span><span>1,400</span><span>1,600</span><span>1,800</span><span>2,000</span><span>2,200</span><span>2,400</span><span>2,700</span><span>3,000</span></div>
+              <input id="pf-elo-range" class="pf-range" type="range" min="0" max="1000" step="1" value="125" aria-label="ELO rating preview" />
             </div>
+          </div>
 
-            <!-- Tier 3 -->
-            <div
-              style="
-                background: rgba(6, 182, 212, 0.1);
-                border: 1px solid rgba(6, 182, 212, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #06b6d4"
-                  >Tier 3 · 2400–2699 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #06b6d4"
-                  >Electric Cyan</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                 Canonical Analyst
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Condition: High-tier analytical precision, solving advanced
-                problems with minimal lifeline reliance.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Canonical insight. Mastery of structural decomposition under
-                accelerated timers."
-              </p>
-            </div>
-
-            <!-- Tier 4 -->
-            <div
-              style="
-                background: rgba(139, 92, 246, 0.1);
-                border: 1px solid rgba(139, 92, 246, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #8b5cf6"
-                  >Tier 4 · 2200–2399 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #8b5cf6"
-                  >Vibrant Violet</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                 Gaussian Cryptographer
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Condition: Complex encrypted problem sets requiring layered
-                reasoning and zero-distraction focus.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Cryptographic resilience. Decodes numerical complexity under
-                pressure."
-              </p>
-            </div>
-
-            <!-- Tier 5 -->
-            <div
-              style="
-                background: rgba(245, 158, 11, 0.1);
-                border: 1px solid rgba(245, 158, 11, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #f59e0b"
-                  >Tier 5 · 2000–2199 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #f59e0b"
-                  >Laser Amber</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                 Eulerian Sentinel
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Condition: High accuracy across mid-high ranges, balancing speed
-                with modular awareness.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Eulerian precision with disciplined calculation over every
-                numeric pathway."
-              </p>
-            </div>
-
-            <!-- Tier 6 -->
-            <div
-              style="
-                background: rgba(37, 99, 235, 0.1);
-                border: 1px solid rgba(37, 99, 235, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #38bdf8"
-                  >Tier 6 · 1800–1999 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #38bdf8"
-                  >Cobalt Blue</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                 Logarithmic Vector
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Core Trigger: Expectation Deficit Penalties activate if accuracy
-                drops below rating curve.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Logarithmic curve enforces balance, rewarding steady cognitive
-                cadence."
-              </p>
-            </div>
-
-            <!-- Tier 7 -->
-            <div
-              style="
-                background: rgba(22, 163, 74, 0.1);
-                border: 1px solid rgba(22, 163, 74, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #10b981"
-                  >Tier 7 · 1600–1799 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #10b981"
-                  >Deep Jade</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-              Prime Strategist
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Condition: Tactical foresight, lifeline resource management, and
-                adaptive pacing.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Strategic depth anchors this tier with calculated risk-taking."
-              </p>
-            </div>
-
-            <!-- Tier 8 -->
-            <div
-              style="
-                background: rgba(132, 204, 22, 0.1);
-                border: 1px solid rgba(132, 204, 22, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #84cc16"
-                  >Tier 8 · 1400–1599 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #84cc16"
-                  >Mint Green</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                Modular Operator
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Condition: Solves standard bounds with growing fluency and
-                confidence.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Modular adaptability. Mastering flexible factorization
-                approaches."
-              </p>
-            </div>
-
-            <!-- Tier 9 -->
-            <div
-              style="
-                background: rgba(156, 163, 175, 0.1);
-                border: 1px solid rgba(156, 163, 175, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #9ca3af"
-                  >Tier 9 · 1200–1399 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #9ca3af"
-                  >Muted Platinum</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                Radix Scholar
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Condition: Foundational mastery of divisibility rules and prime
-                factor heuristics.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Consolidating theoretical roots while sharpening execution
-                speed."
-              </p>
-            </div>
-
-            <!-- Tier 10 -->
-            <div
-              style="
-                background: rgba(205, 127, 50, 0.1);
-                border: 1px solid rgba(205, 127, 50, 0.3);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #cd7f32"
-                  >Tier 10 · 900–1199 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #cd7f32"
-                  >Polished Bronze</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                 Sieve Calibrator
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Condition: Refines sieve-based divisibility checks with focus on
-                zero-mistake consistency.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Stabilizing fundamentals for ascending into higher analytical
-                strata."
-              </p>
-            </div>
-
-            <!-- Tier 11 -->
-            <div
-              style="
-                background: rgba(107, 114, 128, 0.15);
-                border: 1px solid rgba(56, 189, 248, 0.4);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #38bdf8"
-                  >Tier 11 · 500–899 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #38bdf8"
-                  >Slate Blue</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                Composite Apprentice
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Onboarding Baseline: Every new authenticated user begins at 500
-                ELO.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Apprentice tier. The official launch floor for all newly
-                registered competitors."
-              </p>
-            </div>
-
-            <!-- Tier 12 -->
-            <div
-              style="
-                background: rgba(15, 23, 42, 0.9);
-                border: 1px solid rgba(229, 231, 235, 0.2);
-                border-radius: 0.75rem;
-                padding: 1.25rem;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                <span
-                  style="font-weight: 700; font-size: 0.85rem; color: #e5e7eb"
-                  >Tier 12 · 0–499 ELO</span
-                >
-                <span style="font-weight: 800; font-size: 1rem; color: #e5e7eb"
-                  >Chalk White</span
-                >
-              </div>
-              <h3
-                style="
-                  color: #ffffff;
-                  font-size: 1.1rem;
-                  margin-bottom: 0.25rem;
-                "
-              >
-                Foundry Initiate
-              </h3>
-              <div style="font-size: 0.82rem; color: #cbd5e1">
-                Buffer floor for cold losing streaks. Practice mode recommended.
-              </div>
-              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem">
-                "Foundry tier. Serves as the stabilizing recovery floor."
-              </p>
-            </div>
+          <div class="pf-tier-grid">
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#ec4899" data-tier="1" data-lo="3000" data-hi="3400" data-title="Prime Singularity" data-color="#ec4899" data-note="Constraint: Tiers 1–6 locked from Rated play. Strict 95%+ Accuracy required." aria-label="Tier 1, Prime Singularity, 3000+ ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">01</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">3000+ ELO</span><span class="pf-tier-swatch"><i></i>Nebula Pink</span></div>
+              <h3 class="pf-tier-title">Prime Singularity</h3>
+              <p class="pf-tier-rule">Constraint: Tiers 1–6 locked from Rated play. Strict 95%+ Accuracy required.</p>
+              <p class="pf-tier-quote">Absolute apex. Only Unrated practice allowed below this ceiling to prevent point‑farming.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#dc2626" data-tier="2" data-lo="2700" data-hi="2999" data-title="Riemann Transcendentalist" data-color="#dc2626" data-note="Constraint: Tiers 1–5 locked from Rated play. Matches forced into Unrated simulation." aria-label="Tier 2, Riemann Transcendentalist, 2700–2999 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">02</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">2700–2999 ELO</span><span class="pf-tier-swatch"><i></i>Crimson Scarlet</span></div>
+              <h3 class="pf-tier-title">Riemann Transcendentalist</h3>
+              <p class="pf-tier-rule">Constraint: Tiers 1–5 locked from Rated play. Matches forced into Unrated simulation.</p>
+              <p class="pf-tier-quote">Transcendental mastery. Rated play restricted to higher strata only.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#06b6d4" data-tier="3" data-lo="2400" data-hi="2699" data-title="Canonical Analyst" data-color="#06b6d4" data-note="Condition: High-tier analytical precision, solving advanced problems with minimal lifeline reliance." aria-label="Tier 3, Canonical Analyst, 2400–2699 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">03</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">2400–2699 ELO</span><span class="pf-tier-swatch"><i></i>Electric Cyan</span></div>
+              <h3 class="pf-tier-title">Canonical Analyst</h3>
+              <p class="pf-tier-rule">Condition: High-tier analytical precision, solving advanced problems with minimal lifeline reliance.</p>
+              <p class="pf-tier-quote">Canonical insight. Mastery of structural decomposition under accelerated timers.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#8b5cf6" data-tier="4" data-lo="2200" data-hi="2399" data-title="Gaussian Cryptographer" data-color="#8b5cf6" data-note="Condition: Complex encrypted problem sets requiring layered reasoning and zero-distraction focus." aria-label="Tier 4, Gaussian Cryptographer, 2200–2399 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">04</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">2200–2399 ELO</span><span class="pf-tier-swatch"><i></i>Vibrant Violet</span></div>
+              <h3 class="pf-tier-title">Gaussian Cryptographer</h3>
+              <p class="pf-tier-rule">Condition: Complex encrypted problem sets requiring layered reasoning and zero-distraction focus.</p>
+              <p class="pf-tier-quote">Cryptographic resilience. Decodes numerical complexity under pressure.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#f59e0b" data-tier="5" data-lo="2000" data-hi="2199" data-title="Eulerian Sentinel" data-color="#f59e0b" data-note="Condition: High accuracy across mid-high ranges, balancing speed with modular awareness." aria-label="Tier 5, Eulerian Sentinel, 2000–2199 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">05</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">2000–2199 ELO</span><span class="pf-tier-swatch"><i></i>Laser Amber</span></div>
+              <h3 class="pf-tier-title">Eulerian Sentinel</h3>
+              <p class="pf-tier-rule">Condition: High accuracy across mid-high ranges, balancing speed with modular awareness.</p>
+              <p class="pf-tier-quote">Eulerian precision with disciplined calculation over every numeric pathway.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#3b82f6" data-tier="6" data-lo="1800" data-hi="1999" data-title="Logarithmic Vector" data-color="#3b82f6" data-note="Core Trigger: Expectation Deficit Penalties activate if accuracy drops below rating curve." aria-label="Tier 6, Logarithmic Vector, 1800–1999 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">06</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">1800–1999 ELO</span><span class="pf-tier-swatch"><i></i>Cobalt Blue</span></div>
+              <h3 class="pf-tier-title">Logarithmic Vector</h3>
+              <p class="pf-tier-rule">Core Trigger: Expectation Deficit Penalties activate if accuracy drops below rating curve.</p>
+              <p class="pf-tier-quote">Logarithmic curve enforces balance, rewarding steady cognitive cadence.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#10b981" data-tier="7" data-lo="1600" data-hi="1799" data-title="Prime Strategist" data-color="#10b981" data-note="Condition: Tactical foresight, lifeline resource management, and adaptive pacing." aria-label="Tier 7, Prime Strategist, 1600–1799 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">07</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">1600–1799 ELO</span><span class="pf-tier-swatch"><i></i>Deep Jade</span></div>
+              <h3 class="pf-tier-title">Prime Strategist</h3>
+              <p class="pf-tier-rule">Condition: Tactical foresight, lifeline resource management, and adaptive pacing.</p>
+              <p class="pf-tier-quote">Strategic depth anchors this tier with calculated risk-taking.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#84cc16" data-tier="8" data-lo="1400" data-hi="1599" data-title="Modular Operator" data-color="#84cc16" data-note="Condition: Solves standard bounds with growing fluency and confidence." aria-label="Tier 8, Modular Operator, 1400–1599 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">08</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">1400–1599 ELO</span><span class="pf-tier-swatch"><i></i>Mint Green</span></div>
+              <h3 class="pf-tier-title">Modular Operator</h3>
+              <p class="pf-tier-rule">Condition: Solves standard bounds with growing fluency and confidence.</p>
+              <p class="pf-tier-quote">Modular adaptability. Mastering flexible factorization approaches.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#9ca3af" data-tier="9" data-lo="1200" data-hi="1399" data-title="Radix Scholar" data-color="#9ca3af" data-note="Condition: Foundational mastery of divisibility rules and prime factor heuristics." aria-label="Tier 9, Radix Scholar, 1200–1399 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">09</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">1200–1399 ELO</span><span class="pf-tier-swatch"><i></i>Muted Platinum</span></div>
+              <h3 class="pf-tier-title">Radix Scholar</h3>
+              <p class="pf-tier-rule">Condition: Foundational mastery of divisibility rules and prime factor heuristics.</p>
+              <p class="pf-tier-quote">Consolidating theoretical roots while sharpening execution speed.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#cd7f32" data-tier="10" data-lo="900" data-hi="1199" data-title="Sieve Calibrator" data-color="#cd7f32" data-note="Condition: Refines sieve-based divisibility checks with focus on zero-mistake consistency." aria-label="Tier 10, Sieve Calibrator, 900–1199 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">10</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">900–1199 ELO</span><span class="pf-tier-swatch"><i></i>Polished Bronze</span></div>
+              <h3 class="pf-tier-title">Sieve Calibrator</h3>
+              <p class="pf-tier-rule">Condition: Refines sieve-based divisibility checks with focus on zero-mistake consistency.</p>
+              <p class="pf-tier-quote">Stabilizing fundamentals for ascending into higher analytical strata.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#8aa4c8" data-tier="11" data-lo="500" data-hi="899" data-title="Composite Apprentice" data-color="#8aa4c8" data-note="Onboarding Baseline: Every new authenticated user begins at 500 ELO." aria-label="Tier 11, Composite Apprentice, 500–899 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">11</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">500–899 ELO</span><span class="pf-tier-swatch"><i></i>Slate Blue</span></div>
+              <h3 class="pf-tier-title">Composite Apprentice</h3>
+              <p class="pf-tier-rule">Onboarding Baseline: Every new authenticated user begins at 500 ELO.</p>
+              <p class="pf-tier-quote">Apprentice tier. The official launch floor for all newly registered competitors.</p>
+            </article>
+            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#e5e7eb" data-tier="12" data-lo="0" data-hi="499" data-title="Foundry Initiate" data-color="#e5e7eb" data-note="Buffer floor for cold losing streaks. Practice mode recommended." aria-label="Tier 12, Foundry Initiate, 0–499 ELO. Preview on the gauge.">
+              <span class="pf-tier-num" aria-hidden="true">12</span>
+              <div class="pf-tier-top"><span class="pf-tier-elo">0–499 ELO</span><span class="pf-tier-swatch"><i></i>Chalk White</span></div>
+              <h3 class="pf-tier-title">Foundry Initiate</h3>
+              <p class="pf-tier-rule">Buffer floor for cold losing streaks. Practice mode recommended.</p>
+              <p class="pf-tier-quote">Foundry tier. Serves as the stabilizing recovery floor.</p>
+            </article>
           </div>
         </div>
       </section>
@@ -1979,7 +1726,7 @@
             <div
               style="
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
                 gap: 1.5rem;
                 margin-bottom: 2rem;
               "

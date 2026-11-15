@@ -6,7 +6,7 @@
  *                     Falls back to a raw-WebGL renderer for the shader field when Three.js
  *                     (CDN) is unavailable, and to the static hero image when WebGL is.
  *  GSAP             : hero intro timeline, ScrollTrigger parallax + section reveals.
- *  Motion (Framer)  : scroll-progress bar, in-view spring reveals, hover / press springs.
+ *  Motion (Framer)  : see js/pf-motion.js
  *
  * Every layer is optional and degrades independently; with prefers-reduced-motion the page
  * renders one static frame and plays no animation.
@@ -454,13 +454,6 @@ function initGsap(heroEl, gl) {
       });
     }
 
-    // section headings reveal (Motion handles the cards, GSAP the headings)
-    gsap.utils.toArray('.home-section:not(#sec-hero) .section-head').forEach((el) => {
-      gsap.fromTo(el, { autoAlpha: 0, y: 34 }, {
-        autoAlpha: 1, y: 0, duration: 0.9, ease: 'power3.out', clearProps: 'transform,opacity,visibility',
-        scrollTrigger: { trigger: el, start: 'top 88%', once: true }
-      });
-    });
   }
   return true;
 }
@@ -487,51 +480,7 @@ function initMagnetic(heroEl) {
   });
 }
 
-// ============================================================================================
-// 3. MOTION (Framer Motion engine) — scroll progress, in-view springs, hover/press
-// ============================================================================================
-async function initMotion() {
-  let mod;
-  try {
-    mod = await import('motion');
-  } catch (e) {
-    console.debug('[hero-fx] motion unavailable:', e);
-    return;
-  }
-  const { animate, inView, hover, press } = mod;
-  if (!animate) return;
-  state.motion = true;
-  root.classList.add('fx-motion');
-
-  const cards = [...document.querySelectorAll('.step-card, .rank-card')];
-
-  if (!reduceMotion && inView) {
-    cards.forEach((el, i) => {
-      el.style.opacity = '0';
-      inView(el, () => {
-        animate(el, { opacity: 1, y: [34, 0], scale: [0.96, 1] },
-          { type: 'spring', stiffness: 160, damping: 22, delay: (i % 3) * 0.09 });
-      }, { amount: 0.2 });
-    });
-  }
-
-  if (hover && !reduceMotion) {
-    cards.concat([...document.querySelectorAll('.mini-challenge-card')]).forEach((el) => {
-      hover(el, () => {
-        animate(el, { y: -6 }, { type: 'spring', stiffness: 320, damping: 20 });
-        return () => animate(el, { y: 0 }, { type: 'spring', stiffness: 260, damping: 22 });
-      });
-    });
-  }
-  if (press && !reduceMotion) {
-    document.querySelectorAll('.hero-btn-auth, .overlay-nav-card').forEach((el) => {
-      press(el, () => {
-        animate(el, { scale: 0.96 }, { duration: 0.12 });
-        return () => animate(el, { scale: 1 }, { type: 'spring', stiffness: 520, damping: 16 });
-      });
-    });
-  }
-}
+// 3. MOTION (Framer Motion) now lives in js/pf-motion.js (loaded by js/index-fx.js).
 
 // ============================================================================================
 // BOOT
@@ -541,17 +490,19 @@ function boot() {
   let gl = null;
   if (hero) {
     try { gl = initHeroGL(hero); } catch (e) { console.debug('[hero-fx] GL init failed:', e); }
-    try { initGsap(hero, gl); } catch (e) { console.debug('[hero-fx] GSAP init failed:', e); }
-    if (!state.gsap) root.classList.remove('fx-pending');
+    const gate = window.__pfIntroGate || Promise.resolve();
+    gate.then(() => {
+      try { initGsap(hero, gl); } catch (e) { console.debug('[hero-fx] GSAP init failed:', e); }
+      if (!state.gsap) root.classList.remove('fx-pending');
+    });
     initMagnetic(hero);
   } else {
     root.classList.remove('fx-pending');
   }
-  initMotion();
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();
 
 // Safety net: never leave the hero hidden if anything above stalls.
-setTimeout(() => root.classList.remove('fx-pending'), 3500);
+setTimeout(() => root.classList.remove('fx-pending'), 5200);
