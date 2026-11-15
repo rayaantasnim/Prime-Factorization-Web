@@ -316,3 +316,25 @@ button, a, [role='button'], summary, select, input[type='checkbox'], input[type=
 
 /* inline-gradient CTAs on the result page: deepen the fill so the white label passes AA */
 #result-retake-btn, #card-share-btn { background: linear-gradient(135deg, #0369a1, #075985) !important; color: #fff !important; }
+
+/* Launch Custom Arena: always visible, never dependent on reveal/hover state */
+.custom-launch-capsule-wrap { opacity: 1 !important; translate: none !important; padding-bottom: 1.5rem; }
+.custom-launch-capsule-btn {
+  opacity: 1 !important; visibility: visible !important;
+  background: linear-gradient(135deg, #0369a1 0%, #1d4ed8 55%, #4338ca 100%) !important;
+  color: #fff !important; border: 1px solid rgba(125, 211, 252, 0.55) !important;
+  box-shadow: 0 12px 30px -10px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  min-height: 52px;
+}
+.custom-launch-capsule-btn:hover:not(:disabled) { filter: brightness(1.12); }
+.custom-launch-capsule-btn:disabled { opacity: 0.6 !important; }
+/* any reveal-gated block must never stay hidden */
+.ux-pre { transition: opacity 0.6s ease, translate 0.6s ease; }
+
+/* ROOT-CAUSE FIX — buttons invisible until hover:
+   absolutely-positioned background-photo layers (.section-bg-image-wrap / .section-bg-overlay) paint ABOVE
+   non-positioned content; hovering promoted the button (transform) into its own layer, so it "appeared".
+   Content is now lifted above those layers. :where() = zero specificity, so any component that is
+   deliberately absolute/fixed keeps its own positioning. */
+:where(main) :where(button, .btn-primary, .btn-secondary, a[class*='btn'], input, select, textarea, label, .custom-launch-capsule-wrap, #custom-validation-msg, #custom-warning-container) { position: relative; z-index: 2; }
+.section-bg-image-wrap, .section-bg-overlay { z-index: 0 !important; pointer-events: none !important; }

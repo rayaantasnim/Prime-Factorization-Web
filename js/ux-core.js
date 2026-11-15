@@ -269,7 +269,7 @@ import './readability-guard.js';
   window.PrimeFactorToast = Object.assign(window.PrimeFactorToast || {}, { show: toast });
 
   // ---- scroll reveal ----------------------------------------------------------------------
-  const managedElsewhere = '.step-card, .rank-card, .mini-challenge-card, .hero-gateway, .hero-gateway *';
+  const managedElsewhere = '.custom-launch-capsule-wrap, .custom-launch-capsule-wrap *, .step-card, .rank-card, .mini-challenge-card, .hero-gateway, .hero-gateway *';
   function initReveal() {
     if (reduce || isExam || !('IntersectionObserver' in window)) return;
     const wrapper = document.querySelector('.main-wrapper') || document.querySelector('main');
@@ -281,7 +281,7 @@ import './readability-guard.js';
         io.unobserve(e.target);
         setTimeout(() => e.target.classList.remove('ux-pre', 'ux-in'), 1000);
       });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+    }, { rootMargin: '0px 0px 0px 0px', threshold: 0.01 });
 
     const seen = new WeakSet();
     const scan = () => {
@@ -313,6 +313,10 @@ import './readability-guard.js';
     setTimeout(scan, 900); // after async-rendered modules fill in
     window.addEventListener('primefactor_auth_changed', () => setTimeout(scan, 300));
     // safety net: never leave anything hidden if the observer stalls
+    // reveal anything the observer can't reach (e.g. last block of a page that cannot scroll further)
+    const flush = () => document.querySelectorAll('.ux-pre:not(.ux-in)').forEach((n) => { if (n.getBoundingClientRect().top < window.innerHeight + 40) n.classList.add('ux-in'); });
+    window.addEventListener('scroll', () => requestAnimationFrame(flush), { passive: true });
+    setTimeout(flush, 1200);
     setTimeout(() => document.querySelectorAll('.ux-pre:not(.ux-in)').forEach((n) => { const r = n.getBoundingClientRect(); if (r.top < window.innerHeight) n.classList.add('ux-in'); }), 4000);
   }
 
