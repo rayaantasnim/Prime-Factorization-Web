@@ -2,6 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+  <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
+  <link rel="dns-prefetch" href="https://apis.google.com" />
+  <link rel="preconnect" href="https://images.pexels.com" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
       PrimeFactor.app — Olympiad Prime Factorization Speed Laboratory
@@ -57,6 +62,7 @@
     <!-- Three.js (WebGL) for the hero constellation; hero-fx.js falls back to raw WebGL without it -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="./css/ux-core.css" />
+    <link rel="stylesheet" href="./css/aurora-pro.css" />
     <script type="module" src="./js/ux-core.js"></script>
   </head>
   <body>
@@ -539,7 +545,7 @@
     <!-- Main Presentation Matrix -->
     <main class="main-wrapper">
       <!-- 1. IMPACTFUL HERO SECTION AT THE TOP (Item 2) -->
-      <section id="sec-hero" class="home-section hero-gateway">
+      <section id="sec-hero" class="home-section hero-gateway spotlight-hero" data-spotlight>
         <div class="section-bg-image-wrap">
           <img
             class="section-bg-image"

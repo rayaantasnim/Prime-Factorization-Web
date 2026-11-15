@@ -15,7 +15,8 @@ import {
   isAuthInitialized,
   getCurrentUser,
   getCurrentProfile,
-  isUserLoggedIn
+  isUserLoggedIn,
+  getAuthHint
 } from './firebase.js';
 
 // GSAP Full-Page Interaction Flushes
@@ -593,6 +594,9 @@ export function initGlobalHeader(options = {}) {
     if (isAuthInitialized()) {
       renderHeaderAuthWidget(authSlot);
     } else {
+      // Instant paint: signed-in header from the cached session hint (no guest flash, no wait).
+      const hint = getAuthHint();
+      if (hint) renderHeaderAuthWidget(authSlot, hint);
       waitForAuthReady().then((authState) => {
         const currentSlot = document.getElementById('header-auth-slot');
         if (currentSlot) renderHeaderAuthWidget(currentSlot, authState);

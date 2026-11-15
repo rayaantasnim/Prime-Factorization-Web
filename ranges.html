@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+  <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
+  <link rel="dns-prefetch" href="https://apis.google.com" />
+  <link rel="preconnect" href="https://images.pexels.com" crossorigin />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Competition Range Matrix — PrimeFactor.app</title>
   <meta name="description" content="Select from 10 competitive Math Olympiad prime factorization tiers, custom bounds, or the boundless Omega range." />
@@ -15,14 +20,11 @@
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css" />
-  <style>
-    .range-card-img{
-      opacity: 1.0 !important;
-    }
-  </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <link rel="stylesheet" href="./css/ux-core.css" />
+    <link rel="stylesheet" href="./css/aurora-pro.css" />
+    <link rel="stylesheet" href="./css/ranges-3d.css" />
     <script type="module" src="./js/ux-core.js"></script>
   </head>
 <body>
@@ -193,19 +195,66 @@
 
   <main class="main-wrapper">
     <div class="content-container">
-      <div class="section-head" style="margin-bottom: 2.5rem;">
-        <span class="section-kicker">Competitive Divisions</span>
-        <h1 class="section-title">Range Selection Matrix</h1>
-        <p class="section-desc">
-          Choose your competitive zone. Each 10-question exam dynamically synthesizes composite targets within your designated boundaries.
-        </p>
-      </div>
+      <section class="section-head hero-split spotlight-hero ranges-hero" data-spotlight>
+        <div class="hero-copy">
+          <span class="section-kicker">Competitive Divisions</span>
+          <h1 class="section-title" data-split-reveal>Range Selection Matrix</h1>
+          <p class="section-desc">
+            Choose your competitive zone. Each 10-question exam dynamically synthesizes composite targets within your designated boundaries.
+          </p>
+          <ul class="swiss-meta" aria-label="Matrix at a glance">
+            <li><b data-ticker="10">10</b><span>Divisions</span></li>
+            <li><b data-ticker="10">10</b><span>Questions / run</span></li>
+            <li><b data-ticker="50000">50,000</b><span>Max integer</span></li>
+          </ul>
+          <div class="hero-cta">
+            <a class="shimmer-btn" href="#ranges-grid">Pick a division <span aria-hidden="true">↓</span></a>
+            <a class="vx-btn ghost" href="./rules.html">Read the rules</a>
+          </div>
+        </div>
+        <div class="hero-ui" aria-label="Interactive factorization preview">
+          <div class="nb-card" id="bento-preview">
+            <span class="nb-label">Live problem preview</span>
+            <div class="nb-big" id="bento-preview-n" aria-live="polite">360</div>
+            <div class="nb-answer font-math" id="bento-preview-a">= 2<sup>3</sup> × 3<sup>2</sup> × 5</div>
+            <button type="button" id="bento-preview-next" class="vx-btn" style="margin-top:0.9rem">New composite ↻</button>
+          </div>
+          <div class="wireframe-wrap"><svg data-wireframe viewBox="0 0 300 232" role="img" aria-label="Factor tree wireframe: 360 = 2 × 2 × 2 × 3 × 3 × 5"><line x1="70" y1="39" x2="26" y2="47"/><line x1="80" y1="35" x2="100" y2="51"/><line x1="110" y1="77" x2="66" y2="85"/><line x1="120" y1="73" x2="140" y2="89"/><line x1="150" y1="115" x2="106" y2="123"/><line x1="160" y1="111" x2="180" y2="127"/><line x1="190" y1="153" x2="146" y2="161"/><line x1="200" y1="149" x2="220" y2="165"/><line x1="230" y1="191" x2="186" y2="199"/><line x1="240" y1="187" x2="261" y2="203"/><circle class="wf-fill" cx="70" cy="24" r="15"/><circle class="wf-prime wf-pulse" cx="26" cy="62" r="13"/><circle class="wf-fill" cx="110" cy="62" r="15"/><circle class="wf-prime wf-pulse" cx="66" cy="100" r="13"/><circle class="wf-fill" cx="150" cy="100" r="15"/><circle class="wf-prime wf-pulse" cx="106" cy="138" r="13"/><circle class="wf-fill" cx="190" cy="138" r="15"/><circle class="wf-prime wf-pulse" cx="146" cy="176" r="13"/><circle class="wf-fill" cx="230" cy="176" r="15"/><circle class="wf-prime wf-pulse" cx="186" cy="214" r="13"/><circle class="wf-prime wf-pulse" cx="270" cy="214" r="13"/><text x="70" y="24">360</text><text x="26" y="62">2</text><text x="110" y="62">180</text><text x="66" y="100">2</text><text x="150" y="100">90</text><text x="106" y="138">2</text><text x="190" y="138">45</text><text x="146" y="176">3</text><text x="230" y="176">15</text><text x="186" y="214">3</text><text x="270" y="214">5</text></svg></div>
+        </div>
+      </section>
 
-      <div class="ranges-matrix-grid">
+      <section class="bento" aria-label="Live statistics">
+        <div class="bento-cell ux-glass-card" data-spotlight>
+          <div class="bento-k">Your rating</div>
+          <div class="bento-v" id="bento-elo-val">500</div>
+          <div class="bento-s bento-live" id="bento-elo-state">Guest baseline</div>
+        </div>
+        <div class="bento-cell ux-glass-card" data-spotlight>
+          <div class="bento-k">Current league</div>
+          <div class="bento-v sm" id="bento-tier-name">🧩 Composite Apprentice</div>
+          <div class="bento-s">Divisions above your ELO ceiling run as practice.</div>
+        </div>
+        <div class="bento-cell ux-glass-card" data-spotlight>
+          <div class="bento-k">Divisions</div>
+          <div class="bento-v" id="bento-range-count">10</div>
+          <div class="bento-s">1 – 200 up to the Omega manifold</div>
+          <div class="orbit" style="position:absolute;right:-0.6rem;top:50%;translate:0 -50%;width:5.2rem;opacity:.9" aria-hidden="true">
+            <span class="orbit-core" style="font-size:1rem">∏</span>
+            <i class="orbit-dot" style="--r:2.1rem;--t:6s;--c:#38bdf8"></i><i class="orbit-dot" style="--r:1.3rem;--t:4s;--d:-1s;--c:#34d399"></i>
+          </div>
+        </div>
+        <div class="bento-cell ux-glass-card" data-spotlight>
+          <div class="bento-k">Time budget</div>
+          <div class="bento-v"><span data-ticker="60" data-ticker-suffix=" min">60 min</span></div>
+          <div class="bento-s">From 3 minutes (Tier 1) to the Omega hour</div>
+        </div>
+      </section>
+
+      <div class="ranges-matrix-grid" id="ranges-grid">
         <!-- Tier 1 -->
         <a href="./contract.html?min=1&max=200&title=Tier%201%3A%201%20-%20200&time=180" class="range-tilt-card" data-min="1" data-max="200" data-tier="Tier 1: 1 - 200" data-time="180">
           <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 1 backdrop" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" fetchpriority="high" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label">Tier 1 · Foundations</div>
@@ -225,7 +274,7 @@
         <!-- Tier 2 -->
         <a href="./contract.html?min=201&max=500&title=Tier%202%3A%20201%20-%20500&time=300" class="range-tilt-card" data-min="201" data-max="500" data-tier="Tier 2: 201 - 500" data-time="300">
           <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/7422160/pexels-photo-7422160.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 2 backdrop" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/7422160/pexels-photo-7422160.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" fetchpriority="high" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label">Tier 2 · Intermediate</div>
@@ -245,7 +294,7 @@
         <!-- Tier 3 -->
         <a href="./contract.html?min=501&max=1000&title=Tier%203%3A%20501%20-%201%2C000&time=480" class="range-tilt-card" data-min="501" data-max="1000" data-tier="Tier 3: 501 - 1,000" data-time="480">
           <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/355938/pexels-photo-355938.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 3 backdrop" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/355938/pexels-photo-355938.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label">Tier 3 · Olympiad Standard</div>
@@ -265,7 +314,7 @@
         <!-- Tier 4 -->
         <a href="./contract.html?min=1001&max=2000&title=Tier%204%3A%201%2C001%20-%202%2C000&time=720" class="range-tilt-card" data-min="1001" data-max="2000" data-tier="Tier 4: 1,001 - 2,000" data-time="720">
           <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/247791/pexels-photo-247791.png?auto=compress&cs=tinysrgb&w=600" alt="Tier 4 backdrop" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/247791/pexels-photo-247791.png?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label">Tier 4 · Advanced</div>
@@ -285,7 +334,7 @@
         <!-- Tier 5 -->
         <a href="./contract.html?min=2001&max=5000&title=Tier%205%3A%202%2C001%20-%205%2C000&time=1080" class="range-tilt-card" data-min="2001" data-max="5000" data-tier="Tier 5: 2,001 - 5,000" data-time="1080">
           <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 5 backdrop" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label">Tier 5 · Senior League</div>
@@ -305,7 +354,7 @@
         <!-- Tier 6 -->
         <a href="./contract.html?min=5001&max=10000&title=Tier%206%3A%205%2C001%20-%2010%2C000&time=1500" class="range-tilt-card" data-min="5001" data-max="10000" data-tier="Tier 6: 5,001 - 10,000" data-time="1500">
           <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/6238048/pexels-photo-6238048.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 6 backdrop" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/6238048/pexels-photo-6238048.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label">Tier 6 · Invitational</div>
@@ -325,7 +374,7 @@
         <!-- Tier 7 -->
         <a href="./contract.html?min=10001&max=20000&title=Tier%207%3A%2010%2C001%20-%2020%2C000&time=2100" class="range-tilt-card" data-min="10001" data-max="20000" data-tier="Tier 7: 10,001 - 20,000" data-time="2100">
           <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/414860/pexels-photo-414860.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 7 backdrop" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/414860/pexels-photo-414860.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label">Tier 7 · Grandmaster</div>
@@ -345,7 +394,7 @@
         <!-- Tier 8 (20,000+ capped at 35,000) -->
         <a href="./contract.html?min=20001&max=35000&title=Tier%208%3A%2020%2C000%2B%20(Elite)&time=2700" class="range-tilt-card" data-min="20001" data-max="35000" data-tier="Tier 8: 20,000+ (Elite)" data-time="2700">
           <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/3779409/pexels-photo-3779409.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tier 8 backdrop" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/3779409/pexels-photo-3779409.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label">Tier 8 · Elite Cap</div>
@@ -365,7 +414,7 @@
         <!-- Tier 9: Custom Range Portal (Mechanical Engineering Blueprint) -->
         <a href="./custom.html" class="range-tilt-card tier-9-blueprint-card" data-is-custom="true" id="tier-9-custom-card">
           <div class="range-card-img-wrap blueprint-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Mathematical architecture blueprint grid" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label tier-9-label">Tier 9 · Parameterized</div>
@@ -385,7 +434,7 @@
         <!-- Tier 10: 1 to Infinity (Olympian Infinite Cosmic Manifold) -->
         <a href="./contract.html?min=1&max=50000&title=Omega%3A%201%20to%20Infinity&time=3600" class="range-tilt-card tier-10-cosmic-card card-neon-loop" data-min="1" data-max="50000" data-tier="Omega: 1 to Infinity" data-time="3600" id="tier-10-omega-card">
           <div class="range-card-img-wrap cosmic-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Cosmic deep space nebula constellation" loading="lazy" />
+            <img class="range-card-img" src="https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
           </div>
           <div class="range-card-body">
             <div class="range-tier-label tier-10-label">Tier 10 · Cosmic Manifold</div>

@@ -374,3 +374,9 @@ npm run preview
 - `notification-engine.js`: `timestamp.split is not a function` crash for non-string timestamps.
 - Three malformed SVG icon paths (file icon on `edu.html`, gear icon on `profile.html` / `result.html`).
 - Earlier: triple-counted matches, auth race, header XSS, simulated-ELO persisting, header gear offset, `edu.html` horizontal scroll.
+
+## v3.5 — Aurora Pro upgrade
+- **Readability**: `js/readability-guard.js` + `css/aurora-pro.css` lift navy/slate text to WCAG AA on dark surfaces (palette unchanged).
+- **Ranges**: spring-physics 3D cards with cursor glow (`js/ranges-3d.js`, `css/ranges-3d.css`), bento stats, 60/40 spotlight hero.
+- **Responsive**: `css/contract-media-query.css`, extended `css/result-media-query.css`, global safety net in `aurora-pro.css`.
+- **Firebase speed**: persistent multi-tab Firestore cache, lazy auth popup resolver, instant cached-session header, parallel profile fetch, single-transaction match commit, preconnect hints, `firestore.indexes.json` (deploy with `firebase deploy --only firestore:indexes`).

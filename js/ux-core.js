@@ -1,3 +1,5 @@
+import './fx-engine.js';
+import './readability-guard.js';
 /**
  * PrimeFactor.app — shared UX layer (every page). Dependency-free.
  *

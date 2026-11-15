@@ -10,7 +10,11 @@
 
 import { initializeApp } from "firebase/app";
 import {
-  getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  browserPopupRedirectResolver,
+  getRedirectResult,
   GoogleAuthProvider,
   signInWithPopup,
   signInWithRedirect,
@@ -18,11 +22,13 @@ import {
   onAuthStateChanged
 } from "firebase/auth";
 import {
+  initializeFirestore,
   getFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   doc,
   getDoc,
   getDocs,
-  getDocFromServer,
   setDoc,
   updateDoc,
   runTransaction,
@@ -112,23 +118,38 @@ if (isFirebaseConfigured) {
       .catch((e) => console.warn('[Firebase] App Check unavailable:', e));
   }
 
-  auth = getAuth(app);
-  db = firestoreDatabaseId
-    ? getFirestore(app, firestoreDatabaseId)
-    : getFirestore(app);
+  // FAST AUTH: initialise without the popup/redirect resolver (which would eagerly load a hidden
+  // gapi iframe on every page). The resolver is passed lazily to sign-in calls only.
+  // IndexedDB persistence first => the stored session restores in a few ms, with localStorage fallback.
+  auth = initializeAuth(app, {
+    persistence: [indexedDBLocalPersistence, browserLocalPersistence]
+  });
+
+  // FAST FIRESTORE: persistent multi-tab IndexedDB cache => repeat reads (profile, leaderboard) are
+  // served from disk instantly while the server revalidates in the background. Long-polling
+  // auto-detect avoids WebChannel stalls behind restrictive proxies.
+  const fsSettings = {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+    experimentalAutoDetectLongPolling: true
+  };
+  try {
+    db = firestoreDatabaseId
+      ? initializeFirestore(app, fsSettings, firestoreDatabaseId)
+      : initializeFirestore(app, fsSettings);
+  } catch (e) {
+    console.warn('[Firebase] Persistent cache unavailable, using default Firestore:', e);
+    db = firestoreDatabaseId ? getFirestore(app, firestoreDatabaseId) : getFirestore(app);
+  }
   googleProvider = new GoogleAuthProvider();
   googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-  // Validate Firestore connectivity on boot.
-  (async function testConnection() {
-    try {
-      await getDocFromServer(doc(db, 'test', 'connection'));
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('the client is offline')) {
-        console.error('Please check your Firebase configuration.');
-      }
+  // Complete a pending redirect sign-in only when one was started (avoids loading the resolver otherwise).
+  try {
+    if (sessionStorage.getItem('pf_redirect_pending') === '1') {
+      sessionStorage.removeItem('pf_redirect_pending');
+      getRedirectResult(auth, browserPopupRedirectResolver).catch((e) => console.warn('[Firebase] Redirect result:', e));
     }
-  })();
+  } catch (e) { /* storage unavailable */ }
 } else {
   console.warn('[Firebase] VITE_FIREBASE_* environment variables not configured. Running in guest/local mode.');
 }
@@ -162,6 +183,36 @@ let isAuthReady = false;
 const authListeners = new Set();
 const authReadyWaiters = [];
 const profileInflight = new Map();
+
+// ---------------------------------------------------------------------------------------
+// Instant-session hint: a compact, PII-free snapshot of the last signed-in profile so that every
+// page can paint the signed-in header + ELO immediately, then reconcile with Firebase.
+// (Never trusted for writes: all mutations run in server transactions guarded by firestore.rules.)
+// ---------------------------------------------------------------------------------------
+const HINT_KEY = 'pf_session_hint_v1';
+export function readSessionHint() {
+  try {
+    const raw = localStorage.getItem(HINT_KEY);
+    if (!raw) return null;
+    const h = JSON.parse(raw);
+    return h && typeof h.uid === 'string' && h.profile ? h : null;
+  } catch (e) { return null; }
+}
+function writeSessionHint(user, profile) {
+  try {
+    if (!user || !profile || profile._unsynced) return;
+    const { email, ...safe } = profile;
+    localStorage.setItem(HINT_KEY, JSON.stringify({
+      uid: user.uid, t: Date.now(),
+      user: { uid: user.uid, displayName: user.displayName || profile.displayName || '', photoURL: safePhotoURL(user.photoURL || profile.photoURL) },
+      profile: safe
+    }));
+  } catch (e) { /* quota / private mode */ }
+}
+function clearSessionHint() { try { localStorage.removeItem(HINT_KEY); } catch (e) {} }
+const bootHint = readSessionHint();
+/** Synchronous best-guess auth state for first paint (null if none). */
+export const getAuthHint = () => (isAuthReady ? null : bootHint ? { user: bootHint.user, profile: bootHint.profile, hint: true } : null);
 
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 const num = (v, d = 0) => (Number.isFinite(Number(v)) ? Number(v) : d);
@@ -330,7 +381,18 @@ export function fetchOrCreateProfile(user) {
     try {
       let resolvedData = null;
 
-      for (let attempt = 0; attempt < candidates.length; attempt++) {
+      // FAST PATH: both documents fetched in parallel (cache-first via persistent cache, one round
+      // trip otherwise). Only fall through to the 3-read creation transaction if something is missing.
+      try {
+        const [uSnap, lbSnap0] = await Promise.all([getDoc(userRef), getDoc(leaderboardRef)]);
+        if (uSnap.exists() && lbSnap0.exists() && isValidHandleFormat(uSnap.data()?.handle) && Array.isArray(uSnap.data()?.friends)) {
+          resolvedData = uSnap.data();
+        }
+      } catch (fastErr) {
+        if (fastErr?.code === 'permission-denied') throw fastErr;
+      }
+
+      for (let attempt = 0; !resolvedData && attempt < candidates.length; attempt++) {
         const candidateHandle = candidates[attempt];
         const handleRef = doc(db, 'handles', candidateHandle);
 
@@ -405,6 +467,7 @@ export function fetchOrCreateProfile(user) {
       }
 
       currentProfile = { ...createDefaultProfile(user, resolvedData.handle), ...resolvedData, uid: user.uid };
+      writeSessionHint(user, currentProfile);
     } catch (err) {
       console.error('[Firebase] Error fetching/creating profile:', err);
       currentProfile = { ...createDefaultProfile(user), _unsynced: true };
@@ -433,7 +496,7 @@ export async function signInWithGoogle() {
     return { user: null, profile: null };
   }
   try {
-    const result = await signInWithPopup(auth, googleProvider);
+    const result = await signInWithPopup(auth, googleProvider, browserPopupRedirectResolver);
     currentUser = result.user;
     currentProfile = await fetchOrCreateProfile(result.user);
     isAuthReady = true;
@@ -447,7 +510,8 @@ export async function signInWithGoogle() {
     }
     if (code === 'auth/popup-blocked' || code === 'auth/operation-not-supported-in-this-environment') {
       try {
-        await signInWithRedirect(auth, googleProvider);
+        try { sessionStorage.setItem('pf_redirect_pending', '1'); } catch (e2) { /* ignore */ }
+        await signInWithRedirect(auth, googleProvider, browserPopupRedirectResolver);
       } catch (e) {
         console.error('[Firebase] Redirect sign-in error:', e);
       }
@@ -469,6 +533,7 @@ export async function signOutUser() {
   }
   currentUser = null;
   currentProfile = null;
+  clearSessionHint();
   try {
     ['primefactor_last_result', 'primefactor_active_exam_params', 'exam_in_progress', 'status']
       .forEach((k) => { sessionStorage.removeItem(k); });
@@ -490,14 +555,37 @@ if (auth) {
   onAuthStateChanged(auth, async (user) => {
     const epoch = ++authEpoch;
     currentUser = user;
+    if (!user) {
+      clearSessionHint();
+      currentProfile = null;
+      isAuthReady = true;
+      resolveAuthReadyWaiters();
+      emitAuth();
+      return;
+    }
+
+    // STALE-WHILE-REVALIDATE: if we hold a hint for this very uid, release the page immediately with
+    // it and refresh from Firestore in the background (emits `primefactor_profile_updated`).
+    const hint = bootHint && bootHint.uid === user.uid ? bootHint : null;
+    if (hint && !isAuthReady) {
+      currentProfile = { ...createDefaultProfile(user, hint.profile?.handle), ...hint.profile, uid: user.uid };
+      isAuthReady = true;
+      resolveAuthReadyWaiters();
+      emitAuth();
+      fetchOrCreateProfile(user).then((fresh) => {
+        if (epoch !== authEpoch || !fresh) return;
+        currentProfile = fresh;
+        emitProfile();
+      }).catch((e) => console.warn('[Firebase] Background profile refresh failed:', e));
+      return;
+    }
+
     let profile = null;
-    if (user) {
-      try {
-        profile = await fetchOrCreateProfile(user);
-      } catch (e) {
-        console.error('[Firebase] Initial profile load error:', e);
-        profile = currentProfile;
-      }
+    try {
+      profile = await fetchOrCreateProfile(user);
+    } catch (e) {
+      console.error('[Firebase] Initial profile load error:', e);
+      profile = currentProfile;
     }
     if (epoch !== authEpoch) return;
     currentProfile = profile;
@@ -664,6 +752,7 @@ export async function updateUserProfile(partialData) {
     });
 
     currentProfile = { ...currentProfile, ...updatedMerged };
+    writeSessionHint(currentUser, currentProfile);
     emitProfile();
     return currentProfile;
   } catch (err) {
@@ -779,20 +868,15 @@ export async function recordMatchToFirestore(matchData) {
         updatedAt: serverTimestamp()
       };
       tx.update(userRef, updates);
+      const merged = { ...d, ...updates, uid: currentUser.uid };
+      // Public card committed in the SAME transaction => one network round trip, atomic with the ledger.
+      tx.set(doc(db, 'leaderboard', currentUser.uid), buildPublicLeaderboardPayload(merged, Date.now()), { merge: true });
       return { duplicate: false, data: { ...d, ...updates } };
     });
 
     currentProfile = { ...currentProfile, ...result.data, updatedAt: new Date().toISOString() };
 
-    if (!result.duplicate) {
-      const publicPayload = buildPublicLeaderboardPayload(currentProfile, Date.now());
-      try {
-        await setDoc(doc(db, 'leaderboard', currentUser.uid), publicPayload, { merge: true });
-      } catch (lbErr) {
-        handleFirestoreError(lbErr, OperationType.WRITE, `leaderboard/${currentUser.uid}`);
-      }
-    }
-
+    writeSessionHint(currentUser, currentProfile);
     emitProfile();
     return currentProfile;
   } catch (err) {

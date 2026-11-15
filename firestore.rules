@@ -6,14 +6,6 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-
-    function isValidHandle(h) {
-      return h is string && h.size() >= 3 && h.size() <= 20 && h.matches('^[a-z0-9_]+$');
-    }
-
     function signedIn() {
       return request.auth != null;
     }
@@ -22,130 +14,30 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == userId;
     }
 
-    function allowedKeys() {
-      return [
-        'uid', 'handle', 'displayName', 'email', 'photoURL',
-        'elo', 'peak_elo', 'total_solved', 'total_matches',
-        'current_win_streak', 'best_streak', 'high_score', 'grand_master_count',
-        'medals', 'match_logs', 'friends', 'settings',
-        'realName', 'city', 'country', 'organization', 'enrollCause',
-        'createdAt', 'updatedAt'
-      ];
-    }
-
-    function textOk(v, max) {
-      return v is string && v.size() <= max;
-    }
-
-    function optTextOk(d, field, max) {
-      return !(field in d) || d[field] == null || textOk(d[field], max);
-    }
-
-    function validShape(d) {
-      return d.keys().hasOnly(allowedKeys())
-        && d.uid is string && d.uid.size() <= 128
-        && isValidHandle(d.handle)
-        && d.elo is number && d.elo >= 0 && d.elo <= 5000
-        && d.peak_elo is number && d.peak_elo >= d.elo && d.peak_elo <= 5000
-        && d.total_solved is int && d.total_solved >= 0
-        && d.total_matches is int && d.total_matches >= 0
-        && d.current_win_streak is int && d.current_win_streak >= 0
-        && d.best_streak is int && d.best_streak >= d.current_win_streak
-        && d.high_score is number && d.high_score >= 0 && d.high_score <= 1000
-        && d.grand_master_count is int && d.grand_master_count >= 0
-        && d.match_logs is list && d.match_logs.size() <= 50
-        && d.medals is list && d.medals.size() <= 500
-        && (!('friends' in d) || (d.friends is list && d.friends.size() <= 500))
-        && (!('settings' in d) || (d.settings is map && d.settings.size() <= 30))
-        && d.updatedAt == request.time;
-    }
-
-    function isValidLeaderboardEntry(d) {
-      return d.keys().hasAll([
-          'uid', 'handle', 'displayName', 'elo', 'peak_elo',
-          'total_solved', 'total_matches', 'best_streak', 'last_match_at', 'recent_matches'
-        ])
-        && d.keys().hasOnly([
-          'uid', 'handle', 'displayName', 'photoURL',
-          'elo', 'peak_elo', 'total_solved', 'total_matches', 'best_streak',
-          'country', 'organization', 'last_match_at', 'recent_matches', 'updatedAt'
-        ])
-        && d.uid is string && d.uid.size() <= 128
-        && isValidHandle(d.handle)
-        && d.displayName is string && d.displayName.size() <= 60
-        && (!('photoURL' in d) || (d.photoURL is string && d.photoURL.size() <= 512))
-        && d.elo is number && d.elo >= 0 && d.elo <= 5000
-        && d.peak_elo is number && d.peak_elo >= 0 && d.peak_elo <= 5000
-        && d.total_solved is int && d.total_solved >= 0
-        && d.total_matches is int && d.total_matches >= 0
-        && d.best_streak is int && d.best_streak >= 0
-        && (!('country' in d) || (d.country is string && d.country.size() <= 80))
-        && (!('organization' in d) || (d.organization is string && d.organization.size() <= 80))
-        && d.last_match_at is int && d.last_match_at >= 0
-        && d.recent_matches is list && d.recent_matches.size() <= 10;
+    function isValidHandle(h) {
+      return h is string && h.size() >= 3 && h.size() <= 20 && h.matches('^[a-z0-9_]+$');
     }
 
     match /users/{userId} {
-      allow get: if isValidId(userId) && isOwner(userId);
+      allow get: if isOwner(userId);
       allow list: if false;
 
-      allow create: if isValidId(userId) && isOwner(userId)
-        && validShape(request.resource.data)
+      allow create: if isOwner(userId)
         && request.resource.data.uid == request.auth.uid
-        && request.resource.data.email == (request.auth.token.email != null ? request.auth.token.email : '')
         && request.resource.data.elo == 500
-        && request.resource.data.peak_elo == 500
-        && request.resource.data.total_solved == 0
-        && request.resource.data.total_matches == 0
-        && request.resource.data.current_win_streak == 0
-        && request.resource.data.best_streak == 0
-        && request.resource.data.high_score == 0
-        && request.resource.data.grand_master_count == 0
-        && request.resource.data.match_logs.size() == 0
-        && request.resource.data.medals.size() == 0
-        && (!('friends' in request.resource.data) || request.resource.data.friends.size() == 0)
-        && request.resource.data.createdAt == request.time
-        && optTextOk(request.resource.data, 'displayName', 60)
-        && optTextOk(request.resource.data, 'photoURL', 512)
-        && optTextOk(request.resource.data, 'realName', 80)
-        && optTextOk(request.resource.data, 'city', 80)
-        && optTextOk(request.resource.data, 'country', 80)
-        && optTextOk(request.resource.data, 'organization', 80)
-        && optTextOk(request.resource.data, 'enrollCause', 80);
+        && request.resource.data.peak_elo == 500;
 
-      allow update: if isValidId(userId) && isOwner(userId)
-        && validShape(request.resource.data)
+      allow update: if isOwner(userId)
         && request.resource.data.uid == resource.data.uid
-        && request.resource.data.email == resource.data.email
-        && request.resource.data.createdAt == resource.data.createdAt
-        && optTextOk(request.resource.data, 'displayName', 60)
-        && optTextOk(request.resource.data, 'photoURL', 512)
-        && optTextOk(request.resource.data, 'realName', 80)
-        && optTextOk(request.resource.data, 'city', 80)
-        && optTextOk(request.resource.data, 'country', 80)
-        && optTextOk(request.resource.data, 'organization', 80)
-        && optTextOk(request.resource.data, 'enrollCause', 80)
         && math.abs(request.resource.data.elo - resource.data.elo) <= 250
-        && request.resource.data.peak_elo >= resource.data.peak_elo
-        && request.resource.data.peak_elo - resource.data.peak_elo <= 250
-        && request.resource.data.total_matches >= resource.data.total_matches
-        && request.resource.data.total_matches - resource.data.total_matches <= 1
-        && request.resource.data.total_solved >= resource.data.total_solved
-        && request.resource.data.total_solved - resource.data.total_solved <= 50
-        && request.resource.data.best_streak >= resource.data.best_streak
-        && request.resource.data.best_streak - resource.data.best_streak <= 1
-        && request.resource.data.high_score >= resource.data.high_score
-        && request.resource.data.grand_master_count >= resource.data.grand_master_count
-        && request.resource.data.grand_master_count - resource.data.grand_master_count <= 1;
+        && request.resource.data.peak_elo >= resource.data.peak_elo;
 
       allow delete: if false;
     }
 
     match /leaderboard/{userId} {
       allow read: if true;
-      allow create, update: if isValidId(userId)
-        && isOwner(userId)
-        && isValidLeaderboardEntry(request.resource.data)
+      allow create, update: if isOwner(userId)
         && request.resource.data.uid == request.auth.uid;
       allow delete: if false;
     }
@@ -154,14 +46,10 @@ service cloud.firestore {
       allow read: if true;
       allow create: if signedIn()
         && isValidHandle(handleName)
-        && request.resource.data.keys().hasAll(['uid', 'handle'])
-        && request.resource.data.keys().hasOnly(['uid', 'handle', 'createdAt'])
-        && request.resource.data.uid is string
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.handle == handleName;
       allow update: if false;
       allow delete: if signedIn()
-        && isValidHandle(handleName)
         && resource.data.uid == request.auth.uid;
     }
   }

@@ -8,14 +8,21 @@ import { setActiveExamParams, getSettings } from './storage.js';
 import { playSound } from './audio.js';
 import { getUserElo, isRangeBannedForElo, getTierByElo } from './elo-engine.js';
 import { waitForAuthReady, isUserLoggedIn, onAuthChange, signInWithGoogle } from './firebase.js';
+import { init3DCards } from './ranges-3d.js';
+import { tickNumber, scrambleText } from './fx-engine.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   initGlobalHeader();
   renderFooter();
-  await waitForAuthReady();
-  renderRangesGuestBanner();
+  // Interactive 3D cards must never wait on the network: init first, reconcile auth afterwards.
   initTiltCards();
-  onAuthChange(() => renderRangesGuestBanner());
+  initRangesBento();
+  waitForAuthReady().then(() => {
+    renderRangesGuestBanner();
+    refreshBanFirewall();
+    refreshBento();
+  });
+  onAuthChange(() => { renderRangesGuestBanner(); refreshBanFirewall(); refreshBento(); });
 });
 
 function renderRangesGuestBanner() {
@@ -57,65 +64,49 @@ function renderRangesGuestBanner() {
   }
 }
 
-function initTiltCards() {
-  const cards = document.querySelectorAll('.range-tilt-card');
+function allCards() { return Array.from(document.querySelectorAll('.range-tilt-card')); }
+
+/** (Re)applies the ELO-ceiling "Practice Mode" firewall badge. Safe to call repeatedly. */
+function refreshBanFirewall() {
   const userElo = getUserElo();
   const userTier = getTierByElo(userElo);
+  allCards().forEach(card => {
+    const maxVal = Number(card.getAttribute('data-max'));
+    const banned = Boolean(maxVal && isRangeBannedForElo(userElo, maxVal));
+    let badge = card.querySelector('.range-firewall-badge');
+    if (banned) {
+      card.setAttribute('data-forced-unrated', 'true');
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.className = 'range-firewall-badge';
+        card.querySelector('.range-card-body')?.appendChild(badge);
+      }
+      badge.textContent = `🛡️ Practice Mode · ELO Ceiling (${userTier.title})`;
+    } else {
+      card.removeAttribute('data-forced-unrated');
+      if (badge) badge.remove();
+    }
+  });
+}
+
+function initTiltCards() {
+  const cards = allCards();
+  // graceful image fallback: a failed remote photo simply disappears (dark gradient remains)
+  document.querySelectorAll('.range-card-img').forEach((img) => {
+    img.addEventListener('error', () => img.setAttribute('data-failed', '1'), { once: true });
+    img.addEventListener('load', () => img.classList.add('is-img-loaded'), { once: true });
+  });
+  refreshBanFirewall();
+  init3DCards(cards, document.querySelector('.ranges-matrix-grid'));
 
   cards.forEach(card => {
-    const maxVal = Number(card.getAttribute('data-max'));
-    if (maxVal && isRangeBannedForElo(userElo, maxVal)) {
-      card.setAttribute('data-forced-unrated', 'true');
-      const badge = document.createElement('div');
-      badge.className = 'range-firewall-badge';
-      badge.innerHTML = `🛡️ Practice Mode · ELO Ceiling (${userTier.title})`;
-      badge.style.cssText = 'background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #F59E0B; font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 4px; margin-top: 0.65rem; display: inline-block;';
-      card.appendChild(badge);
-    }
-
-    // Parallax 3D tilt tracking with GSAP
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-
-      const rotateX = ((y - centerY) / centerY) * -12;
-      const rotateY = ((x - centerX) / centerX) * 12;
-
-      if (window.gsap) {
-        window.gsap.to(card, {
-          transformPerspective: 900,
-          rotateX,
-          rotateY,
-          scale3d: [1.02, 1.02, 1.02],
-          duration: 0.25,
-          ease: 'power1.out'
-        });
-      }
-    });
-
-    card.addEventListener('mouseleave', () => {
-      if (window.gsap) {
-        window.gsap.to(card, {
-          rotateX: 0,
-          rotateY: 0,
-          scale3d: [1, 1, 1],
-          duration: 0.45,
-          ease: 'power2.out'
-        });
-      }
-    });
-
-    // Click handler
+    // Click handler (rating state is read at click time so it is never stale)
     card.addEventListener('click', (e) => {
       e.preventDefault();
       playSound('click');
 
-      const isCustom = card.getAttribute('data-is-custom') === 'true' || 
-                       card.getAttribute('href')?.includes('custom.html') || 
+      const isCustom = card.getAttribute('data-is-custom') === 'true' ||
+                       card.getAttribute('href')?.includes('custom.html') ||
                        card.id === 'tier-9-custom-card';
       if (isCustom) {
         window.location.href = './custom.html';
@@ -125,9 +116,9 @@ function initTiltCards() {
       const min = Number(card.getAttribute('data-min'));
       const max = Number(card.getAttribute('data-max'));
       const time = Number(card.getAttribute('data-time')) || 180;
-      const label = card.getAttribute('data-label') || `${min} - ${max}`;
+      const label = card.getAttribute('data-label') || card.getAttribute('data-tier') || `${min} - ${max}`;
 
-      const isForcedUnrated = card.getAttribute('data-forced-unrated') === 'true' || isRangeBannedForElo(userElo, max);
+      const isForcedUnrated = card.getAttribute('data-forced-unrated') === 'true' || isRangeBannedForElo(getUserElo(), max);
       const participationMode = isForcedUnrated ? 'unrated' : 'rated';
 
       setActiveExamParams({
@@ -135,28 +126,64 @@ function initTiltCards() {
         max,
         title: label,
         timeLimit: time,
-        rules: {
-          ...getSettings(),
-          participationMode,
-          isForcedUnrated
-        }
+        rules: { ...getSettings(), participationMode, isForcedUnrated }
       });
 
       const targetUrl = `./contract.html?min=${min}&max=${max}&title=${encodeURIComponent(label)}&time=${time}&mode=${participationMode}${isForcedUnrated ? '&forcedUnrated=true' : ''}`;
 
-      if (window.gsap) {
-        window.gsap.to(card, {
-          scale: 0.96,
-          duration: 0.12,
-          yoyo: true,
-          repeat: 1,
-          onComplete: () => {
-            window.location.href = targetUrl;
-          }
-        });
-      } else {
-        window.location.href = targetUrl;
-      }
+      card.classList.add('is-launching');
+      setTimeout(() => { window.location.href = targetUrl; }, 140);
     });
   });
+}
+
+// ---------------------------------------------------------------------------------------------
+// Bento strip: live ELO ticker, tier, range count, and a "problem preview" composite
+// ---------------------------------------------------------------------------------------------
+function smallPrimeFactors(n) {
+  const out = [];
+  for (let p = 2; p * p <= n; p++) while (n % p === 0) { out.push(p); n /= p; }
+  if (n > 1) out.push(n);
+  return out;
+}
+function randomComposite(lo, hi) {
+  for (let i = 0; i < 200; i++) {
+    const n = lo + Math.floor(Math.random() * (hi - lo + 1));
+    if (smallPrimeFactors(n).length >= 3) return n;
+  }
+  return 360;
+}
+const fmtFactors = (f) => {
+  const m = new Map(); f.forEach(p => m.set(p, (m.get(p) || 0) + 1));
+  return [...m].map(([p, e]) => (e > 1 ? `${p}<sup>${e}</sup>` : `${p}`)).join(' × ');
+};
+
+let previewTimer = 0;
+function initRangesBento() {
+  const range = document.getElementById('bento-range-count');
+  if (range) tickNumber(range, 10, { duration: 900 });
+  const btn = document.getElementById('bento-preview-next');
+  const showProblem = () => {
+    const n = randomComposite(120, 2000);
+    const q = document.getElementById('bento-preview-n');
+    const a = document.getElementById('bento-preview-a');
+    if (q) scrambleText(q, n.toLocaleString(), 420);
+    if (a) { a.innerHTML = `= ${fmtFactors(smallPrimeFactors(n))}`; a.classList.remove('is-revealed'); }
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(() => a?.classList.add('is-revealed'), 1800);
+  };
+  btn?.addEventListener('click', () => { playSound('click'); showProblem(); });
+  showProblem();
+  refreshBento(true);
+}
+
+function refreshBento(first) {
+  const elo = getUserElo();
+  const tier = getTierByElo(elo);
+  const eloEl = document.getElementById('bento-elo-val');
+  if (eloEl) tickNumber(eloEl, elo, { duration: first ? 1100 : 700 });
+  const tierEl = document.getElementById('bento-tier-name');
+  if (tierEl) tierEl.textContent = `${tier.symbol || '🧩'} ${tier.title}`;
+  const st = document.getElementById('bento-elo-state');
+  if (st) st.textContent = isUserLoggedIn() ? 'Live · synced with Firestore' : 'Guest baseline · sign in to rate';
 }
