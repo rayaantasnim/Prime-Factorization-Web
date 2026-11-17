@@ -3,7 +3,18 @@
  * Pure functions, no DOM, no dependencies. Everything is exact for integers below 2^53.
  */
 
-const SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+const SUP = {
+  0: "⁰",
+  1: "¹",
+  2: "²",
+  3: "³",
+  4: "⁴",
+  5: "⁵",
+  6: "⁶",
+  7: "⁷",
+  8: "⁸",
+  9: "⁹",
+};
 export const sup = (n) => String(n).replace(/\d/g, (d) => SUP[d]);
 
 /** Prime factorisation as [[p, e], ...] (n >= 2). */
@@ -14,7 +25,10 @@ export function factorize(n) {
   for (let p = 2; p * p <= m; p += p === 2 ? 1 : 2) {
     if (m % p) continue;
     let e = 0;
-    while (m % p === 0) { m /= p; e++; }
+    while (m % p === 0) {
+      m /= p;
+      e++;
+    }
     out.push([p, e]);
   }
   if (m > 1) out.push([m, 1]);
@@ -25,7 +39,8 @@ export function isPrime(n) {
   if (n < 2) return false;
   if (n < 4) return true;
   if (n % 2 === 0 || n % 3 === 0) return false;
-  for (let i = 5; i * i <= n; i += 6) if (n % i === 0 || n % (i + 2) === 0) return false;
+  for (let i = 5; i * i <= n; i += 6)
+    if (n % i === 0 || n % (i + 2) === 0) return false;
   return true;
 }
 
@@ -34,21 +49,43 @@ export function factorText(n) {
   if (n < 2) return String(n);
   const f = factorize(n);
   if (f.length === 1 && f[0][1] === 1) return `${n} is prime`;
-  return f.map(([p, e]) => (e > 1 ? `${p}${sup(e)}` : `${p}`)).join(' · ');
+  return f.map(([p, e]) => (e > 1 ? `${p}${sup(e)}` : `${p}`)).join(" · ");
 }
 
 /** τ, σ, φ, ω, Ω and friends from one factorisation. */
 export function arithmetic(n) {
-  if (n < 2) return { n, factors: [], tau: 1, sigma: 1, phi: 1, omega: 0, Omega: 0, prime: false };
+  if (n < 2)
+    return {
+      n,
+      factors: [],
+      tau: 1,
+      sigma: 1,
+      phi: 1,
+      omega: 0,
+      Omega: 0,
+      prime: false,
+    };
   const factors = factorize(n);
-  let tau = 1, sigma = 1, phi = n, Omega = 0;
+  let tau = 1,
+    sigma = 1,
+    phi = n,
+    Omega = 0;
   for (const [p, e] of factors) {
     tau *= e + 1;
     sigma *= (Math.pow(p, e + 1) - 1) / (p - 1);
     phi = (phi / p) * (p - 1);
     Omega += e;
   }
-  return { n, factors, tau, sigma, phi, omega: factors.length, Omega, prime: factors.length === 1 && factors[0][1] === 1 };
+  return {
+    n,
+    factors,
+    tau,
+    sigma,
+    phi,
+    omega: factors.length,
+    Omega,
+    prime: factors.length === 1 && factors[0][1] === 1,
+  };
 }
 
 const PERFECT = new Set([6, 28, 496, 8128, 33550336]);
@@ -57,23 +94,32 @@ const PERFECT = new Set([6, 28, 496, 8128, 33550336]);
 export function badgesFor(n) {
   const a = arithmetic(n);
   const out = [];
-  if (n === 1) return [{ t: 'Unit', k: 'dim' }];
+  if (n === 1) return [{ t: "Unit", k: "dim" }];
   if (a.prime) {
-    out.push({ t: 'Prime', k: 'prime' });
-    if (n === 2) out.push({ t: 'Only even prime', k: 'gold' });
-    else out.push({ t: n % 4 === 1 ? '≡ 1 (mod 4) · sum of two squares' : '≡ 3 (mod 4)', k: n % 4 === 1 ? 'gold' : 'cyan' });
-    if (isPrime(n + 2) || isPrime(n - 2)) out.push({ t: 'Twin prime', k: 'violet' });
-    if (isPrime((n - 1) / 2) && n > 3) out.push({ t: 'Safe prime', k: 'violet' });
+    out.push({ t: "Prime", k: "prime" });
+    if (n === 2) out.push({ t: "Only even prime", k: "gold" });
+    else
+      out.push({
+        t: n % 4 === 1 ? "≡ 1 (mod 4) · sum of two squares" : "≡ 3 (mod 4)",
+        k: n % 4 === 1 ? "gold" : "cyan",
+      });
+    if (isPrime(n + 2) || isPrime(n - 2))
+      out.push({ t: "Twin prime", k: "violet" });
+    if (isPrime((n - 1) / 2) && n > 3)
+      out.push({ t: "Safe prime", k: "violet" });
     const m = Math.log2(n + 1);
-    if (Number.isInteger(m)) out.push({ t: `Mersenne 2${sup(m)}−1`, k: 'rose' });
+    if (Number.isInteger(m))
+      out.push({ t: `Mersenne 2${sup(m)}−1`, k: "rose" });
   } else {
-    out.push({ t: 'Composite', k: 'dim' });
-    if (a.Omega === 2 && a.omega === 2) out.push({ t: 'Semiprime', k: 'cyan' });
-    if (a.Omega === 2 && a.omega === 1) out.push({ t: 'Prime square', k: 'cyan' });
-    if (Number.isInteger(Math.sqrt(n))) out.push({ t: 'Perfect square', k: 'gold' });
-    if (a.omega === a.Omega) out.push({ t: 'Squarefree', k: 'violet' });
+    out.push({ t: "Composite", k: "dim" });
+    if (a.Omega === 2 && a.omega === 2) out.push({ t: "Semiprime", k: "cyan" });
+    if (a.Omega === 2 && a.omega === 1)
+      out.push({ t: "Prime square", k: "cyan" });
+    if (Number.isInteger(Math.sqrt(n)))
+      out.push({ t: "Perfect square", k: "gold" });
+    if (a.omega === a.Omega) out.push({ t: "Squarefree", k: "violet" });
   }
-  if (PERFECT.has(n)) out.push({ t: 'Perfect number', k: 'rose' });
+  if (PERFECT.has(n)) out.push({ t: "Perfect number", k: "rose" });
   return out;
 }
 
@@ -87,9 +133,13 @@ function ensureSieve(limit) {
   sieve = new Uint8Array(max + 1);
   counts = new Uint32Array(max + 1);
   sieve[0] = sieve[1] = 1;
-  for (let i = 2; i * i <= max; i++) if (!sieve[i]) for (let j = i * i; j <= max; j += i) sieve[j] = 1;
+  for (let i = 2; i * i <= max; i++)
+    if (!sieve[i]) for (let j = i * i; j <= max; j += i) sieve[j] = 1;
   let c = 0;
-  for (let i = 0; i <= max; i++) { if (!sieve[i]) c++; counts[i] = c; }
+  for (let i = 0; i <= max; i++) {
+    if (!sieve[i]) c++;
+    counts[i] = c;
+  }
   sieveMax = max;
 }
 export function primePi(n) {
@@ -119,4 +169,4 @@ export function ulamPos(n) {
   return [k, n - m + 7 * k];
 }
 
-export const fmt = (n) => Math.round(n).toLocaleString('en-US');
+export const fmt = (n) => Math.round(n).toLocaleString("en-US");

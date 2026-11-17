@@ -3,10 +3,13 @@
  * Includes strict Firebase Authentication (Google Sign-In) and Live Candidate Status Bar.
  */
 
-import { getSettings, updateSettings, setActiveExamParams } from './storage.js';
-import { playSound } from './audio.js';
-import { getUserElo } from './elo-engine.js';
-import { updateUnreadStatusDots, initNotificationDotListeners } from './notification-engine.js';
+import { getSettings, updateSettings, setActiveExamParams } from "./storage.js";
+import { playSound } from "./audio.js";
+import { getUserElo } from "./elo-engine.js";
+import {
+  updateUnreadStatusDots,
+  initNotificationDotListeners,
+} from "./notification-engine.js";
 import {
   signInWithGoogle,
   signOutUser,
@@ -16,35 +19,36 @@ import {
   getCurrentUser,
   getCurrentProfile,
   isUserLoggedIn,
-  getAuthHint
-} from './firebase.js';
+  getAuthHint,
+} from "./firebase.js";
 
 // GSAP Full-Page Interaction Flushes
 export function triggerFlash(type) {
-  const overlay = document.getElementById('flash-overlay');
+  const overlay = document.getElementById("flash-overlay");
   if (!overlay) return;
 
-  overlay.className = '';
-  
-  if (type === 'success') {
-    overlay.classList.add('flash-success');
-  } else if (type === 'penalty') {
-    overlay.classList.add('flash-penalty');
-  } else if (type === 'warning') {
-    overlay.classList.add('flash-warning');
+  overlay.className = "";
+
+  if (type === "success") {
+    overlay.classList.add("flash-success");
+  } else if (type === "penalty") {
+    overlay.classList.add("flash-penalty");
+  } else if (type === "warning") {
+    overlay.classList.add("flash-warning");
   }
 
   if (window.gsap) {
     window.gsap.killTweensOf(overlay);
-    window.gsap.fromTo(overlay, 
-      { opacity: 0.9 }, 
-      { opacity: 0, duration: 0.28, ease: 'power2.out' }
+    window.gsap.fromTo(
+      overlay,
+      { opacity: 0.9 },
+      { opacity: 0, duration: 0.28, ease: "power2.out" },
     );
   } else {
-    overlay.style.opacity = '0.9';
+    overlay.style.opacity = "0.9";
     setTimeout(() => {
-      overlay.style.transition = 'opacity 0.28s ease';
-      overlay.style.opacity = '0';
+      overlay.style.transition = "opacity 0.28s ease";
+      overlay.style.opacity = "0";
     }, 20);
   }
 }
@@ -54,177 +58,198 @@ export function triggerFlash(type) {
 // ============================================================================
 export const NAVIGATION_TOPOLOGY_OPTIONS = [
   {
-    id: 'nav-home',
-    href: './index.html',
-    num: '01',
-    title: 'The Gateway & Hub',
-    subtitle: 'Central command, scoring contracts, ELO tiers & instant randomizer.',
-    badge: 'Hub',
-    badgeColor: '#0284C7',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`
+    id: "nav-home",
+    href: "./index.html",
+    num: "01",
+    title: "The Gateway & Hub",
+    subtitle:
+      "Central command, scoring contracts, ELO tiers & instant randomizer.",
+    badge: "Hub",
+    badgeColor: "#0284C7",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
   },
   {
-    id: 'nav-rules',
-    href: './rules.html',
-    num: '02',
-    title: 'Rules & Governance',
-    subtitle: 'Olympiad scoring matrix, lifeline penalties & 3-strike integrity policy.',
-    badge: 'Policies',
-    badgeColor: '#F59E0B',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`
+    id: "nav-rules",
+    href: "./rules.html",
+    num: "02",
+    title: "Rules & Governance",
+    subtitle:
+      "Olympiad scoring matrix, lifeline penalties & 3-strike integrity policy.",
+    badge: "Policies",
+    badgeColor: "#F59E0B",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
   },
   {
-    id: 'nav-rating',
-    href: './rating.html',
-    num: '03',
-    title: '12-Tier ELO Matrix',
-    subtitle: 'Dynamic K-factor volatility, logistic expectations & promotion ladder.',
-    badge: 'Matrix',
-    badgeColor: '#8B5CF6',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`
+    id: "nav-rating",
+    href: "./rating.html",
+    num: "03",
+    title: "12-Tier ELO Matrix",
+    subtitle:
+      "Dynamic K-factor volatility, logistic expectations & promotion ladder.",
+    badge: "Matrix",
+    badgeColor: "#8B5CF6",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
   },
   {
-    id: 'nav-edu',
-    href: './edu.html',
-    num: '04',
-    title: 'Education Laboratory',
-    subtitle: 'Mental factorization heuristics, Pollard’s Rho & prime distribution sieves.',
-    badge: 'Training',
-    badgeColor: '#10B981',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>`
+    id: "nav-edu",
+    href: "./edu.html",
+    num: "04",
+    title: "Education Laboratory",
+    subtitle:
+      "Mental factorization heuristics, Pollard’s Rho & prime distribution sieves.",
+    badge: "Training",
+    badgeColor: "#10B981",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>`,
   },
   {
-    id: 'nav-services',
-    href: './services.html',
-    num: '05',
-    title: 'Laboratory Services',
-    subtitle: 'Real-time telemetry, Web Audio synthesis & cryptographic state storage.',
-    badge: 'Facilities',
-    badgeColor: '#06B6D4',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`
+    id: "nav-services",
+    href: "./services.html",
+    num: "05",
+    title: "Laboratory Services",
+    subtitle:
+      "Real-time telemetry, Web Audio synthesis & cryptographic state storage.",
+    badge: "Facilities",
+    badgeColor: "#06B6D4",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
   },
   {
-    id: 'nav-contest',
-    href: './contest.html',
-    num: '06',
-    title: 'Contest Arena',
-    subtitle: 'High-speed 180s rated decomposition arena with live strike detection.',
-    badge: 'Arena',
-    badgeColor: '#EC4899',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"/><path d="M14 14.66V17c0 .55.45 1 1 1h1.5"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`
+    id: "nav-contest",
+    href: "./contest.html",
+    num: "06",
+    title: "Contest Arena",
+    subtitle:
+      "High-speed 180s rated decomposition arena with live strike detection.",
+    badge: "Arena",
+    badgeColor: "#EC4899",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"/><path d="M14 14.66V17c0 .55.45 1 1 1h1.5"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`,
   },
   {
-    id: 'nav-profile',
-    href: './profile.html',
-    num: '07',
-    title: 'Candidate Profile',
-    subtitle: 'Career ledger, solved counts, accuracy analytics & directory verification.',
-    badge: 'Overview',
-    badgeColor: '#3B82F6',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+    id: "nav-profile",
+    href: "./profile.html",
+    num: "07",
+    title: "Candidate Profile",
+    subtitle:
+      "Career ledger, solved counts, accuracy analytics & directory verification.",
+    badge: "Overview",
+    badgeColor: "#3B82F6",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
   },
   {
-    id: 'nav-ranges',
-    href: './ranges.html',
-    num: '08',
-    title: 'Division Ranges',
-    subtitle: '9 rated tiers spanning from Tier 1 (1–200) to Tier 9 (1–35,000+ Master).',
-    badge: 'Divisions',
-    badgeColor: '#14B8A6',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`
+    id: "nav-ranges",
+    href: "./ranges.html",
+    num: "08",
+    title: "Division Ranges",
+    subtitle:
+      "9 rated tiers spanning from Tier 1 (1–200) to Tier 9 (1–35,000+ Master).",
+    badge: "Divisions",
+    badgeColor: "#14B8A6",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
   },
   {
-    id: 'nav-medals',
-    href: './medals.html',
-    num: '09',
-    title: 'Hall of Medals',
-    subtitle: 'Cryptographically certified trophies, hurdle badges & milestone honors.',
-    badge: 'Honors',
-    badgeColor: '#EAB308',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>`
+    id: "nav-medals",
+    href: "./medals.html",
+    num: "09",
+    title: "Hall of Medals",
+    subtitle:
+      "Cryptographically certified trophies, hurdle badges & milestone honors.",
+    badge: "Honors",
+    badgeColor: "#EAB308",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>`,
   },
   {
-    id: 'nav-notifications',
-    href: './notifications.html',
-    num: '10',
-    title: 'Notification Center',
-    subtitle: 'LIFO telemetry feed, ELO adjustment deltas & security violation strikes.',
-    badge: 'Telemetry',
-    badgeColor: '#EF4444',
+    id: "nav-notifications",
+    href: "./notifications.html",
+    num: "10",
+    title: "Notification Center",
+    subtitle:
+      "LIFO telemetry feed, ELO adjustment deltas & security violation strikes.",
+    badge: "Telemetry",
+    badgeColor: "#EF4444",
     isNotification: true,
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
   },
   {
-    id: 'nav-settings',
-    href: './engine.html',
-    num: '11',
-    title: 'Engine Configuration',
-    subtitle: 'Tactical pauses, conceptual hints, audio synthesis & overtime lifelines.',
-    badge: 'Options',
-    badgeColor: '#64748B',
+    id: "nav-settings",
+    href: "./engine.html",
+    num: "11",
+    title: "Engine Configuration",
+    subtitle:
+      "Tactical pauses, conceptual hints, audio synthesis & overtime lifelines.",
+    badge: "Options",
+    badgeColor: "#64748B",
     isSettings: false,
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
   },
   {
-    id: 'nav-faq',
-    href: './faq.html',
-    num: '12',
-    title: 'Architecture & FAQ',
-    subtitle: 'Comprehensive 200-question technical directory, formulas & security policies.',
-    badge: 'FAQ',
-    badgeColor: '#0EA5E9',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><circle cx="12" cy="14" r="1"/><path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"/></svg>`
+    id: "nav-faq",
+    href: "./faq.html",
+    num: "12",
+    title: "Architecture & FAQ",
+    subtitle:
+      "Comprehensive 200-question technical directory, formulas & security policies.",
+    badge: "FAQ",
+    badgeColor: "#0EA5E9",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><circle cx="12" cy="14" r="1"/><path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"/></svg>`,
   },
   {
-    id: 'nav-profile-settings',
-    href: './profile-settings.html',
-    num: '13',
-    title: 'Profile Settings',
-    subtitle: 'Identity configuration, Cloud Firestore synchronization, and candidate preferences.',
-    badge: 'PROFILE',
-    badgeColor: '#6366F1',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
+    id: "nav-profile-settings",
+    href: "./profile-settings.html",
+    num: "13",
+    title: "Profile Settings",
+    subtitle:
+      "Identity configuration, Cloud Firestore synchronization, and candidate preferences.",
+    badge: "PROFILE",
+    badgeColor: "#6366F1",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
   },
   {
-    id: 'nav-cognitive-matrix',
-    href: './cognitive-matrix.html',
-    num: '14',
-    title: 'Candidate Telemetry Diagnostics Matrix',
-    subtitle: 'Comprehensive cognitive deficit architecture, real-time latency analytics, neural processing load & topic taxonomy.',
-    badge: 'DIAGNOSTICS',
-    badgeColor: '#10B981',
-    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/><path d="m13 15 2 2 4-4"/></svg>`
-  }
+    id: "nav-cognitive-matrix",
+    href: "./cognitive-matrix.html",
+    num: "14",
+    title: "Candidate Telemetry Diagnostics Matrix",
+    subtitle:
+      "Comprehensive cognitive deficit architecture, real-time latency analytics, neural processing load & topic taxonomy.",
+    badge: "DIAGNOSTICS",
+    badgeColor: "#10B981",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/><path d="m13 15 2 2 4-4"/></svg>`,
+  },
 ];
 
 // Helper to render authentication button & user badge in navigation header
 function escapeHtml(v) {
-  return String(v ?? '').replace(/[&<>"']/g, (c) => (
-    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
-  ));
+  return String(v ?? "").replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ],
+  );
 }
 
 function safeHttpsUrl(v) {
   try {
-    const u = new URL(String(v || ''));
-    return u.protocol === 'https:' ? u.href : '';
+    const u = new URL(String(v || ""));
+    return u.protocol === "https:" ? u.href : "";
   } catch (e) {
-    return '';
+    return "";
   }
 }
 
 export function renderHeaderAuthWidget(container, authState) {
   if (!container) return;
-  const user = authState?.user !== undefined ? authState.user : getCurrentUser();
-  const profile = authState?.profile !== undefined ? authState.profile : getCurrentProfile();
+  const user =
+    authState?.user !== undefined ? authState.user : getCurrentUser();
+  const profile =
+    authState?.profile !== undefined ? authState.profile : getCurrentProfile();
 
   if (user) {
     const safePhoto = safeHttpsUrl(profile?.photoURL || user.photoURL);
-    const displayName = profile?.displayName || user.displayName || 'Competitor';
+    const displayName =
+      profile?.displayName || user.displayName || "Competitor";
     const avatarHtml = safePhoto
       ? `<img src="${escapeHtml(safePhoto)}" alt="${escapeHtml(displayName)}" class="header-user-avatar" referrerpolicy="no-referrer" />`
-      : `<div class="header-user-avatar-initial">${escapeHtml((displayName || user.email || 'C').charAt(0).toUpperCase())}</div>`;
-    const numericElo = typeof profile?.elo === 'number' ? profile.elo : 500;
+      : `<div class="header-user-avatar-initial">${escapeHtml((displayName || user.email || "C").charAt(0).toUpperCase())}</div>`;
+    const numericElo = typeof profile?.elo === "number" ? profile.elo : 500;
     const eloVal = numericElo.toLocaleString();
 
     container.innerHTML = `
@@ -247,16 +272,16 @@ export function renderHeaderAuthWidget(container, authState) {
       </div>
     `;
 
-    const signOutBtn = container.querySelector('#header-auth-signout-btn');
+    const signOutBtn = container.querySelector("#header-auth-signout-btn");
     if (signOutBtn) {
-      signOutBtn.addEventListener('click', async (e) => {
+      signOutBtn.addEventListener("click", async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        playSound('click');
+        playSound("click");
         try {
           await signOutUser();
         } catch (err) {
-          console.error('Sign out error:', err);
+          console.error("Sign out error:", err);
         }
       });
     }
@@ -274,16 +299,16 @@ export function renderHeaderAuthWidget(container, authState) {
       </button>
     `;
 
-    const signInBtn = container.querySelector('#header-auth-signin-btn');
+    const signInBtn = container.querySelector("#header-auth-signin-btn");
     if (signInBtn) {
-      signInBtn.addEventListener('click', async (e) => {
+      signInBtn.addEventListener("click", async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        playSound('click');
+        playSound("click");
         try {
           await signInWithGoogle();
         } catch (err) {
-          console.error('Sign in error:', err);
+          console.error("Sign in error:", err);
         }
       });
     }
@@ -292,19 +317,20 @@ export function renderHeaderAuthWidget(container, authState) {
 
 // Build and inject Full-Screen Glassmorphic Navigation Dashboard
 export function renderNavigationDashboard() {
-  let dashboard = document.getElementById('fullscreen-nav-dashboard');
+  let dashboard = document.getElementById("fullscreen-nav-dashboard");
   if (dashboard) return dashboard;
 
-  dashboard = document.createElement('div');
-  dashboard.id = 'fullscreen-nav-dashboard';
-  dashboard.className = 'fullscreen-nav-dashboard';
-  dashboard.setAttribute('role', 'dialog');
-  dashboard.setAttribute('aria-modal', 'true');
-  dashboard.setAttribute('aria-hidden', 'true');
-  dashboard.style.display = 'none';
+  dashboard = document.createElement("div");
+  dashboard.id = "fullscreen-nav-dashboard";
+  dashboard.className = "fullscreen-nav-dashboard";
+  dashboard.setAttribute("role", "dialog");
+  dashboard.setAttribute("aria-modal", "true");
+  dashboard.setAttribute("aria-hidden", "true");
+  dashboard.style.display = "none";
 
-  const cardsHtml = NAVIGATION_TOPOLOGY_OPTIONS.map(opt => `
-    <a href="${opt.href}" class="nav-dashboard-card" id="${opt.id}" data-is-settings="${opt.isSettings ? 'true' : 'false'}" aria-label="${opt.title}">
+  const cardsHtml = NAVIGATION_TOPOLOGY_OPTIONS.map(
+    (opt) => `
+    <a href="${opt.href}" class="nav-dashboard-card" id="${opt.id}" data-is-settings="${opt.isSettings ? "true" : "false"}" aria-label="${opt.title}">
       <div class="nav-card-top-row">
         <div class="nav-card-icon-wrap">
           <div class="nav-card-icon" style="color: ${opt.badgeColor};">
@@ -320,7 +346,7 @@ export function renderNavigationDashboard() {
       <div class="nav-card-body">
         <h3 class="nav-card-title font-heading">
           <span>${opt.title}</span>
-          ${opt.isNotification ? `<span id="dashboard-notif-dot" class="subpixel-unread-dot" style="display: none; background: #DC2626; box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000; border-radius: 50%; width: 8px; height: 8px; vertical-align: middle; flex-shrink: 0;"></span>` : ''}
+          ${opt.isNotification ? `<span id="dashboard-notif-dot" class="subpixel-unread-dot" style="display: none; background: #DC2626; box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000; border-radius: 50%; width: 8px; height: 8px; vertical-align: middle; flex-shrink: 0;"></span>` : ""}
         </h3>
         <p class="nav-card-desc">${opt.subtitle}</p>
       </div>
@@ -333,7 +359,8 @@ export function renderNavigationDashboard() {
         </svg>
       </div>
     </a>
-  `).join('');
+  `,
+  ).join("");
 
   dashboard.innerHTML = `
     <!-- Prominent Fixed Close Dismissal Node in Top-Right Corner -->
@@ -373,29 +400,32 @@ export function renderNavigationDashboard() {
   document.body.appendChild(dashboard);
 
   // Render auth widget inside navigation dashboard
-  const dashAuthSlot = dashboard.querySelector('#dashboard-auth-slot');
+  const dashAuthSlot = dashboard.querySelector("#dashboard-auth-slot");
   if (dashAuthSlot) {
     renderHeaderAuthWidget(dashAuthSlot);
   }
 
   // Wire close button
-  const closeBtn = dashboard.querySelector('#close-nav-dashboard-btn');
+  const closeBtn = dashboard.querySelector("#close-nav-dashboard-btn");
   if (closeBtn) {
-    closeBtn.addEventListener('click', (e) => {
+    closeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       closeNavigationDashboard();
     });
   }
 
   // Wire cards click
-  const cards = dashboard.querySelectorAll('.nav-dashboard-card');
-  cards.forEach(card => {
-    card.addEventListener('click', (e) => {
-      playSound('click');
-      if (card.id === 'nav-settings' || card.getAttribute('href') === './engine.html') {
+  const cards = dashboard.querySelectorAll(".nav-dashboard-card");
+  cards.forEach((card) => {
+    card.addEventListener("click", (e) => {
+      playSound("click");
+      if (
+        card.id === "nav-settings" ||
+        card.getAttribute("href") === "./engine.html"
+      ) {
         e.preventDefault();
         closeNavigationDashboard();
-        window.location.href = './engine.html';
+        window.location.href = "./engine.html";
         return;
       }
       closeNavigationDashboard();
@@ -403,9 +433,9 @@ export function renderNavigationDashboard() {
   });
 
   // Close on backdrop click
-  const scrollWrap = dashboard.querySelector('.nav-dashboard-scroll-wrap');
+  const scrollWrap = dashboard.querySelector(".nav-dashboard-scroll-wrap");
   if (scrollWrap) {
-    scrollWrap.addEventListener('click', (e) => {
+    scrollWrap.addEventListener("click", (e) => {
       if (e.target === scrollWrap) {
         closeNavigationDashboard();
       }
@@ -419,31 +449,41 @@ export function renderNavigationDashboard() {
 export function openNavigationDashboard() {
   const dashboard = renderNavigationDashboard();
   if (!dashboard) return;
-  playSound('click');
+  playSound("click");
 
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow = "hidden";
 
-  dashboard.style.display = 'block';
-  dashboard.setAttribute('aria-hidden', 'false');
+  dashboard.style.display = "block";
+  dashboard.setAttribute("aria-hidden", "false");
 
-  const cards = dashboard.querySelectorAll('.nav-dashboard-card');
+  const cards = dashboard.querySelectorAll(".nav-dashboard-card");
 
   if (window.gsap) {
     window.gsap.killTweensOf(dashboard);
     window.gsap.killTweensOf(cards);
 
-    window.gsap.fromTo(dashboard,
-      { x: '100%', opacity: 0 },
-      { x: '0%', opacity: 1, duration: 0.38, ease: 'power3.out' }
+    window.gsap.fromTo(
+      dashboard,
+      { x: "100%", opacity: 0 },
+      { x: "0%", opacity: 1, duration: 0.38, ease: "power3.out" },
     );
 
-    window.gsap.fromTo(cards,
+    window.gsap.fromTo(
+      cards,
       { y: 24, opacity: 0, scale: 0.96 },
-      { y: 0, opacity: 1, scale: 1, duration: 0.32, stagger: 0.03, ease: 'power2.out', delay: 0.06 }
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.32,
+        stagger: 0.03,
+        ease: "power2.out",
+        delay: 0.06,
+      },
     );
   } else {
-    dashboard.style.opacity = '1';
-    dashboard.style.transform = 'none';
+    dashboard.style.opacity = "1";
+    dashboard.style.transform = "none";
   }
 
   updateUnreadStatusDots();
@@ -451,38 +491,40 @@ export function openNavigationDashboard() {
 
 // Close Full-Screen Glassmorphic Navigation Dashboard
 export function closeNavigationDashboard() {
-  const dashboard = document.getElementById('fullscreen-nav-dashboard');
-  if (!dashboard || dashboard.style.display === 'none') return;
-  playSound('click');
+  const dashboard = document.getElementById("fullscreen-nav-dashboard");
+  if (!dashboard || dashboard.style.display === "none") return;
+  playSound("click");
 
-  document.body.style.overflow = '';
-  dashboard.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = "";
+  dashboard.setAttribute("aria-hidden", "true");
 
   if (window.gsap) {
     window.gsap.killTweensOf(dashboard);
     window.gsap.to(dashboard, {
-      x: '100%',
+      x: "100%",
       opacity: 0,
       duration: 0.28,
-      ease: 'power3.in',
+      ease: "power3.in",
       onComplete: () => {
-        dashboard.style.display = 'none';
-      }
+        dashboard.style.display = "none";
+      },
     });
   } else {
-    dashboard.style.display = 'none';
+    dashboard.style.display = "none";
   }
 }
 
 // Render and bind Global Fixed Header & Full-Screen Navigation Dashboard
 export function initGlobalHeader(options = {}) {
-  const header = document.querySelector('.fixed-header');
+  const header = document.querySelector(".fixed-header");
   if (!header) return;
 
-  const hideSettings = options.hideSettings === true || document.body.classList.contains('hide-settings-gear');
+  const hideSettings =
+    options.hideSettings === true ||
+    document.body.classList.contains("hide-settings-gear");
 
   // If header doesn't already have its DOM baked in, populate it
-  if (!header.querySelector('.header-container')) {
+  if (!header.querySelector(".header-container")) {
     header.innerHTML = `
       <div class="header-container" style="position: relative;">
         <!-- Far Left: Brand Logo + Brand Text -->
@@ -492,7 +534,9 @@ export function initGlobalHeader(options = {}) {
         </a>
 
         <!-- Absolute Center: Settings Gear Icon -->
-        ${!hideSettings ? `
+        ${
+          !hideSettings
+            ? `
           <div class="header-center-settings" style="position: absolute; left: 50%; transform: translateX(-50%); z-index: 1000; top: 50%; margin-top: -1.25rem; display: flex; align-items: center; justify-content: center;">
             <button id="settings-toggle-btn" class="icon-btn header-settings-gear-btn" aria-label="Global Engine Settings">
               <svg class="gear-icon" width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
@@ -500,7 +544,9 @@ export function initGlobalHeader(options = {}) {
               </svg>
             </button>
           </div>
-        ` : ''}
+        `
+            : ""
+        }
 
         <!-- Far Right: Auth Widget + Navigation Hamburger Menu Trigger -->
         <div class="header-right-nav" style="margin-left: auto; display: flex; align-items: center; gap: 0.75rem; z-index: 1001;">
@@ -518,24 +564,27 @@ export function initGlobalHeader(options = {}) {
     `;
   } else {
     // Existing Baked HTML: Ensure auth slot and layout alignment
-    const headerContainer = header.querySelector('.header-container');
+    const headerContainer = header.querySelector(".header-container");
     if (headerContainer) {
-      headerContainer.style.position = 'relative';
+      headerContainer.style.position = "relative";
 
       // Ensure center settings
-      const headerActions = headerContainer.querySelector('.header-actions');
-      let settingsBtn = headerContainer.querySelector('#settings-toggle-btn') ||
-                        (headerActions ? headerActions.querySelector('.icon-btn, button, a') : null);
+      const headerActions = headerContainer.querySelector(".header-actions");
+      let settingsBtn =
+        headerContainer.querySelector("#settings-toggle-btn") ||
+        (headerActions
+          ? headerActions.querySelector(".icon-btn, button, a")
+          : null);
 
       if (hideSettings) {
-        if (settingsBtn) settingsBtn.style.display = 'none';
+        if (settingsBtn) settingsBtn.style.display = "none";
         if (headerActions) headerActions.remove();
       } else {
         if (!settingsBtn) {
-          settingsBtn = document.createElement('button');
-          settingsBtn.id = 'settings-toggle-btn';
-          settingsBtn.className = 'icon-btn header-settings-gear-btn';
-          settingsBtn.setAttribute('aria-label', 'Global Engine Settings');
+          settingsBtn = document.createElement("button");
+          settingsBtn.id = "settings-toggle-btn";
+          settingsBtn.className = "icon-btn header-settings-gear-btn";
+          settingsBtn.setAttribute("aria-label", "Global Engine Settings");
           settingsBtn.innerHTML = `
             <svg class="gear-icon" width="20" height="20" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
               <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
@@ -543,41 +592,46 @@ export function initGlobalHeader(options = {}) {
           `;
         }
 
-        settingsBtn.classList.add('header-settings-gear-btn');
-        if (!settingsBtn.id) settingsBtn.id = 'settings-toggle-btn';
+        settingsBtn.classList.add("header-settings-gear-btn");
+        if (!settingsBtn.id) settingsBtn.id = "settings-toggle-btn";
 
-        let centerWrap = headerContainer.querySelector('.header-center-settings');
+        let centerWrap = headerContainer.querySelector(
+          ".header-center-settings",
+        );
         if (!centerWrap) {
-          centerWrap = document.createElement('div');
-          centerWrap.className = 'header-center-settings';
+          centerWrap = document.createElement("div");
+          centerWrap.className = "header-center-settings";
           headerContainer.appendChild(centerWrap);
         }
-        centerWrap.style.cssText = 'position: absolute; left: 50%; transform: translateX(-50%); z-index: 1000; top: 50%; margin-top: -1.25rem; display: flex; align-items: center; justify-content: center;';
+        centerWrap.style.cssText =
+          "position: absolute; left: 50%; transform: translateX(-50%); z-index: 1000; top: 50%; margin-top: -1.25rem; display: flex; align-items: center; justify-content: center;";
         centerWrap.appendChild(settingsBtn);
 
         if (headerActions) headerActions.remove();
       }
 
       // Ensure right-side container
-      const navBtn = headerContainer.querySelector('.nav-hamburger-btn, #menu-toggle');
-      let rightNav = headerContainer.querySelector('.header-right-nav');
+      const navBtn = headerContainer.querySelector(
+        ".nav-hamburger-btn, #menu-toggle",
+      );
+      let rightNav = headerContainer.querySelector(".header-right-nav");
       if (!rightNav && navBtn) {
         rightNav = navBtn.parentElement;
-        if (rightNav) rightNav.classList.add('header-right-nav');
+        if (rightNav) rightNav.classList.add("header-right-nav");
       }
 
       if (rightNav) {
-        rightNav.style.marginLeft = 'auto';
-        rightNav.style.display = 'flex';
-        rightNav.style.alignItems = 'center';
-        rightNav.style.gap = '0.75rem';
-        rightNav.style.zIndex = '1001';
+        rightNav.style.marginLeft = "auto";
+        rightNav.style.display = "flex";
+        rightNav.style.alignItems = "center";
+        rightNav.style.gap = "0.75rem";
+        rightNav.style.zIndex = "1001";
 
-        let authSlot = rightNav.querySelector('#header-auth-slot');
+        let authSlot = rightNav.querySelector("#header-auth-slot");
         if (!authSlot) {
-          authSlot = document.createElement('div');
-          authSlot.id = 'header-auth-slot';
-          authSlot.className = 'header-auth-container';
+          authSlot = document.createElement("div");
+          authSlot.id = "header-auth-slot";
+          authSlot.className = "header-auth-container";
           if (navBtn) {
             rightNav.insertBefore(authSlot, navBtn);
           } else {
@@ -589,7 +643,7 @@ export function initGlobalHeader(options = {}) {
   }
 
   // Render Auth state only once Firebase has resolved, preventing guest flash
-  const authSlot = document.getElementById('header-auth-slot');
+  const authSlot = document.getElementById("header-auth-slot");
   if (authSlot) {
     if (isAuthInitialized()) {
       renderHeaderAuthWidget(authSlot);
@@ -598,7 +652,7 @@ export function initGlobalHeader(options = {}) {
       const hint = getAuthHint();
       if (hint) renderHeaderAuthWidget(authSlot, hint);
       waitForAuthReady().then((authState) => {
-        const currentSlot = document.getElementById('header-auth-slot');
+        const currentSlot = document.getElementById("header-auth-slot");
         if (currentSlot) renderHeaderAuthWidget(currentSlot, authState);
       });
     }
@@ -608,33 +662,44 @@ export function initGlobalHeader(options = {}) {
   renderNavigationDashboard();
 
   // Deactivate legacy dropdown
-  const legacyDropdown = document.querySelector('.nav-dropdown-glass-container') || document.getElementById('global-dropdown-menu');
+  const legacyDropdown =
+    document.querySelector(".nav-dropdown-glass-container") ||
+    document.getElementById("global-dropdown-menu");
   if (legacyDropdown) {
-    legacyDropdown.classList.remove('active');
-    legacyDropdown.style.display = 'none';
+    legacyDropdown.classList.remove("active");
+    legacyDropdown.style.display = "none";
   }
 
   // Intercept navigation toggle button
-  const toggleBtns = document.querySelectorAll('.nav-hamburger-btn, #menu-toggle, .nav-dropdown-trigger');
-  toggleBtns.forEach(btn => {
-    btn.setAttribute('aria-label', 'Toggle Navigation Dashboard');
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      openNavigationDashboard();
-    }, true);
+  const toggleBtns = document.querySelectorAll(
+    ".nav-hamburger-btn, #menu-toggle, .nav-dropdown-trigger",
+  );
+  toggleBtns.forEach((btn) => {
+    btn.setAttribute("aria-label", "Toggle Navigation Dashboard");
+    btn.addEventListener(
+      "click",
+      (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        openNavigationDashboard();
+      },
+      true,
+    );
   });
 
   // Overhead unread dot
-  const mainToggle = document.querySelector('.nav-hamburger-btn') || document.getElementById('menu-toggle');
+  const mainToggle =
+    document.querySelector(".nav-hamburger-btn") ||
+    document.getElementById("menu-toggle");
   if (mainToggle && mainToggle.parentNode) {
-    let overheadDot = document.getElementById('overhead-nav-unread-dot');
+    let overheadDot = document.getElementById("overhead-nav-unread-dot");
     if (!overheadDot) {
-      overheadDot = document.createElement('span');
-      overheadDot.id = 'overhead-nav-unread-dot';
-      overheadDot.className = 'subpixel-unread-dot';
-      overheadDot.style.cssText = 'background: #DC2626; box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000; border-radius: 50%; width: 8px; height: 8px; display: none; margin-right: 8px; vertical-align: middle; flex-shrink: 0;';
+      overheadDot = document.createElement("span");
+      overheadDot.id = "overhead-nav-unread-dot";
+      overheadDot.className = "subpixel-unread-dot";
+      overheadDot.style.cssText =
+        "background: #DC2626; box-shadow: 0 0 10px #EF4444, 0 0 20px #FF0000; border-radius: 50%; width: 8px; height: 8px; display: none; margin-right: 8px; vertical-align: middle; flex-shrink: 0;";
       mainToggle.parentNode.insertBefore(overheadDot, mainToggle);
     }
   }
@@ -642,25 +707,27 @@ export function initGlobalHeader(options = {}) {
   // Global Escape key
   if (!window._navDashboardEscapeBound) {
     window._navDashboardEscapeBound = true;
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
         closeNavigationDashboard();
       }
     });
   }
 
   // Gear button click
-  const headerSettingsBtn = document.getElementById('settings-toggle-btn');
+  const headerSettingsBtn = document.getElementById("settings-toggle-btn");
   if (headerSettingsBtn) {
-    headerSettingsBtn.addEventListener('click', (e) => {
+    headerSettingsBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      playSound('click');
-      const isProfilePage = window.location.pathname.endsWith('profile.html') || window.location.pathname.includes('/profile.html');
+      playSound("click");
+      const isProfilePage =
+        window.location.pathname.endsWith("profile.html") ||
+        window.location.pathname.includes("/profile.html");
       if (isProfilePage) {
-        window.location.href = './profile-settings.html';
+        window.location.href = "./profile-settings.html";
       } else {
-        window.location.href = './engine.html';
+        window.location.href = "./engine.html";
       }
     });
   }
@@ -671,10 +738,10 @@ export function initGlobalHeader(options = {}) {
 
 // Observe auth state changes and custom auth/profile events to dynamically re-render header widgets
 function syncAllHeaderAuthWidgets(authState) {
-  const headerSlot = document.getElementById('header-auth-slot');
+  const headerSlot = document.getElementById("header-auth-slot");
   if (headerSlot) renderHeaderAuthWidget(headerSlot, authState);
 
-  const dashSlot = document.getElementById('dashboard-auth-slot');
+  const dashSlot = document.getElementById("dashboard-auth-slot");
   if (dashSlot) renderHeaderAuthWidget(dashSlot, authState);
 }
 
@@ -682,31 +749,31 @@ onAuthChange((authState) => {
   syncAllHeaderAuthWidgets(authState);
 });
 
-if (typeof window !== 'undefined' && !window.__pfHeaderAuthEventsBound) {
+if (typeof window !== "undefined" && !window.__pfHeaderAuthEventsBound) {
   window.__pfHeaderAuthEventsBound = true;
-  window.addEventListener('primefactor_auth_changed', (e) => {
+  window.addEventListener("primefactor_auth_changed", (e) => {
     syncAllHeaderAuthWidgets(e.detail);
   });
-  window.addEventListener('primefactor_profile_updated', (e) => {
+  window.addEventListener("primefactor_profile_updated", (e) => {
     syncAllHeaderAuthWidgets({
       user: getCurrentUser(),
-      profile: e.detail?.profile ?? getCurrentProfile()
+      profile: e.detail?.profile ?? getCurrentProfile(),
     });
   });
 }
 
 export function initSettingsModal() {
-  const legacyModal = document.getElementById('settings-modal');
+  const legacyModal = document.getElementById("settings-modal");
   if (legacyModal) legacyModal.remove();
 }
 
-export const APP_VERSION = '3.4';
+export const APP_VERSION = "3.4";
 
 // Render persistent footer
-export function renderFooter(containerId = 'site-footer-slot') {
+export function renderFooter(containerId = "site-footer-slot") {
   const container = document.getElementById(containerId);
   if (!container) return;
-  if (!container.querySelector('.site-footer')) {
+  if (!container.querySelector(".site-footer")) {
     container.innerHTML = `
       <footer class="site-footer">
         <div class="footer-container">

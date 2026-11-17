@@ -19,9 +19,21 @@ precision mediump float;
 `;
 
 export function getGL(canvas, attrs = {}) {
-  const opts = { alpha: true, antialias: false, premultipliedAlpha: true, powerPreference: 'high-performance', ...attrs };
+  const opts = {
+    alpha: true,
+    antialias: false,
+    premultipliedAlpha: true,
+    powerPreference: "high-performance",
+    ...attrs,
+  };
   let gl = null;
-  try { gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts); } catch (e) { gl = null; }
+  try {
+    gl =
+      canvas.getContext("webgl", opts) ||
+      canvas.getContext("experimental-webgl", opts);
+  } catch (e) {
+    gl = null;
+  }
   return gl;
 }
 
@@ -33,7 +45,7 @@ export function makeProgram(gl, vsSrc, fsSrc) {
     if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
       const log = gl.getShaderInfoLog(sh);
       gl.deleteShader(sh);
-      throw new Error('shader: ' + log);
+      throw new Error("shader: " + log);
     }
     return sh;
   };
@@ -45,20 +57,32 @@ export function makeProgram(gl, vsSrc, fsSrc) {
   gl.linkProgram(prog);
   gl.deleteShader(vs);
   gl.deleteShader(fs);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('link: ' + gl.getProgramInfoLog(prog));
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+    throw new Error("link: " + gl.getProgramInfoLog(prog));
   const uniforms = {};
   const n = gl.getProgramParameter(prog, gl.ACTIVE_UNIFORMS);
   for (let i = 0; i < n; i++) {
     const info = gl.getActiveUniform(prog, i);
-    uniforms[info.name.replace(/\[0\]$/, '')] = gl.getUniformLocation(prog, info.name);
+    uniforms[info.name.replace(/\[0\]$/, "")] = gl.getUniformLocation(
+      prog,
+      info.name,
+    );
   }
-  return { prog, u: uniforms, attr: (name) => gl.getAttribLocation(prog, name) };
+  return {
+    prog,
+    u: uniforms,
+    attr: (name) => gl.getAttribLocation(prog, name),
+  };
 }
 
 export function makeQuad(gl) {
   const buf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+    gl.STATIC_DRAW,
+  );
   return buf;
 }
 
@@ -69,16 +93,20 @@ void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
 
 /** 10 glyph cells (64×96 each) in one strip. White on transparent; flipped so v=1 is the glyph top. */
 export function makeDigitAtlas(gl, unit = 0) {
-  const cw = 64, ch = 96;
-  const c = document.createElement('canvas');
-  c.width = cw * 10; c.height = ch;
-  const g = c.getContext('2d');
+  const cw = 64,
+    ch = 96;
+  const c = document.createElement("canvas");
+  c.width = cw * 10;
+  c.height = ch;
+  const g = c.getContext("2d");
   g.clearRect(0, 0, c.width, c.height);
-  g.fillStyle = '#fff';
-  g.textAlign = 'center';
-  g.textBaseline = 'alphabetic';
-  g.font = '700 74px "JetBrains Mono", "Rajdhani", "SF Mono", Consolas, "Liberation Mono", monospace';
-  for (let i = 0; i < 10; i++) g.fillText(String(i), cw * i + cw / 2, ch * 0.78);
+  g.fillStyle = "#fff";
+  g.textAlign = "center";
+  g.textBaseline = "alphabetic";
+  g.font =
+    '700 74px "JetBrains Mono", "Rajdhani", "SF Mono", Consolas, "Liberation Mono", monospace';
+  for (let i = 0; i < 10; i++)
+    g.fillText(String(i), cw * i + cw / 2, ch * 0.78);
   const tex = gl.createTexture();
   gl.activeTexture(gl.TEXTURE0 + unit);
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -156,7 +184,9 @@ void main() {
 }
 `;
 
-const TT_FS = PREC + /* glsl */ `
+const TT_FS =
+  PREC +
+  /* glsl */ `
 uniform float uAlpha;
 uniform float uSat;
 varying float vSide;
@@ -195,7 +225,9 @@ void main() {
   vHue = uHue + uSpan * aI / uN;
 }
 `;
-const NODE_FS = PREC + /* glsl */ `
+const NODE_FS =
+  PREC +
+  /* glsl */ `
 varying float vHue;
 vec3 hsv(float h, float s, float v) {
   vec3 k = clamp(abs(fract(h + vec3(0.0, 2.0 / 3.0, 1.0 / 3.0)) * 6.0 - 3.0) - 1.0, 0.0, 1.0);
@@ -223,11 +255,20 @@ export class TimesTable {
     this.p = makeProgram(gl, TT_VS, TT_FS);
     // 6 vertices per chord: two triangles forming a quad along the chord
     const v = new Float32Array(MAX_CHORDS * 6 * 3);
-    const corners = [[-1, 0], [1, 0], [-1, 1], [-1, 1], [1, 0], [1, 1]];
+    const corners = [
+      [-1, 0],
+      [1, 0],
+      [-1, 1],
+      [-1, 1],
+      [1, 0],
+      [1, 1],
+    ];
     for (let i = 0; i < MAX_CHORDS; i++) {
       for (let c = 0; c < 6; c++) {
         const o = (i * 6 + c) * 3;
-        v[o] = i; v[o + 1] = corners[c][0]; v[o + 2] = corners[c][1];
+        v[o] = i;
+        v[o + 1] = corners[c][0];
+        v[o + 2] = corners[c][1];
       }
     }
     this.chordBuf = gl.createBuffer();
@@ -257,7 +298,7 @@ export class TimesTable {
     const p = this.p;
     gl.useProgram(p.prog);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.chordBuf);
-    const loc = p.attr('aV');
+    const loc = p.attr("aV");
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
     gl.uniform1f(p.u.uN, N);
@@ -277,7 +318,7 @@ export class TimesTable {
       const q = this.np;
       gl.useProgram(q.prog);
       gl.bindBuffer(gl.ARRAY_BUFFER, this.nodeBuf);
-      const l2 = q.attr('aI');
+      const l2 = q.attr("aI");
       gl.enableVertexAttribArray(l2);
       gl.vertexAttribPointer(l2, 1, gl.FLOAT, false, 0, 0);
       gl.uniform1f(q.u.uN, N);
@@ -296,17 +337,20 @@ export class TimesTable {
     const gl = this.gl;
     gl.deleteBuffer(this.chordBuf);
     gl.deleteProgram(this.p.prog);
-    if (this.np) { gl.deleteBuffer(this.nodeBuf); gl.deleteProgram(this.np.prog); }
+    if (this.np) {
+      gl.deleteBuffer(this.nodeBuf);
+      gl.deleteProgram(this.np.prog);
+    }
   }
 }
 
 /** Human name for the envelope of the k-times table: k=2 cardioid, 3 nephroid, k → (k−1) cusps. */
 export function envelopeName(k) {
   const r = Math.round(k);
-  if (Math.abs(k - r) > 0.02) return 'Morphing envelope';
-  if (r === 2) return 'Cardioid · 1 cusp';
-  if (r === 3) return 'Nephroid · 2 cusps';
-  if (r === 4) return 'Trefoil epicycloid · 3 cusps';
-  if (r === 5) return 'Quatrefoil epicycloid · 4 cusps';
+  if (Math.abs(k - r) > 0.02) return "Morphing envelope";
+  if (r === 2) return "Cardioid · 1 cusp";
+  if (r === 3) return "Nephroid · 2 cusps";
+  if (r === 4) return "Trefoil epicycloid · 3 cusps";
+  if (r === 5) return "Quatrefoil epicycloid · 4 cusps";
   return `Epicycloid · ${r - 1} cusps`;
 }

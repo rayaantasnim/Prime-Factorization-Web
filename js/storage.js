@@ -5,11 +5,15 @@
  * (All LocalStorage-based profile/ELO/streak persistence and tampering checks have been removed).
  */
 
-import { getCurrentProfile, isUserLoggedIn, recordMatchToFirestore } from './firebase.js';
+import {
+  getCurrentProfile,
+  isUserLoggedIn,
+  recordMatchToFirestore,
+} from "./firebase.js";
 
-const SETTINGS_KEY = 'primefactor_settings';
-const EXAM_PARAMS_KEY = 'primefactor_active_exam_params';
-const LAST_RESULT_KEY = 'primefactor_last_result';
+const SETTINGS_KEY = "primefactor_settings";
+const EXAM_PARAMS_KEY = "primefactor_active_exam_params";
+const LAST_RESULT_KEY = "primefactor_last_result";
 
 export const DEFAULT_SETTINGS = {
   allowSecondAttempt: true,
@@ -25,7 +29,7 @@ export const DEFAULT_SETTINGS = {
   soundEnabled: true,
   masterVolume: 0.8,
   eventChimePitch: 440,
-  participationMode: 'rated'
+  participationMode: "rated",
 };
 
 export const DEFAULT_LEDGER = {
@@ -35,7 +39,7 @@ export const DEFAULT_LEDGER = {
   bestStreak: 0,
   grandMasterCount: 0,
   totalSolved: 0,
-  totalAttempted: 0
+  totalAttempted: 0,
 };
 
 // Safe JSON Parse helper for client browser settings
@@ -86,7 +90,7 @@ export function getLedger() {
       bestStreak: Number(profile.best_streak || 0),
       grandMasterCount: Number(profile.grand_master_count || 0),
       totalSolved: Number(profile.total_solved || 0),
-      totalAttempted: Number((profile.total_matches || 0) * 10)
+      totalAttempted: Number((profile.total_matches || 0) * 10),
     };
   }
   return { ...DEFAULT_LEDGER };
@@ -101,7 +105,9 @@ export function clearLedger() {
  */
 export async function recordExamCompletion(resultPayload) {
   if (!isUserLoggedIn()) {
-    console.warn('[PrimeFactor] Guest session: exam completion not saved to profile.');
+    console.warn(
+      "[PrimeFactor] Guest session: exam completion not saved to profile.",
+    );
     return getLedger();
   }
 
@@ -109,7 +115,7 @@ export async function recordExamCompletion(resultPayload) {
     await recordMatchToFirestore(resultPayload);
     return getLedger();
   } catch (e) {
-    console.error('Error committing exam to Firestore:', e);
+    console.error("Error committing exam to Firestore:", e);
     return getLedger();
   }
 }
@@ -123,8 +129,8 @@ export function getActiveExamParams() {
   return safeGet(EXAM_PARAMS_KEY, {
     min: 1,
     max: 200,
-    title: 'Tier 1: 1 - 200',
-    rules: DEFAULT_SETTINGS
+    title: "Tier 1: 1 - 200",
+    rules: DEFAULT_SETTINGS,
   });
 }
 
@@ -146,17 +152,17 @@ export function getFactorLatencySnapshot() {
 }
 
 // Pre-flight Exam Lifecycle & Integrity Status tracking (session storage only)
-const EXAM_IN_PROGRESS_KEY = 'exam_in_progress';
+const EXAM_IN_PROGRESS_KEY = "exam_in_progress";
 
 export function setExamInProgress(inProgress) {
   try {
-    sessionStorage.setItem(EXAM_IN_PROGRESS_KEY, inProgress ? 'true' : 'false');
+    sessionStorage.setItem(EXAM_IN_PROGRESS_KEY, inProgress ? "true" : "false");
   } catch (e) {}
 }
 
 export function isExamInProgress() {
   try {
-    return sessionStorage.getItem(EXAM_IN_PROGRESS_KEY) === 'true';
+    return sessionStorage.getItem(EXAM_IN_PROGRESS_KEY) === "true";
   } catch (e) {
     return false;
   }
@@ -164,15 +170,15 @@ export function isExamInProgress() {
 
 export function setSessionStatus(status) {
   try {
-    sessionStorage.setItem('status', status);
+    sessionStorage.setItem("status", status);
   } catch (e) {}
 }
 
 export function getSessionStatus() {
   try {
-    return sessionStorage.getItem('status') || 'NORMAL';
+    return sessionStorage.getItem("status") || "NORMAL";
   } catch (e) {
-    return 'NORMAL';
+    return "NORMAL";
   }
 }
 
@@ -182,21 +188,23 @@ export function isPenaltyLockdownActive() {
 
 export function setPenaltyLockdown() {}
 
-const NOTIFICATIONS_KEY = 'primefactor_notifications';
-const PENDING_TOASTS_KEY = 'primefactor_pending_toasts';
+const NOTIFICATIONS_KEY = "primefactor_notifications";
+const PENDING_TOASTS_KEY = "primefactor_pending_toasts";
 const MAX_NOTIFICATIONS = 50;
 let inMemoryNotifications = [];
 
 function normalizeNotification(notifData = {}) {
   const isReadVal = Boolean(
-    notifData.isRead !== undefined ? notifData.isRead : notifData.read
+    notifData.isRead !== undefined ? notifData.isRead : notifData.read,
   );
   return {
     ...notifData,
-    id: notifData.id || `notif_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    id:
+      notifData.id ||
+      `notif_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     timestamp: notifData.timestamp || Date.now(),
     read: isReadVal,
-    isRead: isReadVal
+    isRead: isReadVal,
   };
 }
 
@@ -206,7 +214,9 @@ export function getNotifications() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        inMemoryNotifications = parsed.map(normalizeNotification).slice(0, MAX_NOTIFICATIONS);
+        inMemoryNotifications = parsed
+          .map(normalizeNotification)
+          .slice(0, MAX_NOTIFICATIONS);
         return [...inMemoryNotifications];
       }
     }
@@ -234,8 +244,13 @@ export function getPendingToasts() {
     const now = Date.now();
     const active = parsed.filter((entry) => {
       if (!entry || !entry.id) return false;
-      if (entry._shownAt && (now - entry._shownAt) >= 4800) return false;
-      if (entry.timestamp && typeof entry.timestamp === 'number' && (now - entry.timestamp) > 60000) return false;
+      if (entry._shownAt && now - entry._shownAt >= 4800) return false;
+      if (
+        entry.timestamp &&
+        typeof entry.timestamp === "number" &&
+        now - entry.timestamp > 60000
+      )
+        return false;
       return true;
     });
     if (active.length !== parsed.length) {
@@ -252,7 +267,10 @@ export function queuePendingToast(item) {
   try {
     const current = getPendingToasts().filter((entry) => entry.id !== item.id);
     current.push({ ...item, _shownAt: null });
-    sessionStorage.setItem(PENDING_TOASTS_KEY, JSON.stringify(current.slice(-10)));
+    sessionStorage.setItem(
+      PENDING_TOASTS_KEY,
+      JSON.stringify(current.slice(-10)),
+    );
   } catch (e) {}
 }
 
@@ -265,7 +283,9 @@ export function markPendingToastShown(id) {
     if (!Array.isArray(parsed)) return;
     const now = Date.now();
     const updated = parsed.map((entry) =>
-      entry && entry.id === id ? { ...entry, _shownAt: entry._shownAt || now } : entry
+      entry && entry.id === id
+        ? { ...entry, _shownAt: entry._shownAt || now }
+        : entry,
     );
     sessionStorage.setItem(PENDING_TOASTS_KEY, JSON.stringify(updated));
   } catch (e) {}
@@ -288,49 +308,66 @@ export function addNotification(notifData = {}) {
   const item = normalizeNotification({
     ...notifData,
     read: Boolean(notifData.read ?? notifData.isRead ?? false),
-    isRead: Boolean(notifData.read ?? notifData.isRead ?? false)
+    isRead: Boolean(notifData.read ?? notifData.isRead ?? false),
   });
   const current = getNotifications();
-  const existingIdx = current.findIndex((entry) => entry && entry.id === item.id);
-  const nextList = existingIdx >= 0
-    ? [item, ...current.filter((_, idx) => idx !== existingIdx)]
-    : [item, ...current];
+  const existingIdx = current.findIndex(
+    (entry) => entry && entry.id === item.id,
+  );
+  const nextList =
+    existingIdx >= 0
+      ? [item, ...current.filter((_, idx) => idx !== existingIdx)]
+      : [item, ...current];
   const next = saveNotifications(nextList);
   if (!notifData.silent) {
     queuePendingToast(item);
   }
   try {
-    window.dispatchEvent(new CustomEvent('primefactor_notification_added', { detail: item }));
+    window.dispatchEvent(
+      new CustomEvent("primefactor_notification_added", { detail: item }),
+    );
   } catch (e) {}
   return next[0] || item;
 }
 
 export function markAllNotificationsAsRead() {
   const next = saveNotifications(
-    getNotifications().map((n) => ({ ...n, read: true, isRead: true }))
+    getNotifications().map((n) => ({ ...n, read: true, isRead: true })),
   );
   try {
-    window.dispatchEvent(new CustomEvent('primefactor_notifications_read', { detail: { all: true } }));
+    window.dispatchEvent(
+      new CustomEvent("primefactor_notifications_read", {
+        detail: { all: true },
+      }),
+    );
   } catch (e) {}
   return next;
 }
 
 export function markNotificationAsRead(id) {
   const next = saveNotifications(
-    getNotifications().map((n) => (n.id === id ? { ...n, read: true, isRead: true } : n))
+    getNotifications().map((n) =>
+      n.id === id ? { ...n, read: true, isRead: true } : n,
+    ),
   );
   try {
-    window.dispatchEvent(new CustomEvent('primefactor_notifications_read', { detail: { id } }));
+    window.dispatchEvent(
+      new CustomEvent("primefactor_notifications_read", { detail: { id } }),
+    );
   } catch (e) {}
   return next;
 }
 
 export function clearReadNotifications() {
   const next = saveNotifications(
-    getNotifications().filter((n) => !n.read && !n.isRead)
+    getNotifications().filter((n) => !n.read && !n.isRead),
   );
   try {
-    window.dispatchEvent(new CustomEvent('primefactor_notifications_read', { detail: { cleared: true } }));
+    window.dispatchEvent(
+      new CustomEvent("primefactor_notifications_read", {
+        detail: { cleared: true },
+      }),
+    );
   } catch (e) {}
   return next;
 }
@@ -338,7 +375,11 @@ export function clearReadNotifications() {
 export function clearAllNotifications() {
   const next = saveNotifications([]);
   try {
-    window.dispatchEvent(new CustomEvent('primefactor_notifications_read', { detail: { clearedAll: true } }));
+    window.dispatchEvent(
+      new CustomEvent("primefactor_notifications_read", {
+        detail: { clearedAll: true },
+      }),
+    );
   } catch (e) {}
   return next;
 }
@@ -362,6 +403,5 @@ export function resetConsecutiveFlags() {
 }
 
 export function recordMobileAbruptExitOffense() {
-  console.warn('[PrimeFactor] Mobile abrupt exit noted in session');
+  console.warn("[PrimeFactor] Mobile abrupt exit noted in session");
 }
-

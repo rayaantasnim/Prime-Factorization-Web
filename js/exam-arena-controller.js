@@ -4,24 +4,24 @@
  * and High-Bound Honey Spot Suppression Gate for the Exam Arena.
  */
 
-export * from './move-evaluator.js';
+export * from "./move-evaluator.js";
 export {
   startExamTensionAtmosphere,
   stopExamTensionAtmosphere,
   updateExamTensionTelemetry,
   getExamTensionState,
-  playSound
-} from './audio.js';
+  playSound,
+} from "./audio.js";
 export {
   rollCompositeNumber,
   isHoneySpotSuppressed,
   isDeceptiveSymmetricCandidate,
   factorize,
-  parseAndValidateFactorInput
-} from './math-engine.js';
+  parseAndValidateFactorInput,
+} from "./math-engine.js";
 
 // Browser global window attachment for seamless telemetry debugging & integration
-import { updateThermodynamicState } from './three-particles.js';
+import { updateThermodynamicState } from "./three-particles.js";
 
 /**
  * 1. SUB-SECOND FACTOR COMBO STRIKE METER
@@ -59,25 +59,34 @@ export const activeComboStrikeState = {
     const key = event.key;
 
     // Strict drop rule: Backspace or Delete instantly drops combo to 0
-    if (key === 'Backspace' || key === 'Delete') {
+    if (key === "Backspace" || key === "Delete") {
       this.hasInvalidKeyOrBackspace = true;
       this.backspaceCount++;
       const wasActive = this.comboStreak > 0;
       this.comboStreak = 0;
-      this.notifyUI({ dropped: wasActive, reason: 'backspace' });
+      this.notifyUI({ dropped: wasActive, reason: "backspace" });
       return;
     }
 
     // Check for errant input token: Allowed keys are 0-9, '*', '^', space, Enter, and navigation/clipboard controls
     const isModifier = event.ctrlKey || event.metaKey || event.altKey;
-    const isNavigation = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Tab', 'Escape'].includes(key);
-    const isValidTokenChar = /^[0-9*^ ]$/.test(key) || key === 'Enter';
+    const isNavigation = [
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowUp",
+      "ArrowDown",
+      "Home",
+      "End",
+      "Tab",
+      "Escape",
+    ].includes(key);
+    const isValidTokenChar = /^[0-9*^ ]$/.test(key) || key === "Enter";
 
     if (!isModifier && !isNavigation && !isValidTokenChar) {
       this.hasInvalidKeyOrBackspace = true;
       const wasActive = this.comboStreak > 0;
       this.comboStreak = 0;
-      this.notifyUI({ dropped: wasActive, reason: 'errant_token' });
+      this.notifyUI({ dropped: wasActive, reason: "errant_token" });
     }
   },
 
@@ -86,29 +95,36 @@ export const activeComboStrikeState = {
       // Errant calculation: instant reset to 0
       const wasActive = this.comboStreak > 0;
       this.comboStreak = 0;
-      this.notifyUI({ dropped: wasActive, reason: 'incorrect_submission' });
+      this.notifyUI({ dropped: wasActive, reason: "incorrect_submission" });
       return {
         comboStreak: 0,
         rewarded: false,
         isFlawlessSubSecond: false,
         secondsPerToken: 0,
         bonusEloPoints: this.bonusEloPoints,
-        bonusEloTokens: this.bonusEloTokens
+        bonusEloTokens: this.bonusEloTokens,
       };
     }
 
-    const duration = responseDuration !== undefined 
-      ? Number(responseDuration) 
-      : (performance.now() - this.questionStartTime) / 1000;
-    
-    const count = Math.max(1, Number(factorCount) || this.currentFactorCount || 1);
+    const duration =
+      responseDuration !== undefined
+        ? Number(responseDuration)
+        : (performance.now() - this.questionStartTime) / 1000;
+
+    const count = Math.max(
+      1,
+      Number(factorCount) || this.currentFactorCount || 1,
+    );
     const secondsPerToken = duration / count;
 
     // Strict validation conditions:
     // 1. Zero Backspace / Delete keys
     // 2. No errant character tokens logged
     // 3. Clocks strictly beneath 1.0 second per factor token (< 1.0s)
-    const isFlawlessSubSecond = (!this.hasInvalidKeyOrBackspace && this.backspaceCount === 0) && (secondsPerToken < 1.0);
+    const isFlawlessSubSecond =
+      !this.hasInvalidKeyOrBackspace &&
+      this.backspaceCount === 0 &&
+      secondsPerToken < 1.0;
 
     let rewarded = false;
 
@@ -136,7 +152,7 @@ export const activeComboStrikeState = {
       secondsPerToken,
       flawless: isFlawlessSubSecond,
       comboStreak: this.comboStreak,
-      rewarded
+      rewarded,
     });
 
     this.notifyUI({ rewarded, secondsPerToken, flawless: isFlawlessSubSecond });
@@ -148,7 +164,7 @@ export const activeComboStrikeState = {
       isFlawlessSubSecond,
       secondsPerToken,
       bonusEloPoints: this.bonusEloPoints,
-      bonusEloTokens: this.bonusEloTokens
+      bonusEloTokens: this.bonusEloTokens,
     };
   },
 
@@ -165,19 +181,21 @@ export const activeComboStrikeState = {
   },
 
   notifyUI(extra = {}) {
-    if (typeof window !== 'undefined' && window.dispatchEvent) {
-      window.dispatchEvent(new CustomEvent('combostrike:update', {
-        detail: {
-          comboStreak: this.comboStreak,
-          maxStreak: this.maxStreak,
-          bonusEloPoints: this.bonusEloPoints,
-          bonusEloTokens: this.bonusEloTokens,
-          hasInvalidKeyOrBackspace: this.hasInvalidKeyOrBackspace,
-          ...extra
-        }
-      }));
+    if (typeof window !== "undefined" && window.dispatchEvent) {
+      window.dispatchEvent(
+        new CustomEvent("combostrike:update", {
+          detail: {
+            comboStreak: this.comboStreak,
+            maxStreak: this.maxStreak,
+            bonusEloPoints: this.bonusEloPoints,
+            bonusEloTokens: this.bonusEloTokens,
+            hasInvalidKeyOrBackspace: this.hasInvalidKeyOrBackspace,
+            ...extra,
+          },
+        }),
+      );
     }
-  }
+  },
 };
 
 /**
@@ -185,24 +203,25 @@ export const activeComboStrikeState = {
  * Ignites upon achieving a consecutive 3-flawless chain reward.
  */
 export function triggerGlassmorphicComboFlash() {
-  if (typeof document === 'undefined') return;
-  const overlay = document.getElementById('flash-overlay');
+  if (typeof document === "undefined") return;
+  const overlay = document.getElementById("flash-overlay");
   if (!overlay) return;
 
-  overlay.className = '';
-  overlay.classList.add('flash-glass-neon-combo');
+  overlay.className = "";
+  overlay.classList.add("flash-glass-neon-combo");
 
   if (window.gsap) {
     window.gsap.killTweensOf(overlay);
-    window.gsap.fromTo(overlay,
+    window.gsap.fromTo(
+      overlay,
       { opacity: 1, scale: 1.03 },
-      { opacity: 0, scale: 1, duration: 0.65, ease: 'power3.out' }
+      { opacity: 0, scale: 1, duration: 0.65, ease: "power3.out" },
     );
   } else {
-    overlay.style.opacity = '1';
+    overlay.style.opacity = "1";
     setTimeout(() => {
-      overlay.style.transition = 'opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
-      overlay.style.opacity = '0';
+      overlay.style.transition = "opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1)";
+      overlay.style.opacity = "0";
     }, 20);
   }
 }
@@ -254,7 +273,7 @@ export const behavioralAntiCheatEngine = {
 
   logKey(event) {
     if (!event || !event.key) return;
-    if (event.key === 'Backspace' || event.key === 'Delete') {
+    if (event.key === "Backspace" || event.key === "Delete") {
       this.sessionTotalBackspaces++;
     }
   },
@@ -262,7 +281,13 @@ export const behavioralAntiCheatEngine = {
   /**
    * Question-level telemetry evaluation
    */
-  evaluateQuestionSolve({ isCorrect, targetNumber, responseDuration, maxBound = 200, keystrokeDeltas = [] }) {
+  evaluateQuestionSolve({
+    isCorrect,
+    targetNumber,
+    responseDuration,
+    maxBound = 200,
+    keystrokeDeltas = [],
+  }) {
     const bound = Number(maxBound) || 200;
     const num = Number(targetNumber) || 0;
     const T = Number(responseDuration) || 0;
@@ -270,7 +295,9 @@ export const behavioralAntiCheatEngine = {
     // 1. Absolute Human Velocity Ceiling check:
     // Multi-digit semi-prime or complex composite number (Max Bound > 200) strictly < 2.5 seconds
     const isComplexComposite = bound > 200 && num >= 10;
-    const isUnderHumanCeiling = Boolean(isCorrect && isComplexComposite && T < 2.5);
+    const isUnderHumanCeiling = Boolean(
+      isCorrect && isComplexComposite && T < 2.5,
+    );
 
     if (isUnderHumanCeiling) {
       this.hasHighVelocityComplexSolve = true;
@@ -283,8 +310,11 @@ export const behavioralAntiCheatEngine = {
 
     // Keystroke variance verification
     if (keystrokeDeltas.length >= 3) {
-      const mean = keystrokeDeltas.reduce((a, b) => a + b, 0) / keystrokeDeltas.length;
-      const variance = keystrokeDeltas.reduce((acc, d) => acc + Math.pow(d - mean, 2), 0) / keystrokeDeltas.length;
+      const mean =
+        keystrokeDeltas.reduce((a, b) => a + b, 0) / keystrokeDeltas.length;
+      const variance =
+        keystrokeDeltas.reduce((acc, d) => acc + Math.pow(d - mean, 2), 0) /
+        keystrokeDeltas.length;
       if (variance < 15) {
         this.suspicionScore += 1.0;
       } else if (variance > 200) {
@@ -296,7 +326,7 @@ export const behavioralAntiCheatEngine = {
       isUnderHumanCeiling,
       isComplexComposite,
       sessionTotalBackspaces: this.sessionTotalBackspaces,
-      suspicionScore: this.suspicionScore
+      suspicionScore: this.suspicionScore,
     };
   },
 
@@ -305,10 +335,12 @@ export const behavioralAntiCheatEngine = {
     this.organicReflexConfirmed = false;
     this.organicReflexMissed = false;
 
-    if (typeof window !== 'undefined' && window.dispatchEvent) {
-      window.dispatchEvent(new CustomEvent('anticheat:spawn_reflex_anchor', {
-        detail: { timeoutMs: 3800 }
-      }));
+    if (typeof window !== "undefined" && window.dispatchEvent) {
+      window.dispatchEvent(
+        new CustomEvent("anticheat:spawn_reflex_anchor", {
+          detail: { timeoutMs: 3800 },
+        }),
+      );
     }
 
     if (this.reflexTimeoutId) clearTimeout(this.reflexTimeoutId);
@@ -316,8 +348,10 @@ export const behavioralAntiCheatEngine = {
       if (!this.organicReflexConfirmed) {
         this.organicReflexMissed = true;
         this.suspicionScore += 1.5; // Missing screen anchor contributes to suspicion weight
-        if (typeof window !== 'undefined' && window.dispatchEvent) {
-          window.dispatchEvent(new CustomEvent('anticheat:reflex_anchor_missed'));
+        if (typeof window !== "undefined" && window.dispatchEvent) {
+          window.dispatchEvent(
+            new CustomEvent("anticheat:reflex_anchor_missed"),
+          );
         }
       }
     }, 3800);
@@ -331,8 +365,10 @@ export const behavioralAntiCheatEngine = {
       clearTimeout(this.reflexTimeoutId);
       this.reflexTimeoutId = null;
     }
-    if (typeof window !== 'undefined' && window.dispatchEvent) {
-      window.dispatchEvent(new CustomEvent('anticheat:reflex_anchor_confirmed'));
+    if (typeof window !== "undefined" && window.dispatchEvent) {
+      window.dispatchEvent(
+        new CustomEvent("anticheat:reflex_anchor_confirmed"),
+      );
     }
   },
 
@@ -342,12 +378,19 @@ export const behavioralAntiCheatEngine = {
    */
   evaluateSessionVerdict() {
     const criterion1_VelocityCeiling = this.hasHighVelocityComplexSolve;
-    const criterion2_ZeroBackspaces = (this.sessionTotalBackspaces === 0) && (this.hasHighVelocityComplexSolve);
+    const criterion2_ZeroBackspaces =
+      this.sessionTotalBackspaces === 0 && this.hasHighVelocityComplexSolve;
     // Violated if reflex was spawned and missed
-    const criterion3_MissedReflexAnchor = this.organicReflexSpawned ? (!this.organicReflexConfirmed) : false;
+    const criterion3_MissedReflexAnchor = this.organicReflexSpawned
+      ? !this.organicReflexConfirmed
+      : false;
 
     // Simultaneous criteria validation (Zero False Positive Safeguard)
-    const isFlagged = Boolean(criterion1_VelocityCeiling && criterion2_ZeroBackspaces && criterion3_MissedReflexAnchor);
+    const isFlagged = Boolean(
+      criterion1_VelocityCeiling &&
+      criterion2_ZeroBackspaces &&
+      criterion3_MissedReflexAnchor,
+    );
     this.isSessionFlagged = isFlagged;
 
     return {
@@ -357,17 +400,17 @@ export const behavioralAntiCheatEngine = {
       criterion3_MissedReflexAnchor,
       sessionTotalBackspaces: this.sessionTotalBackspaces,
       highVelocitySolveCount: this.highVelocitySolveCount,
-      suspicionScore: this.suspicionScore
+      suspicionScore: this.suspicionScore,
     };
-  }
+  },
 };
 
 export function evaluateAntiCheatTelemetry(options = {}, arg2, arg3) {
-  if (typeof options === 'boolean' || typeof options === 'number') {
+  if (typeof options === "boolean" || typeof options === "number") {
     return behavioralAntiCheatEngine.evaluateQuestionSolve({
       isCorrect: Boolean(options),
       targetNumber: arg2,
-      responseDuration: arg3
+      responseDuration: arg3,
     });
   }
   return behavioralAntiCheatEngine.evaluateQuestionSolve(options);
@@ -380,12 +423,12 @@ export function evaluateAntiCheatTelemetry(options = {}, arg2, arg3) {
  */
 export const LifelineBlacklistFirewall = {
   THRESHOLDS: {
-    SANDBOX: 900,     // Sieve Calibrator+
-    NOISE: 1200,      // Radix Scholar+
-    HINT: 1400,       // Modular Operator+
-    EXTEND: 1800,     // Logarithmic Vector+
-    PAUSE: 2400,      // Canonical Analyst+
-    ALL_HELP: 3000    // Prime Singularity
+    SANDBOX: 900, // Sieve Calibrator+
+    NOISE: 1200, // Radix Scholar+
+    HINT: 1400, // Modular Operator+
+    EXTEND: 1800, // Logarithmic Vector+
+    PAUSE: 2400, // Canonical Analyst+
+    ALL_HELP: 3000, // Prime Singularity
   },
 
   /**
@@ -411,7 +454,7 @@ export const LifelineBlacklistFirewall = {
         skipBlocked: false,
         allHelpBlocked: false,
         maxVelocityIndex: 1.0,
-        activeTierName: 'Unrated Safe-Zone'
+        activeTierName: "Unrated Safe-Zone",
       };
     }
 
@@ -433,13 +476,21 @@ export const LifelineBlacklistFirewall = {
       regenBlocked: elo >= 3000,
       skipBlocked: elo >= 3000,
       allHelpBlocked: elo >= 3000,
-      maxVelocityIndex: elo >= 3000 ? 3.5 : (elo >= 2400 ? 2.5 : 1.5),
-      activeTierName: elo >= 3000 ? 'Prime Singularity' :
-                      elo >= 2400 ? 'Canonical Analyst+' :
-                      elo >= 1800 ? 'Logarithmic Vector+' :
-                      elo >= 1400 ? 'Modular Operator+' :
-                      elo >= 1200 ? 'Radix Scholar+' :
-                      elo >= 900 ? 'Sieve Calibrator+' : 'Base Track'
+      maxVelocityIndex: elo >= 3000 ? 3.5 : elo >= 2400 ? 2.5 : 1.5,
+      activeTierName:
+        elo >= 3000
+          ? "Prime Singularity"
+          : elo >= 2400
+            ? "Canonical Analyst+"
+            : elo >= 1800
+              ? "Logarithmic Vector+"
+              : elo >= 1400
+                ? "Modular Operator+"
+                : elo >= 1200
+                  ? "Radix Scholar+"
+                  : elo >= 900
+                    ? "Sieve Calibrator+"
+                    : "Base Track",
     };
   },
 
@@ -450,21 +501,21 @@ export const LifelineBlacklistFirewall = {
     if (!isRated) return false;
     const elo = Number(userElo) || 0;
     switch (lifelineKey) {
-      case 'sandbox':
+      case "sandbox":
         return elo >= 900;
-      case 'noise':
+      case "noise":
         return elo >= 1200;
-      case 'hint':
+      case "hint":
         return elo >= 1400;
-      case 'extend':
+      case "extend":
         return elo >= 1800;
-      case 'restart':
+      case "restart":
         return elo >= 1800;
-      case 'pause':
+      case "pause":
         return elo >= 2400;
-      case 'regen':
+      case "regen":
         return elo >= 3000;
-      case 'skip':
+      case "skip":
         return elo >= 3000;
       default:
         return false;
@@ -478,16 +529,19 @@ export const LifelineBlacklistFirewall = {
     const { userElo, isRated } = options;
     const r = this.getRestrictions(userElo, isRated);
 
-    const lockElement = (btn, reason, usesBadgeText = 'PROHIBITED') => {
+    const lockElement = (btn, reason, usesBadgeText = "PROHIBITED") => {
       if (!btn) return;
       btn.disabled = true;
-      btn.style.opacity = '0.28';
-      btn.style.pointerEvents = 'none';
-      btn.style.cursor = 'not-allowed';
-      btn.classList.add('lifeline-firewall-locked');
-      btn.setAttribute('title', `❌ FIREWALL DEACTIVATED (ELO PROHIBITED): ${reason}`);
-      btn.setAttribute('data-firewall-locked', 'true');
-      const badge = btn.querySelector('.lifeline-uses');
+      btn.style.opacity = "0.28";
+      btn.style.pointerEvents = "none";
+      btn.style.cursor = "not-allowed";
+      btn.classList.add("lifeline-firewall-locked");
+      btn.setAttribute(
+        "title",
+        `❌ FIREWALL DEACTIVATED (ELO PROHIBITED): ${reason}`,
+      );
+      btn.setAttribute("data-firewall-locked", "true");
+      const badge = btn.querySelector(".lifeline-uses");
       if (badge) {
         badge.textContent = usesBadgeText;
       }
@@ -495,39 +549,88 @@ export const LifelineBlacklistFirewall = {
 
     const unlockElement = (btn) => {
       if (!btn) return;
-      btn.style.opacity = '';
-      btn.style.pointerEvents = '';
-      btn.style.cursor = '';
-      btn.classList.remove('lifeline-firewall-locked');
-      btn.removeAttribute('data-firewall-locked');
+      btn.style.opacity = "";
+      btn.style.pointerEvents = "";
+      btn.style.cursor = "";
+      btn.classList.remove("lifeline-firewall-locked");
+      btn.removeAttribute("data-firewall-locked");
     };
 
-    const btnSandbox = document.getElementById('lifeline-sandbox');
-    const btnNoise = document.getElementById('lifeline-noise');
-    const btnHint = document.getElementById('lifeline-hint');
-    const btnExtend = document.getElementById('lifeline-extend');
-    const btnRestart = document.getElementById('lifeline-restart');
-    const btnPause = document.getElementById('lifeline-pause');
-    const btnRegen = document.getElementById('lifeline-regen');
-    const btnSkip = document.getElementById('lifeline-skip');
+    const btnSandbox = document.getElementById("lifeline-sandbox");
+    const btnNoise = document.getElementById("lifeline-noise");
+    const btnHint = document.getElementById("lifeline-hint");
+    const btnExtend = document.getElementById("lifeline-extend");
+    const btnRestart = document.getElementById("lifeline-restart");
+    const btnPause = document.getElementById("lifeline-pause");
+    const btnRegen = document.getElementById("lifeline-regen");
+    const btnSkip = document.getElementById("lifeline-skip");
 
     if (r.isSafeZone) {
       // Safe-Zone Exception: unlock all
-      [btnSandbox, btnNoise, btnHint, btnExtend, btnRestart, btnPause, btnRegen, btnSkip].forEach(unlockElement);
+      [
+        btnSandbox,
+        btnNoise,
+        btnHint,
+        btnExtend,
+        btnRestart,
+        btnPause,
+        btnRegen,
+        btnSkip,
+      ].forEach(unlockElement);
       return r;
     }
 
-    if (r.sandboxBlocked) lockElement(btnSandbox, 'Scratchpad disabled for ELO ≥ 900', 'PROHIBITED (≥900)');
-    if (r.noiseBlocked) lockElement(btnNoise, 'Candidate noise filter disabled for ELO ≥ 1200', 'PROHIBITED (≥1200)');
-    if (r.hintBlocked) lockElement(btnHint, 'Conceptual pedagogical hints disabled for ELO ≥ 1400', 'PROHIBITED (≥1400)');
-    if (r.extendBlocked) lockElement(btnExtend, 'Clock extension disabled for ELO ≥ 1800', 'PROHIBITED (≥1800)');
-    if (r.restartBlocked) lockElement(btnRestart, 'Session restart is entirely prohibited for high-rated contestants (ELO ≥ 1800)', 'PROHIBITED (≥1800)');
-    if (r.pauseBlocked) lockElement(btnPause, 'Tactical pauses disabled for ELO ≥ 2400', 'PROHIBITED (≥2400)');
-    if (r.regenBlocked) lockElement(btnRegen, 'Regeneration suppressed for ELO ≥ 3000', 'PROHIBITED (≥3000)');
-    if (r.skipBlocked) lockElement(btnSkip, 'Skip protocol suppressed for ELO ≥ 3000', 'PROHIBITED (≥3000)');
+    if (r.sandboxBlocked)
+      lockElement(
+        btnSandbox,
+        "Scratchpad disabled for ELO ≥ 900",
+        "PROHIBITED (≥900)",
+      );
+    if (r.noiseBlocked)
+      lockElement(
+        btnNoise,
+        "Candidate noise filter disabled for ELO ≥ 1200",
+        "PROHIBITED (≥1200)",
+      );
+    if (r.hintBlocked)
+      lockElement(
+        btnHint,
+        "Conceptual pedagogical hints disabled for ELO ≥ 1400",
+        "PROHIBITED (≥1400)",
+      );
+    if (r.extendBlocked)
+      lockElement(
+        btnExtend,
+        "Clock extension disabled for ELO ≥ 1800",
+        "PROHIBITED (≥1800)",
+      );
+    if (r.restartBlocked)
+      lockElement(
+        btnRestart,
+        "Session restart is entirely prohibited for high-rated contestants (ELO ≥ 1800)",
+        "PROHIBITED (≥1800)",
+      );
+    if (r.pauseBlocked)
+      lockElement(
+        btnPause,
+        "Tactical pauses disabled for ELO ≥ 2400",
+        "PROHIBITED (≥2400)",
+      );
+    if (r.regenBlocked)
+      lockElement(
+        btnRegen,
+        "Regeneration suppressed for ELO ≥ 3000",
+        "PROHIBITED (≥3000)",
+      );
+    if (r.skipBlocked)
+      lockElement(
+        btnSkip,
+        "Skip protocol suppressed for ELO ≥ 3000",
+        "PROHIBITED (≥3000)",
+      );
 
     return r;
-  }
+  },
 };
 
 export function applyLifelineFirewall(options) {
@@ -546,10 +649,10 @@ export function getFirewallRestrictions(userElo, isRated = true) {
 export {
   triggerLiveArenaCelebrationFreeze,
   CELEBRATION_FREEZE_DURATION_MS,
-  CELEBRATION_MARQUEE_TEXT
-} from './celebration-freeze.js';
+  CELEBRATION_MARQUEE_TEXT,
+} from "./celebration-freeze.js";
 
-import { triggerLiveArenaCelebrationFreeze } from './celebration-freeze.js';
+import { triggerLiveArenaCelebrationFreeze } from "./celebration-freeze.js";
 
 /**
  * 4. MOBILE ORIENTATION LOCK FOCUS FILTER
@@ -569,29 +672,34 @@ export const mobileOrientationGuard = {
   initialized: false,
 
   init() {
-    if (this.initialized || typeof window === 'undefined') return;
+    if (this.initialized || typeof window === "undefined") return;
     this.initialized = true;
 
     this.lastOrientation = this.getCurrentOrientation();
 
     // 1. Modern Screen Orientation API
-    if (typeof window !== 'undefined' && window.screen && window.screen.orientation && window.screen.orientation.addEventListener) {
-      window.screen.orientation.addEventListener('change', () => {
-        this.triggerGracePeriod('screen.orientation.change');
+    if (
+      typeof window !== "undefined" &&
+      window.screen &&
+      window.screen.orientation &&
+      window.screen.orientation.addEventListener
+    ) {
+      window.screen.orientation.addEventListener("change", () => {
+        this.triggerGracePeriod("screen.orientation.change");
       });
     }
 
     // 2. Mobile Safari / WebKit orientationchange event
-    if (typeof window !== 'undefined') {
-      window.addEventListener('orientationchange', () => {
-        this.triggerGracePeriod('window.orientationchange');
+    if (typeof window !== "undefined") {
+      window.addEventListener("orientationchange", () => {
+        this.triggerGracePeriod("window.orientationchange");
       });
 
       // 3. Fallback: Viewport dimension flip (mobile device tilt resize)
-      window.addEventListener('resize', () => {
+      window.addEventListener("resize", () => {
         const cur = this.getCurrentOrientation();
         if (this.lastOrientation !== null && cur !== this.lastOrientation) {
-          this.triggerGracePeriod('viewport.tilt.resize');
+          this.triggerGracePeriod("viewport.tilt.resize");
         }
         this.lastOrientation = cur;
       });
@@ -599,40 +707,47 @@ export const mobileOrientationGuard = {
   },
 
   getCurrentOrientation() {
-    if (typeof window === 'undefined') return 'unknown';
+    if (typeof window === "undefined") return "unknown";
     if (window.screen && window.screen.orientation) {
-      return window.screen.orientation.type || String(window.screen.orientation.angle);
+      return (
+        window.screen.orientation.type ||
+        String(window.screen.orientation.angle)
+      );
     }
-    if (typeof window.orientation !== 'undefined') {
+    if (typeof window.orientation !== "undefined") {
       return String(window.orientation);
     }
-    return window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+    return window.innerWidth > window.innerHeight ? "landscape" : "portrait";
   },
 
-  triggerGracePeriod(reason = 'device_rotation') {
+  triggerGracePeriod(reason = "device_rotation") {
     this.isGraceActive = true;
     if (this.graceTimeoutId) {
       clearTimeout(this.graceTimeoutId);
     }
 
-    if (typeof window !== 'undefined' && window.dispatchEvent) {
-      window.dispatchEvent(new CustomEvent('orientation:grace_start', {
-        detail: {
-          reason,
-          durationMs: this.GRACE_DURATION_MS,
-          timestamp: performance.now()
-        }
-      }));
+    if (typeof window !== "undefined" && window.dispatchEvent) {
+      window.dispatchEvent(
+        new CustomEvent("orientation:grace_start", {
+          detail: {
+            reason,
+            durationMs: this.GRACE_DURATION_MS,
+            timestamp: performance.now(),
+          },
+        }),
+      );
     }
 
     this.graceTimeoutId = setTimeout(() => {
       this.isGraceActive = false;
       this.graceTimeoutId = null;
 
-      if (typeof window !== 'undefined' && window.dispatchEvent) {
-        window.dispatchEvent(new CustomEvent('orientation:grace_end', {
-          detail: { timestamp: performance.now() }
-        }));
+      if (typeof window !== "undefined" && window.dispatchEvent) {
+        window.dispatchEvent(
+          new CustomEvent("orientation:grace_end", {
+            detail: { timestamp: performance.now() },
+          }),
+        );
       }
     }, this.GRACE_DURATION_MS);
   },
@@ -647,11 +762,11 @@ export const mobileOrientationGuard = {
       clearTimeout(this.graceTimeoutId);
       this.graceTimeoutId = null;
     }
-  }
+  },
 };
 
 // Initialize immediately if in browser environment
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   mobileOrientationGuard.init();
 }
 
@@ -660,13 +775,13 @@ export function isOrientationGraceActive() {
 }
 
 export function triggerOrientationGrace(durationMs) {
-  return mobileOrientationGuard.triggerGracePeriod('manual_trigger');
+  return mobileOrientationGuard.triggerGracePeriod("manual_trigger");
 }
 
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.ExamArenaController = {
     ...(window.ExamArenaController || {}),
-    version: '3.4.0',
+    version: "3.4.0",
     activeComboStrikeState,
     triggerGlassmorphicComboFlash,
     triggerLiveArenaCelebrationFreeze,
@@ -679,8 +794,6 @@ if (typeof window !== 'undefined') {
     LifelineBlacklistFirewall,
     applyLifelineFirewall,
     isLifelineBlocked,
-    getFirewallRestrictions
+    getFirewallRestrictions,
   };
 }
-
-

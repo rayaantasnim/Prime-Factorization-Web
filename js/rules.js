@@ -4,11 +4,11 @@
  * and user rating evaluation into the rules documentation matrix.
  */
 
-import { initGlobalHeader, renderFooter, triggerFlash } from './header.js';
-import { getUserElo, getTierByElo, isRangeBannedForElo } from './elo-engine.js';
-import { playSound } from './audio.js';
+import { initGlobalHeader, renderFooter, triggerFlash } from "./header.js";
+import { getUserElo, getTierByElo, isRangeBannedForElo } from "./elo-engine.js";
+import { playSound } from "./audio.js";
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   initGlobalHeader();
   renderFooter();
   initRulesPortal();
@@ -17,20 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
 function initRulesPortal() {
   const userElo = getUserElo();
   const tier = getTierByElo(userElo);
-  const strikes = Number(localStorage.getItem('primefactor_security_strikes') || 0);
+  const strikes = Number(
+    localStorage.getItem("primefactor_security_strikes") || 0,
+  );
 
   // 1. Populate Live Player Context Status Bar
-  const elElo = document.getElementById('rules-user-elo');
-  const elTier = document.getElementById('rules-user-tier');
-  const elFirewall = document.getElementById('rules-user-firewall');
-  const elSecurity = document.getElementById('rules-user-security');
+  const elElo = document.getElementById("rules-user-elo");
+  const elTier = document.getElementById("rules-user-tier");
+  const elFirewall = document.getElementById("rules-user-firewall");
+  const elSecurity = document.getElementById("rules-user-security");
 
   if (elElo) {
-    elElo.innerHTML = `<span style="color: ${tier.colorHex || '#38BDF8'};">${userElo.toLocaleString()}</span> ELO`;
+    elElo.innerHTML = `<span style="color: ${tier.colorHex || "#38BDF8"};">${userElo.toLocaleString()}</span> ELO`;
   }
 
   if (elTier) {
-    elTier.innerHTML = `${tier.symbol} <span style="color: ${tier.colorHex || '#FFFFFF'}; font-weight: 800;">${tier.title}</span>`;
+    elTier.innerHTML = `${tier.symbol} <span style="color: ${tier.colorHex || "#FFFFFF"}; font-weight: 800;">${tier.title}</span>`;
   }
 
   if (elFirewall) {
@@ -62,10 +64,10 @@ function initRulesPortal() {
   }
 
   // 2. Add subtle interactive audio feedback on documentation card interaction
-  const cards = document.querySelectorAll('.rules-card');
-  cards.forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      playSound('hover');
+  const cards = document.querySelectorAll(".rules-card");
+  cards.forEach((card) => {
+    card.addEventListener("mouseenter", () => {
+      playSound("hover");
     });
   });
 }

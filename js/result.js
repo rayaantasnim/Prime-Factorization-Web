@@ -5,23 +5,42 @@
  * Redemption Track, and Compiler Latency Audit Table (Sub-Second Pollard's Rho Logs).
  */
 
-import { getLastExamResult, setLastExamResult, setActiveExamParams, getSettings, getLedger, addNotification } from './storage.js';
-import { initGlobalHeader, renderFooter } from './header.js';
-import { showToast } from './notification-engine.js';
-import { toExponentialForm, formatExponentialString, parseAndValidateFactorInput, factorize } from './math-engine.js';
-import { playSound } from './audio.js';
-import { calculateEloDelta, getUserElo, setUserElo, recordRatedMatchToProfile, getTierByElo, computeSystemExpectations } from './elo-engine.js';
+import {
+  getLastExamResult,
+  setLastExamResult,
+  setActiveExamParams,
+  getSettings,
+  getLedger,
+  addNotification,
+} from "./storage.js";
+import { initGlobalHeader, renderFooter } from "./header.js";
+import { showToast } from "./notification-engine.js";
+import {
+  toExponentialForm,
+  formatExponentialString,
+  parseAndValidateFactorInput,
+  factorize,
+} from "./math-engine.js";
+import { playSound } from "./audio.js";
+import {
+  calculateEloDelta,
+  getUserElo,
+  setUserElo,
+  recordRatedMatchToProfile,
+  getTierByElo,
+  computeSystemExpectations,
+} from "./elo-engine.js";
 import {
   waitForAuthReady,
   isUserLoggedIn,
   getCurrentProfile,
   signInWithGoogle,
   recordMatchToFirestore,
-  onAuthChange
-} from './firebase.js';
+  onAuthChange,
+} from "./firebase.js";
 
-const COMMITTED_MATCHES_KEY = 'primefactor_committed_match_ids';
-const NOTIFIED_MATCHES_KEY = 'primefactor_notified_match_ids';
+const COMMITTED_MATCHES_KEY = "primefactor_committed_match_ids";
+const NOTIFIED_MATCHES_KEY = "primefactor_notified_match_ids";
 
 function hasCommittedMatch(matchId) {
   if (!matchId) return false;
@@ -43,9 +62,14 @@ function markMatchCommitted(matchId) {
     const next = Array.isArray(list) ? list : [];
     if (!next.includes(String(matchId))) {
       next.push(String(matchId));
-      sessionStorage.setItem(COMMITTED_MATCHES_KEY, JSON.stringify(next.slice(-30)));
+      sessionStorage.setItem(
+        COMMITTED_MATCHES_KEY,
+        JSON.stringify(next.slice(-30)),
+      );
     }
-  } catch { /* storage unavailable */ }
+  } catch {
+    /* storage unavailable */
+  }
 }
 
 function hasNotifiedMatch(matchId) {
@@ -68,12 +92,17 @@ function markMatchNotified(matchId) {
     const next = Array.isArray(list) ? list : [];
     if (!next.includes(String(matchId))) {
       next.push(String(matchId));
-      sessionStorage.setItem(NOTIFIED_MATCHES_KEY, JSON.stringify(next.slice(-30)));
+      sessionStorage.setItem(
+        NOTIFIED_MATCHES_KEY,
+        JSON.stringify(next.slice(-30)),
+      );
     }
-  } catch { /* storage unavailable */ }
+  } catch {
+    /* storage unavailable */
+  }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   initGlobalHeader();
   renderFooter();
 
@@ -83,29 +112,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function commitMatchIfNeeded(result, eloDelta, accuracyPct, totalSolved) {
   if (!result || result.isForcedUnrated || !isUserLoggedIn()) return null;
-  result.matchId = result.matchId || `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  result.matchId =
+    result.matchId ||
+    `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
   if (result.committedToCloud || hasCommittedMatch(result.matchId)) {
     return getCurrentProfile();
   }
 
   const profileBefore = getCurrentProfile();
-  const prevElo = typeof profileBefore?.elo === 'number' ? Math.round(profileBefore.elo) : getUserElo();
+  const prevElo =
+    typeof profileBefore?.elo === "number"
+      ? Math.round(profileBefore.elo)
+      : getUserElo();
   const expectedNewElo = Math.max(0, prevElo + eloDelta);
 
   const updatedProfile = await recordMatchToFirestore({
     matchId: result.matchId,
-    tier: result.rangeTitle || 'Tier 1: 1 - 200',
+    tier: result.rangeTitle || "Tier 1: 1 - 200",
     accuracy: accuracyPct,
     time: result.timeSpent || 30,
     score: result.score || 0,
     eloDelta: eloDelta,
     lifelinesUsedCount: result.lifelinesUsedCount || 0,
     correctCount: totalSolved,
-    firstAttemptClears: (result.correctFirstAttempt !== undefined ? result.correctFirstAttempt : totalSolved),
-    totalQuestions: (result.totalQuestions || 10),
+    firstAttemptClears:
+      result.correctFirstAttempt !== undefined
+        ? result.correctFirstAttempt
+        : totalSolved,
+    totalQuestions: result.totalQuestions || 10,
     prevElo: prevElo,
-    newElo: expectedNewElo
+    newElo: expectedNewElo,
   });
 
   if (updatedProfile) {
@@ -122,28 +159,28 @@ async function commitMatchIfNeeded(result, eloDelta, accuracyPct, totalSolved) {
 function updateLiveVerdictEloUI() {
   const liveElo = getUserElo();
   const currentTier = getTierByElo(liveElo);
-  const elTierIcon = document.getElementById('elo-tier-icon');
-  const elTierTitle = document.getElementById('elo-tier-title');
-  const elLiveVal = document.getElementById('elo-live-val');
+  const elTierIcon = document.getElementById("elo-tier-icon");
+  const elTierTitle = document.getElementById("elo-tier-title");
+  const elLiveVal = document.getElementById("elo-live-val");
 
-  if (elTierIcon) elTierIcon.textContent = currentTier.symbol || '🧩';
+  if (elTierIcon) elTierIcon.textContent = currentTier.symbol || "🧩";
   if (elTierTitle) {
-    elTierTitle.textContent = currentTier.title || 'Composite Apprentice';
-    elTierTitle.style.color = currentTier.colorHex || '#FFFFFF';
+    elTierTitle.textContent = currentTier.title || "Composite Apprentice";
+    elTierTitle.style.color = currentTier.colorHex || "#FFFFFF";
   }
   if (elLiveVal) elLiveVal.textContent = `${liveElo.toLocaleString()} ELO`;
 }
 
 function renderGuestResultPrompt(result, eloDelta, accuracyPct, totalSolved) {
-  const container = document.querySelector('.content-container');
+  const container = document.querySelector(".content-container");
   if (!container) return;
 
-  const existing = document.getElementById('guest-result-banner');
+  const existing = document.getElementById("guest-result-banner");
   if (existing) existing.remove();
 
-  const banner = document.createElement('div');
-  banner.id = 'guest-result-banner';
-  banner.className = 'guest-warning-banner';
+  const banner = document.createElement("div");
+  banner.id = "guest-result-banner";
+  banner.className = "guest-warning-banner";
   const deltaText = eloDelta > 0 ? `+${eloDelta} ELO` : `${eloDelta} ELO`;
 
   banner.innerHTML = `
@@ -163,7 +200,7 @@ function renderGuestResultPrompt(result, eloDelta, accuracyPct, totalSolved) {
     </button>
   `;
 
-  const head = container.querySelector('.section-head');
+  const head = container.querySelector(".section-head");
   if (head) {
     container.insertBefore(banner, head.nextSibling);
   } else {
@@ -171,8 +208,8 @@ function renderGuestResultPrompt(result, eloDelta, accuracyPct, totalSolved) {
   }
 
   const showSavedBanner = (nextElo) => {
-    banner.style.borderColor = '#10B981';
-    banner.style.background = 'rgba(16, 185, 129, 0.15)';
+    banner.style.borderColor = "#10B981";
+    banner.style.background = "rgba(16, 185, 129, 0.15)";
     banner.innerHTML = `
       <div class="guest-warning-content" style="color: #34D399;">
         <span style="font-size: 1.5rem;">✔️</span>
@@ -184,41 +221,55 @@ function renderGuestResultPrompt(result, eloDelta, accuracyPct, totalSolved) {
     `;
     updateLiveVerdictEloUI();
     showToast({
-      type: 'success',
-      title: 'Match Synced to Cloud Firestore',
-      message: `Your ELO rating is now saved and updated to ${Number(nextElo).toLocaleString()} ELO.`
+      type: "success",
+      title: "Match Synced to Cloud Firestore",
+      message: `Your ELO rating is now saved and updated to ${Number(nextElo).toLocaleString()} ELO.`,
     });
   };
 
   // Also handle if the user signs in from the top header button while viewing this page
   const unsub = onAuthChange(async ({ user }) => {
-    if (user && !result.committedToCloud && !hasCommittedMatch(result.matchId)) {
+    if (
+      user &&
+      !result.committedToCloud &&
+      !hasCommittedMatch(result.matchId)
+    ) {
       unsub();
       try {
-        const updatedProfile = await commitMatchIfNeeded(result, eloDelta, accuracyPct, totalSolved);
+        const updatedProfile = await commitMatchIfNeeded(
+          result,
+          eloDelta,
+          accuracyPct,
+          totalSolved,
+        );
         if (updatedProfile) {
           showSavedBanner(updatedProfile.elo);
         }
       } catch (err) {
-        console.error('Auto-save after header sign-in failed:', err);
+        console.error("Auto-save after header sign-in failed:", err);
       }
     }
   });
 
-  const btn = banner.querySelector('#btn-guest-result-signin');
+  const btn = banner.querySelector("#btn-guest-result-signin");
   if (btn) {
-    btn.addEventListener('click', async () => {
-      playSound('click');
+    btn.addEventListener("click", async () => {
+      playSound("click");
       try {
         const { user } = await signInWithGoogle();
         if (user) {
           unsub();
-          const updatedProfile = await commitMatchIfNeeded(result, eloDelta, accuracyPct, totalSolved);
+          const updatedProfile = await commitMatchIfNeeded(
+            result,
+            eloDelta,
+            accuracyPct,
+            totalSolved,
+          );
           const nextElo = updatedProfile?.elo ?? getUserElo();
           showSavedBanner(nextElo);
         }
       } catch (err) {
-        console.error('Sign-in error from guest banner:', err);
+        console.error("Sign-in error from guest banner:", err);
       }
     });
   }
@@ -228,44 +279,56 @@ async function renderResultDashboard() {
   const result = getLastExamResult();
 
   if (!result) {
-    window.location.href = './ranges.html';
+    window.location.href = "./ranges.html";
     return;
   }
 
   // 6-Tier Olympiad Verdict Matrix
-  const totalSolved = (result.correctFirstAttempt || 0) + (result.correctSecondAttempt || 0);
-  const accuracyPct = Math.round((totalSolved / (result.totalQuestions || 10)) * 100);
+  const totalSolved =
+    (result.correctFirstAttempt || 0) + (result.correctSecondAttempt || 0);
+  const accuracyPct = Math.round(
+    (totalSolved / (result.totalQuestions || 10)) * 100,
+  );
 
   // ELO Engine Master Integration & Calculation
   const activeUserElo = getUserElo();
-  const isForcedUnrated = result.participationMode === 'unrated' || result.mode === 'unrated' || Boolean(result.forcedUnrated) || Boolean(result.isForcedUnrated);
+  const isForcedUnrated =
+    result.participationMode === "unrated" ||
+    result.mode === "unrated" ||
+    Boolean(result.forcedUnrated) ||
+    Boolean(result.isForcedUnrated);
 
   if (result.eloDelta === undefined || result.eloDelta === null) {
     if (isForcedUnrated) {
-      result.matchId = result.matchId || `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      result.matchId =
+        result.matchId ||
+        `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
       result.eloDelta = 0;
       result.eloExpected = 0.85;
       result.eloVelocity = 1.0;
       result.eloKFactor = 32;
       result.isForcedUnrated = true;
-      result.verdictComment = 'Training';
-      result.expectationStatus = '⏸️ Deactivated';
+      result.verdictComment = "Training";
+      result.expectationStatus = "⏸️ Deactivated";
       result.currentElo = `${activeUserElo.toLocaleString()} ELO`;
       setLastExamResult(result);
 
       if (!hasNotifiedMatch(result.matchId)) {
         markMatchNotified(result.matchId);
         showToast({
-          type: 'system',
-          title: 'Unrated Practice Run Complete',
-          message: `${totalSolved}/${result.totalQuestions || 10} solved (${accuracyPct}% accuracy · ${result.timeSpent || 0}s). ELO remained unchanged.`
+          type: "system",
+          title: "Unrated Practice Run Complete",
+          message: `${totalSolved}/${result.totalQuestions || 10} solved (${accuracyPct}% accuracy · ${result.timeSpent || 0}s). ELO remained unchanged.`,
         });
       }
     } else {
       const ledger = getLedger();
-      const allocatedSec = result.allocatedSeconds || (result.timeSpent + (result.timeRemaining || 0)) || 180;
+      const allocatedSec =
+        result.allocatedSeconds ||
+        result.timeSpent + (result.timeRemaining || 0) ||
+        180;
       const actualSec = Math.max(1, result.timeSpent || 30);
-      
+
       const eloCalc = calculateEloDelta({
         userElo: activeUserElo,
         maxBound: result.max || 200,
@@ -273,10 +336,10 @@ async function renderResultDashboard() {
         allocatedSeconds: allocatedSec,
         actualSeconds: actualSec,
         isForcedUnrated: false,
-        participationMode: 'rated',
+        participationMode: "rated",
         streakCount: ledger.currentStreak || 0,
         bonusEloTokens: result.comboStrikeTokens || 0,
-        bonusEloPoints: result.comboStrikeBonusElo || 0
+        bonusEloPoints: result.comboStrikeBonusElo || 0,
       });
 
       result.eloDelta = eloCalc.deltaR;
@@ -296,24 +359,41 @@ async function renderResultDashboard() {
       result.isLockdownMatch = eloCalc.isLockdownMatch;
       result.lockdownOutcome = eloCalc.lockdownOutcome;
       result.absorbedDelta = eloCalc.absorbedDelta;
-      result.matchId = result.matchId || `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      result.matchId =
+        result.matchId ||
+        `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
       // STRICT USER AUTHENTICATION GATE:
       // Only commit progression if user is logged into Firebase
       if (isUserLoggedIn()) {
-        const existingGuestBanner = document.getElementById('guest-result-banner');
+        const existingGuestBanner = document.getElementById(
+          "guest-result-banner",
+        );
         if (existingGuestBanner) existingGuestBanner.remove();
 
         try {
-          await commitMatchIfNeeded(result, eloCalc.deltaR, accuracyPct, totalSolved);
+          await commitMatchIfNeeded(
+            result,
+            eloCalc.deltaR,
+            accuracyPct,
+            totalSolved,
+          );
         } catch (commitErr) {
-          console.error('[Result] Failed to commit match to Firestore:', commitErr);
+          console.error(
+            "[Result] Failed to commit match to Firestore:",
+            commitErr,
+          );
         }
       } else {
         // Guest mode: show banner and do NOT commit to persistent storage
         result.currentElo = `500 ELO (Guest)`;
         setLastExamResult(result);
-        renderGuestResultPrompt(result, eloCalc.deltaR, accuracyPct, totalSolved);
+        renderGuestResultPrompt(
+          result,
+          eloCalc.deltaR,
+          accuracyPct,
+          totalSolved,
+        );
       }
 
       const finalElo = getUserElo();
@@ -322,47 +402,71 @@ async function renderResultDashboard() {
         markMatchNotified(result.matchId);
 
         // 0. Core ELO Rating Delta or Lockdown Notification
-        if (result.lockdownOutcome === 'TERMINATED') {
+        if (result.lockdownOutcome === "TERMINATED") {
           addNotification({
-            type: 'security_tampering',
-            title: 'PENALTY LOCKDOWN TERMINATED',
+            type: "security_tampering",
+            title: "PENALTY LOCKDOWN TERMINATED",
             message: `Verified positive match performance (+${result.absorbedDelta || 0} ELO) absorbed to discharge penalty lockdown. Standing: ${finalElo.toLocaleString()} ELO.`,
             eloTracker: { prevElo: activeUserElo, delta: 0, nextElo: finalElo },
-            performance: { duration: result.timeSpent || 30, accuracy: accuracyPct },
-            details: { tier: result.rangeTitle || 'Rated Competition Arena' }
+            performance: {
+              duration: result.timeSpent || 30,
+              accuracy: accuracyPct,
+            },
+            details: { tier: result.rangeTitle || "Rated Competition Arena" },
           });
-        } else if (result.lockdownOutcome === 'EXTENDED') {
+        } else if (result.lockdownOutcome === "EXTENDED") {
           addNotification({
-            type: 'security_tampering',
-            title: 'LOCKDOWN EXTENDED',
+            type: "security_tampering",
+            title: "LOCKDOWN EXTENDED",
             message: `Negative rated outcome (${eloCalc.deltaR} ELO) during penalty lockdown. Complete a positive rated match to clear restriction.`,
-            eloTracker: { prevElo: activeUserElo, delta: eloCalc.deltaR, nextElo: finalElo },
-            performance: { duration: result.timeSpent || 30, accuracy: accuracyPct },
-            details: { tier: result.rangeTitle || 'Rated Competition Arena' }
+            eloTracker: {
+              prevElo: activeUserElo,
+              delta: eloCalc.deltaR,
+              nextElo: finalElo,
+            },
+            performance: {
+              duration: result.timeSpent || 30,
+              accuracy: accuracyPct,
+            },
+            details: { tier: result.rangeTitle || "Rated Competition Arena" },
           });
         } else if (eloCalc.deltaR > 0) {
           addNotification({
-            type: 'elo_gain',
-            title: 'Rating Gain',
-            message: `+${eloCalc.deltaR} ELO earned in ${result.rangeTitle || 'Rated Arena'} (${accuracyPct}% accuracy · ${result.timeSpent || 30}s). Live: ${finalElo.toLocaleString()} ELO.`,
-            eloTracker: { prevElo: activeUserElo, delta: eloCalc.deltaR, nextElo: finalElo },
-            performance: { duration: result.timeSpent || 30, accuracy: accuracyPct },
-            details: { tier: result.rangeTitle || 'Rated Competition Arena' }
+            type: "elo_gain",
+            title: "Rating Gain",
+            message: `+${eloCalc.deltaR} ELO earned in ${result.rangeTitle || "Rated Arena"} (${accuracyPct}% accuracy · ${result.timeSpent || 30}s). Live: ${finalElo.toLocaleString()} ELO.`,
+            eloTracker: {
+              prevElo: activeUserElo,
+              delta: eloCalc.deltaR,
+              nextElo: finalElo,
+            },
+            performance: {
+              duration: result.timeSpent || 30,
+              accuracy: accuracyPct,
+            },
+            details: { tier: result.rangeTitle || "Rated Competition Arena" },
           });
         } else if (eloCalc.deltaR < 0) {
           addNotification({
-            type: 'elo_loss',
-            title: 'Rating Adjustment',
-            message: `${eloCalc.deltaR} ELO adjusted in ${result.rangeTitle || 'Rated Arena'} (${accuracyPct}% accuracy · ${result.timeSpent || 30}s). Live: ${finalElo.toLocaleString()} ELO.`,
-            eloTracker: { prevElo: activeUserElo, delta: eloCalc.deltaR, nextElo: finalElo },
-            performance: { duration: result.timeSpent || 30, accuracy: accuracyPct },
-            details: { tier: result.rangeTitle || 'Rated Competition Arena' }
+            type: "elo_loss",
+            title: "Rating Adjustment",
+            message: `${eloCalc.deltaR} ELO adjusted in ${result.rangeTitle || "Rated Arena"} (${accuracyPct}% accuracy · ${result.timeSpent || 30}s). Live: ${finalElo.toLocaleString()} ELO.`,
+            eloTracker: {
+              prevElo: activeUserElo,
+              delta: eloCalc.deltaR,
+              nextElo: finalElo,
+            },
+            performance: {
+              duration: result.timeSpent || 30,
+              accuracy: accuracyPct,
+            },
+            details: { tier: result.rangeTitle || "Rated Competition Arena" },
           });
         } else {
           showToast({
-            type: 'system',
-            title: 'Rated Match Complete (0 ELO Shift)',
-            message: `Performance matched dynamic expectation in ${result.rangeTitle || 'Rated Arena'} (${accuracyPct}% accuracy).`
+            type: "system",
+            title: "Rated Match Complete (0 ELO Shift)",
+            message: `Performance matched dynamic expectation in ${result.rangeTitle || "Rated Arena"} (${accuracyPct}% accuracy).`,
           });
         }
 
@@ -372,73 +476,78 @@ async function renderResultDashboard() {
         if (prevTier && newTier && prevTierTitle !== newTierTitle) {
           const isPromotion = newElo > activeUserElo;
           addNotification({
-            type: 'rank_shift',
-            title: isPromotion ? `Tier Promotion: ${newTierTitle}` : `Tier Demotion: ${newTierTitle}`,
+            type: "rank_shift",
+            title: isPromotion
+              ? `Tier Promotion: ${newTierTitle}`
+              : `Tier Demotion: ${newTierTitle}`,
             message: isPromotion
               ? `🏆 Tier Promotion Unlocked! You have ascended from ${prevTierTitle} to ${newTierTitle}. Live rating locked at ${finalElo} ELO.`
               : `📉 Rating Division Shift: Adjusted from ${prevTierTitle} to ${newTierTitle} (${finalElo} ELO). Enter practice mode to reclaim standing.`,
             eloTracker: {
               prevElo: activeUserElo,
               delta: eloCalc.deltaR,
-              nextElo: finalElo
+              nextElo: finalElo,
             },
             performance: {
               duration: result.timeSpent || 30,
-              accuracy: accuracyPct
+              accuracy: accuracyPct,
             },
             details: {
               prevTier: prevTierTitle,
               nextTier: newTierTitle,
-              direction: isPromotion ? 'promotion' : 'demotion',
-              tier: result.rangeTitle || 'Rated Competition Arena'
-            }
+              direction: isPromotion ? "promotion" : "demotion",
+              tier: result.rangeTitle || "Rated Competition Arena",
+            },
           });
         }
 
         // 2. Check Continuous Practice Streaks Longevity Milestones
         const updatedLedger = getLedger();
         const currentStreak = updatedLedger.currentStreak || 0;
-        if (currentStreak >= 2 && (currentStreak > prevStreak || currentStreak % 3 === 0)) {
+        if (
+          currentStreak >= 2 &&
+          (currentStreak > prevStreak || currentStreak % 3 === 0)
+        ) {
           addNotification({
-            type: 'streak',
+            type: "streak",
             title: `${currentStreak}-Match Win Streak!`,
             message: `🔥 Longevity Milestone: Maintained consecutive flawless 10/10 execution across ${currentStreak} matches. Rapid mental factorization rhythm sustained.`,
             eloTracker: {
               prevElo: activeUserElo,
               delta: eloCalc.deltaR,
-              nextElo: finalElo
+              nextElo: finalElo,
             },
             performance: {
               duration: result.timeSpent || 30,
-              accuracy: accuracyPct
+              accuracy: accuracyPct,
             },
             details: {
               streak: currentStreak,
-              tier: result.rangeTitle || 'Rated Competition Arena'
-            }
+              tier: result.rangeTitle || "Rated Competition Arena",
+            },
           });
         }
 
         // 3. Check Personal Record (PR - breaking previous speed/score records)
         if (prevHighScore > 0 && (result.score || 0) > prevHighScore) {
           addNotification({
-            type: 'pr',
-            title: 'Personal Record Broken!',
-            message: `⚡ Personal Record Shattered! Achieved new career high of ${result.score} pts in ${result.rangeTitle || 'Rated Arena'} (previous record: ${prevHighScore} pts).`,
+            type: "pr",
+            title: "Personal Record Broken!",
+            message: `⚡ Personal Record Shattered! Achieved new career high of ${result.score} pts in ${result.rangeTitle || "Rated Arena"} (previous record: ${prevHighScore} pts).`,
             eloTracker: {
               prevElo: activeUserElo,
               delta: eloCalc.deltaR,
-              nextElo: finalElo
+              nextElo: finalElo,
             },
             performance: {
               duration: result.timeSpent || 30,
-              accuracy: accuracyPct
+              accuracy: accuracyPct,
             },
             details: {
               score: result.score,
               prevHighScore,
-              tier: result.rangeTitle || 'Rated Competition Arena'
-            }
+              tier: result.rangeTitle || "Rated Competition Arena",
+            },
           });
         }
       }
@@ -446,81 +555,120 @@ async function renderResultDashboard() {
   } else if (!isForcedUnrated) {
     // Handle page reload or post-guest sign-in for an already evaluated result
     if (isUserLoggedIn()) {
-      const existingGuestBanner = document.getElementById('guest-result-banner');
+      const existingGuestBanner = document.getElementById(
+        "guest-result-banner",
+      );
       if (existingGuestBanner) existingGuestBanner.remove();
       if (!result.committedToCloud && !hasCommittedMatch(result.matchId)) {
         try {
-          await commitMatchIfNeeded(result, Number(result.eloDelta || 0), accuracyPct, totalSolved);
+          await commitMatchIfNeeded(
+            result,
+            Number(result.eloDelta || 0),
+            accuracyPct,
+            totalSolved,
+          );
         } catch (commitErr) {
-          console.error('[Result] Failed to commit pending match on reload:', commitErr);
+          console.error(
+            "[Result] Failed to commit pending match on reload:",
+            commitErr,
+          );
         }
       }
     } else {
-      renderGuestResultPrompt(result, Number(result.eloDelta || 0), accuracyPct, totalSolved);
+      renderGuestResultPrompt(
+        result,
+        Number(result.eloDelta || 0),
+        accuracyPct,
+        totalSolved,
+      );
     }
   }
 
   const currentTier = getTierByElo(getUserElo());
-  const isQuantumDecomposer = (result.correctFirstAttempt === 10 && (result.lifelinesUsedCount || 0) === 0);
-  const isAlgorithmicStrategist = (!isQuantumDecomposer && totalSolved === 10);
-  const isCadenceAnalyst = (!isQuantumDecomposer && !isAlgorithmicStrategist && result.score > 75);
-  const isModularOperator = (!isQuantumDecomposer && !isAlgorithmicStrategist && !isCadenceAnalyst && result.score > 45);
-  const isFactorInitiate = (!isQuantumDecomposer && !isAlgorithmicStrategist && !isCadenceAnalyst && !isModularOperator && result.score >= 1);
+  const isQuantumDecomposer =
+    result.correctFirstAttempt === 10 && (result.lifelinesUsedCount || 0) === 0;
+  const isAlgorithmicStrategist = !isQuantumDecomposer && totalSolved === 10;
+  const isCadenceAnalyst =
+    !isQuantumDecomposer && !isAlgorithmicStrategist && result.score > 75;
+  const isModularOperator =
+    !isQuantumDecomposer &&
+    !isAlgorithmicStrategist &&
+    !isCadenceAnalyst &&
+    result.score > 45;
+  const isFactorInitiate =
+    !isQuantumDecomposer &&
+    !isAlgorithmicStrategist &&
+    !isCadenceAnalyst &&
+    !isModularOperator &&
+    result.score >= 1;
 
-  let bracketTitle = 'Quantum Decomposer';
-  let bracketFontClass = 'verdict-quantum';
-  let bracketGlowColor = '#10B981';
-  let diagnosticQuote = '';
+  let bracketTitle = "Quantum Decomposer";
+  let bracketFontClass = "verdict-quantum";
+  let bracketGlowColor = "#10B981";
+  let diagnosticQuote = "";
 
   if (isQuantumDecomposer) {
-    bracketTitle = 'Quantum Decomposer';
-    bracketFontClass = 'verdict-quantum';
-    bracketGlowColor = '#10B981';
-    diagnosticQuote = "Absolute mastery. Achieved perfect factorization under the strict initial clock with zero assistance, running at sub-second cognitive speeds.";
+    bracketTitle = "Quantum Decomposer";
+    bracketFontClass = "verdict-quantum";
+    bracketGlowColor = "#10B981";
+    diagnosticQuote =
+      "Absolute mastery. Achieved perfect factorization under the strict initial clock with zero assistance, running at sub-second cognitive speeds.";
   } else if (isAlgorithmicStrategist) {
-    bracketTitle = 'Algorithmic Strategist';
-    bracketFontClass = 'verdict-algorithmic';
-    bracketGlowColor = '#10B981';
-    diagnosticQuote = "Elite problem solver. Cleared the board by tactically deploying pauses, hints, or navigating the high-pressure second chance overtime loop.";
+    bracketTitle = "Algorithmic Strategist";
+    bracketFontClass = "verdict-algorithmic";
+    bracketGlowColor = "#10B981";
+    diagnosticQuote =
+      "Elite problem solver. Cleared the board by tactically deploying pauses, hints, or navigating the high-pressure second chance overtime loop.";
   } else if (isCadenceAnalyst) {
-    bracketTitle = 'Cadence Analyst';
-    bracketFontClass = 'verdict-cadence';
-    bracketGlowColor = '#F59E0B';
-    diagnosticQuote = "Strong competitor. Demonstrates high mental cadence and calculation accuracy, successfully neutralizing mistakes.";
+    bracketTitle = "Cadence Analyst";
+    bracketFontClass = "verdict-cadence";
+    bracketGlowColor = "#F59E0B";
+    diagnosticQuote =
+      "Strong competitor. Demonstrates high mental cadence and calculation accuracy, successfully neutralizing mistakes.";
   } else if (isModularOperator) {
-    bracketTitle = 'Modular Operator';
-    bracketFontClass = 'verdict-modular';
-    bracketGlowColor = '#0284C7';
-    diagnosticQuote = "Capable practitioner. Comfortably navigates textbook ranges and standard number fields, actively improving speed.";
+    bracketTitle = "Modular Operator";
+    bracketFontClass = "verdict-modular";
+    bracketGlowColor = "#0284C7";
+    diagnosticQuote =
+      "Capable practitioner. Comfortably navigates textbook ranges and standard number fields, actively improving speed.";
   } else if (isFactorInitiate) {
-    bracketTitle = 'Factor Initiate';
-    bracketFontClass = 'verdict-initiate';
-    bracketGlowColor = '#F87171';
-    diagnosticQuote = "Developing foundation. Actively building basic divisibility intuition and mental heuristics inside the system.";
+    bracketTitle = "Factor Initiate";
+    bracketFontClass = "verdict-initiate";
+    bracketGlowColor = "#F87171";
+    diagnosticQuote =
+      "Developing foundation. Actively building basic divisibility intuition and mental heuristics inside the system.";
   } else {
-    bracketTitle = 'Matrix Reset';
-    bracketFontClass = 'verdict-reset';
-    bracketGlowColor = '#EF4444';
-    diagnosticQuote = "Tactical calibration required. Breached basic bounds. The engine recommends reviewing the edu.html sandbox before relaunching.";
+    bracketTitle = "Matrix Reset";
+    bracketFontClass = "verdict-reset";
+    bracketGlowColor = "#EF4444";
+    diagnosticQuote =
+      "Tactical calibration required. Breached basic bounds. The engine recommends reviewing the edu.html sandbox before relaunching.";
   }
 
   // Master Score Ring Animation & DOM References
-  const ringScoreNum = document.getElementById('ring-score-val');
-  const verdictBadge = document.getElementById('verdict-badge-val') || document.getElementById('quantum-score-badge-node');
-  const ringProgressCircle = document.getElementById('ring-svg-progress');
-  const diagnosticTextEl = document.getElementById('diagnostic-text-val') || document.getElementById('quantum-verdict-quote-node');
-  const diagnosticTitleEl = document.getElementById('diagnostic-title-val') || document.getElementById('quantum-verdict-title-node');
+  const ringScoreNum = document.getElementById("ring-score-val");
+  const verdictBadge =
+    document.getElementById("verdict-badge-val") ||
+    document.getElementById("quantum-score-badge-node");
+  const ringProgressCircle = document.getElementById("ring-svg-progress");
+  const diagnosticTextEl =
+    document.getElementById("diagnostic-text-val") ||
+    document.getElementById("quantum-verdict-quote-node");
+  const diagnosticTitleEl =
+    document.getElementById("diagnostic-title-val") ||
+    document.getElementById("quantum-verdict-title-node");
 
   if (ringScoreNum) ringScoreNum.textContent = result.score;
   if (verdictBadge) {
     verdictBadge.textContent = bracketTitle;
     verdictBadge.className = `verdict-tier-badge ${bracketFontClass}`;
   }
-  if (diagnosticTitleEl) diagnosticTitleEl.textContent = `Verdict Evaluation: ${bracketTitle}`;
+  if (diagnosticTitleEl)
+    diagnosticTitleEl.textContent = `Verdict Evaluation: ${bracketTitle}`;
 
   // Advanced Text-Typing / Telemetry Animation System
   if (diagnosticTextEl) {
-    diagnosticTextEl.textContent = '';
+    diagnosticTextEl.textContent = "";
     let charIndex = 0;
     const typingInterval = setInterval(() => {
       if (charIndex < diagnosticQuote.length) {
@@ -536,17 +684,21 @@ async function renderResultDashboard() {
     const radius = 70;
     const circumference = 2 * Math.PI * radius;
     ringProgressCircle.style.strokeDasharray = `${circumference}`;
-    
+
     // Normalizing score 0-100 pts
-    const normalizedPercent = Math.max(0, Math.min(100, (result.score / 100) * 100));
+    const normalizedPercent = Math.max(
+      0,
+      Math.min(100, (result.score / 100) * 100),
+    );
     const offset = circumference - (normalizedPercent / 100) * circumference;
 
     ringProgressCircle.style.stroke = bracketGlowColor;
 
     if (window.gsap) {
-      window.gsap.fromTo(ringProgressCircle,
+      window.gsap.fromTo(
+        ringProgressCircle,
         { strokeDashoffset: circumference },
-        { strokeDashoffset: offset, duration: 1.2, ease: 'power2.out' }
+        { strokeDashoffset: offset, duration: 1.2, ease: "power2.out" },
       );
     } else {
       ringProgressCircle.style.strokeDashoffset = offset;
@@ -554,12 +706,12 @@ async function renderResultDashboard() {
   }
 
   // Populate absolute counter strip
-  const elFirst = document.getElementById('cb-first-attempt');
-  const elSecond = document.getElementById('cb-second-attempt');
-  const elAccuracy = document.getElementById('cb-accuracy');
-  const elTimeSpent = document.getElementById('cb-time-spent');
-  const elLifelines = document.getElementById('cb-lifelines');
-  const elEloDelta = document.getElementById('cb-elo-delta');
+  const elFirst = document.getElementById("cb-first-attempt");
+  const elSecond = document.getElementById("cb-second-attempt");
+  const elAccuracy = document.getElementById("cb-accuracy");
+  const elTimeSpent = document.getElementById("cb-time-spent");
+  const elLifelines = document.getElementById("cb-lifelines");
+  const elEloDelta = document.getElementById("cb-elo-delta");
 
   if (elFirst) elFirst.textContent = `${result.correctFirstAttempt} / 10`;
   if (elSecond) elSecond.textContent = `${result.correctSecondAttempt}`;
@@ -571,78 +723,96 @@ async function renderResultDashboard() {
   const eloDeltaVal = result.eloDelta || 0;
   const isUnratedSession = Boolean(result.isForcedUnrated);
 
-  const ringExpectationStatus = document.getElementById('ring-expectation-status');
-  const ringEloDelta = document.getElementById('ring-elo-delta');
-  const ringEloComment = document.getElementById('ring-elo-comment');
+  const ringExpectationStatus = document.getElementById(
+    "ring-expectation-status",
+  );
+  const ringEloDelta = document.getElementById("ring-elo-delta");
+  const ringEloComment = document.getElementById("ring-elo-comment");
 
-  const elTierIcon = document.getElementById('elo-tier-icon');
-  const elTierTitle = document.getElementById('elo-tier-title');
-  const elStatusBadge = document.getElementById('elo-status-badge');
-  const elLiveVal = document.getElementById('elo-live-val');
-  const elReviewVal = document.getElementById('elo-review-val');
-  const elDeltaLarge = document.getElementById('elo-delta-large');
+  const elTierIcon = document.getElementById("elo-tier-icon");
+  const elTierTitle = document.getElementById("elo-tier-title");
+  const elStatusBadge = document.getElementById("elo-status-badge");
+  const elLiveVal = document.getElementById("elo-live-val");
+  const elReviewVal = document.getElementById("elo-review-val");
+  const elDeltaLarge = document.getElementById("elo-delta-large");
 
   if (isUnratedSession) {
     // Unrated Practice run: low-intensity muted platinum string stating exactly "0 ELO (Practice Run)"
     // Expectation status to "⏸️ Deactivated", and dynamic comment row to state exactly "Training"
-    const platinumColor = '#E2E8F0';
-    const mutedColor = '#94A3B8';
+    const platinumColor = "#E2E8F0";
+    const mutedColor = "#94A3B8";
 
     if (ringExpectationStatus) {
-      ringExpectationStatus.textContent = '⏸️ Deactivated';
+      ringExpectationStatus.textContent = "⏸️ Deactivated";
       ringExpectationStatus.style.color = mutedColor;
     }
     if (ringEloDelta) {
-      ringEloDelta.textContent = '0 ELO ';
+      ringEloDelta.textContent = "0 ELO ";
       ringEloDelta.style.color = platinumColor;
     }
     if (ringEloComment) {
-      ringEloComment.textContent = 'Training';
+      ringEloComment.textContent = "Training";
       ringEloComment.style.color = platinumColor;
     }
     if (elEloDelta) {
-      elEloDelta.textContent = '0 ELO (Practice Run)';
+      elEloDelta.textContent = "0 ELO (Practice Run)";
       elEloDelta.style.color = platinumColor;
     }
     if (elDeltaLarge) {
-      elDeltaLarge.textContent = '0 ELO (Practice Run)';
+      elDeltaLarge.textContent = "0 ELO (Practice Run)";
       elDeltaLarge.style.color = platinumColor;
     }
     if (elReviewVal) {
-      elReviewVal.textContent = 'Training';
+      elReviewVal.textContent = "Training";
       elReviewVal.style.color = platinumColor;
     }
     if (elStatusBadge) {
-      elStatusBadge.textContent = 'UNRATED PRACTICE';
-      elStatusBadge.style.background = 'rgba(148, 163, 184, 0.15)';
+      elStatusBadge.textContent = "UNRATED PRACTICE";
+      elStatusBadge.style.background = "rgba(148, 163, 184, 0.15)";
       elStatusBadge.style.color = platinumColor;
-      elStatusBadge.style.borderColor = 'rgba(148, 163, 184, 0.4)';
+      elStatusBadge.style.borderColor = "rgba(148, 163, 184, 0.4)";
     }
   } else {
     // Official Rated Contest
     const isSuccessfulRun = eloDeltaVal > 0;
-    const supportiveRemarks = ['Amazing!', 'Brilliant!', 'Flawless!', 'Spectacular!', 'Mastery!'];
-    const criticalRemarks = ['Unexpected', 'Slumped', 'Sub-par', 'Velocity Slack', 'Hesitant'];
+    const supportiveRemarks = [
+      "Amazing!",
+      "Brilliant!",
+      "Flawless!",
+      "Spectacular!",
+      "Mastery!",
+    ];
+    const criticalRemarks = [
+      "Unexpected",
+      "Slumped",
+      "Sub-par",
+      "Velocity Slack",
+      "Hesitant",
+    ];
 
-    const chosenComment = result.verdictComment || (isSuccessfulRun
-      ? supportiveRemarks[Math.floor(Math.random() * supportiveRemarks.length)]
-      : criticalRemarks[Math.floor(Math.random() * criticalRemarks.length)]);
+    const chosenComment =
+      result.verdictComment ||
+      (isSuccessfulRun
+        ? supportiveRemarks[
+            Math.floor(Math.random() * supportiveRemarks.length)
+          ]
+        : criticalRemarks[Math.floor(Math.random() * criticalRemarks.length)]);
 
-    if (result.lockdownOutcome === 'TERMINATED') {
-      const amberColor = '#F59E0B';
-      const formattedDelta = '0 ELO';
+    if (result.lockdownOutcome === "TERMINATED") {
+      const amberColor = "#F59E0B";
+      const formattedDelta = "0 ELO";
 
       if (ringExpectationStatus) {
-        ringExpectationStatus.textContent = '✔️ Lockdown Cleared';
-        ringExpectationStatus.style.color = '#10B981';
+        ringExpectationStatus.textContent = "✔️ Lockdown Cleared";
+        ringExpectationStatus.style.color = "#10B981";
       }
       if (ringEloDelta) {
         ringEloDelta.innerHTML = `0 ELO <span style="display: block; font-size: 0.72rem; color: #F59E0B; font-weight: 700; margin-top: 2px;">(Absorbed +${result.absorbedDelta || 0} ELO Penalty)</span>`;
         ringEloDelta.style.color = amberColor;
       }
       if (ringEloComment) {
-        ringEloComment.textContent = 'Lockdown Cleared';
-        ringEloComment.style.color = '#10B981';
+        ringEloComment.textContent = "Lockdown Cleared";
+        ringEloComment.style.color = "#10B981";
       }
       if (elEloDelta) {
         elEloDelta.textContent = `0 ELO (Absorbed +${result.absorbedDelta || 0})`;
@@ -653,22 +823,22 @@ async function renderResultDashboard() {
         elDeltaLarge.style.color = amberColor;
       }
       if (elReviewVal) {
-        elReviewVal.textContent = 'Lockdown Cleared';
-        elReviewVal.style.color = '#10B981';
+        elReviewVal.textContent = "Lockdown Cleared";
+        elReviewVal.style.color = "#10B981";
       }
       if (elStatusBadge) {
-        elStatusBadge.textContent = 'PENALTY ABSORBED';
-        elStatusBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+        elStatusBadge.textContent = "PENALTY ABSORBED";
+        elStatusBadge.style.background = "rgba(245, 158, 11, 0.15)";
         elStatusBadge.style.color = amberColor;
-        elStatusBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+        elStatusBadge.style.borderColor = "rgba(245, 158, 11, 0.4)";
       }
     } else if (isSuccessfulRun) {
       // Successful Rated run: vibrant neon green ELO delta change, expectation status ✔️ Passed
-      const neonGreen = '#10B981';
+      const neonGreen = "#10B981";
       const formattedDelta = `+${eloDeltaVal} ELO`;
 
       if (ringExpectationStatus) {
-        ringExpectationStatus.textContent = '✔️ Passed';
+        ringExpectationStatus.textContent = "✔️ Passed";
         ringExpectationStatus.style.color = neonGreen;
       }
       if (ringEloDelta) {
@@ -684,7 +854,7 @@ async function renderResultDashboard() {
         elEloDelta.style.color = neonGreen;
       }
       if (elDeltaLarge) {
-        elDeltaLarge.innerHTML = `${formattedDelta}${result.comboStrikeBonusElo ? ` <span style="display: block; font-size: 0.725rem; color: #38BDF8; font-weight: 700; margin-top: 2px;">⚡ Includes +${result.comboStrikeBonusElo} Combo Bonus</span>` : ''}`;
+        elDeltaLarge.innerHTML = `${formattedDelta}${result.comboStrikeBonusElo ? ` <span style="display: block; font-size: 0.725rem; color: #38BDF8; font-weight: 700; margin-top: 2px;">⚡ Includes +${result.comboStrikeBonusElo} Combo Bonus</span>` : ""}`;
         elDeltaLarge.style.color = neonGreen;
       }
       if (elReviewVal) {
@@ -692,18 +862,21 @@ async function renderResultDashboard() {
         elReviewVal.style.color = neonGreen;
       }
       if (elStatusBadge) {
-        elStatusBadge.textContent = 'OFFICIAL RATED';
-        elStatusBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+        elStatusBadge.textContent = "OFFICIAL RATED";
+        elStatusBadge.style.background = "rgba(16, 185, 129, 0.15)";
         elStatusBadge.style.color = neonGreen;
-        elStatusBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        elStatusBadge.style.borderColor = "rgba(16, 185, 129, 0.4)";
       }
     } else {
       // Underperforming Rated run: sharp neon red ELO drop, expectation status ❌ Failed
-      const neonRed = '#EF4444';
+      const neonRed = "#EF4444";
       const formattedDelta = `${eloDeltaVal} ELO`;
 
       if (ringExpectationStatus) {
-        ringExpectationStatus.textContent = result.lockdownOutcome === 'EXTENDED' ? '⚠️ Lockdown Extended' : '❌ Failed';
+        ringExpectationStatus.textContent =
+          result.lockdownOutcome === "EXTENDED"
+            ? "⚠️ Lockdown Extended"
+            : "❌ Failed";
         ringExpectationStatus.style.color = neonRed;
       }
       if (ringEloDelta) {
@@ -719,7 +892,7 @@ async function renderResultDashboard() {
         elEloDelta.style.color = neonRed;
       }
       if (elDeltaLarge) {
-        elDeltaLarge.innerHTML = `${formattedDelta}${result.lockdownOutcome === 'EXTENDED' ? ` <span style="display: block; font-size: 0.725rem; color: #F87171; font-weight: 700; margin-top: 2px;">⚠️ Negative In Lockdown — Restriction Stays Active</span>` : ''}`;
+        elDeltaLarge.innerHTML = `${formattedDelta}${result.lockdownOutcome === "EXTENDED" ? ` <span style="display: block; font-size: 0.725rem; color: #F87171; font-weight: 700; margin-top: 2px;">⚠️ Negative In Lockdown — Restriction Stays Active</span>` : ""}`;
         elDeltaLarge.style.color = neonRed;
       }
       if (elReviewVal) {
@@ -727,18 +900,21 @@ async function renderResultDashboard() {
         elReviewVal.style.color = neonRed;
       }
       if (elStatusBadge) {
-        elStatusBadge.textContent = result.lockdownOutcome === 'EXTENDED' ? 'LOCKDOWN EXTENDED' : 'OFFICIAL RATED';
-        elStatusBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+        elStatusBadge.textContent =
+          result.lockdownOutcome === "EXTENDED"
+            ? "LOCKDOWN EXTENDED"
+            : "OFFICIAL RATED";
+        elStatusBadge.style.background = "rgba(239, 68, 68, 0.15)";
         elStatusBadge.style.color = neonRed;
-        elStatusBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+        elStatusBadge.style.borderColor = "rgba(239, 68, 68, 0.4)";
       }
     }
   }
 
-  if (elTierIcon) elTierIcon.textContent = currentTier.symbol || '🧩';
+  if (elTierIcon) elTierIcon.textContent = currentTier.symbol || "🧩";
   if (elTierTitle) {
-    elTierTitle.textContent = currentTier.title || 'Composite Apprentice';
-    elTierTitle.style.color = currentTier.colorHex || '#FFFFFF';
+    elTierTitle.textContent = currentTier.title || "Composite Apprentice";
+    elTierTitle.style.color = currentTier.colorHex || "#FFFFFF";
   }
   if (elLiveVal) elLiveVal.textContent = `${getUserElo().toLocaleString()} ELO`;
 
@@ -752,35 +928,79 @@ async function renderResultDashboard() {
    * Isolates and flags the peak bottleneck with glowing laser-amber warning outline.
    */
   function renderMicroLatencyEvaluationGraph(resultObj) {
-    let latencyData = Array.isArray(resultObj.factorLatencyAudit) && resultObj.factorLatencyAudit.length > 0
-      ? [...resultObj.factorLatencyAudit]
-      : [];
+    let latencyData =
+      Array.isArray(resultObj.factorLatencyAudit) &&
+      resultObj.factorLatencyAudit.length > 0
+        ? [...resultObj.factorLatencyAudit]
+        : [];
 
     // Fallback generation if no live snapshot is available
     if (latencyData.length === 0) {
-      if (Array.isArray(resultObj.compilerLatencyAudit) && resultObj.compilerLatencyAudit.length > 0) {
+      if (
+        Array.isArray(resultObj.compilerLatencyAudit) &&
+        resultObj.compilerLatencyAudit.length > 0
+      ) {
         latencyData = [];
-        resultObj.compilerLatencyAudit.forEach(q => {
+        resultObj.compilerLatencyAudit.forEach((q) => {
           const factors = factorize(q.number) || [2, 3];
-          const baseMs = Math.round(((resultObj.timeSpent || 45) / resultObj.compilerLatencyAudit.length) * 1000);
+          const baseMs = Math.round(
+            ((resultObj.timeSpent || 45) /
+              resultObj.compilerLatencyAudit.length) *
+              1000,
+          );
           factors.forEach((p, idx) => {
             latencyData.push({
               factor: p,
-              latencyMs: Math.round(baseMs * (p > 7 ? 1.75 : 0.85) + (idx * 45)),
+              latencyMs: Math.round(baseMs * (p > 7 ? 1.75 : 0.85) + idx * 45),
               questionNumber: q.number,
-              isProblematic: false
+              isProblematic: false,
             });
           });
         });
       } else {
         latencyData = [
-          { factor: 2, latencyMs: 320, questionNumber: 12, isProblematic: false },
-          { factor: 2, latencyMs: 340, questionNumber: 12, isProblematic: false },
-          { factor: 3, latencyMs: 460, questionNumber: 12, isProblematic: false },
-          { factor: 7, latencyMs: 820, questionNumber: 42, isProblematic: false },
-          { factor: 17, latencyMs: 1420, questionNumber: 68, isProblematic: true },
-          { factor: 5, latencyMs: 510, questionNumber: 85, isProblematic: false },
-          { factor: 11, latencyMs: 910, questionNumber: 99, isProblematic: false }
+          {
+            factor: 2,
+            latencyMs: 320,
+            questionNumber: 12,
+            isProblematic: false,
+          },
+          {
+            factor: 2,
+            latencyMs: 340,
+            questionNumber: 12,
+            isProblematic: false,
+          },
+          {
+            factor: 3,
+            latencyMs: 460,
+            questionNumber: 12,
+            isProblematic: false,
+          },
+          {
+            factor: 7,
+            latencyMs: 820,
+            questionNumber: 42,
+            isProblematic: false,
+          },
+          {
+            factor: 17,
+            latencyMs: 1420,
+            questionNumber: 68,
+            isProblematic: true,
+          },
+          {
+            factor: 5,
+            latencyMs: 510,
+            questionNumber: 85,
+            isProblematic: false,
+          },
+          {
+            factor: 11,
+            latencyMs: 910,
+            questionNumber: 99,
+            isProblematic: false,
+          },
         ];
       }
     }
@@ -788,7 +1008,7 @@ async function renderResultDashboard() {
     // Find the single peak latency factor (Problematic Bottleneck)
     let maxLatency = 0;
     let problematicItem = latencyData[0];
-    latencyData.forEach(item => {
+    latencyData.forEach((item) => {
       if (item.latencyMs > maxLatency) {
         maxLatency = item.latencyMs;
         problematicItem = item;
@@ -796,21 +1016,35 @@ async function renderResultDashboard() {
     });
 
     // Strict isolation: flag only the peak element
-    latencyData.forEach(item => {
-      item.isProblematic = (item === problematicItem);
+    latencyData.forEach((item) => {
+      item.isProblematic = item === problematicItem;
     });
 
-    const totalLatency = latencyData.reduce((acc, cur) => acc + cur.latencyMs, 0);
-    const avgLatency = Math.round(totalLatency / Math.max(1, latencyData.length));
-    const speedDelta = (problematicItem.latencyMs / Math.max(1, avgLatency)).toFixed(1);
+    const totalLatency = latencyData.reduce(
+      (acc, cur) => acc + cur.latencyMs,
+      0,
+    );
+    const avgLatency = Math.round(
+      totalLatency / Math.max(1, latencyData.length),
+    );
+    const speedDelta = (
+      problematicItem.latencyMs / Math.max(1, avgLatency)
+    ).toFixed(1);
 
     // Construct High-Performance Visual Bar Chart
-    const chartBarsHtml = latencyData.map(item => {
-      const heightPercent = Math.max(14, Math.min(100, Math.round((item.latencyMs / Math.max(1, maxLatency)) * 100)));
-      const isBottleneck = item.isProblematic;
+    const chartBarsHtml = latencyData
+      .map((item) => {
+        const heightPercent = Math.max(
+          14,
+          Math.min(
+            100,
+            Math.round((item.latencyMs / Math.max(1, maxLatency)) * 100),
+          ),
+        );
+        const isBottleneck = item.isProblematic;
 
-      return `
-        <div class="micro-latency-bar-col ${isBottleneck ? 'is-bottleneck' : ''}" title="Prime Factor ${item.factor} | ${item.latencyMs}ms | Target ${item.questionNumber || 'N/A'}">
+        return `
+        <div class="micro-latency-bar-col ${isBottleneck ? "is-bottleneck" : ""}" title="Prime Factor ${item.factor} | ${item.latencyMs}ms | Target ${item.questionNumber || "N/A"}">
           <span class="micro-latency-val tabular-nums">${item.latencyMs}ms</span>
           <div class="micro-latency-bar-track">
             <div class="micro-latency-bar-fill" style="height: ${heightPercent}%;"></div>
@@ -818,10 +1052,11 @@ async function renderResultDashboard() {
           <span class="micro-latency-factor-label">
             <span class="p-symbol">P=</span>${item.factor}
           </span>
-          ${isBottleneck ? '<span class="bottleneck-tag">PEAK</span>' : ''}
+          ${isBottleneck ? '<span class="bottleneck-tag">PEAK</span>' : ""}
         </div>
       `;
-    }).join('');
+      })
+      .join("");
 
     return `
       <div class="micro-latency-graph-card" style="background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(14, 165, 233, 0.35); border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);">
@@ -856,7 +1091,7 @@ async function renderResultDashboard() {
             <span style="font-family: var(--font-heading); font-weight: 800; font-size: 1.02rem; color: #F59E0B; letter-spacing: 0.04em;">NUMERICAL BOTTLENECK MATRIX DIAGNOSIS</span>
           </div>
           <p style="color: #FFFFFF; font-size: 0.885rem; line-height: 1.55; margin: 0;">
-            Prime factor <strong style="color: #FBBF24; font-size: 0.95rem;">P = ${problematicItem.factor}</strong> (Question Target ${problematicItem.questionNumber ? problematicItem.questionNumber.toLocaleString() : 'Challenge'}) exhibited peak cognitive extraction resistance, clocking <strong style="color: #FBBF24;">${problematicItem.latencyMs.toLocaleString()} ms</strong> (${speedDelta}x slower than session mean).
+            Prime factor <strong style="color: #FBBF24; font-size: 0.95rem;">P = ${problematicItem.factor}</strong> (Question Target ${problematicItem.questionNumber ? problematicItem.questionNumber.toLocaleString() : "Challenge"}) exhibited peak cognitive extraction resistance, clocking <strong style="color: #FBBF24;">${problematicItem.latencyMs.toLocaleString()} ms</strong> (${speedDelta}x slower than session mean).
           </p>
           <p style="color: #CBD5E1; font-size: 0.825rem; line-height: 1.5; margin-top: 6px; margin-bottom: 0;">
             <em>Competitor Directive:</em> Reinforce mental decomposition heuristics and modular divisibility rules for prime <strong>${problematicItem.factor}</strong> before selecting your next competitive division tier.
@@ -867,29 +1102,34 @@ async function renderResultDashboard() {
   }
 
   // Populate Failure Audit Stack with Micro-Latency Factor Evaluation Graph & Nested Mistake Analysis
-  const failureContainer = document.getElementById('failure-audit-list');
+  const failureContainer = document.getElementById("failure-audit-list");
   if (failureContainer) {
     const microLatencyHtml = renderMicroLatencyEvaluationGraph(result);
-    let failureStackHtml = '';
+    let failureStackHtml = "";
 
     if (result.failureStack && result.failureStack.length > 0) {
-      failureStackHtml = result.failureStack.map(f => {
-        const exp = toExponentialForm(f.trueFactors);
-        const expStr = formatExponentialString(exp);
+      failureStackHtml = result.failureStack
+        .map((f) => {
+          const exp = toExponentialForm(f.trueFactors);
+          const expStr = formatExponentialString(exp);
 
-        let diagnosis1 = 'Omitted / Skipped';
-        if (f.attempt1 && f.attempt1 !== '[Skipped/Unanswered]') {
-          const eval1 = parseAndValidateFactorInput(f.attempt1, f.number);
-          diagnosis1 = eval1.reason || (eval1.isValid ? 'Correct value late' : 'Arithmetic mismatch');
-        }
+          let diagnosis1 = "Omitted / Skipped";
+          if (f.attempt1 && f.attempt1 !== "[Skipped/Unanswered]") {
+            const eval1 = parseAndValidateFactorInput(f.attempt1, f.number);
+            diagnosis1 =
+              eval1.reason ||
+              (eval1.isValid ? "Correct value late" : "Arithmetic mismatch");
+          }
 
-        let diagnosis2 = 'None submitted';
-        if (f.attempt2 && f.attempt2 !== 'None') {
-          const eval2 = parseAndValidateFactorInput(f.attempt2, f.number);
-          diagnosis2 = eval2.reason || (eval2.isValid ? 'Corrected in overtime' : 'Failed retry');
-        }
+          let diagnosis2 = "None submitted";
+          if (f.attempt2 && f.attempt2 !== "None") {
+            const eval2 = parseAndValidateFactorInput(f.attempt2, f.number);
+            diagnosis2 =
+              eval2.reason ||
+              (eval2.isValid ? "Corrected in overtime" : "Failed retry");
+          }
 
-        return `
+          return `
           <div class="audit-item" style="padding: 1.25rem;">
             <div class="audit-q" style="font-size: 1.1rem; margin-bottom: 0.75rem; font-weight: 700; color: #FFFFFF;">Target Integer: ${f.number.toLocaleString()}</div>
             
@@ -916,7 +1156,7 @@ async function renderResultDashboard() {
                   <tr style="background: rgba(16, 185, 129, 0.1);">
                     <td style="color: #34D399; font-weight: 700;">Precise Factors</td>
                     <td colspan="2" style="font-size: 1rem; color: #FFFFFF; font-weight: 700;">
-                      ${expStr} &nbsp; <span style="color: var(--text-muted); font-weight: 600;">(${f.trueFactors.join(' &times; ')})</span>
+                      ${expStr} &nbsp; <span style="color: var(--text-muted); font-weight: 600;">(${f.trueFactors.join(" &times; ")})</span>
                     </td>
                   </tr>
                 </tbody>
@@ -924,17 +1164,23 @@ async function renderResultDashboard() {
             </div>
           </div>
         `;
-      }).join('');
+        })
+        .join("");
     } else {
       failureStackHtml = `<div class="empty-audit-notice">Zero computational faults recorded. Pure mathematical execution.</div>`;
     }
 
     if (failureContainer && failureContainer.parentElement) {
-      let graphWrapper = document.getElementById('micro-latency-graph-wrapper-node');
+      let graphWrapper = document.getElementById(
+        "micro-latency-graph-wrapper-node",
+      );
       if (!graphWrapper) {
-        graphWrapper = document.createElement('div');
-        graphWrapper.id = 'micro-latency-graph-wrapper-node';
-        failureContainer.parentElement.insertBefore(graphWrapper, failureContainer);
+        graphWrapper = document.createElement("div");
+        graphWrapper.id = "micro-latency-graph-wrapper-node";
+        failureContainer.parentElement.insertBefore(
+          graphWrapper,
+          failureContainer,
+        );
       }
       graphWrapper.innerHTML = microLatencyHtml;
     }
@@ -942,13 +1188,14 @@ async function renderResultDashboard() {
   }
 
   // Populate Redemption Track
-  const redemptionContainer = document.getElementById('redemption-audit-list');
+  const redemptionContainer = document.getElementById("redemption-audit-list");
   if (redemptionContainer) {
     if (result.redemptionTrack && result.redemptionTrack.length > 0) {
-      redemptionContainer.innerHTML = result.redemptionTrack.map(r => {
-        const exp = toExponentialForm(r.trueFactors);
-        const expStr = formatExponentialString(exp);
-        return `
+      redemptionContainer.innerHTML = result.redemptionTrack
+        .map((r) => {
+          const exp = toExponentialForm(r.trueFactors);
+          const expStr = formatExponentialString(exp);
+          return `
           <div class="audit-item" style="background: rgba(30, 30, 47, 0.9); border: 1px solid rgba(255, 215, 0, 0.25); border-radius: 0.6rem; padding: 0.85rem 1rem; margin-bottom: 0.75rem;">
             <div class="audit-q" style="font-weight: 700; color: #A6FF00; margin-bottom: 0.35rem; font-size: 0.95rem;">
               Target Integer: ${r.number.toLocaleString()}
@@ -967,36 +1214,40 @@ async function renderResultDashboard() {
             </div>
           </div>
         `;
-      }).join('');
+        })
+        .join("");
     } else {
       redemptionContainer.innerHTML = `<div class="empty-audit-notice" >No redemption entries recorded. (No overtime retries utilized).</div>`;
     }
   }
 
   // Populate Compiler Latency Audit Table (Sub-Second Pollard's Rho Logs)
-  const latencyTableBody = document.getElementById('compiler-latency-tbody');
-  const avgLatencyEl = document.getElementById('avg-compiler-latency');
+  const latencyTableBody = document.getElementById("compiler-latency-tbody");
+  const avgLatencyEl = document.getElementById("avg-compiler-latency");
   if (latencyTableBody) {
-    const latencyLogs = result.compilerLatencyAudit || Array.from({ length: 10 }, (_, i) => ({
-      id: i + 1,
-      number: 1000 + i * 23,
-      latencyMs: +(0.035 + Math.random() * 0.08).toFixed(3),
-      factorCount: 3,
-      algorithm: "Pollard's Rho (Brent)",
-      status: 'Deterministic Verified'
-    }));
+    const latencyLogs =
+      result.compilerLatencyAudit ||
+      Array.from({ length: 10 }, (_, i) => ({
+        id: i + 1,
+        number: 1000 + i * 23,
+        latencyMs: +(0.035 + Math.random() * 0.08).toFixed(3),
+        factorCount: 3,
+        algorithm: "Pollard's Rho (Brent)",
+        status: "Deterministic Verified",
+      }));
 
     let totalMs = 0;
-    latencyTableBody.innerHTML = latencyLogs.map((log, idx) => {
-      const lat = Number(log.latencyMs) || 0.04;
-      totalMs += lat;
-      // defensive defaults: a partial/legacy audit row must never print "undefined" or throw
-      const qid = log.id ?? log.questionNumber ?? (idx + 1);
-      const num = Number(log.number);
-      const numText = Number.isFinite(num) ? num.toLocaleString() : '—';
-      const algo = log.algorithm || "Pollard's Rho (Brent)";
-      const status = log.status || 'Deterministic Verified';
-      return `
+    latencyTableBody.innerHTML = latencyLogs
+      .map((log, idx) => {
+        const lat = Number(log.latencyMs) || 0.04;
+        totalMs += lat;
+        // defensive defaults: a partial/legacy audit row must never print "undefined" or throw
+        const qid = log.id ?? log.questionNumber ?? idx + 1;
+        const num = Number(log.number);
+        const numText = Number.isFinite(num) ? num.toLocaleString() : "—";
+        const algo = log.algorithm || "Pollard's Rho (Brent)";
+        const status = log.status || "Deterministic Verified";
+        return `
         <tr>
           <td data-label="Index" class="tabular-nums font-bold">Q${qid}</td>
           <td data-label="Target N" class="tabular-nums font-bold" style="color: #FFFFFF;">${numText}</td>
@@ -1005,7 +1256,8 @@ async function renderResultDashboard() {
           <td data-label="State" class="text-mint font-bold">✓ ${status}</td>
         </tr>
       `;
-    }).join('');
+      })
+      .join("");
 
     if (avgLatencyEl && latencyLogs.length > 0) {
       const avg = (totalMs / latencyLogs.length).toFixed(3);
@@ -1014,11 +1266,11 @@ async function renderResultDashboard() {
   }
 
   // Action Buttons & Report Card Copy Action
-  const btnRetake = document.getElementById('result-retake-btn');
-  const btnNewRange = document.getElementById('result-new-range-btn');
-  const btnShare = document.getElementById('result-share-btn');
-  const btnCardShare = document.getElementById('card-share-btn');
-  const shareToast = document.getElementById('share-verdict-toast');
+  const btnRetake = document.getElementById("result-retake-btn");
+  const btnNewRange = document.getElementById("result-new-range-btn");
+  const btnShare = document.getElementById("result-share-btn");
+  const btnCardShare = document.getElementById("card-share-btn");
+  const shareToast = document.getElementById("share-verdict-toast");
 
   const copyTextToClipboard = async (text) => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1026,19 +1278,19 @@ async function renderResultDashboard() {
         await navigator.clipboard.writeText(text);
         return true;
       } catch (err) {
-        console.warn('Async clipboard write failed, using fallback', err);
+        console.warn("Async clipboard write failed, using fallback", err);
       }
     }
     try {
-      const textArea = document.createElement('textarea');
+      const textArea = document.createElement("textarea");
       textArea.value = text;
-      textArea.style.position = 'fixed';
-      textArea.style.left = '-999999px';
-      textArea.style.top = '-999999px';
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
       document.body.appendChild(textArea);
       textArea.focus();
       textArea.select();
-      const successful = document.execCommand('copy');
+      const successful = document.execCommand("copy");
       document.body.removeChild(textArea);
       return successful;
     } catch (err) {
@@ -1047,20 +1299,28 @@ async function renderResultDashboard() {
   };
 
   const getShareTelemetryText = () => {
-    const firstAttemptClears = (result.correctFirstAttempt !== undefined) ? result.correctFirstAttempt : totalSolved;
+    const firstAttemptClears =
+      result.correctFirstAttempt !== undefined
+        ? result.correctFirstAttempt
+        : totalSolved;
     const totalQuestionsTarget = result.totalQuestions || 10;
     const rankTitle = `${currentTier.title} ${currentTier.symbol}`;
-    const categoryTitle = result.rangeTitle || 'Custom';
-    const eloDeltaStr = result.isForcedUnrated 
-      ? '0 ELO (Sandbox Practice)' 
-      : (result.eloDelta !== undefined 
-        ? (result.eloDelta > 0 ? `+${result.eloDelta} ELO` : `${result.eloDelta} ELO`) + ` (${result.verdictComment || 'Calibrated'})`
-        : '0 ELO (Practice Run)');
+    const categoryTitle = result.rangeTitle || "Custom";
+    const eloDeltaStr = result.isForcedUnrated
+      ? "0 ELO (Sandbox Practice)"
+      : result.eloDelta !== undefined
+        ? (result.eloDelta > 0
+            ? `+${result.eloDelta} ELO`
+            : `${result.eloDelta} ELO`) +
+          ` (${result.verdictComment || "Calibrated"})`
+        : "0 ELO (Practice Run)";
     const currentEloStr = `${getUserElo().toLocaleString()} ELO`;
-    const lifelinesUsed = result.lifelinesUsedCount !== undefined ? result.lifelinesUsedCount : 0;
+    const lifelinesUsed =
+      result.lifelinesUsedCount !== undefined ? result.lifelinesUsedCount : 0;
     const secondsSpent = result.timeSpent !== undefined ? result.timeSpent : 0;
 
-    return `⚡ Prime-Factor.app Performance Report ⚡\n\n` +
+    return (
+      `⚡ Prime-Factor.app Performance Report ⚡\n\n` +
       `🏆 Rank Tier: ${rankTitle}\n` +
       `📊 Final Score: ${result.score ?? 0}/100 points\n` +
       `🛡️ Category: ${categoryTitle} Tier\n` +
@@ -1072,69 +1332,74 @@ async function renderResultDashboard() {
       `🧪 Lifelines Used: ${lifelinesUsed}\n\n` +
       `✨ Certified By Rayaan Tasnim\n` +
       `🚀 Powered by Olympiad Edge\n` +
-      `© All rights reserved.`;
+      `© All rights reserved.`
+    );
   };
 
   const executeShareFeedback = async (buttonEl) => {
-    playSound('click');
+    playSound("click");
     const shareText = getShareTelemetryText();
     await copyTextToClipboard(shareText);
 
     if (buttonEl) {
       const originalHTML = buttonEl.innerHTML;
-      buttonEl.textContent = '✔️ Performance Report Copied!';
-      buttonEl.classList.add('btn-share-copied-glow');
+      buttonEl.textContent = "✔️ Performance Report Copied!";
+      buttonEl.classList.add("btn-share-copied-glow");
 
       setTimeout(() => {
         buttonEl.innerHTML = originalHTML;
-        buttonEl.classList.remove('btn-share-copied-glow');
+        buttonEl.classList.remove("btn-share-copied-glow");
       }, 2000);
     }
 
     if (shareToast) {
-      shareToast.style.display = 'block';
-      setTimeout(() => { shareToast.style.display = 'none'; }, 2000);
+      shareToast.style.display = "block";
+      setTimeout(() => {
+        shareToast.style.display = "none";
+      }, 2000);
     }
   };
 
   if (btnCardShare) {
-    btnCardShare.addEventListener('click', () => executeShareFeedback(btnCardShare));
+    btnCardShare.addEventListener("click", () =>
+      executeShareFeedback(btnCardShare),
+    );
   }
 
   if (btnShare) {
-    btnShare.addEventListener('click', () => executeShareFeedback(btnShare));
+    btnShare.addEventListener("click", () => executeShareFeedback(btnShare));
   }
 
   // Explicitly ensure settings gear icon triggers scrollable Engine Configuration modal
-  const settingsToggleBtn = document.getElementById('settings-toggle-btn');
+  const settingsToggleBtn = document.getElementById("settings-toggle-btn");
   if (settingsToggleBtn) {
-    settingsToggleBtn.addEventListener('click', (e) => {
+    settingsToggleBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      playSound('click');
-      const modal = document.getElementById('settings-modal');
+      playSound("click");
+      const modal = document.getElementById("settings-modal");
       if (modal) {
-        modal.classList.add('open');
+        modal.classList.add("open");
       }
     });
   }
 
   if (btnRetake) {
-    btnRetake.addEventListener('click', () => {
-      playSound('click');
+    btnRetake.addEventListener("click", () => {
+      playSound("click");
       setActiveExamParams({
         min: result.min,
         max: result.max,
         title: result.rangeTitle,
-        rules: getSettings()
+        rules: getSettings(),
       });
-      window.location.href = `./contract.html?min=${result.min}&max=${result.max}&title=${encodeURIComponent(result.rangeTitle || '')}`;
+      window.location.href = `./contract.html?min=${result.min}&max=${result.max}&title=${encodeURIComponent(result.rangeTitle || "")}`;
     });
   }
 
   if (btnNewRange) {
-    btnNewRange.addEventListener('click', () => {
-      playSound('click');
-      window.location.href = './ranges.html';
+    btnNewRange.addEventListener("click", () => {
+      playSound("click");
+      window.location.href = "./ranges.html";
     });
   }
 }
@@ -1148,30 +1413,39 @@ async function renderResultDashboard() {
  * 4. Time Consumption Expectation: Unveils hidden velocity thresholds and maps calculation speed
  */
 function renderVerificationLedger(result, activeUserElo) {
-  const container = document.getElementById('system-expectations-verification-ledger');
+  const container = document.getElementById(
+    "system-expectations-verification-ledger",
+  );
   if (!container) return;
 
   const totalQuestions = result.totalQuestions || 10;
-  const firstClears = result.correctFirstAttempt !== undefined ? result.correctFirstAttempt : 0;
-  const secondClears = result.correctSecondAttempt !== undefined ? result.correctSecondAttempt : 0;
+  const firstClears =
+    result.correctFirstAttempt !== undefined ? result.correctFirstAttempt : 0;
+  const secondClears =
+    result.correctSecondAttempt !== undefined ? result.correctSecondAttempt : 0;
   const totalSolvedMatch = firstClears + secondClears;
-  const matchAccuracyPct = Math.round((totalSolvedMatch / totalQuestions) * 100);
+  const matchAccuracyPct = Math.round(
+    (totalSolvedMatch / totalQuestions) * 100,
+  );
 
-  const expectations = computeSystemExpectations(activeUserElo, result.max || 200);
+  const expectations = computeSystemExpectations(
+    activeUserElo,
+    result.max || 200,
+  );
 
   // Update session mode badge if in unrated practice
-  const modeBadge = document.getElementById('ledger-session-mode-badge');
+  const modeBadge = document.getElementById("ledger-session-mode-badge");
   if (modeBadge) {
-    if (result.isForcedUnrated || result.participationMode === 'unrated') {
-      modeBadge.textContent = 'Unrated Practice Audit Matrix';
-      modeBadge.style.color = '#34D399';
-      modeBadge.style.borderColor = 'rgba(52, 211, 153, 0.4)';
-      modeBadge.style.background = 'rgba(16, 185, 129, 0.12)';
+    if (result.isForcedUnrated || result.participationMode === "unrated") {
+      modeBadge.textContent = "Unrated Practice Audit Matrix";
+      modeBadge.style.color = "#34D399";
+      modeBadge.style.borderColor = "rgba(52, 211, 153, 0.4)";
+      modeBadge.style.background = "rgba(16, 185, 129, 0.12)";
     } else {
-      modeBadge.textContent = 'Rated Contest Verification Matrix';
-      modeBadge.style.color = '#38BDF8';
-      modeBadge.style.borderColor = 'rgba(56, 189, 248, 0.4)';
-      modeBadge.style.background = 'rgba(14, 165, 233, 0.15)';
+      modeBadge.textContent = "Rated Contest Verification Matrix";
+      modeBadge.style.color = "#38BDF8";
+      modeBadge.style.borderColor = "rgba(56, 189, 248, 0.4)";
+      modeBadge.style.background = "rgba(14, 165, 233, 0.15)";
     }
   }
 
@@ -1185,21 +1459,21 @@ function renderVerificationLedger(result, activeUserElo) {
   const isScorePassed = rawScore >= targetScore;
   const scorePts = Math.min(10.0, Math.max(0.0, +(rawScore / 10).toFixed(1)));
 
-  const cbScore = document.getElementById('checkbox-score-status');
-  const symScore = document.getElementById('symbol-score-status');
-  const txtScore = document.getElementById('text-score-status');
-  const ratingScore = document.getElementById('rating-score-points');
-  const footScore = document.getElementById('footer-score-benchmark');
+  const cbScore = document.getElementById("checkbox-score-status");
+  const symScore = document.getElementById("symbol-score-status");
+  const txtScore = document.getElementById("text-score-status");
+  const ratingScore = document.getElementById("rating-score-points");
+  const footScore = document.getElementById("footer-score-benchmark");
 
   if (cbScore && symScore && txtScore) {
     if (isScorePassed) {
-      cbScore.className = 'custom-status-checkbox pass';
-      symScore.textContent = '✔️';
-      txtScore.textContent = 'Target Conquered';
+      cbScore.className = "custom-status-checkbox pass";
+      symScore.textContent = "✔️";
+      txtScore.textContent = "Target Conquered";
     } else {
-      cbScore.className = 'custom-status-checkbox fail';
-      symScore.textContent = '❌';
-      txtScore.textContent = 'Target Missed';
+      cbScore.className = "custom-status-checkbox fail";
+      symScore.textContent = "❌";
+      txtScore.textContent = "Target Missed";
     }
   }
   if (ratingScore) {
@@ -1216,31 +1490,33 @@ function renderVerificationLedger(result, activeUserElo) {
   // against the historical rolling ledger.
   // -------------------------------------------------------------
   const ledger = getLedger();
-  const historicalAcc = ledger.totalAttempted > 0 
-    ? Math.round((ledger.totalSolved / ledger.totalAttempted) * 100) 
-    : 80;
+  const historicalAcc =
+    ledger.totalAttempted > 0
+      ? Math.round((ledger.totalSolved / ledger.totalAttempted) * 100)
+      : 80;
   const accuracyBenchmark = Math.min(historicalAcc, 80);
   const isAccuracyPassed = matchAccuracyPct >= accuracyBenchmark;
-  
+
   // Fractional rating out of 10 combining 1st clears (1.0 weight) and 2nd chance overtime (0.75 weight)
-  const precisionRatio = ((firstClears * 1.0 + secondClears * 0.75) / totalQuestions) * 10;
+  const precisionRatio =
+    ((firstClears * 1.0 + secondClears * 0.75) / totalQuestions) * 10;
   const accuracyPts = Math.min(10.0, Math.max(0.0, +precisionRatio.toFixed(1)));
 
-  const cbAccuracy = document.getElementById('checkbox-accuracy-status');
-  const symAccuracy = document.getElementById('symbol-accuracy-status');
-  const txtAccuracy = document.getElementById('text-accuracy-status');
-  const ratingAccuracy = document.getElementById('rating-accuracy-points');
-  const footAccuracy = document.getElementById('footer-accuracy-benchmark');
+  const cbAccuracy = document.getElementById("checkbox-accuracy-status");
+  const symAccuracy = document.getElementById("symbol-accuracy-status");
+  const txtAccuracy = document.getElementById("text-accuracy-status");
+  const ratingAccuracy = document.getElementById("rating-accuracy-points");
+  const footAccuracy = document.getElementById("footer-accuracy-benchmark");
 
   if (cbAccuracy && symAccuracy && txtAccuracy) {
     if (isAccuracyPassed) {
-      cbAccuracy.className = 'custom-status-checkbox pass';
-      symAccuracy.textContent = '✔️';
-      txtAccuracy.textContent = 'Precision Satisfied';
+      cbAccuracy.className = "custom-status-checkbox pass";
+      symAccuracy.textContent = "✔️";
+      txtAccuracy.textContent = "Precision Satisfied";
     } else {
-      cbAccuracy.className = 'custom-status-checkbox fail';
-      symAccuracy.textContent = '❌';
-      txtAccuracy.textContent = 'Precision Deficit';
+      cbAccuracy.className = "custom-status-checkbox fail";
+      symAccuracy.textContent = "❌";
+      txtAccuracy.textContent = "Precision Deficit";
     }
   }
   if (ratingAccuracy) {
@@ -1255,15 +1531,16 @@ function renderVerificationLedger(result, activeUserElo) {
   // Ticks [✔️] and prints rating out of 10 by auditing resource efficiency
   // (e.g., a perfect 10/10 points if 0 lifelines were triggered during execution).
   // -------------------------------------------------------------
-  const lifelinesUsed = result.lifelinesUsedCount !== undefined ? result.lifelinesUsedCount : 0;
-  const allowedLifelines = (activeUserElo >= 1200) ? 0 : 1;
+  const lifelinesUsed =
+    result.lifelinesUsedCount !== undefined ? result.lifelinesUsedCount : 0;
+  const allowedLifelines = activeUserElo >= 1200 ? 0 : 1;
   const isLifelinesPassed = lifelinesUsed <= allowedLifelines;
 
   let lifelineRating = 10.0;
   if (lifelinesUsed === 0) {
     lifelineRating = 10.0;
   } else if (lifelinesUsed === 1) {
-    lifelineRating = (allowedLifelines >= 1) ? 8.5 : 7.0;
+    lifelineRating = allowedLifelines >= 1 ? 8.5 : 7.0;
   } else if (lifelinesUsed === 2) {
     lifelineRating = 5.0;
   } else if (lifelinesUsed === 3) {
@@ -1272,21 +1549,22 @@ function renderVerificationLedger(result, activeUserElo) {
     lifelineRating = Math.max(0.0, +(10 - lifelinesUsed * 2.5).toFixed(1));
   }
 
-  const cbLifeline = document.getElementById('checkbox-lifeline-status');
-  const symLifeline = document.getElementById('symbol-lifeline-status');
-  const txtLifeline = document.getElementById('text-lifeline-status');
-  const ratingLifeline = document.getElementById('rating-lifeline-points');
-  const footLifeline = document.getElementById('footer-lifeline-benchmark');
+  const cbLifeline = document.getElementById("checkbox-lifeline-status");
+  const symLifeline = document.getElementById("symbol-lifeline-status");
+  const txtLifeline = document.getElementById("text-lifeline-status");
+  const ratingLifeline = document.getElementById("rating-lifeline-points");
+  const footLifeline = document.getElementById("footer-lifeline-benchmark");
 
   if (cbLifeline && symLifeline && txtLifeline) {
     if (isLifelinesPassed) {
-      cbLifeline.className = 'custom-status-checkbox pass';
-      symLifeline.textContent = '✔️';
-      txtLifeline.textContent = (lifelinesUsed === 0) ? 'Pure Unassisted Mastery' : 'Resource Efficient';
+      cbLifeline.className = "custom-status-checkbox pass";
+      symLifeline.textContent = "✔️";
+      txtLifeline.textContent =
+        lifelinesUsed === 0 ? "Pure Unassisted Mastery" : "Resource Efficient";
     } else {
-      cbLifeline.className = 'custom-status-checkbox fail';
-      symLifeline.textContent = '❌';
-      txtLifeline.textContent = 'Over-Assisted';
+      cbLifeline.className = "custom-status-checkbox fail";
+      symLifeline.textContent = "❌";
+      txtLifeline.textContent = "Over-Assisted";
     }
   }
   if (ratingLifeline) {
@@ -1301,41 +1579,53 @@ function renderVerificationLedger(result, activeUserElo) {
   // Ticks [✔️] and prints rating out of 10 by mapping factor calculation speed velocity thresholds.
   // (This metric must remain completely hidden from pre-flight contract.html and revealed entirely here).
   // -------------------------------------------------------------
-  const timeSpent = Math.max(1, result.timeSpent !== undefined ? result.timeSpent : 30);
-  const totalFactorsCount = (result.compilerLatencyAudit && result.compilerLatencyAudit.length > 0)
-    ? result.compilerLatencyAudit.reduce((acc, q) => acc + (q.factorCount || 2), 0)
-    : Math.max(1, totalQuestions * 2.5);
+  const timeSpent = Math.max(
+    1,
+    result.timeSpent !== undefined ? result.timeSpent : 30,
+  );
+  const totalFactorsCount =
+    result.compilerLatencyAudit && result.compilerLatencyAudit.length > 0
+      ? result.compilerLatencyAudit.reduce(
+          (acc, q) => acc + (q.factorCount || 2),
+          0,
+        )
+      : Math.max(1, totalQuestions * 2.5);
 
   const secPerFactor = +(timeSpent / totalFactorsCount).toFixed(2);
   let thresholdSec = 2.8;
-  const pacingMatch = expectations.pacing ? expectations.pacing.match(/([\d.]+)/) : null;
+  const pacingMatch = expectations.pacing
+    ? expectations.pacing.match(/([\d.]+)/)
+    : null;
   if (pacingMatch) thresholdSec = parseFloat(pacingMatch[1]);
 
   const isTimePassed = secPerFactor <= thresholdSec;
   let timeRating = 10.0;
   if (secPerFactor <= thresholdSec) {
     const margin = thresholdSec - secPerFactor;
-    timeRating = Math.min(10.0, +(8.5 + (margin / thresholdSec) * 1.5).toFixed(1));
+    timeRating = Math.min(
+      10.0,
+      +(8.5 + (margin / thresholdSec) * 1.5).toFixed(1),
+    );
   } else {
     const over = secPerFactor - thresholdSec;
     timeRating = Math.max(1.0, +(8.0 - (over / thresholdSec) * 4.5).toFixed(1));
   }
 
-  const cbTime = document.getElementById('checkbox-time-status');
-  const symTime = document.getElementById('symbol-time-status');
-  const txtTime = document.getElementById('text-time-status');
-  const ratingTime = document.getElementById('rating-time-points');
-  const footTime = document.getElementById('footer-time-benchmark');
+  const cbTime = document.getElementById("checkbox-time-status");
+  const symTime = document.getElementById("symbol-time-status");
+  const txtTime = document.getElementById("text-time-status");
+  const ratingTime = document.getElementById("rating-time-points");
+  const footTime = document.getElementById("footer-time-benchmark");
 
   if (cbTime && symTime && txtTime) {
     if (isTimePassed) {
-      cbTime.className = 'custom-status-checkbox pass';
-      symTime.textContent = '✔️';
-      txtTime.textContent = 'Velocity Qualified';
+      cbTime.className = "custom-status-checkbox pass";
+      symTime.textContent = "✔️";
+      txtTime.textContent = "Velocity Qualified";
     } else {
-      cbTime.className = 'custom-status-checkbox fail';
-      symTime.textContent = '❌';
-      txtTime.textContent = 'Velocity Sluggish';
+      cbTime.className = "custom-status-checkbox fail";
+      symTime.textContent = "❌";
+      txtTime.textContent = "Velocity Sluggish";
     }
   }
   if (ratingTime) {
@@ -1347,12 +1637,12 @@ function renderVerificationLedger(result, activeUserElo) {
 }
 
 function escapeHtml(str) {
-  if (!str) return '';
+  if (!str) return "";
   return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 /* ==========================================================================
@@ -1360,25 +1650,25 @@ function escapeHtml(str) {
    ========================================================================== */
 const enforceWhiteTextLock = () => {
   const targets = [
-    'diagnostic-title-val',
-    'diagnostic-text-val',
-    'verdict-badge-val',
-    'quantum-score-badge-node',
-    'quantum-verdict-title-node',
-    'quantum-verdict-quote-node'
+    "diagnostic-title-val",
+    "diagnostic-text-val",
+    "verdict-badge-val",
+    "quantum-score-badge-node",
+    "quantum-verdict-title-node",
+    "quantum-verdict-quote-node",
   ];
 
-  targets.forEach(id => {
+  targets.forEach((id) => {
     const el = document.getElementById(id);
     if (el) {
-      el.style.setProperty('color', '#FFFFFF', 'important');
-      el.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+      el.style.setProperty("color", "#FFFFFF", "important");
+      el.style.setProperty("-webkit-text-fill-color", "#FFFFFF", "important");
     }
   });
 
-  document.querySelectorAll('.master-ring-card').forEach(card => {
-    card.style.setProperty('background', '#111827', 'important');
-    card.style.setProperty('border', '1px solid #1F2937', 'important');
+  document.querySelectorAll(".master-ring-card").forEach((card) => {
+    card.style.setProperty("background", "#111827", "important");
+    card.style.setProperty("border", "1px solid #1F2937", "important");
   });
 };
 
@@ -1390,7 +1680,7 @@ observer.observe(document.body, {
   childList: true,
   subtree: true,
   characterData: true,
-  attributes: true
+  attributes: true,
 });
 
 enforceWhiteTextLock();

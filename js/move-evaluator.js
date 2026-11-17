@@ -18,28 +18,65 @@
 
 export const MOVE_EVALUATION_POOLS = {
   // Category 1: 🌟 Brilliant (!!) [T <= B * 0.35 and no hints unlocked]
-  POOL_A: ["🌟 Brilliant!!", "🧠 God-Mode!", "⚡ Transcendent!", "🧬 Overclocked!"],
+  POOL_A: [
+    "🌟 Brilliant!!",
+    "🧠 God-Mode!",
+    "⚡ Transcendent!",
+    "🧬 Overclocked!",
+  ],
   POOL_B: ["🚀 Godlike!", "💥 Decoded!", "🛸 Sub-Second!", "⚡ Synaptic!"],
-  POOL_C: ["🔥 Insane Pace!", "⚡ Pure Reflex!", "🎯 Bullseye!", "👑 Unstoppable!"],
+  POOL_C: [
+    "🔥 Insane Pace!",
+    "⚡ Pure Reflex!",
+    "🎯 Bullseye!",
+    "👑 Unstoppable!",
+  ],
 
   // Category 2: 🚀 Great Move (!) [T <= B * 0.65 and T > B * 0.35]
-  POOL_D: ["🚀 Great Move!", "🔥 Sharp Split!", "👑 Elite Factor!", "📐 Perfect Tree!"],
-  POOL_E: ["✨ Sharp Move!", "👑 High-Tension!", "⚡ Fast Cadence!", "🎯 Rapid Strike!"],
+  POOL_D: [
+    "🚀 Great Move!",
+    "🔥 Sharp Split!",
+    "👑 Elite Factor!",
+    "📐 Perfect Tree!",
+  ],
+  POOL_E: [
+    "✨ Sharp Move!",
+    "👑 High-Tension!",
+    "⚡ Fast Cadence!",
+    "🎯 Rapid Strike!",
+  ],
 
   // Category 3: 🎯 Best Move [T <= B and T > B * 0.65]
   POOL_F: ["🎯 Best Move", "✔️ Optimal!", "🧩 Textbook!", "🛡️ Aligned!"],
   POOL_G: ["✔️ Steady!", "🎯 Secured!", "🧩 Solid Split!", "✨ Verified!"],
 
   // Category 4: ⏸️ Inaccuracy / Book Move (Velocity Slack) [T > B]
-  POOL_H: ["🐢 Slack Detected", "⏸️ Book Move", "🔍 Hesitant!", "⚠️ Drag Vector"],
+  POOL_H: [
+    "🐢 Slack Detected",
+    "⏸️ Book Move",
+    "🔍 Hesitant!",
+    "⚠️ Drag Vector",
+  ],
   POOL_I: ["⏳ Time Lag", "⏸️ Pace Slump", "🔍 Friction!", "🐢 Decelerated"],
 
   // Category 5: ⚠️ Mistake (?) [Missed 1st attempt, recovered on 2nd attempt loop]
   POOL_J: ["⚠️ Mistake!", "🔧 Recaptured!", "⚖️ Salvaged!", "🛡️ Redeemed!"],
 
   // Category 6: 🚨 Blunder (??) [Missed both attempts, skipped, or focus lost]
-  POOL_K: ["🛡️ Integrity Fail", "🚨 Blunder (??)", "💥 Focus Lost!", "🔒 Firewalled!", "⚠️ Security Hit"],
-  POOL_L: ["💥 Breakdown!", "🚨 Miscalculated!", "🪵 Bad Factor!", "❌ Structural Drop", "📉 Math Fault"]
+  POOL_K: [
+    "🛡️ Integrity Fail",
+    "🚨 Blunder (??)",
+    "💥 Focus Lost!",
+    "🔒 Firewalled!",
+    "⚠️ Security Hit",
+  ],
+  POOL_L: [
+    "💥 Breakdown!",
+    "🚨 Miscalculated!",
+    "🪵 Bad Factor!",
+    "❌ Structural Drop",
+    "📉 Math Fault",
+  ],
 };
 
 // ============================================================================
@@ -131,7 +168,7 @@ export function evaluateMove({
   hintActive = false,
   slackTriggered = false,
   isIntegrityViolation = false,
-  isSkip = false
+  isSkip = false,
 } = {}) {
   const elo = Number(userElo) || 1200;
   const bound = Number(maxBound) || 200;
@@ -146,14 +183,14 @@ export function evaluateMove({
     const text = pool[Math.floor(Math.random() * pool.length)];
     return {
       category: 6,
-      categoryName: 'Blunder',
-      tier: 'BLUNDER_INTEGRITY',
-      poolId: 'K',
+      categoryName: "Blunder",
+      tier: "BLUNDER_INTEGRITY",
+      poolId: "K",
       text,
-      className: 'feedback-scarlet-shake',
+      className: "feedback-scarlet-shake",
       expectedBaselineSeconds: B,
       responseDuration: T,
-      ratio: T / B
+      ratio: T / B,
     };
   }
 
@@ -165,14 +202,14 @@ export function evaluateMove({
     const text = pool[Math.floor(Math.random() * pool.length)];
     return {
       category: 6,
-      categoryName: 'Blunder',
-      tier: isSkip ? 'BLUNDER_SKIPPED' : 'BLUNDER_COMPUTATIONAL',
-      poolId: 'L',
+      categoryName: "Blunder",
+      tier: isSkip ? "BLUNDER_SKIPPED" : "BLUNDER_COMPUTATIONAL",
+      poolId: "L",
       text,
-      className: 'feedback-scarlet-shake',
+      className: "feedback-scarlet-shake",
       expectedBaselineSeconds: B,
       responseDuration: T,
-      ratio: T / B
+      ratio: T / B,
     };
   }
 
@@ -184,14 +221,14 @@ export function evaluateMove({
     const text = pool[Math.floor(Math.random() * pool.length)];
     return {
       category: 5,
-      categoryName: 'Mistake',
-      tier: 'MISTAKE_REDEEMED',
-      poolId: 'J',
+      categoryName: "Mistake",
+      tier: "MISTAKE_REDEEMED",
+      poolId: "J",
       text,
-      className: 'feedback-platinum-gray',
+      className: "feedback-platinum-gray",
       expectedBaselineSeconds: B,
       responseDuration: T,
-      ratio: T / B
+      ratio: T / B,
     };
   }
 
@@ -201,123 +238,123 @@ export function evaluateMove({
 
   // Category 1: 🌟 Brilliant (!!) [T <= B * 0.35 and no hints unlocked]
   if (T <= B * 0.35 && !hintActive && !slackTriggered) {
-    let poolId = 'C';
+    let poolId = "C";
     let pool = MOVE_EVALUATION_POOLS.POOL_C;
 
     if (elo >= 2000) {
-      poolId = 'A';
+      poolId = "A";
       pool = MOVE_EVALUATION_POOLS.POOL_A;
     } else if (elo >= 1200) {
-      poolId = 'B';
+      poolId = "B";
       pool = MOVE_EVALUATION_POOLS.POOL_B;
     } else {
-      poolId = 'C';
+      poolId = "C";
       pool = MOVE_EVALUATION_POOLS.POOL_C;
     }
 
     const text = pool[Math.floor(Math.random() * pool.length)];
     return {
       category: 1,
-      categoryName: 'Brilliant',
-      tier: 'BRILLIANT',
+      categoryName: "Brilliant",
+      tier: "BRILLIANT",
       poolId,
       text,
-      className: 'feedback-cyber-cyan',
+      className: "feedback-cyber-cyan",
       expectedBaselineSeconds: B,
       responseDuration: T,
-      ratio: T / B
+      ratio: T / B,
     };
   }
 
   // Category 2: 🚀 Great Move (!) [T <= B * 0.65 and T > B * 0.35, or hint-assisted sub-0.65]
   if (T <= B * 0.65 && !slackTriggered) {
-    let poolId = 'E';
+    let poolId = "E";
     let pool = MOVE_EVALUATION_POOLS.POOL_E;
 
     if (bound > 5000) {
-      poolId = 'D';
+      poolId = "D";
       pool = MOVE_EVALUATION_POOLS.POOL_D;
     } else {
-      poolId = 'E';
+      poolId = "E";
       pool = MOVE_EVALUATION_POOLS.POOL_E;
     }
 
     const text = pool[Math.floor(Math.random() * pool.length)];
     return {
       category: 2,
-      categoryName: 'Great Move',
-      tier: 'GREAT_MOVE',
+      categoryName: "Great Move",
+      tier: "GREAT_MOVE",
       poolId,
       text,
-      className: 'feedback-mint-amber',
+      className: "feedback-mint-amber",
       expectedBaselineSeconds: B,
       responseDuration: T,
-      ratio: T / B
+      ratio: T / B,
     };
   }
 
   // Category 3: 🎯 Best Move [T <= B and T > B * 0.65]
   if (T <= B && !slackTriggered) {
-    let poolId = 'G';
+    let poolId = "G";
     let pool = MOVE_EVALUATION_POOLS.POOL_G;
 
     if (elo >= 1800) {
-      poolId = 'F';
+      poolId = "F";
       pool = MOVE_EVALUATION_POOLS.POOL_F;
     } else {
-      poolId = 'G';
+      poolId = "G";
       pool = MOVE_EVALUATION_POOLS.POOL_G;
     }
 
     const text = pool[Math.floor(Math.random() * pool.length)];
     return {
       category: 3,
-      categoryName: 'Best Move',
-      tier: 'BEST_MOVE',
+      categoryName: "Best Move",
+      tier: "BEST_MOVE",
       poolId,
       text,
-      className: 'feedback-mint-amber',
+      className: "feedback-mint-amber",
       expectedBaselineSeconds: B,
       responseDuration: T,
-      ratio: T / B
+      ratio: T / B,
     };
   }
 
   // Category 4: ⏸️ Inaccuracy / Book Move (Velocity Slack) [T > B or slack triggered]
   {
-    let poolId = 'I';
+    let poolId = "I";
     let pool = MOVE_EVALUATION_POOLS.POOL_I;
 
     if (elo >= 2000) {
-      poolId = 'H';
+      poolId = "H";
       pool = MOVE_EVALUATION_POOLS.POOL_H;
     } else {
-      poolId = 'I';
+      poolId = "I";
       pool = MOVE_EVALUATION_POOLS.POOL_I;
     }
 
     const text = pool[Math.floor(Math.random() * pool.length)];
     return {
       category: 4,
-      categoryName: 'Inaccuracy',
-      tier: 'INACCURACY',
+      categoryName: "Inaccuracy",
+      tier: "INACCURACY",
       poolId,
       text,
-      className: 'feedback-platinum-gray',
+      className: "feedback-platinum-gray",
       expectedBaselineSeconds: B,
       responseDuration: T,
-      ratio: T / B
+      ratio: T / B,
     };
   }
 }
 
 // Global browser window namespace attachment for dynamic match loop telemetry
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.ChessMoveEvaluator = {
     evaluateMove,
     computeExpectedBaselineSeconds,
     computeAxis1BaseSeconds,
     getEloHandicapModifier,
-    MOVE_EVALUATION_POOLS
+    MOVE_EVALUATION_POOLS,
   };
 }

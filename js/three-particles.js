@@ -30,7 +30,7 @@ export const thermodynamicState = {
   targetColor: { r: 2 / 255, g: 132 / 255, b: 199 / 255 },
   lineColor: { r: 148 / 255, g: 163 / 255, b: 184 / 255 }, // #94A3B8
   targetLineColor: { r: 148 / 255, g: 163 / 255, b: 184 / 255 },
-  activeClassification: 'Normal'
+  activeClassification: "Normal",
 };
 
 /**
@@ -46,46 +46,63 @@ export const thermodynamicState = {
  */
 export function updateThermodynamicState(classification) {
   if (!classification) return thermodynamicState;
-  const name = typeof classification === 'string'
-    ? classification
-    : (classification.categoryName || classification.tier || '');
+  const name =
+    typeof classification === "string"
+      ? classification
+      : classification.categoryName || classification.tier || "";
 
   thermodynamicState.activeClassification = name;
 
   const upper = name.toUpperCase();
   if (
-    upper === 'BRILLIANT' ||
-    upper === 'GREAT MOVE' ||
-    upper === 'GREAT_MOVE' ||
-    upper === 'PRIME SINGULARITY' ||
-    upper === 'SINGULARITY'
+    upper === "BRILLIANT" ||
+    upper === "GREAT MOVE" ||
+    upper === "GREAT_MOVE" ||
+    upper === "PRIME SINGULARITY" ||
+    upper === "SINGULARITY"
   ) {
     // High-Intensity Kinetic Thermodynamic Surge (3.0x Surge)
     thermodynamicState.targetSpeedMultiplier = 3.0;
     thermodynamicState.targetSpinVelocity = 0.24; // 3.0x angular orbital drift
-    thermodynamicState.targetParticleSize = 6.0;   // Amplified cosmic energy nodes
+    thermodynamicState.targetParticleSize = 6.0; // Amplified cosmic energy nodes
     // Vivid neon cyber-cyan tint (#0EA5E9) with 0.95 opacity bloom
-    thermodynamicState.targetColor = { r: 14 / 255, g: 165 / 255, b: 233 / 255 };
+    thermodynamicState.targetColor = {
+      r: 14 / 255,
+      g: 165 / 255,
+      b: 233 / 255,
+    };
     thermodynamicState.targetOpacity = 0.95;
     // Radiant sky-cyan constellation lines (#38BDF8)
-    thermodynamicState.targetLineColor = { r: 56 / 255, g: 189 / 255, b: 248 / 255 };
+    thermodynamicState.targetLineColor = {
+      r: 56 / 255,
+      g: 189 / 255,
+      b: 248 / 255,
+    };
     thermodynamicState.targetLineOpacity = 0.45;
   } else if (
-    upper === 'INACCURACY' ||
-    upper === 'BLUNDER' ||
-    upper === 'MISTAKE' ||
-    upper.includes('BLUNDER') ||
-    upper.includes('INTEGRITY')
+    upper === "INACCURACY" ||
+    upper === "BLUNDER" ||
+    upper === "MISTAKE" ||
+    upper.includes("BLUNDER") ||
+    upper.includes("INTEGRITY")
   ) {
     // Thermodynamic Rule of Cold Deceleration (0.2x Crawl)
     thermodynamicState.targetSpeedMultiplier = 0.2; // Frozen 0.2x idle velocity
-    thermodynamicState.targetSpinVelocity = 0.016;  // Slumped angular drift
-    thermodynamicState.targetParticleSize = 3.0;    // Contracted dormant speckles
+    thermodynamicState.targetSpinVelocity = 0.016; // Slumped angular drift
+    thermodynamicState.targetParticleSize = 3.0; // Contracted dormant speckles
     // Metallic frosted slate gray (#94A3B8) with faint 0.25 visibility
-    thermodynamicState.targetColor = { r: 148 / 255, g: 163 / 255, b: 184 / 255 };
+    thermodynamicState.targetColor = {
+      r: 148 / 255,
+      g: 163 / 255,
+      b: 184 / 255,
+    };
     thermodynamicState.targetOpacity = 0.25;
     // Subdued slate lines (#64748B)
-    thermodynamicState.targetLineColor = { r: 100 / 255, g: 116 / 255, b: 139 / 255 };
+    thermodynamicState.targetLineColor = {
+      r: 100 / 255,
+      g: 116 / 255,
+      b: 139 / 255,
+    };
     thermodynamicState.targetLineOpacity = 0.08;
   } else {
     // Normalized baseline / optimal moves (1.0x Equilibrium)
@@ -96,7 +113,11 @@ export function updateThermodynamicState(classification) {
     thermodynamicState.targetColor = { r: 2 / 255, g: 132 / 255, b: 199 / 255 };
     thermodynamicState.targetOpacity = 0.75;
     // Ambient constellation slate (#94A3B8)
-    thermodynamicState.targetLineColor = { r: 148 / 255, g: 163 / 255, b: 184 / 255 };
+    thermodynamicState.targetLineColor = {
+      r: 148 / 255,
+      g: 163 / 255,
+      b: 184 / 255,
+    };
     thermodynamicState.targetLineOpacity = 0.18;
   }
 
@@ -111,21 +132,28 @@ export function updateThermodynamicState(classification) {
  * @returns {THREE.CanvasTexture|null}
  */
 function createCosmicParticleTexture(THREE) {
-  if (typeof document === 'undefined') return null;
+  if (typeof document === "undefined") return null;
   const size = 64;
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   if (!ctx) return null;
 
   const center = size / 2;
-  const grad = ctx.createRadialGradient(center, center, 0, center, center, center);
-  grad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
-  grad.addColorStop(0.2, 'rgba(255, 255, 255, 0.9)');
-  grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.35)');
-  grad.addColorStop(0.85, 'rgba(255, 255, 255, 0.08)');
-  grad.addColorStop(1.0, 'rgba(255, 255, 255, 0.0)');
+  const grad = ctx.createRadialGradient(
+    center,
+    center,
+    0,
+    center,
+    center,
+    center,
+  );
+  grad.addColorStop(0, "rgba(255, 255, 255, 1.0)");
+  grad.addColorStop(0.2, "rgba(255, 255, 255, 0.9)");
+  grad.addColorStop(0.5, "rgba(255, 255, 255, 0.35)");
+  grad.addColorStop(0.85, "rgba(255, 255, 255, 0.08)");
+  grad.addColorStop(1.0, "rgba(255, 255, 255, 0.0)");
 
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, size, size);
@@ -144,8 +172,8 @@ function createCosmicParticleTexture(THREE) {
  * @param {string} canvasId - DOM ID of the target HTML5 canvas element
  * @returns {function|undefined} Teardown disposal callback
  */
-export function initHeroParticles(canvasId = 'three-hero-canvas') {
-  if (typeof document === 'undefined') return;
+export function initHeroParticles(canvasId = "three-hero-canvas") {
+  if (typeof document === "undefined") return;
   const canvas = document.getElementById(canvasId);
   if (!canvas || !window.THREE) return;
 
@@ -169,16 +197,16 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
   const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5)); // ~2.3999632 rad
 
   // Buffers for positional geometry and kinetic physics
-  const baseCoords = new Float32Array(PARTICLE_COUNT * 3);     // Pure Fibonacci anchors
-  const currentCoords = new Float32Array(PARTICLE_COUNT * 3);  // Dynamic simulation positions
-  const harmonicPhases = new Float32Array(PARTICLE_COUNT);     // Discrete oscillation frequencies
+  const baseCoords = new Float32Array(PARTICLE_COUNT * 3); // Pure Fibonacci anchors
+  const currentCoords = new Float32Array(PARTICLE_COUNT * 3); // Dynamic simulation positions
+  const harmonicPhases = new Float32Array(PARTICLE_COUNT); // Discrete oscillation frequencies
 
   // 1. MATHEMATICALLY BOUND FIBONACCI LATTICE INITIALIZATION
   // Distribute PARTICLE_COUNT points uniformly across the sphere S^2 using the Fibonacci spiral
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const i3 = i * 3;
     // Canonical coordinate mapping: y in [-1 + 1/N, 1 - 1/N]
-    const yNorm = 1.0 - ((2.0 * i + 1.0) / PARTICLE_COUNT);
+    const yNorm = 1.0 - (2.0 * i + 1.0) / PARTICLE_COUNT;
     const radiusAtY = Math.sqrt(Math.max(0.0, 1.0 - yNorm * yNorm));
     const theta = i * GOLDEN_ANGLE;
 
@@ -234,7 +262,7 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
     ndcY: 0,
     isInteracting: false,
     gravityWellMatrixIntensity: 0.0, // 0.0 = passive drift, 1.0 = full orbital gravity well
-    lastMoveTimestamp: 0
+    lastMoveTimestamp: 0,
   };
 
   try {
@@ -243,7 +271,7 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
       canvas,
       alpha: true,
       antialias: true,
-      powerPreference: 'high-performance'
+      powerPreference: "high-performance",
     });
     // Cap devicePixelRatio at 2.0 to conserve GPU cycles on high-DPI displays
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -259,18 +287,25 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
 
     // 3. PARTICLE POINTS MESH
     const pointsGeometry = new THREE.BufferGeometry();
-    pointsGeometry.setAttribute('position', new THREE.BufferAttribute(currentCoords, 3));
+    pointsGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(currentCoords, 3),
+    );
 
     particleTexture = createCosmicParticleTexture(THREE);
 
     const pointsMaterial = new THREE.PointsMaterial({
-      color: new THREE.Color(thermodynamicState.color.r, thermodynamicState.color.g, thermodynamicState.color.b),
+      color: new THREE.Color(
+        thermodynamicState.color.r,
+        thermodynamicState.color.g,
+        thermodynamicState.color.b,
+      ),
       size: thermodynamicState.particleSize,
       map: particleTexture,
       transparent: true,
       opacity: thermodynamicState.opacity,
       blending: THREE.AdditiveBlending,
-      depthWrite: false
+      depthWrite: false,
     });
 
     particlesMesh = new THREE.Points(pointsGeometry, pointsMaterial);
@@ -278,14 +313,21 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
 
     // 4. CONSTELLATION LINE SEGMENTS MESH
     const linesGeometry = new THREE.BufferGeometry();
-    linesGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+    linesGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(linePositions, 3),
+    );
 
     const linesMaterial = new THREE.LineBasicMaterial({
-      color: new THREE.Color(thermodynamicState.lineColor.r, thermodynamicState.lineColor.g, thermodynamicState.lineColor.b),
+      color: new THREE.Color(
+        thermodynamicState.lineColor.r,
+        thermodynamicState.lineColor.g,
+        thermodynamicState.lineColor.b,
+      ),
       transparent: true,
       opacity: thermodynamicState.lineOpacity,
       blending: THREE.AdditiveBlending,
-      depthWrite: false
+      depthWrite: false,
     });
 
     linesMesh = new THREE.LineSegments(linesGeometry, linesMaterial);
@@ -320,10 +362,10 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
       mouse.isInteracting = false;
     };
 
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
-    window.addEventListener('touchmove', onTouchMove, { passive: true });
-    window.addEventListener('pointerleave', onPointerLeave, { passive: true });
-    window.addEventListener('touchend', onPointerLeave, { passive: true });
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("pointerleave", onPointerLeave, { passive: true });
+    window.addEventListener("touchend", onPointerLeave, { passive: true });
 
     // Throttled resize handler with devicePixelRatio caps
     let resizeTimeout = null;
@@ -343,7 +385,7 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
       }, 100);
     };
 
-    window.addEventListener('resize', onResize);
+    window.addEventListener("resize", onResize);
 
     // 6. ANIMATION LOOP & KINETIC DISPLACEMENT SIMULATION
     let animFrameId = null;
@@ -365,27 +407,45 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
 
       // Smooth thermodynamic telemetry state interpolation
       thermodynamicState.speedMultiplier +=
-        (thermodynamicState.targetSpeedMultiplier - thermodynamicState.speedMultiplier) * easeCurve;
+        (thermodynamicState.targetSpeedMultiplier -
+          thermodynamicState.speedMultiplier) *
+        easeCurve;
       thermodynamicState.spinVelocity +=
-        (thermodynamicState.targetSpinVelocity - thermodynamicState.spinVelocity) * easeCurve;
+        (thermodynamicState.targetSpinVelocity -
+          thermodynamicState.spinVelocity) *
+        easeCurve;
       thermodynamicState.opacity +=
-        (thermodynamicState.targetOpacity - thermodynamicState.opacity) * easeCurve;
+        (thermodynamicState.targetOpacity - thermodynamicState.opacity) *
+        easeCurve;
       thermodynamicState.lineOpacity +=
-        (thermodynamicState.targetLineOpacity - thermodynamicState.lineOpacity) * easeCurve;
+        (thermodynamicState.targetLineOpacity -
+          thermodynamicState.lineOpacity) *
+        easeCurve;
       thermodynamicState.particleSize +=
-        (thermodynamicState.targetParticleSize - thermodynamicState.particleSize) * easeCurve;
+        (thermodynamicState.targetParticleSize -
+          thermodynamicState.particleSize) *
+        easeCurve;
 
       // Interpolate particle points material
-      pointsMaterial.color.r += (thermodynamicState.targetColor.r - pointsMaterial.color.r) * easeCurve;
-      pointsMaterial.color.g += (thermodynamicState.targetColor.g - pointsMaterial.color.g) * easeCurve;
-      pointsMaterial.color.b += (thermodynamicState.targetColor.b - pointsMaterial.color.b) * easeCurve;
+      pointsMaterial.color.r +=
+        (thermodynamicState.targetColor.r - pointsMaterial.color.r) * easeCurve;
+      pointsMaterial.color.g +=
+        (thermodynamicState.targetColor.g - pointsMaterial.color.g) * easeCurve;
+      pointsMaterial.color.b +=
+        (thermodynamicState.targetColor.b - pointsMaterial.color.b) * easeCurve;
       pointsMaterial.opacity = thermodynamicState.opacity;
       pointsMaterial.size = thermodynamicState.particleSize;
 
       // Interpolate constellation lines material
-      linesMaterial.color.r += (thermodynamicState.targetLineColor.r - linesMaterial.color.r) * easeCurve;
-      linesMaterial.color.g += (thermodynamicState.targetLineColor.g - linesMaterial.color.g) * easeCurve;
-      linesMaterial.color.b += (thermodynamicState.targetLineColor.b - linesMaterial.color.b) * easeCurve;
+      linesMaterial.color.r +=
+        (thermodynamicState.targetLineColor.r - linesMaterial.color.r) *
+        easeCurve;
+      linesMaterial.color.g +=
+        (thermodynamicState.targetLineColor.g - linesMaterial.color.g) *
+        easeCurve;
+      linesMaterial.color.b +=
+        (thermodynamicState.targetLineColor.b - linesMaterial.color.b) *
+        easeCurve;
       linesMaterial.opacity = thermodynamicState.lineOpacity;
 
       const spd = thermodynamicState.speedMultiplier;
@@ -393,9 +453,11 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
       // Check if cursor has become stationary for > 2.5 seconds
       const now = performance.now();
       const isCursorStale = now - mouse.lastMoveTimestamp > 2500;
-      const targetIntensity = (mouse.isInteracting && !isCursorStale) ? 1.0 : 0.0;
+      const targetIntensity = mouse.isInteracting && !isCursorStale ? 1.0 : 0.0;
       // Smoothly transition between passive drift and active orbital gravity well matrix
-      mouse.gravityWellMatrixIntensity += (targetIntensity - mouse.gravityWellMatrixIntensity) * (1.0 - Math.exp(-dt / 0.35));
+      mouse.gravityWellMatrixIntensity +=
+        (targetIntensity - mouse.gravityWellMatrixIntensity) *
+        (1.0 - Math.exp(-dt / 0.35));
 
       // 7. ORBITAL GRAVITY WELL MATRIX: 3D UNPROJECTION & ORIENTATION
       // Unproject normalized device coordinates to the sphere's focal plane (Z = 0)
@@ -406,7 +468,7 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
       _targetCursor3D.set(
         mouse.ndcX * halfPlaneWidth * 0.85,
         mouse.ndcY * halfPlaneHeight * 0.85,
-        Math.sin(elapsedTime * 1.2) * 15.0 * mouse.gravityWellMatrixIntensity
+        Math.sin(elapsedTime * 1.2) * 15.0 * mouse.gravityWellMatrixIntensity,
       );
 
       // Smooth cursor coordinate tracking
@@ -417,8 +479,12 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
       // Passive constant angular rotation seamlessly blends into cursor-focused gyroscope matrix
       const passiveYawSpeed = thermodynamicState.spinVelocity * 0.6;
       currentRotY += dt * passiveYawSpeed;
-      currentRotX = Math.sin(elapsedTime * 0.25 * spd) * 0.12 - (mouse.ndcY * 0.35 * mouse.gravityWellMatrixIntensity);
-      currentRotZ = Math.cos(elapsedTime * 0.18 * spd) * 0.08 + (mouse.ndcX * 0.25 * mouse.gravityWellMatrixIntensity);
+      currentRotX =
+        Math.sin(elapsedTime * 0.25 * spd) * 0.12 -
+        mouse.ndcY * 0.35 * mouse.gravityWellMatrixIntensity;
+      currentRotZ =
+        Math.cos(elapsedTime * 0.18 * spd) * 0.08 +
+        mouse.ndcX * 0.25 * mouse.gravityWellMatrixIntensity;
 
       particlesMesh.rotation.set(currentRotX, currentRotY, currentRotZ);
       linesMesh.rotation.set(currentRotX, currentRotY, currentRotZ);
@@ -443,7 +509,9 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
 
         // Micro-harmonic cosmic undulation on the baseline Fibonacci coordinates
         const phase = harmonicPhases[i];
-        const harmonic = Math.sin(elapsedTime * 1.8 * spd + phase) * (1.8 * Math.min(spd, 2.2));
+        const harmonic =
+          Math.sin(elapsedTime * 1.8 * spd + phase) *
+          (1.8 * Math.min(spd, 2.2));
         const anchorX = bx + (bx / SPHERE_RADIUS) * harmonic;
         const anchorY = by + (by / SPHERE_RADIUS) * harmonic;
         const anchorZ = bz + (bz / SPHERE_RADIUS) * harmonic;
@@ -458,12 +526,19 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
         const dz = localCursor.z - posArray[i3 + 2];
         const distSq = dx * dx + dy * dy + dz * dz;
 
-        if (distSq < PROXIMITY_RADIUS_SQ && mouse.gravityWellMatrixIntensity > 0.01) {
+        if (
+          distSq < PROXIMITY_RADIUS_SQ &&
+          mouse.gravityWellMatrixIntensity > 0.01
+        ) {
           const dist = Math.sqrt(distSq);
           // Normalized proximity gradient factor in [0, 1]
-          const proximityNorm = 1.0 - (dist / PROXIMITY_RADIUS);
+          const proximityNorm = 1.0 - dist / PROXIMITY_RADIUS;
           // Kinetic weighting amplified by thermodynamic surge
-          const kineticWeight = proximityNorm * proximityNorm * mouse.gravityWellMatrixIntensity * spd;
+          const kineticWeight =
+            proximityNorm *
+            proximityNorm *
+            mouse.gravityWellMatrixIntensity *
+            spd;
 
           // A. Radial Gravitational Pull toward cursor center
           const invDist = 1.0 / (dist + 0.001);
@@ -474,11 +549,12 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
 
           // B. Tangential Keplerian Orbital Vortex
           // Tangent vector perpendicular to displacement in the XY-shear plane
-          const vortexDirection = (i % 2 === 0 ? 1 : -1);
+          const vortexDirection = i % 2 === 0 ? 1 : -1;
           const orbitForce = kineticWeight * 32.0 * vortexDirection;
           const orbitX = -dy * invDist * orbitForce;
           const orbitY = dx * invDist * orbitForce;
-          const orbitZ = Math.sin(phase + elapsedTime * 3.0 * spd) * (kineticWeight * 14.0);
+          const orbitZ =
+            Math.sin(phase + elapsedTime * 3.0 * spd) * (kineticWeight * 14.0);
 
           targetPosX = anchorX + pullX + orbitX;
           targetPosY = anchorY + pullY + orbitY;
@@ -489,8 +565,10 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
         // x(t + dt) = target + (current - target) * exp(-lambda * dt)
         const decayCurve = Math.exp(-returnDecayLambda * dt);
         posArray[i3] = targetPosX + (posArray[i3] - targetPosX) * decayCurve;
-        posArray[i3 + 1] = targetPosY + (posArray[i3 + 1] - targetPosY) * decayCurve;
-        posArray[i3 + 2] = targetPosZ + (posArray[i3 + 2] - targetPosZ) * decayCurve;
+        posArray[i3 + 1] =
+          targetPosY + (posArray[i3 + 1] - targetPosY) * decayCurve;
+        posArray[i3 + 2] =
+          targetPosZ + (posArray[i3 + 2] - targetPosZ) * decayCurve;
       }
 
       particlesMesh.geometry.attributes.position.needsUpdate = true;
@@ -523,11 +601,11 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
     // Return teardown disposal function
     return () => {
       if (animFrameId) cancelAnimationFrame(animFrameId);
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('pointerleave', onPointerLeave);
-      window.removeEventListener('touchend', onPointerLeave);
-      window.removeEventListener('resize', onResize);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("pointerleave", onPointerLeave);
+      window.removeEventListener("touchend", onPointerLeave);
+      window.removeEventListener("resize", onResize);
 
       if (particleTexture) particleTexture.dispose();
       if (pointsGeometry) pointsGeometry.dispose();
@@ -537,15 +615,18 @@ export function initHeroParticles(canvasId = 'three-hero-canvas') {
       if (renderer) renderer.dispose();
     };
   } catch (err) {
-    console.debug('Three.js Cosmic Fibonacci Particle Mesh initialization skipped:', err);
+    console.debug(
+      "Three.js Cosmic Fibonacci Particle Mesh initialization skipped:",
+      err,
+    );
   }
 }
 
 // Global window attachment for real-time exam telemetry debugging and validation
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.ParticleThermodynamicEngine = {
     thermodynamicState,
     updateThermodynamicState,
-    initHeroParticles
+    initHeroParticles,
   };
 }

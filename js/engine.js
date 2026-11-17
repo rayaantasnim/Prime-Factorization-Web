@@ -12,28 +12,16 @@ import {
   getSettings,
   updateSettings,
   getActiveExamParams,
-  setActiveExamParams
-} from './storage.js';
+  setActiveExamParams,
+} from "./storage.js";
 
-import {
-  getUserElo,
-  ELO_TIERS,
-  getTierByElo
-} from './elo-engine.js';
+import { getUserElo, ELO_TIERS, getTierByElo } from "./elo-engine.js";
 
-import {
-  playSound
-} from './audio.js';
+import { playSound } from "./audio.js";
 
-import {
-  initGlobalHeader,
-  renderFooter,
-  triggerFlash
-} from './header.js';
+import { initGlobalHeader, renderFooter, triggerFlash } from "./header.js";
 
-import {
-  activeComboStrikeState
-} from './exam-arena-controller.js';
+import { activeComboStrikeState } from "./exam-arena-controller.js";
 
 // Audio Context Singleton for direct synthesis calibration
 let calibrationAudioCtx = null;
@@ -44,16 +32,16 @@ function getCalibrationAudioContext() {
       calibrationAudioCtx = new AudioContextClass();
     }
   }
-  if (calibrationAudioCtx && calibrationAudioCtx.state === 'suspended') {
+  if (calibrationAudioCtx && calibrationAudioCtx.state === "suspended") {
     calibrationAudioCtx.resume();
   }
   return calibrationAudioCtx;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   // 1. Initialize Universal Header Infrastructure and Persistent Footer
   initGlobalHeader();
-  renderFooter('site-footer-slot');
+  renderFooter("site-footer-slot");
 
   // 2. Security Hardening: Authentic User ELO Read & Presentation (Strictly Read-Only)
   initAuthenticEloDisplay();
@@ -81,23 +69,25 @@ function initAuthenticEloDisplay() {
   const authenticElo = getUserElo();
   const tier = getTierByElo(authenticElo) || ELO_TIERS[ELO_TIERS.length - 1];
 
-  const scoreEl = document.getElementById('elo-score-display');
-  const tierNameEl = document.getElementById('elo-tier-title');
-  const symbolEl = document.getElementById('elo-tier-symbol');
-  const descEl = document.getElementById('elo-tier-description');
-  const colorBadgeEl = document.getElementById('elo-color-badge');
+  const scoreEl = document.getElementById("elo-score-display");
+  const tierNameEl = document.getElementById("elo-tier-title");
+  const symbolEl = document.getElementById("elo-tier-symbol");
+  const descEl = document.getElementById("elo-tier-description");
+  const colorBadgeEl = document.getElementById("elo-color-badge");
 
   if (scoreEl) scoreEl.textContent = authenticElo.toLocaleString();
   if (tierNameEl) {
     tierNameEl.textContent = tier.title;
-    tierNameEl.style.color = tier.colorHex || '#38BDF8';
+    tierNameEl.style.color = tier.colorHex || "#38BDF8";
   }
-  if (symbolEl) symbolEl.textContent = tier.symbol || '🛡️';
-  if (descEl) descEl.textContent = tier.description || 'Cognitive factorization candidate.';
+  if (symbolEl) symbolEl.textContent = tier.symbol || "🛡️";
+  if (descEl)
+    descEl.textContent =
+      tier.description || "Cognitive factorization candidate.";
   if (colorBadgeEl) {
-    colorBadgeEl.textContent = tier.colorName || 'Division Status';
-    colorBadgeEl.style.borderColor = tier.colorHex || '#38BDF8';
-    colorBadgeEl.style.color = tier.colorHex || '#38BDF8';
+    colorBadgeEl.textContent = tier.colorName || "Division Status";
+    colorBadgeEl.style.borderColor = tier.colorHex || "#38BDF8";
+    colorBadgeEl.style.color = tier.colorHex || "#38BDF8";
   }
 }
 
@@ -105,48 +95,53 @@ function initAuthenticEloDisplay() {
  * 3. COMPETITION MODE PROTOCOL SELECTOR
  * Handles active Rated Contest vs Unrated Practice Safe-Zone Exception.
  */
-let activeProtocolMode = 'rated';
+let activeProtocolMode = "rated";
 
 function initProtocolSelector() {
   const settings = getSettings();
-  const storedContestMode = localStorage.getItem('primefactor_active_contest_mode');
-  
-  if (storedContestMode === 'unrated' || settings.participationMode === 'unrated') {
-    activeProtocolMode = 'unrated';
+  const storedContestMode = localStorage.getItem(
+    "primefactor_active_contest_mode",
+  );
+
+  if (
+    storedContestMode === "unrated" ||
+    settings.participationMode === "unrated"
+  ) {
+    activeProtocolMode = "unrated";
   } else {
-    activeProtocolMode = 'rated';
+    activeProtocolMode = "rated";
   }
 
-  const btnRated = document.getElementById('protocol-btn-rated');
-  const btnUnrated = document.getElementById('protocol-btn-unrated');
+  const btnRated = document.getElementById("protocol-btn-rated");
+  const btnUnrated = document.getElementById("protocol-btn-unrated");
 
   const updateUI = () => {
-    if (activeProtocolMode === 'rated') {
-      btnRated?.classList.add('active-rated');
-      btnUnrated?.classList.remove('active-unrated');
+    if (activeProtocolMode === "rated") {
+      btnRated?.classList.add("active-rated");
+      btnUnrated?.classList.remove("active-unrated");
     } else {
-      btnRated?.classList.remove('active-rated');
-      btnUnrated?.classList.add('active-unrated');
+      btnRated?.classList.remove("active-rated");
+      btnUnrated?.classList.add("active-unrated");
     }
     auditAsymmetricFirewall();
   };
 
   if (btnRated) {
-    btnRated.addEventListener('click', () => {
-      playSound('click');
-      activeProtocolMode = 'rated';
-      localStorage.setItem('primefactor_active_contest_mode', 'rated');
-      updateSettings({ participationMode: 'rated' });
+    btnRated.addEventListener("click", () => {
+      playSound("click");
+      activeProtocolMode = "rated";
+      localStorage.setItem("primefactor_active_contest_mode", "rated");
+      updateSettings({ participationMode: "rated" });
       updateUI();
     });
   }
 
   if (btnUnrated) {
-    btnUnrated.addEventListener('click', () => {
-      playSound('click');
-      activeProtocolMode = 'unrated';
-      localStorage.setItem('primefactor_active_contest_mode', 'unrated');
-      updateSettings({ participationMode: 'unrated' });
+    btnUnrated.addEventListener("click", () => {
+      playSound("click");
+      activeProtocolMode = "unrated";
+      localStorage.setItem("primefactor_active_contest_mode", "unrated");
+      updateSettings({ participationMode: "unrated" });
       updateUI();
     });
   }
@@ -159,41 +154,43 @@ function initProtocolSelector() {
  * Neon toggles bound directly to local preferences via getSettings() / updateSettings().
  */
 const LIFELINE_KEYS = [
-  'allowSecondAttempt',
-  'allowPause',
-  'allowRegenerate',
-  'allowHint',
-  'allowSandbox',
-  'allowNoise',
-  'allowComboTracker',
-  'allowSkip',
-  'allowDeficitOverride'
+  "allowSecondAttempt",
+  "allowPause",
+  "allowRegenerate",
+  "allowHint",
+  "allowSandbox",
+  "allowNoise",
+  "allowComboTracker",
+  "allowSkip",
+  "allowDeficitOverride",
 ];
 
 function initLifelineToggles() {
   const settings = getSettings();
 
-  LIFELINE_KEYS.forEach(key => {
+  LIFELINE_KEYS.forEach((key) => {
     const input = document.getElementById(`toggle-${key}`);
     if (!input) return;
 
     // Load initial stored preference
     input.checked = !!settings[key];
 
-    input.addEventListener('change', () => {
-      playSound('click');
+    input.addEventListener("change", () => {
+      playSound("click");
       const val = input.checked;
       const payload = { [key]: val };
 
       // Sub-Second Combo Boost synchronizes with allowComboTracker
-      if (key === 'allowComboTracker') {
+      if (key === "allowComboTracker") {
         payload.subSecondBoost = val;
       }
 
       updateSettings(payload);
 
       // Notify other active tabs / event loops
-      window.dispatchEvent(new CustomEvent('primefactor_settings_changed', { detail: payload }));
+      window.dispatchEvent(
+        new CustomEvent("primefactor_settings_changed", { detail: payload }),
+      );
     });
   });
 }
@@ -206,58 +203,70 @@ function initAudioCalibration() {
   const settings = getSettings();
 
   // Master Sound Toggle
-  const soundToggle = document.getElementById('toggle-sound-enabled');
+  const soundToggle = document.getElementById("toggle-sound-enabled");
   if (soundToggle) {
     soundToggle.checked = settings.soundEnabled !== false;
-    soundToggle.addEventListener('change', () => {
-      playSound('click');
+    soundToggle.addEventListener("change", () => {
+      playSound("click");
       updateSettings({ soundEnabled: soundToggle.checked });
-      window.dispatchEvent(new CustomEvent('primefactor_settings_changed', { detail: { soundEnabled: soundToggle.checked } }));
+      window.dispatchEvent(
+        new CustomEvent("primefactor_settings_changed", {
+          detail: { soundEnabled: soundToggle.checked },
+        }),
+      );
     });
   }
 
   // Volume Slider (0.0 to 1.0)
-  const volumeSlider = document.getElementById('slider-master-volume');
-  const volumeReadout = document.getElementById('volume-readout');
-  const testVolumeBtn = document.getElementById('btn-test-volume');
+  const volumeSlider = document.getElementById("slider-master-volume");
+  const volumeReadout = document.getElementById("volume-readout");
+  const testVolumeBtn = document.getElementById("btn-test-volume");
 
-  const initialVolume = typeof settings.masterVolume === 'number' ? settings.masterVolume : 0.8;
+  const initialVolume =
+    typeof settings.masterVolume === "number" ? settings.masterVolume : 0.8;
   if (volumeSlider) {
     volumeSlider.value = initialVolume;
-    if (volumeReadout) volumeReadout.textContent = `${Math.round(initialVolume * 100)}% (${Number(initialVolume).toFixed(2)})`;
+    if (volumeReadout)
+      volumeReadout.textContent = `${Math.round(initialVolume * 100)}% (${Number(initialVolume).toFixed(2)})`;
 
-    volumeSlider.addEventListener('input', (e) => {
+    volumeSlider.addEventListener("input", (e) => {
       const vol = parseFloat(e.target.value);
-      if (volumeReadout) volumeReadout.textContent = `${Math.round(vol * 100)}% (${vol.toFixed(2)})`;
+      if (volumeReadout)
+        volumeReadout.textContent = `${Math.round(vol * 100)}% (${vol.toFixed(2)})`;
       updateSettings({ masterVolume: vol });
     });
   }
 
   if (testVolumeBtn) {
-    testVolumeBtn.addEventListener('click', () => {
+    testVolumeBtn.addEventListener("click", () => {
       playTestAcousticPulse();
     });
   }
 
   // Pitch Slider (220Hz to 880Hz)
-  const pitchSlider = document.getElementById('slider-chime-pitch');
-  const pitchReadout = document.getElementById('pitch-readout');
-  const testPitchBtn = document.getElementById('btn-test-pitch');
+  const pitchSlider = document.getElementById("slider-chime-pitch");
+  const pitchReadout = document.getElementById("pitch-readout");
+  const testPitchBtn = document.getElementById("btn-test-pitch");
 
-  const initialPitch = typeof settings.eventChimePitch === 'number' ? settings.eventChimePitch : 440;
+  const initialPitch =
+    typeof settings.eventChimePitch === "number"
+      ? settings.eventChimePitch
+      : 440;
   if (pitchSlider) {
     pitchSlider.value = initialPitch;
-    if (pitchReadout) pitchReadout.textContent = formatPitchDescription(initialPitch);
+    if (pitchReadout)
+      pitchReadout.textContent = formatPitchDescription(initialPitch);
 
-    pitchSlider.addEventListener('input', (e) => {
+    pitchSlider.addEventListener("input", (e) => {
       const pitch = parseInt(e.target.value, 10);
-      if (pitchReadout) pitchReadout.textContent = formatPitchDescription(pitch);
+      if (pitchReadout)
+        pitchReadout.textContent = formatPitchDescription(pitch);
       updateSettings({ eventChimePitch: pitch });
     });
   }
 
   if (testPitchBtn) {
-    testPitchBtn.addEventListener('click', () => {
+    testPitchBtn.addEventListener("click", () => {
       playTestChimeNote();
     });
   }
@@ -279,13 +288,14 @@ function playTestAcousticPulse() {
     const settings = getSettings();
     if (settings.soundEnabled === false) return;
 
-    const volume = typeof settings.masterVolume === 'number' ? settings.masterVolume : 0.8;
+    const volume =
+      typeof settings.masterVolume === "number" ? settings.masterVolume : 0.8;
     const now = ctx.currentTime;
 
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = 'sine';
+    osc.type = "sine";
     osc.frequency.setValueAtTime(320, now);
     osc.frequency.exponentialRampToValueAtTime(640, now + 0.12);
 
@@ -299,7 +309,7 @@ function playTestAcousticPulse() {
     osc.start(now);
     osc.stop(now + 0.22);
   } catch (e) {
-    console.warn('Audio test pulse error:', e);
+    console.warn("Audio test pulse error:", e);
   }
 }
 
@@ -311,14 +321,18 @@ function playTestChimeNote() {
     const settings = getSettings();
     if (settings.soundEnabled === false) return;
 
-    const volume = typeof settings.masterVolume === 'number' ? settings.masterVolume : 0.8;
-    const pitch = typeof settings.eventChimePitch === 'number' ? settings.eventChimePitch : 440;
+    const volume =
+      typeof settings.masterVolume === "number" ? settings.masterVolume : 0.8;
+    const pitch =
+      typeof settings.eventChimePitch === "number"
+        ? settings.eventChimePitch
+        : 440;
     const now = ctx.currentTime;
 
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = 'triangle';
+    osc.type = "triangle";
     osc.frequency.setValueAtTime(pitch, now);
 
     const targetGain = 0.14 * Math.max(0.01, volume);
@@ -331,7 +345,7 @@ function playTestChimeNote() {
     osc.start(now);
     osc.stop(now + 0.35);
   } catch (e) {
-    console.warn('Audio test chime error:', e);
+    console.warn("Audio test chime error:", e);
   }
 }
 
@@ -349,16 +363,16 @@ function playTestChimeNote() {
  */
 function auditAsymmetricFirewall() {
   const userElo = getUserElo();
-  const isRated = (activeProtocolMode === 'rated');
-  const safeZoneBanner = document.getElementById('safe-zone-banner');
+  const isRated = activeProtocolMode === "rated";
+  const safeZoneBanner = document.getElementById("safe-zone-banner");
 
   if (safeZoneBanner) {
-    safeZoneBanner.style.display = isRated ? 'none' : 'flex';
+    safeZoneBanner.style.display = isRated ? "none" : "flex";
   }
 
   const settings = getSettings();
 
-  LIFELINE_KEYS.forEach(key => {
+  LIFELINE_KEYS.forEach((key) => {
     const input = document.getElementById(`toggle-${key}`);
     const card = document.getElementById(`card-${key}`);
     if (!input || !card) return;
@@ -370,21 +384,21 @@ function auditAsymmetricFirewall() {
         // Prime Singularity: Suppress and hard-lock ALL configured user help lifelines
         shouldLock = true;
       } else {
-        if (key === 'allowSandbox' && userElo >= 900) shouldLock = true;
-        if (key === 'allowNoise' && userElo >= 1200) shouldLock = true;
-        if (key === 'allowHint' && userElo >= 1400) shouldLock = true;
-        if (key === 'allowPause' && userElo >= 1800) shouldLock = true;
-        if (key === 'allowComboTracker' && userElo >= 2400) shouldLock = true;
+        if (key === "allowSandbox" && userElo >= 900) shouldLock = true;
+        if (key === "allowNoise" && userElo >= 1200) shouldLock = true;
+        if (key === "allowHint" && userElo >= 1400) shouldLock = true;
+        if (key === "allowPause" && userElo >= 1800) shouldLock = true;
+        if (key === "allowComboTracker" && userElo >= 2400) shouldLock = true;
       }
     }
 
-    let badge = card.querySelector('.firewall-indicator-badge');
+    let badge = card.querySelector(".firewall-indicator-badge");
 
     if (shouldLock) {
       // 1. Visually faded
-      card.classList.add('firewall-locked');
-      card.style.opacity = '0.35';
-      card.style.pointerEvents = 'none';
+      card.classList.add("firewall-locked");
+      card.style.opacity = "0.35";
+      card.style.pointerEvents = "none";
 
       // 2. Browser-level disabled & checked = false
       input.disabled = true;
@@ -393,19 +407,20 @@ function auditAsymmetricFirewall() {
       // 3. Render glowing crimson indicator badge displaying exactly:
       // "❌ FIREWALL DEACTIVATED (ELO PROHIBITED)"
       if (!badge) {
-        const info = card.querySelector('.lifeline-info');
+        const info = card.querySelector(".lifeline-info");
         if (info) {
-          const badgeWrap = document.createElement('div');
-          badgeWrap.className = 'badge-anchor';
-          badgeWrap.innerHTML = '<span class="firewall-indicator-badge">❌ FIREWALL DEACTIVATED (ELO PROHIBITED)</span>';
+          const badgeWrap = document.createElement("div");
+          badgeWrap.className = "badge-anchor";
+          badgeWrap.innerHTML =
+            '<span class="firewall-indicator-badge">❌ FIREWALL DEACTIVATED (ELO PROHIBITED)</span>';
           info.appendChild(badgeWrap);
         }
       }
     } else {
       // Restore active interactive status
-      card.classList.remove('firewall-locked');
-      card.style.opacity = '1';
-      card.style.pointerEvents = 'auto';
+      card.classList.remove("firewall-locked");
+      card.style.opacity = "1";
+      card.style.pointerEvents = "auto";
 
       input.disabled = false;
       input.checked = !!settings[key];

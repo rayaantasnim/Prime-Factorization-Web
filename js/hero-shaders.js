@@ -199,4 +199,3 @@ void main() {
   gl_FragColor = vec4(finalCol * (0.95 + pinpoint * 0.45), a);
 }
 `;
-

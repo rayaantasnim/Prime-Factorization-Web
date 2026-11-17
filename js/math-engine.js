@@ -39,7 +39,10 @@ export function isPrime(n) {
   if (n < 25) return true;
 
   // Small prime pre-check
-  const smallPrimes = [5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+  const smallPrimes = [
+    5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73,
+    79, 83, 89, 97,
+  ];
   for (const p of smallPrimes) {
     if (n === p) return true;
     if (n % p === 0) return false;
@@ -79,7 +82,7 @@ export function pollardRho(n) {
 
   const N = BigInt(n);
   let c = 1n;
-  
+
   while (true) {
     let x = 2n;
     let y = 2n;
@@ -116,9 +119,9 @@ export function pollardRho(n) {
 export function factorize(n) {
   n = Math.floor(Math.abs(Number(n)));
   if (n <= 1) return [];
-  
+
   const factors = [];
-  
+
   // Extract all 2s
   while (n % 2 === 0) {
     factors.push(2);
@@ -131,7 +134,10 @@ export function factorize(n) {
   }
 
   // Trial division up to 97 for speed
-  const smallPrimes = [5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+  const smallPrimes = [
+    5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73,
+    79, 83, 89, 97,
+  ];
   for (const p of smallPrimes) {
     if (n <= 1) break;
     while (n % p === 0) {
@@ -177,16 +183,29 @@ export function toExponentialForm(factors) {
 // Format exponential array into math string: "2³ × 3² × 5" or "2^3 * 3^2 * 5"
 export function formatExponentialString(expArr, useSuperscript = true) {
   const supMap = {
-    '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
-    '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
+    0: "⁰",
+    1: "¹",
+    2: "²",
+    3: "³",
+    4: "⁴",
+    5: "⁵",
+    6: "⁶",
+    7: "⁷",
+    8: "⁸",
+    9: "⁹",
   };
-  
-  return expArr.map(item => {
-    if (item.exp === 1) return `${item.prime}`;
-    if (!useSuperscript) return `${item.prime}^${item.exp}`;
-    const sup = String(item.exp).split('').map(d => supMap[d] || d).join('');
-    return `${item.prime}${sup}`;
-  }).join(' × ');
+
+  return expArr
+    .map((item) => {
+      if (item.exp === 1) return `${item.prime}`;
+      if (!useSuperscript) return `${item.prime}^${item.exp}`;
+      const sup = String(item.exp)
+        .split("")
+        .map((d) => supMap[d] || d)
+        .join("");
+      return `${item.prime}${sup}`;
+    })
+    .join(" × ");
 }
 
 /**
@@ -201,7 +220,7 @@ export function formatExponentialString(expArr, useSuperscript = true) {
 export function isDeceptiveSymmetricCandidate(n) {
   const s = String(n);
   // Must be at least 3 digits and palindromic
-  const isPalindromic = s.length >= 3 && s === s.split('').reverse().join('');
+  const isPalindromic = s.length >= 3 && s === s.split("").reverse().join("");
   if (!isPalindromic) return false;
 
   // Must have no single-digit divisors (2, 3, 5, 7)
@@ -267,7 +286,7 @@ export function isHoneySpotSuppressed(candidate, maxBound) {
  */
 export function getAdaptiveCognitiveDeficitBase() {
   try {
-    const raw = localStorage.getItem('primefactor_highest_deficit_base');
+    const raw = localStorage.getItem("primefactor_highest_deficit_base");
     if (raw) {
       const val = parseInt(raw, 10);
       if (!isNaN(val) && val > 1) return val;
@@ -279,9 +298,12 @@ export function getAdaptiveCognitiveDeficitBase() {
 export function setAdaptiveCognitiveDeficitBase(basePrime) {
   try {
     if (basePrime && Number(basePrime) > 1) {
-      localStorage.setItem('primefactor_highest_deficit_base', String(basePrime));
+      localStorage.setItem(
+        "primefactor_highest_deficit_base",
+        String(basePrime),
+      );
     } else {
-      localStorage.removeItem('primefactor_highest_deficit_base');
+      localStorage.removeItem("primefactor_highest_deficit_base");
     }
   } catch (e) {}
 }
@@ -297,13 +319,17 @@ export function rollCompositeNumber(min, max) {
 
   // 1. Stochastic Adaptive Question Injection (30/70 Split)
   const deficitBase = getAdaptiveCognitiveDeficitBase();
-  if (deficitBase && Math.random() < 0.30) {
+  if (deficitBase && Math.random() < 0.3) {
     const kMin = Math.max(2, Math.ceil(min / deficitBase));
     const kMax = Math.floor(max / deficitBase);
     if (kMax >= kMin) {
       const k = Math.floor(Math.random() * (kMax - kMin + 1)) + kMin;
       const targetCandidate = k * deficitBase;
-      if (!isPrime(targetCandidate) && targetCandidate >= min && targetCandidate <= max) {
+      if (
+        !isPrime(targetCandidate) &&
+        targetCandidate >= min &&
+        targetCandidate <= max
+      ) {
         if (!isHighBoundGated || !isHoneySpotSuppressed(targetCandidate, max)) {
           return targetCandidate;
         }
@@ -343,27 +369,27 @@ export function rollCompositeNumber(min, max) {
  * (e.g. '2*2*3*' -> '2*2*3', '2 *  3' -> '2*3', '2 * 2 * 3 *' -> '2*2*3', '2, 3,' -> '2*3')
  */
 export function sanitizeFactorInput(inputStr) {
-  if (!inputStr || typeof inputStr !== 'string') return '';
+  if (!inputStr || typeof inputStr !== "string") return "";
   let s = inputStr.trim();
-  if (s.length === 0) return '';
+  if (s.length === 0) return "";
 
   // 1. Convert common multiplier alternatives, commas, semicolons to '*'
-  s = s.replace(/[×Xx·;,]/g, '*');
+  s = s.replace(/[×Xx·;,]/g, "*");
 
   // 2. Normalize exponent notations ('**' or '^') and strip inner whitespace
-  s = s.replace(/\s*(\*\*|\^)\s*/g, '^');
+  s = s.replace(/\s*(\*\*|\^)\s*/g, "^");
 
   // 3. Normalize spaces around '*'
-  s = s.replace(/\s*\*\s*/g, '*');
+  s = s.replace(/\s*\*\s*/g, "*");
 
   // 4. Transform leftover whitespace between numbers into '*'
-  s = s.replace(/\s+/g, '*');
+  s = s.replace(/\s+/g, "*");
 
   // 5. Deduplicate multiple consecutive '*'
-  s = s.replace(/\*+/g, '*');
+  s = s.replace(/\*+/g, "*");
 
   // 6. Strip accidental leading and trailing multipliers or exponents
-  s = s.replace(/^[\s*^]+|[\s*^]+$/g, '');
+  s = s.replace(/^[\s*^]+|[\s*^]+$/g, "");
 
   return s;
 }
@@ -374,11 +400,11 @@ export function sanitizeFactorInput(inputStr) {
  * 2*2*3, 2,2,3, 2^2*3, 2**2*3, 2 × 2 × 3, 2 2 3, 2.2.3, etc.
  */
 export function parseAndValidateFactorInput(inputStr, targetNumber) {
-  if (!inputStr || typeof inputStr !== 'string') {
+  if (!inputStr || typeof inputStr !== "string") {
     return {
       isValid: false,
       userFactors: [],
-      error: 'Please enter a valid factorization expression.'
+      error: "Please enter a valid factorization expression.",
     };
   }
 
@@ -387,19 +413,22 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
     return {
       isValid: false,
       userFactors: [],
-      error: 'Input cannot be blank.',
-      reason: 'Input cannot be blank.'
+      error: "Input cannot be blank.",
+      reason: "Input cannot be blank.",
     };
   }
 
   // Split by multiplication operator '*'
-  const tokens = cleaned.split('*').map(t => t.trim()).filter(Boolean);
+  const tokens = cleaned
+    .split("*")
+    .map((t) => t.trim())
+    .filter(Boolean);
   if (tokens.length === 0) {
     return {
       isValid: false,
       userFactors: [],
-      error: 'Could not parse mathematical factors.',
-      reason: 'Could not parse mathematical factors.'
+      error: "Could not parse mathematical factors.",
+      reason: "Could not parse mathematical factors.",
     };
   }
 
@@ -408,14 +437,14 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
   for (const token of tokens) {
     // Check for power notation: base^exp or base**exp
     let baseStr = token;
-    let expStr = '1';
+    let expStr = "1";
 
-    if (token.includes('**')) {
-      const parts = token.split('**');
+    if (token.includes("**")) {
+      const parts = token.split("**");
       baseStr = parts[0].trim();
       expStr = parts[1].trim();
-    } else if (token.includes('^')) {
-      const parts = token.split('^');
+    } else if (token.includes("^")) {
+      const parts = token.split("^");
       baseStr = parts[0].trim();
       expStr = parts[1].trim();
     }
@@ -429,7 +458,7 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
         isValid: false,
         userFactors: [],
         error: msg,
-        reason: msg
+        reason: msg,
       };
     }
 
@@ -439,7 +468,7 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
         isValid: false,
         userFactors: [],
         error: msg,
-        reason: msg
+        reason: msg,
       };
     }
 
@@ -450,7 +479,7 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
         isValid: false,
         userFactors: [],
         error: msg,
-        reason: msg
+        reason: msg,
       };
     }
 
@@ -474,30 +503,30 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
       isValid: false,
       userFactors: userExpandedFactors,
       error: msg,
-      reason: msg
+      reason: msg,
     };
   }
 
   // Compare factors with true prime decomposition
   const trueFactors = factorize(targetNumber);
   if (userExpandedFactors.length !== trueFactors.length) {
-    const msg = 'Decomposition does not match true prime factors.';
+    const msg = "Decomposition does not match true prime factors.";
     return {
       isValid: false,
       userFactors: userExpandedFactors,
       error: msg,
-      reason: msg
+      reason: msg,
     };
   }
 
   for (let i = 0; i < trueFactors.length; i++) {
     if (userExpandedFactors[i] !== trueFactors[i]) {
-      const msg = 'Decomposition does not match true prime factors.';
+      const msg = "Decomposition does not match true prime factors.";
       return {
         isValid: false,
         userFactors: userExpandedFactors,
         error: msg,
-        reason: msg
+        reason: msg,
       };
     }
   }
@@ -505,7 +534,7 @@ export function parseAndValidateFactorInput(inputStr, targetNumber) {
   return {
     isValid: true,
     userFactors: userExpandedFactors,
-    error: null
+    error: null,
   };
 }
 
@@ -527,24 +556,31 @@ export function parseExpressionToFactors(inputStr) {
  * @param {boolean|null} isRated Match participation mode (rated vs unrated practice)
  * @returns {string} Mathematical hint or firewall rejection string
  */
-export function generateConceptualHint(targetNumber, userElo = null, isRated = null) {
+export function generateConceptualHint(
+  targetNumber,
+  userElo = null,
+  isRated = null,
+) {
   const factors = factorize(targetNumber);
   const smallestPrime = factors[0];
-  const eloSource = (userElo !== null && userElo !== undefined)
-    ? Number(userElo)
-    : 500;
+  const eloSource =
+    userElo !== null && userElo !== undefined ? Number(userElo) : 500;
   const currentElo = isNaN(eloSource) ? 500 : eloSource;
 
   // Resolve rated mode (explicit boolean argument, or inspect session state, default true)
   let rated = true;
-  if (typeof isRated === 'boolean') {
+  if (typeof isRated === "boolean") {
     rated = isRated;
   } else {
     try {
-      const stored = sessionStorage.getItem('primefactor_active_exam_params');
+      const stored = sessionStorage.getItem("primefactor_active_exam_params");
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (parsed.participationMode === 'practice' || parsed.participationMode === 'unrated' || parsed.isForcedUnrated) {
+        if (
+          parsed.participationMode === "practice" ||
+          parsed.participationMode === "unrated" ||
+          parsed.isForcedUnrated
+        ) {
           rated = false;
         }
       }
@@ -556,14 +592,14 @@ export function generateConceptualHint(targetNumber, userElo = null, isRated = n
   // 7. ELO ≥ 3000 (Prime Singularity - Hard Absolute Suppression):
   // Hard-lock regardless of mode returning critical fault string
   if (currentElo >= 3000) {
-    return '❌ CRITICAL FAULT: Full-bandwidth unassisted integer decomposition required. Cognitive singularity has suppressed all heuristics.';
+    return "❌ CRITICAL FAULT: Full-bandwidth unassisted integer decomposition required. Cognitive singularity has suppressed all heuristics.";
   }
 
   // RATED CONTEST GATEKEEPER (ELO ≥ 1400):
   // If the match is a "Rated Contest" and competitor ELO is ≥ 1400, strictly locked out.
   // Advanced competitors can ONLY view advanced hints in "Unrated Practice" mode (Safe-Zone Exception).
   if (rated && currentElo >= 1400) {
-    return '❌ FIREWALL DEACTIVATED (ELO PROHIBITED)';
+    return "❌ FIREWALL DEACTIVATED (ELO PROHIBITED)";
   }
 
   // 6. 2400 ≤ ELO < 3000 (Canonical Analyst Domain - Unrated Practice Only)
@@ -621,11 +657,11 @@ export function generateConceptualHint(targetNumber, userElo = null, isRated = n
   if (targetNumber % 5 === 0) {
     return "Terminal digit is 5. Target is divisible by prime factor 5.";
   }
-  const digitSum = String(targetNumber).split('').reduce((acc, d) => acc + Number(d), 0);
+  const digitSum = String(targetNumber)
+    .split("")
+    .reduce((acc, d) => acc + Number(d), 0);
   if (digitSum % 3 === 0) {
     return "Sum of digits is divisible by 3. Extract factor 3.";
   }
   return `Target has ${factors.length} prime factors. Lowest prime divisor is ${smallestPrime}.`;
 }
-
-

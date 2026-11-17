@@ -3,7 +3,7 @@
  * Zero External MP3 Dependencies. 100% Hermetic Synthesized Sound FX.
  */
 
-import { getSettings } from './storage.js';
+import { getSettings } from "./storage.js";
 
 let audioCtx = null;
 
@@ -14,7 +14,7 @@ function getAudioContext() {
       audioCtx = new AudioContextClass();
     }
   }
-  if (audioCtx && audioCtx.state === 'suspended') {
+  if (audioCtx && audioCtx.state === "suspended") {
     audioCtx.resume();
   }
   return audioCtx;
@@ -31,10 +31,10 @@ export function playSound(type) {
     const now = ctx.currentTime;
 
     switch (type) {
-      case 'click': {
+      case "click": {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = "sine";
         osc.frequency.setValueAtTime(800, now);
         osc.frequency.exponentialRampToValueAtTime(400, now + 0.04);
         gain.gain.setValueAtTime(0.08, now);
@@ -46,10 +46,10 @@ export function playSound(type) {
         break;
       }
 
-      case 'wheelTick': {
+      case "wheelTick": {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = "sine";
         osc.frequency.setValueAtTime(1400, now);
         osc.frequency.exponentialRampToValueAtTime(500, now + 0.02);
         gain.gain.setValueAtTime(0.06, now);
@@ -61,15 +61,18 @@ export function playSound(type) {
         break;
       }
 
-      case 'correct': {
+      case "correct": {
         // Harmonic major third / fifth chime
         [523.25, 659.25, 783.99].forEach((freq, idx) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          osc.type = 'triangle';
+          osc.type = "triangle";
           osc.frequency.setValueAtTime(freq, now + idx * 0.04);
           gain.gain.setValueAtTime(0.09, now + idx * 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.28);
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            now + idx * 0.04 + 0.28,
+          );
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(now + idx * 0.04);
@@ -78,11 +81,11 @@ export function playSound(type) {
         break;
       }
 
-      case 'error': {
+      case "error": {
         // Low discord buzz
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sawtooth';
+        osc.type = "sawtooth";
         osc.frequency.setValueAtTime(140, now);
         osc.frequency.linearRampToValueAtTime(110, now + 0.18);
         gain.gain.setValueAtTime(0.12, now);
@@ -94,11 +97,11 @@ export function playSound(type) {
         break;
       }
 
-      case 'alert': {
+      case "alert": {
         // Attention ping
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = "sine";
         osc.frequency.setValueAtTime(440, now);
         osc.frequency.setValueAtTime(880, now + 0.08);
         gain.gain.setValueAtTime(0.1, now);
@@ -110,16 +113,19 @@ export function playSound(type) {
         break;
       }
 
-      case 'fanfare': {
+      case "fanfare": {
         // Victory triad arpeggio
-        const notes = [523.25, 659.25, 783.99, 1046.50];
+        const notes = [523.25, 659.25, 783.99, 1046.5];
         notes.forEach((freq, idx) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          osc.type = 'sine';
+          osc.type = "sine";
           osc.frequency.setValueAtTime(freq, now + idx * 0.09);
           gain.gain.setValueAtTime(0.12, now + idx * 0.09);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.45);
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            now + idx * 0.09 + 0.45,
+          );
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(now + idx * 0.09);
@@ -129,7 +135,7 @@ export function playSound(type) {
       }
     }
   } catch (err) {
-    console.debug('Audio error or blocked:', err);
+    console.debug("Audio error or blocked:", err);
   }
 }
 
@@ -153,7 +159,7 @@ let tensionState = {
   discordantOsc: null,
   discordantGain: null,
   masterGain: null,
-  intervalId: null
+  intervalId: null,
 };
 
 /**
@@ -167,11 +173,18 @@ let tensionState = {
  * @param {number} [telemetry.totalQuestions] Total number of questions in match
  */
 export function updateExamTensionTelemetry(telemetry = {}) {
-  if (telemetry.timeRemaining !== undefined) tensionState.timeRemaining = Number(telemetry.timeRemaining);
-  if (telemetry.primeFactors !== undefined) tensionState.primeFactors = Array.isArray(telemetry.primeFactors) ? telemetry.primeFactors : [];
-  if (telemetry.userElo !== undefined) tensionState.userElo = Number(telemetry.userElo);
-  if (telemetry.currentIndex !== undefined) tensionState.currentIndex = Number(telemetry.currentIndex);
-  if (telemetry.totalQuestions !== undefined) tensionState.totalQuestions = Number(telemetry.totalQuestions);
+  if (telemetry.timeRemaining !== undefined)
+    tensionState.timeRemaining = Number(telemetry.timeRemaining);
+  if (telemetry.primeFactors !== undefined)
+    tensionState.primeFactors = Array.isArray(telemetry.primeFactors)
+      ? telemetry.primeFactors
+      : [];
+  if (telemetry.userElo !== undefined)
+    tensionState.userElo = Number(telemetry.userElo);
+  if (telemetry.currentIndex !== undefined)
+    tensionState.currentIndex = Number(telemetry.currentIndex);
+  if (telemetry.totalQuestions !== undefined)
+    tensionState.totalQuestions = Number(telemetry.totalQuestions);
 }
 
 /**
@@ -198,7 +211,10 @@ export function startExamTensionAtmosphere(allocatedSeconds = 180) {
     if (!ctx) return;
 
     const now = ctx.currentTime;
-    tensionState.allocatedSeconds = Math.max(1, Number(allocatedSeconds) || 180);
+    tensionState.allocatedSeconds = Math.max(
+      1,
+      Number(allocatedSeconds) || 180,
+    );
     tensionState.timeRemaining = tensionState.allocatedSeconds;
     tensionState.active = true;
 
@@ -216,7 +232,7 @@ export function startExamTensionAtmosphere(allocatedSeconds = 180) {
 
     // 3. Asynchronous LFO Pulse-Rate Trigger (1 Hz to 12 Hz)
     const lfoOsc = ctx.createOscillator();
-    lfoOsc.type = 'sine';
+    lfoOsc.type = "sine";
     lfoOsc.frequency.setValueAtTime(1.0, now);
 
     const lfoDepth = ctx.createGain();
@@ -229,7 +245,7 @@ export function startExamTensionAtmosphere(allocatedSeconds = 180) {
 
     // 4. Baseline Deep Sub-Bass Carrier Sine Wave (60 Hz baseline)
     const carrierOsc = ctx.createOscillator();
-    carrierOsc.type = 'sine';
+    carrierOsc.type = "sine";
     carrierOsc.frequency.setValueAtTime(60, now);
 
     const carrierGain = ctx.createGain();
@@ -241,7 +257,7 @@ export function startExamTensionAtmosphere(allocatedSeconds = 180) {
 
     // 5. Asymmetric Triangle Wave Drone (Acoustic resonance & beating drone)
     const droneOsc = ctx.createOscillator();
-    droneOsc.type = 'triangle';
+    droneOsc.type = "triangle";
     droneOsc.frequency.setValueAtTime(60.8, now); // Slight detune for acoustic phase tension
 
     const droneGain = ctx.createGain();
@@ -253,7 +269,7 @@ export function startExamTensionAtmosphere(allocatedSeconds = 180) {
 
     // 6. Discordant Offset Frequency Layer (Input B: Integer Complexity)
     const discordantOsc = ctx.createOscillator();
-    discordantOsc.type = 'sawtooth';
+    discordantOsc.type = "sawtooth";
     discordantOsc.frequency.setValueAtTime(60 * 1.414, now);
 
     const discordantGain = ctx.createGain();
@@ -270,10 +286,17 @@ export function startExamTensionAtmosphere(allocatedSeconds = 180) {
       const tickNow = audioCtx.currentTime;
 
       // Telemetry Input A: Time Decay (allocatedSeconds -> 0s)
-      const elapsed = Math.max(0, tensionState.allocatedSeconds - tensionState.timeRemaining);
-      let decayFraction = tensionState.allocatedSeconds > 0
-        ? Math.min(1.0, Math.max(0.0, elapsed / tensionState.allocatedSeconds))
-        : 0.0;
+      const elapsed = Math.max(
+        0,
+        tensionState.allocatedSeconds - tensionState.timeRemaining,
+      );
+      let decayFraction =
+        tensionState.allocatedSeconds > 0
+          ? Math.min(
+              1.0,
+              Math.max(0.0, elapsed / tensionState.allocatedSeconds),
+            )
+          : 0.0;
 
       // Telemetry Input C: ELO Bracket Scaling (>= 2000 ELO -> 1.5x escalation velocity)
       if (tensionState.userElo >= 2000) {
@@ -314,12 +337,12 @@ export function startExamTensionAtmosphere(allocatedSeconds = 180) {
       masterGain.gain.setTargetAtTime(targetVolume, tickNow, 0.08);
 
       // Compound LFO modulation depth with question index
-      const progressRatio = progressIndex / Math.max(1, (tensionState.totalQuestions || 10) - 1);
+      const progressRatio =
+        progressIndex / Math.max(1, (tensionState.totalQuestions || 10) - 1);
       lfoDepth.gain.setTargetAtTime(0.35 + 0.25 * progressRatio, tickNow, 0.08);
     }, 100);
-
   } catch (err) {
-    console.debug('Error in startExamTensionAtmosphere:', err);
+    console.debug("Error in startExamTensionAtmosphere:", err);
   }
 }
 
@@ -363,7 +386,7 @@ export function stopExamTensionAtmosphere() {
       if (tensionState.discordantGain) tensionState.discordantGain.disconnect();
       if (tensionState.masterGain) tensionState.masterGain.disconnect();
     } catch (err) {
-      console.debug('Dismantling tension nodes error:', err);
+      console.debug("Dismantling tension nodes error:", err);
     }
 
     tensionState.carrierOsc = null;

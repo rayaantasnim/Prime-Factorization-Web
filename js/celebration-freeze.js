@@ -1,6 +1,6 @@
 /**
  * PrimeFactor.app — Live Arena Celebration Freeze Module
- * 
+ *
  * High-performance visual milestone celebrating consecutive 3-flawless combo chain rewards.
  * 1. Freezes active countdown timer for exactly 2 seconds (2000ms).
  * 2. Fully suppresses and locks keyboard inputs and form submissions.
@@ -11,10 +11,11 @@
  * 6. Enforces strict boundary safety on 10th final question and 0:00 timeout conditions.
  */
 
-import confetti from 'canvas-confetti';
+import confetti from "canvas-confetti";
 
 export const CELEBRATION_FREEZE_DURATION_MS = 2000;
-export const CELEBRATION_MARQUEE_TEXT = '🔥 CONGRATULATIONS: +2 ELO BONUS LOCKED!';
+export const CELEBRATION_MARQUEE_TEXT =
+  "🔥 CONGRATULATIONS: +2 ELO BONUS LOCKED!";
 
 /**
  * High-Density Fallback Canvas Particle System
@@ -23,13 +24,21 @@ export const CELEBRATION_MARQUEE_TEXT = '🔥 CONGRATULATIONS: +2 ELO BONUS LOCK
 class FallbackParticleSystem {
   constructor(canvas) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    this.ctx = canvas.getContext("2d");
     this.particles = [];
     this.animId = null;
     this.isRunning = false;
     this.colors = [
-      '#FFD700', '#FFA500', '#00E5FF', '#10B981', '#FF3366',
-      '#8B5CF6', '#FFFFFF', '#38BDF8', '#F59E0B', '#EC4899'
+      "#FFD700",
+      "#FFA500",
+      "#00E5FF",
+      "#10B981",
+      "#FF3366",
+      "#8B5CF6",
+      "#FFFFFF",
+      "#38BDF8",
+      "#F59E0B",
+      "#EC4899",
     ];
   }
 
@@ -59,7 +68,7 @@ class FallbackParticleSystem {
         drag: 0.965,
         opacity: 1,
         fadeSpeed: 0.006 + Math.random() * 0.008,
-        shape: Math.random() > 0.4 ? 'rect' : 'circle'
+        shape: Math.random() > 0.4 ? "rect" : "circle",
       });
     }
 
@@ -93,7 +102,7 @@ class FallbackParticleSystem {
       this.ctx.rotate((p.rotation * Math.PI) / 180);
       this.ctx.fillStyle = p.color;
 
-      if (p.shape === 'rect') {
+      if (p.shape === "rect") {
         this.ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
       } else {
         this.ctx.beginPath();
@@ -134,53 +143,54 @@ class FallbackParticleSystem {
 export function triggerLiveArenaCelebrationFreeze({
   targetNumberEl,
   onStart,
-  onComplete
+  onComplete,
 }) {
   const duration = CELEBRATION_FREEZE_DURATION_MS;
 
   // 1. Fire onStart lifecycle hook immediately
-  if (typeof onStart === 'function') {
+  if (typeof onStart === "function") {
     onStart();
   }
 
   // 2. Marquee replacement on targetNumberEl
-  let previousText = '';
-  let previousClasses = '';
+  let previousText = "";
+  let previousClasses = "";
   if (targetNumberEl) {
-    previousText = targetNumberEl.textContent || '';
+    previousText = targetNumberEl.textContent || "";
     previousClasses = targetNumberEl.className;
     targetNumberEl.textContent = CELEBRATION_MARQUEE_TEXT;
-    targetNumberEl.classList.add('celebration-marquee-active');
+    targetNumberEl.classList.add("celebration-marquee-active");
 
     // Trigger high-impact GSAP spring entrance if available
     if (window.gsap) {
       window.gsap.killTweensOf(targetNumberEl);
-      window.gsap.fromTo(targetNumberEl,
+      window.gsap.fromTo(
+        targetNumberEl,
         { scale: 0.72, opacity: 0, y: 12 },
-        { scale: 1, opacity: 1, y: 0, duration: 0.38, ease: 'back.out(2.2)' }
+        { scale: 1, opacity: 1, y: 0, duration: 0.38, ease: "back.out(2.2)" },
       );
     }
   }
 
   // 3. Mount High-Density Confetti Viewport Canvas
-  let canvas = document.getElementById('live-arena-celebration-canvas');
+  let canvas = document.getElementById("live-arena-celebration-canvas");
   if (!canvas) {
-    canvas = document.createElement('canvas');
-    canvas.id = 'live-arena-celebration-canvas';
-    canvas.className = 'live-arena-celebration-canvas';
+    canvas = document.createElement("canvas");
+    canvas.id = "live-arena-celebration-canvas";
+    canvas.className = "live-arena-celebration-canvas";
     document.body.appendChild(canvas);
   }
 
   // Configure canvas style layer
-  canvas.style.position = 'fixed';
-  canvas.style.top = '0';
-  canvas.style.left = '0';
-  canvas.style.width = '100vw';
-  canvas.style.height = '100vh';
-  canvas.style.pointerEvents = 'none';
-  canvas.style.zIndex = '999999';
-  canvas.style.opacity = '1';
-  canvas.style.transition = 'opacity 0.4s ease';
+  canvas.style.position = "fixed";
+  canvas.style.top = "0";
+  canvas.style.left = "0";
+  canvas.style.width = "100vw";
+  canvas.style.height = "100vh";
+  canvas.style.pointerEvents = "none";
+  canvas.style.zIndex = "999999";
+  canvas.style.opacity = "1";
+  canvas.style.transition = "opacity 0.4s ease";
 
   // 4. Launch High-Density Multi-Colored Confetti Blast Explosion
   let confettiInstance = null;
@@ -189,15 +199,26 @@ export function triggerLiveArenaCelebrationFreeze({
   try {
     confettiInstance = confetti.create(canvas, {
       resize: true,
-      useWorker: true
+      useWorker: true,
     });
   } catch (err) {
-    console.warn('[Celebration Freeze] canvas-confetti worker failed, using fallback particle system:', err);
+    console.warn(
+      "[Celebration Freeze] canvas-confetti worker failed, using fallback particle system:",
+      err,
+    );
   }
 
   const vibrantColors = [
-    '#F59E0B', '#FACC15', '#06B6D4', '#10B981', '#3B82F6',
-    '#EF4444', '#EC4899', '#FFFFFF', '#38BDF8', '#8B5CF6'
+    "#F59E0B",
+    "#FACC15",
+    "#06B6D4",
+    "#10B981",
+    "#3B82F6",
+    "#EF4444",
+    "#EC4899",
+    "#FFFFFF",
+    "#38BDF8",
+    "#8B5CF6",
   ];
 
   if (confettiInstance) {
@@ -211,7 +232,7 @@ export function triggerLiveArenaCelebrationFreeze({
       scalar: 1.25,
       ticks: 240,
       colors: vibrantColors,
-      disableForReducedMotion: false
+      disableForReducedMotion: false,
     });
 
     // Burst 2: Left Side Angled Cannon Launch
@@ -226,7 +247,7 @@ export function triggerLiveArenaCelebrationFreeze({
           gravity: 0.95,
           scalar: 1.15,
           ticks: 240,
-          colors: vibrantColors
+          colors: vibrantColors,
         });
       } catch (e) {}
     }, 120);
@@ -243,7 +264,7 @@ export function triggerLiveArenaCelebrationFreeze({
           gravity: 0.95,
           scalar: 1.15,
           ticks: 240,
-          colors: vibrantColors
+          colors: vibrantColors,
         });
       } catch (e) {}
     }, 180);
@@ -257,10 +278,10 @@ export function triggerLiveArenaCelebrationFreeze({
           origin: { x: 0.5, y: 0.3 },
           startVelocity: 36,
           gravity: 0.75,
-          shapes: ['star', 'circle'],
+          shapes: ["star", "circle"],
           scalar: 1.35,
           ticks: 200,
-          colors: ['#FFE600', '#FFFFFF', '#38BDF8', '#F43F5E', '#10B981']
+          colors: ["#FFE600", "#FFFFFF", "#38BDF8", "#F43F5E", "#10B981"],
         });
       } catch (e) {}
     }, 320);
@@ -275,12 +296,12 @@ export function triggerLiveArenaCelebrationFreeze({
   const freezeTimer = setTimeout(() => {
     // Fade out canvas smoothly
     if (canvas) {
-      canvas.style.opacity = '0';
+      canvas.style.opacity = "0";
     }
 
     // Clean up DOM marquee state
     if (targetNumberEl) {
-      targetNumberEl.classList.remove('celebration-marquee-active');
+      targetNumberEl.classList.remove("celebration-marquee-active");
     }
 
     // After 400ms CSS fade completes, teardown canvas resources
@@ -299,11 +320,11 @@ export function triggerLiveArenaCelebrationFreeze({
     }, 450);
 
     // Execute completion callback
-    if (typeof onComplete === 'function') {
+    if (typeof onComplete === "function") {
       onComplete({
         previousText,
         previousClasses,
-        durationElapsed: duration
+        durationElapsed: duration,
       });
     }
   }, duration);
@@ -315,8 +336,8 @@ export function triggerLiveArenaCelebrationFreeze({
         canvas.parentNode.removeChild(canvas);
       }
       if (targetNumberEl) {
-        targetNumberEl.classList.remove('celebration-marquee-active');
+        targetNumberEl.classList.remove("celebration-marquee-active");
       }
-    }
+    },
   };
 }

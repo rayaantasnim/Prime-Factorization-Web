@@ -5,7 +5,7 @@
  *  2. jsDelivr ESM build  — fallback when the page is opened without a bundler (static hosting).
  *  3. null                — every consumer has a CSS / rAF fallback, nothing is ever left hidden.
  */
-const MOTION_CDN = 'https://cdn.jsdelivr.net/npm/motion@12.23.24/+esm';
+const MOTION_CDN = "https://cdn.jsdelivr.net/npm/motion@12.23.24/+esm";
 
 let pending = null;
 
@@ -13,13 +13,21 @@ export function getMotion() {
   if (pending) return pending;
   pending = (async () => {
     let mod = null;
-    try { mod = await import('motion'); } catch (e) { /* not bundled — try the CDN */ }
+    try {
+      mod = await import("motion");
+    } catch (e) {
+      /* not bundled — try the CDN */
+    }
     if (!mod || !mod.animate) {
-      try { mod = await import(/* @vite-ignore */ MOTION_CDN); } catch (e) { mod = null; }
+      try {
+        mod = await import(/* @vite-ignore */ MOTION_CDN);
+      } catch (e) {
+        mod = null;
+      }
     }
     if (mod && mod.animate) {
       window.__pfMotion = mod;
-      document.documentElement.classList.add('fx-motion');
+      document.documentElement.classList.add("fx-motion");
       return mod;
     }
     return null;
@@ -35,13 +43,21 @@ export function tween(motion, from, to, opts, onUpdate) {
   const duration = opts.duration ?? 0.8;
   if (motion && motion.animate) {
     const o = { onUpdate, onComplete: opts.onComplete };
-    if (opts.type === 'spring') Object.assign(o, { type: 'spring', stiffness: opts.stiffness ?? 170, damping: opts.damping ?? 20, mass: opts.mass ?? 1 });
-    else Object.assign(o, { duration, ease: opts.ease ?? 'easeOut' });
+    if (opts.type === "spring")
+      Object.assign(o, {
+        type: "spring",
+        stiffness: opts.stiffness ?? 170,
+        damping: opts.damping ?? 20,
+        mass: opts.mass ?? 1,
+      });
+    else Object.assign(o, { duration, ease: opts.ease ?? "easeOut" });
     if (opts.delay) o.delay = opts.delay;
     const c = motion.animate(from, to, o);
     return { stop: () => c && c.stop && c.stop() };
   }
-  let raf = 0, t0 = 0, dead = false;
+  let raf = 0,
+    t0 = 0,
+    dead = false;
   const step = (now) => {
     if (dead) return;
     if (!t0) t0 = now + (opts.delay || 0) * 1000;
@@ -52,5 +68,10 @@ export function tween(motion, from, to, opts, onUpdate) {
     else if (opts.onComplete) opts.onComplete();
   };
   raf = requestAnimationFrame(step);
-  return { stop: () => { dead = true; cancelAnimationFrame(raf); } };
+  return {
+    stop: () => {
+      dead = true;
+      cancelAnimationFrame(raf);
+    },
+  };
 }

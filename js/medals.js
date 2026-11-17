@@ -6,19 +6,25 @@
  * and 6-way dynamic filtering (All, Achieved, Locked, Speed, Resource, Streak).
  */
 
-import { initGlobalHeader, renderFooter, triggerFlash } from './header.js';
-import { getLedger, getLastExamResult } from './storage.js';
-import { playSound } from './audio.js';
-import { getUserElo, getUserPeakElo, getTierByElo } from './elo-engine.js';
-import { MEDALS_CATALOG } from './medals-catalog.js';
-import { BADGES_CATALOG } from './badges-catalog.js';
-import { waitForAuthReady, isUserLoggedIn, onAuthChange, getCurrentProfile, signInWithGoogle } from './firebase.js';
+import { initGlobalHeader, renderFooter, triggerFlash } from "./header.js";
+import { getLedger, getLastExamResult } from "./storage.js";
+import { playSound } from "./audio.js";
+import { getUserElo, getUserPeakElo, getTierByElo } from "./elo-engine.js";
+import { MEDALS_CATALOG } from "./medals-catalog.js";
+import { BADGES_CATALOG } from "./badges-catalog.js";
+import {
+  waitForAuthReady,
+  isUserLoggedIn,
+  onAuthChange,
+  getCurrentProfile,
+  signInWithGoogle,
+} from "./firebase.js";
 
-let currentVault = 'medals'; // 'medals' | 'badges'
-let currentFilter = 'all';    // 'all' | 'achieved' | 'locked' | 'speed' | 'resource' | 'streak'
-let searchQuery = '';
+let currentVault = "medals"; // 'medals' | 'badges'
+let currentFilter = "all"; // 'all' | 'achieved' | 'locked' | 'speed' | 'resource' | 'streak'
+let searchQuery = "";
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   initGlobalHeader();
   renderFooter();
   initVaultSwitcher();
@@ -38,21 +44,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function renderMedalsGuestBanner() {
-  const existing = document.getElementById('medals-guest-banner');
+  const existing = document.getElementById("medals-guest-banner");
   if (isUserLoggedIn()) {
     if (existing) existing.remove();
     return;
   }
   if (existing) return;
-  const parent = document.querySelector('.medals-page-wrapper');
-  const target = document.querySelector('.vault-master-switcher');
+  const parent = document.querySelector(".medals-page-wrapper");
+  const target = document.querySelector(".vault-master-switcher");
   if (!parent || !target) return;
 
-  const banner = document.createElement('div');
-  banner.id = 'medals-guest-banner';
-  banner.className = 'guest-warning-banner';
-  banner.style.margin = '0 auto 20px auto';
-  banner.style.maxWidth = '1000px';
+  const banner = document.createElement("div");
+  banner.id = "medals-guest-banner";
+  banner.className = "guest-warning-banner";
+  banner.style.margin = "0 auto 20px auto";
+  banner.style.maxWidth = "1000px";
   banner.innerHTML = `
     <div style="font-size: 1.4rem;">🏅</div>
     <div class="guest-warning-text">
@@ -70,10 +76,10 @@ function renderMedalsGuestBanner() {
   `;
   parent.insertBefore(banner, target);
 
-  const signinBtn = banner.querySelector('#medals-signin-btn');
+  const signinBtn = banner.querySelector("#medals-signin-btn");
   if (signinBtn) {
-    signinBtn.addEventListener('click', () => {
-      signInWithGoogle().catch(err => console.error(err));
+    signinBtn.addEventListener("click", () => {
+      signInWithGoogle().catch((err) => console.error(err));
     });
   }
 }
@@ -92,7 +98,9 @@ function getEvaluationContext() {
 
   let matchRegistry = Array.isArray(profile?.match_logs)
     ? profile.match_logs
-    : (Array.isArray(profile?.matchHistory) ? profile.matchHistory : []);
+    : Array.isArray(profile?.matchHistory)
+      ? profile.matchHistory
+      : [];
 
   let fastestMatch = null;
   let minTime = Infinity;
@@ -107,20 +115,23 @@ function getEvaluationContext() {
   // Calculate cumulative solved numbers from match logs & ledger
   let sumClears = 0;
   for (const m of matchRegistry) {
-    const c = (Number(m.firstAttemptClears || 0) + Number(m.secondAttemptClears || 0)) ||
-              Number(m.correctCount || 0) ||
-              (m.accuracy ? Math.round((m.accuracy / 100) * (m.totalQuestions || 10)) : 0);
+    const c =
+      Number(m.firstAttemptClears || 0) + Number(m.secondAttemptClears || 0) ||
+      Number(m.correctCount || 0) ||
+      (m.accuracy
+        ? Math.round((m.accuracy / 100) * (m.totalQuestions || 10))
+        : 0);
     sumClears += c;
   }
   const totalSolved = Math.max(
     Number(ledger.totalSolved || 0),
     Number(profile?.total_solved ?? profile?.totalSolved ?? 0),
-    sumClears
+    sumClears,
   );
   const bestStreak = Math.max(
     Number(ledger.bestStreak || 0),
     Number(ledger.currentStreak || 0),
-    Number(profile?.best_streak ?? profile?.bestStreak ?? 0)
+    Number(profile?.best_streak ?? profile?.bestStreak ?? 0),
   );
 
   const baseCtx = {
@@ -133,11 +144,11 @@ function getEvaluationContext() {
     matchRegistry,
     fastestMatch,
     totalSolved,
-    bestStreak
+    bestStreak,
   };
 
   let unlockedMedalsCount = 0;
-  MEDALS_CATALOG.forEach(m => {
+  MEDALS_CATALOG.forEach((m) => {
     try {
       if (m.check(baseCtx)) unlockedMedalsCount++;
     } catch {
@@ -146,7 +157,7 @@ function getEvaluationContext() {
   });
 
   let unlockedBadgesCount = 0;
-  BADGES_CATALOG.forEach(b => {
+  BADGES_CATALOG.forEach((b) => {
     try {
       if (b.check(baseCtx)) unlockedBadgesCount++;
     } catch {
@@ -157,7 +168,7 @@ function getEvaluationContext() {
   return {
     ...baseCtx,
     unlockedMedalsCount,
-    unlockedBadgesCount
+    unlockedBadgesCount,
   };
 }
 
@@ -165,30 +176,30 @@ function getEvaluationContext() {
  * Initializes the Dual-Vault Master Switcher (Medals vs Badges)
  */
 function initVaultSwitcher() {
-  const switchMedals = document.getElementById('switch-vault-medals');
-  const switchBadges = document.getElementById('switch-vault-badges');
+  const switchMedals = document.getElementById("switch-vault-medals");
+  const switchBadges = document.getElementById("switch-vault-badges");
 
   if (switchMedals) {
-    switchMedals.addEventListener('click', () => {
-      if (currentVault === 'medals') return;
-      playSound('click');
-      currentVault = 'medals';
-      switchMedals.classList.add('active');
-      switchBadges.classList.remove('active');
-      currentFilter = 'all';
+    switchMedals.addEventListener("click", () => {
+      if (currentVault === "medals") return;
+      playSound("click");
+      currentVault = "medals";
+      switchMedals.classList.add("active");
+      switchBadges.classList.remove("active");
+      currentFilter = "all";
       resetFilterButtons();
       renderActiveVault();
     });
   }
 
   if (switchBadges) {
-    switchBadges.addEventListener('click', () => {
-      if (currentVault === 'badges') return;
-      playSound('click');
-      currentVault = 'badges';
-      switchBadges.classList.add('active');
-      switchMedals.classList.remove('active');
-      currentFilter = 'all';
+    switchBadges.addEventListener("click", () => {
+      if (currentVault === "badges") return;
+      playSound("click");
+      currentVault = "badges";
+      switchBadges.classList.add("active");
+      switchMedals.classList.remove("active");
+      currentFilter = "all";
       resetFilterButtons();
       renderActiveVault();
     });
@@ -196,34 +207,34 @@ function initVaultSwitcher() {
 }
 
 function resetFilterButtons() {
-  const tabBtns = document.querySelectorAll('.filter-tab-btn');
-  tabBtns.forEach(btn => {
-    if (btn.getAttribute('data-filter') === 'all') {
-      btn.classList.add('active');
+  const tabBtns = document.querySelectorAll(".filter-tab-btn");
+  tabBtns.forEach((btn) => {
+    if (btn.getAttribute("data-filter") === "all") {
+      btn.classList.add("active");
     } else {
-      btn.classList.remove('active');
+      btn.classList.remove("active");
     }
   });
 }
 
 function initSearchInput() {
-  const input = document.getElementById('vault-search-input');
+  const input = document.getElementById("vault-search-input");
   if (!input) return;
 
-  input.addEventListener('input', (e) => {
-    searchQuery = (e.target.value || '').toLowerCase().trim();
+  input.addEventListener("input", (e) => {
+    searchQuery = (e.target.value || "").toLowerCase().trim();
     renderActiveVault();
   });
 }
 
 function initFilterTabs() {
-  const tabBtns = document.querySelectorAll('.filter-tab-btn');
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      playSound('click');
-      tabBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.getAttribute('data-filter') || 'all';
+  const tabBtns = document.querySelectorAll(".filter-tab-btn");
+  tabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      playSound("click");
+      tabBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentFilter = btn.getAttribute("data-filter") || "all";
       renderActiveVault();
     });
   });
@@ -236,67 +247,78 @@ function renderActiveVault() {
   const ctx = getEvaluationContext();
 
   // 1. Update Master Switcher Counts
-  const elMedalsCount = document.getElementById('medals-count-badge');
-  const elBadgesCount = document.getElementById('badges-count-badge');
-  if (elMedalsCount) elMedalsCount.textContent = `${ctx.unlockedMedalsCount} / ${MEDALS_CATALOG.length} Gained`;
-  if (elBadgesCount) elBadgesCount.textContent = `${ctx.unlockedBadgesCount} / ${BADGES_CATALOG.length} Gained`;
+  const elMedalsCount = document.getElementById("medals-count-badge");
+  const elBadgesCount = document.getElementById("badges-count-badge");
+  if (elMedalsCount)
+    elMedalsCount.textContent = `${ctx.unlockedMedalsCount} / ${MEDALS_CATALOG.length} Gained`;
+  if (elBadgesCount)
+    elBadgesCount.textContent = `${ctx.unlockedBadgesCount} / ${BADGES_CATALOG.length} Gained`;
 
   // 2. Determine active catalog
-  const isMedals = currentVault === 'medals';
+  const isMedals = currentVault === "medals";
   const catalog = isMedals ? MEDALS_CATALOG : BADGES_CATALOG;
 
   // 3. Update Hero Card Texts & Summary
-  const elKicker = document.getElementById('vault-kicker');
-  const elTitle = document.getElementById('vault-main-title');
-  const elDesc = document.getElementById('vault-main-desc');
+  const elKicker = document.getElementById("vault-kicker");
+  const elTitle = document.getElementById("vault-main-title");
+  const elDesc = document.getElementById("vault-main-desc");
 
   if (elKicker) {
     elKicker.textContent = isMedals
       ? `🏛️ OLYMPIAD COMPETITIVE MEDALS VAULT · ${MEDALS_CATALOG.length} ACCOLADES`
       : `🛡️ INSIGNIAS & ACCREDITATION BADGES VAULT · ${BADGES_CATALOG.length} BADGES`;
-    elKicker.style.color = isMedals ? '#F59E0B' : '#38BDF8';
+    elKicker.style.color = isMedals ? "#F59E0B" : "#38BDF8";
   }
 
   if (elTitle) {
     elTitle.innerHTML = isMedals
-      ? '<span>🏅</span> Olympiad Medals Vault'
-      : '<span>🛡️</span> Insignias &amp; Badges Vault';
+      ? "<span>🏅</span> Olympiad Medals Vault"
+      : "<span>🛡️</span> Insignias &amp; Badges Vault";
   }
 
   if (elDesc) {
     elDesc.textContent = isMedals
-      ? 'Certified Math Olympiad accolades, Diophantine ranks, Sieve calibration sprints, and Cosmic Manifold honors awarded for high-precision factorizations.'
-      : 'Sub-second velocity insignias, zero-lifeline virgin clears, continuous win streaks, and tamper-proof cognitive focus records.';
+      ? "Certified Math Olympiad accolades, Diophantine ranks, Sieve calibration sprints, and Cosmic Manifold honors awarded for high-precision factorizations."
+      : "Sub-second velocity insignias, zero-lifeline virgin clears, continuous win streaks, and tamper-proof cognitive focus records.";
   }
 
   // Summary Metrics
-  const gainedCount = isMedals ? ctx.unlockedMedalsCount : ctx.unlockedBadgesCount;
+  const gainedCount = isMedals
+    ? ctx.unlockedMedalsCount
+    : ctx.unlockedBadgesCount;
   const totalItems = catalog.length;
   const totalHonorPoints = catalog
-    .filter(item => {
-      try { return Boolean(item.check(ctx)); } catch { return false; }
+    .filter((item) => {
+      try {
+        return Boolean(item.check(ctx));
+      } catch {
+        return false;
+      }
     })
     .reduce((sum, item) => sum + item.points, 0);
 
-  const elProgressLabel = document.getElementById('summary-progress-label');
-  const elCount = document.getElementById('summary-unlocked-count');
-  const elFill = document.getElementById('summary-progress-fill');
-  const elPoints = document.getElementById('summary-honor-points');
-  const elElo = document.getElementById('summary-user-elo');
-  const elTier = document.getElementById('summary-user-tier');
+  const elProgressLabel = document.getElementById("summary-progress-label");
+  const elCount = document.getElementById("summary-unlocked-count");
+  const elFill = document.getElementById("summary-progress-fill");
+  const elPoints = document.getElementById("summary-honor-points");
+  const elElo = document.getElementById("summary-user-elo");
+  const elTier = document.getElementById("summary-user-tier");
 
-  if (elProgressLabel) elProgressLabel.textContent = isMedals ? 'Medals Progress' : 'Badges Progress';
+  if (elProgressLabel)
+    elProgressLabel.textContent = isMedals
+      ? "Medals Progress"
+      : "Badges Progress";
   if (elCount) elCount.textContent = `${gainedCount} / ${totalItems}`;
   if (elFill) {
     const pct = Math.round((gainedCount / totalItems) * 100);
     elFill.style.width = `${pct}%`;
     elFill.style.background = isMedals
-      ? 'linear-gradient(90deg, #F59E0B, #10B981)'
-      : 'linear-gradient(90deg, #38BDF8, #818CF8)';
+      ? "linear-gradient(90deg, #F59E0B, #10B981)"
+      : "linear-gradient(90deg, #38BDF8, #818CF8)";
   }
   if (elPoints) {
     elPoints.textContent = `${totalHonorPoints.toLocaleString()} pts`;
-    elPoints.style.color = isMedals ? '#F59E0B' : '#38BDF8';
+    elPoints.style.color = isMedals ? "#F59E0B" : "#38BDF8";
   }
   if (elElo) elElo.textContent = `${ctx.currentElo.toLocaleString()} ELO`;
   if (elTier) {
@@ -305,35 +327,43 @@ function renderActiveVault() {
   }
 
   // 4. Filter & Search Grid Items
-  const filtered = catalog.filter(item => {
+  const filtered = catalog.filter((item) => {
     let isUnlocked = false;
-    try { isUnlocked = Boolean(item.check(ctx)); } catch { isUnlocked = false; }
+    try {
+      isUnlocked = Boolean(item.check(ctx));
+    } catch {
+      isUnlocked = false;
+    }
 
     // Search filter
     if (searchQuery) {
       const matchName = item.title.toLowerCase().includes(searchQuery);
       const matchDesc = item.desc.toLowerCase().includes(searchQuery);
-      const matchCat = (item.categoryName || '').toLowerCase().includes(searchQuery);
-      const matchHurdle = (item.hurdle || '').toLowerCase().includes(searchQuery);
+      const matchCat = (item.categoryName || "")
+        .toLowerCase()
+        .includes(searchQuery);
+      const matchHurdle = (item.hurdle || "")
+        .toLowerCase()
+        .includes(searchQuery);
       if (!matchName && !matchDesc && !matchCat && !matchHurdle) return false;
     }
 
     // Category / State filter
-    if (currentFilter === 'all') return true;
-    if (currentFilter === 'achieved') return isUnlocked;
-    if (currentFilter === 'locked') return !isUnlocked;
-    if (currentFilter === 'speed') return item.category === 'speed';
-    if (currentFilter === 'resource') return item.category === 'resource';
-    if (currentFilter === 'streak') return item.category === 'streak';
+    if (currentFilter === "all") return true;
+    if (currentFilter === "achieved") return isUnlocked;
+    if (currentFilter === "locked") return !isUnlocked;
+    if (currentFilter === "speed") return item.category === "speed";
+    if (currentFilter === "resource") return item.category === "resource";
+    if (currentFilter === "streak") return item.category === "streak";
 
     return true;
   });
 
   // 5. Render Grid Cards
-  const grid = document.getElementById('vault-cards-grid');
+  const grid = document.getElementById("vault-cards-grid");
   if (!grid) return;
 
-  grid.innerHTML = '';
+  grid.innerHTML = "";
 
   if (filtered.length === 0) {
     grid.innerHTML = `
@@ -346,22 +376,30 @@ function renderActiveVault() {
     return;
   }
 
-  filtered.forEach(item => {
+  filtered.forEach((item) => {
     let isGained = false;
-    try { isGained = Boolean(item.check(ctx)); } catch { isGained = false; }
+    try {
+      isGained = Boolean(item.check(ctx));
+    } catch {
+      isGained = false;
+    }
 
-    const card = document.createElement('div');
-    const typeClass = isMedals ? 'card-medal-type' : 'card-badge-type';
-    const stateClass = isGained ? 'shining' : 'faded';
+    const card = document.createElement("div");
+    const typeClass = isMedals ? "card-medal-type" : "card-badge-type";
+    const stateClass = isGained ? "shining" : "faded";
 
     card.className = `vault-card ${stateClass} ${typeClass}`;
-    card.setAttribute('data-id', item.id);
+    card.setAttribute("data-id", item.id);
 
-    const progressInfo = item.calcProgress ? item.calcProgress(ctx) : { text: 'In Progress', pct: 0 };
+    const progressInfo = item.calcProgress
+      ? item.calcProgress(ctx)
+      : { text: "In Progress", pct: 0 };
     const tagClass = isGained
-      ? (isMedals ? 'tag-shining-gold' : 'tag-shining-cyan')
-      : 'tag-faded-lock';
-    const tagText = isGained ? '✦ GAINED & VERIFIED' : '🔒 AWAITING INDUCTION';
+      ? isMedals
+        ? "tag-shining-gold"
+        : "tag-shining-cyan"
+      : "tag-faded-lock";
+    const tagText = isGained ? "✦ GAINED & VERIFIED" : "🔒 AWAITING INDUCTION";
 
     card.innerHTML = `
       <div class="vault-card-top">
@@ -375,9 +413,10 @@ function renderActiveVault() {
       </div>
       <div class="vault-card-footer">
         <span class="vault-card-points">+${item.points} pts</span>
-        ${isGained
-          ? `<span class="vault-card-prompt">Inspect Certificate →</span>`
-          : `
+        ${
+          isGained
+            ? `<span class="vault-card-prompt">Inspect Certificate →</span>`
+            : `
             <div class="vault-card-progress-hint">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span>Target:</span>
@@ -387,12 +426,13 @@ function renderActiveVault() {
                 <div class="mini-progress-bar" style="width: ${progressInfo.pct}%;"></div>
               </div>
             </div>
-          `}
+          `
+        }
       </div>
     `;
 
     // Click handler following the strict rules:
-    card.addEventListener('click', (e) => {
+    card.addEventListener("click", (e) => {
       e.stopPropagation();
 
       if (!isGained) {
@@ -416,16 +456,16 @@ function renderActiveVault() {
  * Enforces modal blockage and flashes the exact requested 3-second overlay toast.
  */
 function handleLockedCardClick(cardElement) {
-  playSound('click');
+  playSound("click");
 
   // Prevent multiple toasts stacking
-  const existingToast = cardElement.querySelector('.locked-legacy-toast');
+  const existingToast = cardElement.querySelector(".locked-legacy-toast");
   if (existingToast) {
     existingToast.remove();
   }
 
-  const toast = document.createElement('div');
-  toast.className = 'locked-legacy-toast';
+  const toast = document.createElement("div");
+  toast.className = "locked-legacy-toast";
   toast.innerHTML = `
     <div class="toast-icon">🔒</div>
     <div>Gain that medal to unlock the legacy.</div>
@@ -441,7 +481,7 @@ function handleLockedCardClick(cardElement) {
           opacity: 0,
           scale: 0.95,
           duration: 0.25,
-          onComplete: () => toast.remove()
+          onComplete: () => toast.remove(),
         });
       } else {
         toast.remove();
@@ -455,101 +495,109 @@ function handleLockedCardClick(cardElement) {
  * Features title, unlock date, hurdle broken, historical flavor text, and red [X] close node.
  */
 function openInspectModal(item, isMedals) {
-  const modal = document.getElementById('medal-inspect-modal');
+  const modal = document.getElementById("medal-inspect-modal");
   if (!modal) return;
 
-  playSound('correct');
+  playSound("correct");
 
-  const elIcon = document.getElementById('modal-medal-icon');
-  const elBadge = document.getElementById('modal-medal-badge');
-  const elTitle = document.getElementById('modal-medal-title');
-  const elCat = document.getElementById('modal-medal-cat');
-  const elDate = document.getElementById('modal-medal-date');
-  const elHurdle = document.getElementById('modal-medal-hurdle');
-  const elFlavor = document.getElementById('modal-medal-flavor');
-  const elPts = document.getElementById('modal-medal-pts');
-  const elStatus = document.getElementById('modal-medal-status');
+  const elIcon = document.getElementById("modal-medal-icon");
+  const elBadge = document.getElementById("modal-medal-badge");
+  const elTitle = document.getElementById("modal-medal-title");
+  const elCat = document.getElementById("modal-medal-cat");
+  const elDate = document.getElementById("modal-medal-date");
+  const elHurdle = document.getElementById("modal-medal-hurdle");
+  const elFlavor = document.getElementById("modal-medal-flavor");
+  const elPts = document.getElementById("modal-medal-pts");
+  const elStatus = document.getElementById("modal-medal-status");
 
   if (elIcon) elIcon.textContent = item.icon;
   if (elBadge) {
-    elBadge.className = `vault-badge-tag ${isMedals ? 'tag-shining-gold' : 'tag-shining-cyan'}`;
-    elBadge.textContent = '✦ GAINED & VERIFIED';
+    elBadge.className = `vault-badge-tag ${isMedals ? "tag-shining-gold" : "tag-shining-cyan"}`;
+    elBadge.textContent = "✦ GAINED & VERIFIED";
   }
   if (elTitle) elTitle.textContent = item.title;
   if (elCat) {
     elCat.textContent = item.categoryName.toUpperCase();
-    elCat.style.color = isMedals ? '#F59E0B' : '#38BDF8';
+    elCat.style.color = isMedals ? "#F59E0B" : "#38BDF8";
   }
 
   // Generate accurate timestamp
   const now = new Date();
-  const dateStr = now.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
+  const dateStr = now.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
   });
   if (elDate) elDate.textContent = `Unlocked: ${dateStr}`;
 
   if (elHurdle) elHurdle.textContent = item.hurdle || item.desc;
-  if (elFlavor) elFlavor.textContent = item.flavorText || 'Certified in the official Mathematical Honors Ledger.';
+  if (elFlavor)
+    elFlavor.textContent =
+      item.flavorText ||
+      "Certified in the official Mathematical Honors Ledger.";
   if (elPts) {
     elPts.textContent = `+${item.points} pts`;
-    elPts.style.color = isMedals ? '#F59E0B' : '#38BDF8';
+    elPts.style.color = isMedals ? "#F59E0B" : "#38BDF8";
   }
-  if (elStatus) elStatus.textContent = 'Authentic Signature';
+  if (elStatus) elStatus.textContent = "Authentic Signature";
 
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
+  modal.classList.add("active");
+  document.body.style.overflow = "hidden";
 }
 
 function initInspectModal() {
-  const modal = document.getElementById('medal-inspect-modal');
-  const closeBtn = document.getElementById('close-inspect-modal');
+  const modal = document.getElementById("medal-inspect-modal");
+  const closeBtn = document.getElementById("close-inspect-modal");
 
   if (closeBtn && modal) {
-    closeBtn.addEventListener('click', (e) => {
+    closeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      playSound('click');
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
+      playSound("click");
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
     });
   }
 
   if (modal) {
-    modal.addEventListener('click', (e) => {
+    modal.addEventListener("click", (e) => {
       if (e.target === modal) {
-        playSound('click');
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
+        playSound("click");
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
       }
     });
   }
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal && modal.classList.contains("active")) {
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
     }
   });
 }
 
 function initClipboardExport() {
-  const btn = document.getElementById('btn-copy-honors');
+  const btn = document.getElementById("btn-copy-honors");
   if (!btn) return;
 
-  btn.addEventListener('click', async () => {
-    playSound('click');
+  btn.addEventListener("click", async () => {
+    playSound("click");
     const ctx = getEvaluationContext();
-    const isMedals = currentVault === 'medals';
+    const isMedals = currentVault === "medals";
     const catalog = isMedals ? MEDALS_CATALOG : BADGES_CATALOG;
 
-    const gainedItems = catalog.filter(item => {
-      try { return Boolean(item.check(ctx)); } catch { return false; }
+    const gainedItems = catalog.filter((item) => {
+      try {
+        return Boolean(item.check(ctx));
+      } catch {
+        return false;
+      }
     });
 
     const profile = getCurrentProfile();
-    const contestantName = profile?.displayName || 'Guest Competitor';
-    const certifiedName = profile?.realName || profile?.displayName || 'Unverified Guest';
+    const contestantName = profile?.displayName || "Guest Competitor";
+    const certifiedName =
+      profile?.realName || profile?.displayName || "Unverified Guest";
 
     const report = [
       `=== PRIMEFACTOR.APP MATHEMATICAL HONORS VAULT ===`,
@@ -562,22 +610,25 @@ function initClipboardExport() {
       `Medals Unlocked: ${ctx.unlockedMedalsCount} / ${MEDALS_CATALOG.length}`,
       `Badges Unlocked: ${ctx.unlockedBadgesCount} / ${BADGES_CATALOG.length}`,
       `Generated: ${new Date().toISOString()}`,
-      `\n--- GAINED IN THE ${isMedals ? 'MEDALS' : 'BADGES'} VAULT ---`,
-      ...gainedItems.map(item => `[${item.icon}] ${item.title} (+${item.points} pts) — ${item.categoryName}`)
-    ].join('\n');
+      `\n--- GAINED IN THE ${isMedals ? "MEDALS" : "BADGES"} VAULT ---`,
+      ...gainedItems.map(
+        (item) =>
+          `[${item.icon}] ${item.title} (+${item.points} pts) — ${item.categoryName}`,
+      ),
+    ].join("\n");
 
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(report);
       } else {
-        const ta = document.createElement('textarea');
+        const ta = document.createElement("textarea");
         ta.value = report;
         document.body.appendChild(ta);
         ta.select();
-        document.execCommand('copy');
+        document.execCommand("copy");
         ta.remove();
       }
-      triggerFlash('rgba(16, 185, 129, 0.25)');
+      triggerFlash("rgba(16, 185, 129, 0.25)");
       btn.innerHTML = `<span>✔️ Vault Copied!</span>`;
       setTimeout(() => {
         btn.innerHTML = `
@@ -589,7 +640,7 @@ function initClipboardExport() {
         `;
       }, 2000);
     } catch (err) {
-      console.warn('Clipboard write error:', err);
+      console.warn("Clipboard write error:", err);
     }
   });
 }

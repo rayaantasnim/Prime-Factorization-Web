@@ -12,11 +12,18 @@
  * renders one static frame and plays no animation.
  */
 
-import { FIELD_VERTEX, FIELD_FRAGMENT, POINTS_VERTEX, POINTS_FRAGMENT } from './hero-shaders.js';
+import {
+  FIELD_VERTEX,
+  FIELD_FRAGMENT,
+  POINTS_VERTEX,
+  POINTS_FRAGMENT,
+} from "./hero-shaders.js";
 
 const root = document.documentElement;
-const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const state = { mode: 'none', gsap: false, motion: false };
+const reduceMotion =
+  window.matchMedia &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const state = { mode: "none", gsap: false, motion: false };
 window.__heroFx = state; // introspection for debugging / tests
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -25,17 +32,20 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 // 1. WEBGL HERO BACKGROUND
 // ============================================================================================
 function initHeroGL(heroEl) {
-  const wrap = heroEl.querySelector('.section-bg-image-wrap');
+  const wrap = heroEl.querySelector(".section-bg-image-wrap");
   if (!wrap) return null;
 
   let canvas = null;
   const mountCanvas = () => {
     if (canvas) canvas.remove();
-    canvas = document.createElement('canvas');
-    canvas.id = 'hero-webgl';
-    canvas.setAttribute('aria-hidden', 'true');
-    wrap.insertBefore(canvas, wrap.querySelector('.section-bg-overlay'));
-    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); fail('context lost'); });
+    canvas = document.createElement("canvas");
+    canvas.id = "hero-webgl";
+    canvas.setAttribute("aria-hidden", "true");
+    wrap.insertBefore(canvas, wrap.querySelector(".section-bg-overlay"));
+    canvas.addEventListener("webglcontextlost", (e) => {
+      e.preventDefault();
+      fail("context lost");
+    });
   };
   mountCanvas();
 
@@ -44,16 +54,29 @@ function initHeroGL(heroEl) {
   const textBox = [0.5, 0.5, 0.4, 0.35];
   const measureText = () => {
     // union of the actual copy blocks (not the full-width container) so the sides keep their texture
-    const parts = ['.hero-badge-meta', '.hero-title', '.hero-subtitle', '.hero-actions', '.mini-challenge-card']
-      .map((sel) => heroEl.querySelector(sel)).filter(Boolean);
+    const parts = [
+      ".hero-badge-meta",
+      ".hero-title",
+      ".hero-subtitle",
+      ".hero-actions",
+      ".mini-challenge-card",
+    ]
+      .map((sel) => heroEl.querySelector(sel))
+      .filter(Boolean);
     if (!parts.length) return;
     const hr = heroEl.getBoundingClientRect();
     if (!hr.width || !hr.height) return;
-    let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+    let l = Infinity,
+      t = Infinity,
+      r = -Infinity,
+      b = -Infinity;
     parts.forEach((el) => {
       const c = el.getBoundingClientRect();
       if (!c.width || !c.height) return;
-      l = Math.min(l, c.left); t = Math.min(t, c.top); r = Math.max(r, c.right); b = Math.max(b, c.bottom);
+      l = Math.min(l, c.left);
+      t = Math.min(t, c.top);
+      r = Math.max(r, c.right);
+      b = Math.max(b, c.bottom);
     });
     if (!isFinite(l)) return;
     textBox[0] = ((l + r) / 2 - hr.left) / hr.width;
@@ -79,16 +102,18 @@ function initHeroGL(heroEl) {
     input.tx = clamp((e.clientX - r.left) / Math.max(1, r.width), 0, 1);
     input.ty = clamp(1 - (e.clientY - r.top) / Math.max(1, r.height), 0, 1);
   };
-  const onDown = () => { input.pulse = 1; };
-  heroEl.addEventListener('pointermove', onMove, { passive: true });
-  heroEl.addEventListener('pointerdown', onDown, { passive: true });
+  const onDown = () => {
+    input.pulse = 1;
+  };
+  heroEl.addEventListener("pointermove", onMove, { passive: true });
+  heroEl.addEventListener("pointerdown", onDown, { passive: true });
 
   function fail(why) {
-    console.debug('[hero-fx] WebGL disabled:', why);
+    console.debug("[hero-fx] WebGL disabled:", why);
     teardown();
     if (canvas) canvas.remove();
-    state.mode = 'none';
-    root.classList.remove('hero-fx-on');
+    state.mode = "none";
+    root.classList.remove("hero-fx-on");
     return null;
   }
 
@@ -96,7 +121,10 @@ function initHeroGL(heroEl) {
   function buildThree() {
     const THREE = window.THREE;
     const renderer = new THREE.WebGLRenderer({
-      canvas, antialias: false, alpha: true, powerPreference: 'high-performance'
+      canvas,
+      antialias: false,
+      alpha: true,
+      powerPreference: "high-performance",
     });
     renderer.setClearColor(0x000000, 0);
     renderer.autoClear = false;
@@ -107,15 +135,18 @@ function initHeroGL(heroEl) {
       uMouse: { value: new THREE.Vector2(0.5, 0.5) },
       uScroll: { value: 0 },
       uPulse: { value: 0 },
-      uText: { value: new THREE.Vector4(0.5, 0.5, 0.4, 0.35) }
+      uText: { value: new THREE.Vector4(0.5, 0.5, 0.4, 0.35) },
     };
 
     // background: full-screen quad running the sieve shader
     const bgScene = new THREE.Scene();
     const bgCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const bgMat = new THREE.ShaderMaterial({
-      uniforms, vertexShader: FIELD_VERTEX, fragmentShader: FIELD_FRAGMENT,
-      depthTest: false, depthWrite: false
+      uniforms,
+      vertexShader: FIELD_VERTEX,
+      fragmentShader: FIELD_FRAGMENT,
+      depthTest: false,
+      depthWrite: false,
     });
     const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), bgMat);
     quad.frustumCulled = false;
@@ -137,21 +168,21 @@ function initHeroGL(heroEl) {
         // Skew magnitude distribution: many fine dust motes, fewer crisp luminous stars
         tier[i] = Math.pow(Math.random(), 2.1);
       }
-      geometry.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1));
-      geometry.setAttribute('aTier', new THREE.BufferAttribute(tier, 1));
+      geometry.setAttribute("aSeed", new THREE.BufferAttribute(seed, 1));
+      geometry.setAttribute("aTier", new THREE.BufferAttribute(tier, 1));
       const mat = new THREE.ShaderMaterial({
         uniforms: {
           uTime: uniforms.uTime,
           uSize: { value: size },
           uOpacity: { value: opacity },
           uPixelRatio: { value: dpr },
-          uText: uniforms.uText
+          uText: uniforms.uText,
         },
         vertexShader: POINTS_VERTEX,
         fragmentShader: POINTS_FRAGMENT,
         transparent: true,
         depthWrite: false,
-        blending: THREE.AdditiveBlending
+        blending: THREE.AdditiveBlending,
       });
       return new THREE.Points(geometry, mat);
     };
@@ -168,7 +199,7 @@ function initHeroGL(heroEl) {
       starPos[i * 3 + 2] = -Math.abs(r * Math.cos(ph)) - 2.5;
     }
     const starGeo = new THREE.BufferGeometry();
-    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    starGeo.setAttribute("position", new THREE.BufferAttribute(starPos, 3));
     const farStars = makePoints(starGeo, 2.15, 0.72);
     group.add(farStars);
 
@@ -184,7 +215,7 @@ function initHeroGL(heroEl) {
       dustPos[i * 3 + 2] = r * Math.cos(ph) * 0.75 - 2.2;
     }
     const dustGeo = new THREE.BufferGeometry();
-    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+    dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
     const dust = makePoints(dustGeo, 3.05, 0.62);
     group.add(dust);
 
@@ -201,7 +232,9 @@ function initHeroGL(heroEl) {
       dust.material.uniforms.uOpacity.value = wide ? 0.62 : 0.45;
       measureText();
       uniforms.uText.value.set(textBox[0], textBox[1], textBox[2], textBox[3]);
-      [farStars, dust].forEach((p) => { p.material.uniforms.uPixelRatio.value = dpr; });
+      [farStars, dust].forEach((p) => {
+        p.material.uniforms.uPixelRatio.value = dpr;
+      });
     };
 
     renderFrame = (time) => {
@@ -229,45 +262,70 @@ function initHeroGL(heroEl) {
       [starGeo, dustGeo, quad.geometry].forEach((g) => g.dispose());
       [bgMat, farStars.material, dust.material].forEach((m) => m.dispose());
       renderer.dispose();
-      try { renderer.forceContextLoss(); } catch (e) { /* noop */ }
+      try {
+        renderer.forceContextLoss();
+      } catch (e) {
+        /* noop */
+      }
     };
     return dispose;
   }
 
   // ---- renderer B: raw WebGL (shader field only) ------------------------------------------
   function buildRaw() {
-    const gl = canvas.getContext('webgl', { alpha: false, antialias: false, powerPreference: 'high-performance' })
-      || canvas.getContext('experimental-webgl');
-    if (!gl) throw new Error('WebGL unavailable');
+    const gl =
+      canvas.getContext("webgl", {
+        alpha: false,
+        antialias: false,
+        powerPreference: "high-performance",
+      }) || canvas.getContext("experimental-webgl");
+    if (!gl) throw new Error("WebGL unavailable");
     const compile = (type, src) => {
       const sh = gl.createShader(type);
       gl.shaderSource(sh, src);
       gl.compileShader(sh);
-      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh) || 'shader error');
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS))
+        throw new Error(gl.getShaderInfoLog(sh) || "shader error");
       return sh;
     };
     const prog = gl.createProgram();
-    gl.attachShader(prog, compile(gl.VERTEX_SHADER, 'attribute vec3 position;\n' + FIELD_VERTEX)); // Three injects this declaration itself
+    gl.attachShader(
+      prog,
+      compile(gl.VERTEX_SHADER, "attribute vec3 position;\n" + FIELD_VERTEX),
+    ); // Three injects this declaration itself
     gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FIELD_FRAGMENT));
     gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog) || 'link error');
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+      throw new Error(gl.getProgramInfoLog(prog) || "link error");
     gl.useProgram(prog);
 
     // one oversized triangle covers the viewport
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(prog, 'position');
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW,
+    );
+    const loc = gl.getAttribLocation(prog, "position");
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
     const u = (n) => gl.getUniformLocation(prog, n);
-    const uRes = u('uRes'), uTime = u('uTime'), uMouse = u('uMouse'), uScroll = u('uScroll'), uPulse = u('uPulse'), uText = u('uText');
+    const uRes = u("uRes"),
+      uTime = u("uTime"),
+      uMouse = u("uMouse"),
+      uScroll = u("uScroll"),
+      uPulse = u("uPulse"),
+      uText = u("uText");
 
     resize = () => {
       const w = Math.max(1, Math.round(wrap.clientWidth * dpr));
       const h = Math.max(1, Math.round(wrap.clientHeight * dpr));
-      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
       gl.viewport(0, 0, w, h);
       gl.uniform2f(uRes, w, h);
       measureText();
@@ -283,24 +341,31 @@ function initHeroGL(heroEl) {
     return () => {
       gl.deleteBuffer(buf);
       gl.deleteProgram(prog);
-      const ext = gl.getExtension('WEBGL_lose_context');
+      const ext = gl.getExtension("WEBGL_lose_context");
       if (ext) ext.loseContext();
     };
   }
 
   const tryBuild = (fn, mode) => {
-    try { disposeGL = fn(); state.mode = mode; return true; }
-    catch (err) { console.debug(`[hero-fx] ${mode} renderer failed:`, err); return false; }
+    try {
+      disposeGL = fn();
+      state.mode = mode;
+      return true;
+    } catch (err) {
+      console.debug(`[hero-fx] ${mode} renderer failed:`, err);
+      return false;
+    }
   };
   let ok = false;
-  if (window.THREE && window.THREE.WebGLRenderer) ok = tryBuild(buildThree, 'three');
+  if (window.THREE && window.THREE.WebGLRenderer)
+    ok = tryBuild(buildThree, "three");
   if (!ok) {
     mountCanvas(); // a context type/state can't be reused after a failed attempt
-    ok = tryBuild(buildRaw, 'webgl');
+    ok = tryBuild(buildRaw, "webgl");
   }
-  if (!ok) return fail('no usable WebGL renderer');
+  if (!ok) return fail("no usable WebGL renderer");
 
-  root.classList.add('hero-fx-on');
+  root.classList.add("hero-fx-on");
   resize();
 
   function loop(now) {
@@ -316,7 +381,11 @@ function initHeroGL(heroEl) {
 
     // adaptive quality: after ~45 slow frames drop the pixel ratio once
     if (dt > 0.034 && dpr > 1) {
-      if (++slowFrames > 45) { dpr = 1; slowFrames = 0; resize(); }
+      if (++slowFrames > 45) {
+        dpr = 1;
+        slowFrames = 0;
+        resize();
+      }
     } else if (slowFrames > 0) slowFrames--;
 
     renderFrame(time, dt);
@@ -329,39 +398,64 @@ function initHeroGL(heroEl) {
     loop.last = performance.now();
     raf = requestAnimationFrame(loop);
   }
-  function stop() { running = false; if (raf) cancelAnimationFrame(raf); raf = 0; }
+  function stop() {
+    running = false;
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+  }
 
   function teardown() {
     stop();
-    heroEl.removeEventListener('pointermove', onMove);
-    heroEl.removeEventListener('pointerdown', onDown);
-    window.removeEventListener('resize', onResize);
-    document.removeEventListener('visibilitychange', onVis);
+    heroEl.removeEventListener("pointermove", onMove);
+    heroEl.removeEventListener("pointerdown", onDown);
+    window.removeEventListener("resize", onResize);
+    document.removeEventListener("visibilitychange", onVis);
     if (io) io.disconnect();
     if (ro) ro.disconnect();
-    if (disposeGL) { try { disposeGL(); } catch (e) { /* noop */ } disposeGL = null; }
+    if (disposeGL) {
+      try {
+        disposeGL();
+      } catch (e) {
+        /* noop */
+      }
+      disposeGL = null;
+    }
   }
 
   function onResize() {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { resize(); if (!running) renderFrame((performance.now() - t0) / 1000, 0); }, 120);
+    resizeTimer = setTimeout(() => {
+      resize();
+      if (!running) renderFrame((performance.now() - t0) / 1000, 0);
+    }, 120);
   }
-  function onVis() { if (document.hidden) stop(); else start(); }
-  window.addEventListener('resize', onResize);
-  document.addEventListener('visibilitychange', onVis);
-  if ('ResizeObserver' in window) { ro = new ResizeObserver(onResize); ro.observe(heroEl); }
+  function onVis() {
+    if (document.hidden) stop();
+    else start();
+  }
+  window.addEventListener("resize", onResize);
+  document.addEventListener("visibilitychange", onVis);
+  if ("ResizeObserver" in window) {
+    ro = new ResizeObserver(onResize);
+    ro.observe(heroEl);
+  }
   setTimeout(onResize, 900); // after webfonts settle
 
-  io = 'IntersectionObserver' in window
-    ? new IntersectionObserver((entries) => {
-        visible = entries[0].isIntersecting;
-        visible ? start() : stop();
-      }, { threshold: 0 })
-    : null;
+  io =
+    "IntersectionObserver" in window
+      ? new IntersectionObserver(
+          (entries) => {
+            visible = entries[0].isIntersecting;
+            visible ? start() : stop();
+          },
+          { threshold: 0 },
+        )
+      : null;
   if (io) io.observe(heroEl);
 
   if (reduceMotion) {
-    input.mx = input.tx = 0.62; input.my = input.ty = 0.55;
+    input.mx = input.tx = 0.62;
+    input.my = input.ty = 0.55;
     renderFrame(4.0, 0);
   } else {
     start();
@@ -372,7 +466,7 @@ function initHeroGL(heroEl) {
       input.scroll = clamp(v, 0, 1);
       if (!running) renderFrame((performance.now() - t0) / 1000, 0);
     },
-    teardown
+    teardown,
   };
 }
 
@@ -387,9 +481,12 @@ function wrapWords(el) {
     const frag = document.createDocumentFragment();
     node.textContent.split(/(\s+)/).forEach((part) => {
       if (!part) return;
-      if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
-      const s = document.createElement('span');
-      s.className = 'fx-word';
+      if (/^\s+$/.test(part)) {
+        frag.appendChild(document.createTextNode(" "));
+        return;
+      }
+      const s = document.createElement("span");
+      s.className = "fx-word";
       s.textContent = part;
       frag.appendChild(s);
       words.push(s);
@@ -408,76 +505,161 @@ function initGsap(heroEl, gl) {
   state.gsap = true;
 
   const q = (s) => heroEl.querySelector(s);
-  const badge = q('.hero-badge-meta');
-  const title = q('.hero-title');
-  const highlight = q('.hero-title .highlight');
-  const sub = q('.hero-subtitle');
-  const actions = q('.hero-actions');
-  const mini = q('.mini-challenge-card');
-  const cue = q('.hero-scroll-cue');
+  const badge = q(".hero-badge-meta");
+  const title = q(".hero-title");
+  const highlight = q(".hero-title .highlight");
+  const sub = q(".hero-subtitle");
+  const actions = q(".hero-actions");
+  const mini = q(".mini-challenge-card");
+  const cue = q(".hero-scroll-cue");
   const words = title ? wrapWords(title) : [];
 
   if (!reduceMotion) {
     const tl = gsap.timeline({
-      defaults: { ease: 'power4.out' },
-      onComplete: () => gsap.set(
-        [badge, ...words, highlight, sub, ...(actions ? [...actions.children] : []), mini, cue].filter(Boolean),
-        { clearProps: 'transform,opacity,visibility,filter,clipPath' }
-      )
+      defaults: { ease: "power4.out" },
+      onComplete: () =>
+        gsap.set(
+          [
+            badge,
+            ...words,
+            highlight,
+            sub,
+            ...(actions ? [...actions.children] : []),
+            mini,
+            cue,
+          ].filter(Boolean),
+          { clearProps: "transform,opacity,visibility,filter,clipPath" },
+        ),
     });
-    root.classList.remove('fx-pending');
-    if (badge) tl.fromTo(badge, { autoAlpha: 0, y: 18, filter: 'blur(8px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.8 }, 0.1);
-    if (words.length) tl.fromTo(words, { autoAlpha: 0, yPercent: 60, rotateX: -70, transformOrigin: '50% 100%' },
-      { autoAlpha: 1, yPercent: 0, rotateX: 0, duration: 1, stagger: 0.09 }, 0.2);
-    if (highlight) tl.fromTo(highlight, { autoAlpha: 0, clipPath: 'inset(0 100% 0 0)', y: 12 },
-      { autoAlpha: 1, clipPath: 'inset(0 0% 0 0)', y: 0, duration: 1.1, ease: 'power3.inOut' }, 0.55);
-    if (sub) tl.fromTo(sub, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.9 }, 0.85);
-    if (actions) tl.fromTo(actions.children, { autoAlpha: 0, y: 26, scale: 0.94 },
-      { autoAlpha: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.1, ease: 'back.out(1.6)' }, 1.0);
-    if (mini) tl.fromTo(mini, { autoAlpha: 0, y: 50 }, { autoAlpha: 1, y: 0, duration: 1 }, 1.2);
-    if (cue) tl.fromTo(cue, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 }, 1.7);
+    root.classList.remove("fx-pending");
+    if (badge)
+      tl.fromTo(
+        badge,
+        { autoAlpha: 0, y: 18, filter: "blur(8px)" },
+        { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.8 },
+        0.1,
+      );
+    if (words.length)
+      tl.fromTo(
+        words,
+        {
+          autoAlpha: 0,
+          yPercent: 60,
+          rotateX: -70,
+          transformOrigin: "50% 100%",
+        },
+        { autoAlpha: 1, yPercent: 0, rotateX: 0, duration: 1, stagger: 0.09 },
+        0.2,
+      );
+    if (highlight)
+      tl.fromTo(
+        highlight,
+        { autoAlpha: 0, clipPath: "inset(0 100% 0 0)", y: 12 },
+        {
+          autoAlpha: 1,
+          clipPath: "inset(0 0% 0 0)",
+          y: 0,
+          duration: 1.1,
+          ease: "power3.inOut",
+        },
+        0.55,
+      );
+    if (sub)
+      tl.fromTo(
+        sub,
+        { autoAlpha: 0, y: 24 },
+        { autoAlpha: 1, y: 0, duration: 0.9 },
+        0.85,
+      );
+    if (actions)
+      tl.fromTo(
+        actions.children,
+        { autoAlpha: 0, y: 26, scale: 0.94 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "back.out(1.6)",
+        },
+        1.0,
+      );
+    if (mini)
+      tl.fromTo(
+        mini,
+        { autoAlpha: 0, y: 50 },
+        { autoAlpha: 1, y: 0, duration: 1 },
+        1.2,
+      );
+    if (cue)
+      tl.fromTo(cue, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 }, 1.7);
   } else {
-    root.classList.remove('fx-pending');
+    root.classList.remove("fx-pending");
   }
 
   if (ST && !reduceMotion) {
     // hero: content drifts up & fades while the WebGL scene receives scroll progress
     ST.create({
-      trigger: heroEl, start: 'top top', end: 'bottom top', scrub: true,
-      onUpdate: (self) => gl && gl.setScroll(self.progress)
+      trigger: heroEl,
+      start: "top top",
+      end: "bottom top",
+      scrub: true,
+      onUpdate: (self) => gl && gl.setScroll(self.progress),
     });
-    const content = q('.hero-content');
+    const content = q(".hero-content");
     if (content) {
       gsap.to(content, {
-        yPercent: -8, ease: 'none',
-        scrollTrigger: { trigger: heroEl, start: 'top top', end: 'bottom top', scrub: true }
+        yPercent: -8,
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroEl,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
       });
     }
-
   }
   return true;
 }
 
 // ---- magnetic hover (CSS-variable driven so it composes with GSAP/Motion transforms) --------
 function initMagnetic(heroEl) {
-  if (reduceMotion || !window.matchMedia('(hover: hover)').matches) return;
-  heroEl.querySelectorAll('.hero-btn-primary, .hero-btn-secondary').forEach((btn) => {
-    let tx = 0, ty = 0, cx = 0, cy = 0, id = 0;
-    const tick = () => {
-      cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
-      btn.style.setProperty('--mx', cx.toFixed(2) + 'px');
-      btn.style.setProperty('--my', cy.toFixed(2) + 'px');
-      id = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.05) ? requestAnimationFrame(tick) : 0;
-    };
-    const kick = () => { if (!id) id = requestAnimationFrame(tick); };
-    btn.addEventListener('pointermove', (e) => {
-      const r = btn.getBoundingClientRect();
-      tx = (e.clientX - (r.left + r.width / 2)) * 0.28;
-      ty = (e.clientY - (r.top + r.height / 2)) * 0.34;
-      kick();
+  if (reduceMotion || !window.matchMedia("(hover: hover)").matches) return;
+  heroEl
+    .querySelectorAll(".hero-btn-primary, .hero-btn-secondary")
+    .forEach((btn) => {
+      let tx = 0,
+        ty = 0,
+        cx = 0,
+        cy = 0,
+        id = 0;
+      const tick = () => {
+        cx += (tx - cx) * 0.18;
+        cy += (ty - cy) * 0.18;
+        btn.style.setProperty("--mx", cx.toFixed(2) + "px");
+        btn.style.setProperty("--my", cy.toFixed(2) + "px");
+        id =
+          Math.abs(tx - cx) + Math.abs(ty - cy) > 0.05
+            ? requestAnimationFrame(tick)
+            : 0;
+      };
+      const kick = () => {
+        if (!id) id = requestAnimationFrame(tick);
+      };
+      btn.addEventListener("pointermove", (e) => {
+        const r = btn.getBoundingClientRect();
+        tx = (e.clientX - (r.left + r.width / 2)) * 0.28;
+        ty = (e.clientY - (r.top + r.height / 2)) * 0.34;
+        kick();
+      });
+      btn.addEventListener("pointerleave", () => {
+        tx = 0;
+        ty = 0;
+        kick();
+      });
     });
-    btn.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
-  });
 }
 
 // 3. MOTION (Framer Motion) now lives in js/pf-motion.js (loaded by js/index-fx.js).
@@ -486,23 +668,32 @@ function initMagnetic(heroEl) {
 // BOOT
 // ============================================================================================
 function boot() {
-  const hero = document.getElementById('sec-hero');
+  const hero = document.getElementById("sec-hero");
   let gl = null;
   if (hero) {
-    try { gl = initHeroGL(hero); } catch (e) { console.debug('[hero-fx] GL init failed:', e); }
+    try {
+      gl = initHeroGL(hero);
+    } catch (e) {
+      console.debug("[hero-fx] GL init failed:", e);
+    }
     const gate = window.__pfIntroGate || Promise.resolve();
     gate.then(() => {
-      try { initGsap(hero, gl); } catch (e) { console.debug('[hero-fx] GSAP init failed:', e); }
-      if (!state.gsap) root.classList.remove('fx-pending');
+      try {
+        initGsap(hero, gl);
+      } catch (e) {
+        console.debug("[hero-fx] GSAP init failed:", e);
+      }
+      if (!state.gsap) root.classList.remove("fx-pending");
     });
     initMagnetic(hero);
   } else {
-    root.classList.remove('fx-pending');
+    root.classList.remove("fx-pending");
   }
 }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+if (document.readyState === "loading")
+  document.addEventListener("DOMContentLoaded", boot);
 else boot();
 
 // Safety net: never leave the hero hidden if anything above stalls.
-setTimeout(() => root.classList.remove('fx-pending'), 5200);
+setTimeout(() => root.classList.remove("fx-pending"), 5200);
