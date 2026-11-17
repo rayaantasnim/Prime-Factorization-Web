@@ -292,21 +292,21 @@ async function runCurtain(m) {
   const bar = cur.querySelector('.pf-curtain-bar i');
   const target = 2520;
   await new Promise((res) => {
-    tween(m, 2, target, { duration: 1.15, ease: 'easeInOut', onComplete: res }, (v) => {
+    tween(m, 2, target, { duration: 0.65, ease: 'easeInOut', onComplete: res }, (v) => {
       const n = Math.round(v);
       if (nEl) nEl.textContent = fmt(n);
       if (fEl) fEl.textContent = factorText(n);
       if (bar) bar.style.transform = `scaleX(${(v - 2) / (target - 2)})`;
     });
-    setTimeout(res, 1800);
+    setTimeout(res, 1000);
   });
   if (m) {
     const top = cur.querySelector('.pf-curtain-half.is-top'), bot = cur.querySelector('.pf-curtain-half.is-bot'), mid = cur.querySelector('.pf-curtain-core');
-    m.animate(mid, { opacity: 0, scale: 1.12 }, { duration: 0.3 });
+    m.animate(mid, { opacity: 0, scale: 1.12 }, { duration: 0.2 });
     open();
     await Promise.all([
-      m.animate(top, { y: ['0%', '-101%'] }, { duration: 0.85, ease: [0.76, 0, 0.24, 1], delay: 0.12 }).finished,
-      m.animate(bot, { y: ['0%', '101%'] }, { duration: 0.85, ease: [0.76, 0, 0.24, 1], delay: 0.12 }).finished
+      m.animate(top, { y: ['0%', '-101%'] }, { duration: 0.55, ease: [0.76, 0, 0.24, 1], delay: 0.04 }).finished,
+      m.animate(bot, { y: ['0%', '101%'] }, { duration: 0.55, ease: [0.76, 0, 0.24, 1], delay: 0.04 }).finished
     ]).catch(() => {});
   }
   finish();

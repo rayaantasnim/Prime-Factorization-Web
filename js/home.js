@@ -545,45 +545,69 @@ function initInstantRandomizer() {
     { min: 2001, max: 5000, label: 'Tier 5: 2,001 - 5,000' },
     { min: 5001, max: 10000, label: 'Tier 6: 5,001 - 10,000' },
     { min: 10001, max: 20000, label: 'Tier 7: 10,001 - 20,000' },
-    { min: 20001, max: 35000, label: 'Tier 8: 20,000 - 35,000' },
-    { min: 1, max: 50000, label: 'Omega: 1 to Infinity' }
+    { min: 20001, max: 35000, label: 'Tier 8: 20,001 - 35,000' },
+    { min: 1, max: 50000, label: 'Omega: 1 - 50,000+' }
   ];
 
   let isRolling = false;
+  let rollTimer = 0;
+
+  // A bfcache restore (browser Back) could leave the card stuck in "rolling": reset it
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    clearInterval(rollTimer);
+    isRolling = false;
+    card.classList.remove('is-rolling', 'is-landed');
+    slotText.textContent = 'ROLL ARENA';
+  });
+
+  // The card is a <div role="button">: make it keyboard-operable like a real button
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault();
+      card.click();
+    }
+  });
 
   card.addEventListener('click', () => {
     if (isRolling) return;
     isRolling = true;
+    card.classList.remove('is-landed');
+    card.classList.add('is-rolling');
     playSound('alert');
 
     let rollCount = 0;
-    const maxRolls = 18;
+    const maxRolls = 14;
     const chosenIndex = Math.floor(Math.random() * ranges.length);
     const chosenRange = ranges[chosenIndex];
 
-    const interval = setInterval(() => {
+    rollTimer = setInterval(() => {
       rollCount++;
-      const randomIdx = Math.floor(Math.random() * ranges.length);
+      // never show the same label twice in a row so the reel always looks like it is moving
+      let randomIdx = Math.floor(Math.random() * ranges.length);
+      if (ranges[randomIdx].label === slotText.textContent) randomIdx = (randomIdx + 1) % ranges.length;
       slotText.textContent = ranges[randomIdx].label;
 
       if (window.gsap) {
         window.gsap.fromTo(
           slotText,
           { y: -15, opacity: 0.7 },
-          { y: 0, opacity: 1, duration: 0.08, ease: 'none' }
+          { y: 0, opacity: 1, duration: 0.07, ease: 'none', overwrite: true }
         );
       }
 
       if (rollCount >= maxRolls) {
-        clearInterval(interval);
+        clearInterval(rollTimer);
         slotText.textContent = chosenRange.label;
+        card.classList.remove('is-rolling');
+        card.classList.add('is-landed');
         playSound('correct');
 
         if (window.gsap) {
           window.gsap.fromTo(
             slotText,
             { scale: 1.25, color: '#38BDF8' },
-            { scale: 1, color: '#FFFFFF', duration: 0.4, ease: 'back.out(2)' }
+            { scale: 1, color: '#FFFFFF', duration: 0.35, ease: 'back.out(2)', overwrite: true }
           );
         }
 
@@ -595,9 +619,9 @@ function initInstantRandomizer() {
             rules: getSettings()
           });
           window.location.href = `./exam.html?min=${chosenRange.min}&max=${chosenRange.max}&title=${encodeURIComponent(chosenRange.label)}`;
-        }, 600);
+        }, 450);
       }
-    }, 70);
+    }, 55);
   });
 }
 

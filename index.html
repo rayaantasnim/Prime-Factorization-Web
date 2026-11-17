@@ -39,15 +39,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./css/notifications.css" />
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/index-media-query.css" />
     <link rel="stylesheet" href="css/version-launch.css" />
     <link rel="stylesheet" href="css/hero-fx.css" />
+    <!-- Fonts load without blocking first paint -->
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap"
-      rel="stylesheet"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap" /></noscript>
 
     <!-- Number-curtain intro: once per session, skipped for reduced motion; hard 3.4s safety net -->
     <script>
@@ -64,7 +71,7 @@
             r.classList.remove('pf-curtain-on');
             var c = document.getElementById('pf-curtain'); if (c) c.remove();
             window.__pfOpenGate();
-          }, 3400);
+          }, 1800);
         } else { window.__pfOpenGate(); }
       })();
     </script>
@@ -74,22 +81,24 @@
       (function () {
         try {
           document.documentElement.classList.add('fx-pending');
-          setTimeout(function () { document.documentElement.classList.remove('fx-pending'); }, 3500);
+          setTimeout(function () { document.documentElement.classList.remove('fx-pending'); }, 1800);
         } catch (e) {}
       })();
     </script>
 
     <!-- GSAP with ScrollToPlugin for smooth spatial animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <!-- Three.js (WebGL) for the hero constellation; hero-fx.js falls back to raw WebGL without it -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="./css/ux-core.css" />
     <link rel="stylesheet" href="./css/aurora-pro.css" />
     <link rel="stylesheet" href="./css/math-ui.css" />
     <link rel="stylesheet" href="./css/responsive-global.css" />
+    <link rel="stylesheet" href="./css/pf-enhance.css" />
     <script type="module" src="./js/ux-core.js"></script>
+    <script type="module" src="./js/pf-enhance.js"></script>
     <script type="module" src="./js/index-fx.js"></script>
   </head>
   <body>
@@ -593,9 +602,9 @@
         <div class="section-bg-image-wrap">
           <img
             class="section-bg-image"
-            src="https://images.pexels.com/photos/39191009/pexels-photo-39191009.jpeg"
+            src="https://images.pexels.com/photos/39191009/pexels-photo-39191009.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Geometric abstract architecture"
-            loading="lazy"
+            width="1200" height="800" decoding="async"
             style="opacity: 0.85"
           />
           <div class="section-bg-overlay"></div>
@@ -798,10 +807,10 @@
       <!-- STATS BAND + NUMBER TAPE -->
       <div class="pf-band" aria-label="Platform at a glance">
         <ul class="pf-stats">
-          <li class="pf-stat"><b data-count="12">12</b><span>ELO tiers</span><em>Foundry Initiate → Prime Singularity</em></li>
-          <li class="pf-stat"><b data-count="100" data-suffix="+">100+</b><span>Olympiad medals</span><em>Certified in Cloud Firestore</em></li>
-          <li class="pf-stat"><b data-count="10">10</b><span>Problems / match</span><em>Ten progressive bounds</em></li>
-          <li class="pf-stat"><b data-count="50000" data-suffix="+">50,000+</b><span>Cosmic ceiling</span><em>Factor numbers up to 1–50,000+</em></li>
+          <li class="pf-stat" style="--i:0"><b data-count="12">12</b><span>ELO tiers</span><em>Foundry Initiate → Prime Singularity</em></li>
+          <li class="pf-stat" style="--i:1"><b data-count="100" data-suffix="+">100+</b><span>Olympiad medals</span><em>Certified in Cloud Firestore</em></li>
+          <li class="pf-stat" style="--i:2"><b data-count="10">10</b><span>Problems / match</span><em>Ten progressive bounds</em></li>
+          <li class="pf-stat" style="--i:3"><b data-count="50000" data-suffix="+">50,000+</b><span>Cosmic ceiling</span><em>Factor numbers up to 1–50,000+</em></li>
         </ul>
         <div class="pf-tape" aria-hidden="true">
           <div class="pf-tape-track">
@@ -1030,6 +1039,9 @@
             src="https://images.pexels.com/photos/2088205/pexels-photo-2088205.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Geometric structure"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>
@@ -1380,6 +1392,9 @@
             src="https://images.pexels.com/photos/6238297/pexels-photo-6238297.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Mathematical equations"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>
@@ -1535,6 +1550,9 @@
             src="https://images.pexels.com/photos/2832382/pexels-photo-2832382.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Light streak dynamics"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>
@@ -1549,19 +1567,30 @@
             </p>
           </div>
 
-          <div id="randomizer-trigger-card" class="randomizer-card">
-            <span class="section-kicker" style="color: #000000"
+          <div
+            id="randomizer-trigger-card"
+            class="randomizer-card rz-card"
+            role="button"
+            tabindex="0"
+            aria-label="Roll a random arena and launch it"
+          >
+            <span class="rz-orb rz-orb-a" aria-hidden="true"></span>
+            <span class="rz-orb rz-orb-b" aria-hidden="true"></span>
+            <span class="rz-glyphs" aria-hidden="true"><i>2</i><i>3</i><i>5</i><i>7</i><i>11</i><i>13</i><i>17</i></span>
+            <span class="rz-kicker"
               >Click to Trigger Random Deployment</span
             >
-            <div class="randomizer-slot-box">
-              <span id="slot-machine-target" class="slot-machine-text"
+            <div class="randomizer-slot-box rz-slot">
+              <span class="rz-reel-edge" aria-hidden="true"></span>
+              <span id="slot-machine-target" class="slot-machine-text" aria-live="polite"
                 >ROLL ARENA</span
               >
             </div>
-            <p style="font-size: 0.95rem; opacity: 0.9">
+            <p class="rz-note">
               Pulls randomly across all 9 competition tiers and applies global
               session rules automatically.
             </p>
+            <span class="rz-cta" aria-hidden="true">▶ Tap, press Enter or Space to spin</span>
           </div>
         </div>
       </section>
@@ -1574,6 +1603,9 @@
             src="https://images.pexels.com/photos/1036808/pexels-photo-1036808.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Modern stairs tiers"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>
@@ -1588,10 +1620,12 @@
             </p>
           </div>
 
-          <div class="auto-fit-grid-240">
+          <div class="auto-fit-grid-240 rp-grid">
             <a
               href="./exam.html?min=1&max=200&title=Tier%201%3A%201%20-%20200"
-              class="range-tilt-card"
+              class="range-tilt-card rp-card"
+              data-tier="1"
+              style="--t:1"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 1</div>
@@ -1606,7 +1640,9 @@
 
             <a
               href="./exam.html?min=201&max=500&title=Tier%202%3A%20201%20-%20500"
-              class="range-tilt-card"
+              class="range-tilt-card rp-card"
+              data-tier="2"
+              style="--t:2"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 2</div>
@@ -1621,7 +1657,9 @@
 
             <a
               href="./exam.html?min=501&max=1000&title=Tier%203%3A%20501%20-%201%2C000"
-              class="range-tilt-card"
+              class="range-tilt-card rp-card"
+              data-tier="3"
+              style="--t:3"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 3</div>
@@ -1636,7 +1674,9 @@
 
             <a
               href="./exam.html?min=1001&max=2000&title=Tier%204%3A%201%2C001%20-%202%2C000"
-              class="range-tilt-card"
+              class="range-tilt-card rp-card"
+              data-tier="4"
+              style="--t:4"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 4</div>
@@ -1651,7 +1691,9 @@
 
             <a
               href="./exam.html?min=2001&max=5000&title=Tier%205%3A%202%2C001%20-%205%2C000"
-              class="range-tilt-card"
+              class="range-tilt-card rp-card"
+              data-tier="5"
+              style="--t:5"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 5</div>
@@ -1664,14 +1706,13 @@
               </div>
             </a>
 
-            <a href="./ranges.html" class="range-tilt-card">
-              <div class="range-card-body" style="text-align: center">
-                <div class="range-tier-label" style="color: #0284c7">
+            <a href="./ranges.html" class="range-tilt-card rp-card rp-all" data-tier="6" style="--t:6">
+              <div class="range-card-body rp-all-body">
+                <div class="range-tier-label">
                   Complete Matrix
                 </div>
                 <div
                   class="range-bounds-text"
-                  style="font-size: 1.5rem; color: #ffffff"
                 >
                   All 10 Tiers
                 </div>
@@ -1680,10 +1721,8 @@
                 </p>
               </div>
               <div class="range-card-footer">
-                <span class="font-bold" style="color: #0284c7"
-                  >Open Full Matrix</span
-                >
-                <span style="color: #0284c7">→</span>
+                <span class="font-bold">Open Full Matrix</span>
+                <span>→</span>
               </div>
             </a>
           </div>
@@ -1698,6 +1737,9 @@
             src="https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Clean settings dashboard"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>
@@ -1713,165 +1755,52 @@
             </p>
           </div>
 
-          <div
-            style="
-              background: rgba(30, 41, 59, 0.85);
-              border: 1px solid rgba(255, 255, 255, 0.08);
-              border-radius: 16px;
-              padding: 2rem;
-              max-width: 900px;
-              margin: 0 auto;
-            "
-          >
-            <div
-              style="
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-                gap: 1.5rem;
-                margin-bottom: 2rem;
-              "
-            >
-              <!-- Toggle 1: Sound -->
-              <label
-                style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  background: rgba(15, 23, 42, 0.6);
-                  padding: 1rem;
-                  border-radius: 10px;
-                  cursor: pointer;
-                "
-              >
-                <div>
-                  <div
-                    style="font-weight: 700; color: #ffffff; font-size: 0.95rem"
-                  >
-                    Synthesizer Audio
-                  </div>
-                  <div style="font-size: 0.8rem; color: #94a3b8">
-                    Mechanical ticks &amp; chimes
-                  </div>
-                </div>
-                <input
-                  type="checkbox"
-                  id="local-toggle-audio"
-                  style="width: 1.25rem; height: 1.25rem; accent-color: #38bdf8"
-                />
+          <div class="cps-panel">
+            <div class="cps-grid">
+              <label class="cps-toggle" style="--i:0">
+                <span class="cps-ico" aria-hidden="true">🔊</span>
+                <span class="cps-text">
+                  <span class="cps-title">Synthesizer Audio</span>
+                  <span class="cps-sub">Mechanical ticks &amp; chimes</span>
+                </span>
+                <input type="checkbox" id="local-toggle-audio" class="cps-input" />
+                <span class="cps-switch" aria-hidden="true"></span>
               </label>
-
-              <!-- Toggle 2: Second Attempt -->
-              <label
-                style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  background: rgba(15, 23, 42, 0.6);
-                  padding: 1rem;
-                  border-radius: 10px;
-                  cursor: pointer;
-                "
-              >
-                <div>
-                  <div
-                    style="font-weight: 700; color: #ffffff; font-size: 0.95rem"
-                  >
-                    Second Chance Overtime
-                  </div>
-                  <div style="font-size: 0.8rem; color: #94a3b8">
-                    Redemption retry loop
-                  </div>
-                </div>
-                <input
-                  type="checkbox"
-                  id="local-toggle-second-attempt"
-                  style="width: 1.25rem; height: 1.25rem; accent-color: #38bdf8"
-                />
+              <label class="cps-toggle" style="--i:1">
+                <span class="cps-ico" aria-hidden="true">🔁</span>
+                <span class="cps-text">
+                  <span class="cps-title">Second Chance Overtime</span>
+                  <span class="cps-sub">Redemption retry loop</span>
+                </span>
+                <input type="checkbox" id="local-toggle-second-attempt" class="cps-input" />
+                <span class="cps-switch" aria-hidden="true"></span>
               </label>
-
-              <!-- Toggle 3: Pauses -->
-              <label
-                style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  background: rgba(15, 23, 42, 0.6);
-                  padding: 1rem;
-                  border-radius: 10px;
-                  cursor: pointer;
-                "
-              >
-                <div>
-                  <div
-                    style="font-weight: 700; color: #ffffff; font-size: 0.95rem"
-                  >
-                    Timer Pauses
-                  </div>
-                  <div style="font-size: 0.8rem; color: #94a3b8">
-                    5s tactical freeze (-2 pts)
-                  </div>
-                </div>
-                <input
-                  type="checkbox"
-                  id="local-toggle-pauses"
-                  style="width: 1.25rem; height: 1.25rem; accent-color: #38bdf8"
-                />
+              <label class="cps-toggle" style="--i:2">
+                <span class="cps-ico" aria-hidden="true">⏸️</span>
+                <span class="cps-text">
+                  <span class="cps-title">Timer Pauses</span>
+                  <span class="cps-sub">5s tactical freeze (-2 pts)</span>
+                </span>
+                <input type="checkbox" id="local-toggle-pauses" class="cps-input" />
+                <span class="cps-switch" aria-hidden="true"></span>
               </label>
-
-              <!-- Toggle 4: Hints -->
-              <label
-                style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  background: rgba(15, 23, 42, 0.6);
-                  padding: 1rem;
-                  border-radius: 10px;
-                  cursor: pointer;
-                "
-              >
-                <div>
-                  <div
-                    style="font-weight: 700; color: #ffffff; font-size: 0.95rem"
-                  >
-                    Conceptual Hints
-                  </div>
-                  <div style="font-size: 0.8rem; color: #94a3b8">
-                    Smallest factor guidance
-                  </div>
-                </div>
-                <input
-                  type="checkbox"
-                  id="local-toggle-hints"
-                  style="width: 1.25rem; height: 1.25rem; accent-color: #38bdf8"
-                />
+              <label class="cps-toggle" style="--i:3">
+                <span class="cps-ico" aria-hidden="true">💡</span>
+                <span class="cps-text">
+                  <span class="cps-title">Conceptual Hints</span>
+                  <span class="cps-sub">Smallest factor guidance</span>
+                </span>
+                <input type="checkbox" id="local-toggle-hints" class="cps-input" />
+                <span class="cps-switch" aria-hidden="true"></span>
               </label>
             </div>
 
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 1rem;
-                border-top: 1px solid rgba(255, 255, 255, 0.08);
-                padding-top: 1.5rem;
-              "
-            >
-              <span style="font-size: 0.88rem; color: #94a3b8">
+            <div class="cps-foot">
+              <span class="cps-foot-text">
                 Looking to edit your competitor handle, real name, and
                 organization?
               </span>
-              <a
-                href="./profile-settings.html"
-                class="btn-primary"
-                style="
-                  background: linear-gradient(135deg, #0284c7, #0ea5e9);
-                  font-size: 0.92rem;
-                  padding: 0.6rem 1.4rem;
-                "
-              >
+              <a href="./profile-settings.html" class="btn-primary cps-link">
                 <span>Open Cloud Settings &amp; Dossier →</span>
               </a>
             </div>
@@ -1887,6 +1816,9 @@
             src="https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Analytics ledger graph"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>
@@ -2065,6 +1997,9 @@
             src="https://images.pexels.com/photos/714698/pexels-photo-714698.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Geometric prism reflection"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>
@@ -2085,12 +2020,23 @@
                 id="playground-integer-input"
                 class="playground-input"
                 type="number"
+                inputmode="numeric"
                 value="1260"
                 min="2"
                 max="10000000"
                 placeholder="Enter any integer (e.g. 1260, 4920, 84357)"
                 aria-label="Integer for Pollard's Rho factorization"
               />
+            </div>
+
+            <div class="pg-chips" role="group" aria-label="Quick examples">
+              <span class="pg-chips-label">Try:</span>
+              <button type="button" class="pg-chip" data-pg="360">360</button>
+              <button type="button" class="pg-chip" data-pg="7919">7919</button>
+              <button type="button" class="pg-chip" data-pg="30030">30030</button>
+              <button type="button" class="pg-chip" data-pg="65536">65536</button>
+              <button type="button" class="pg-chip" data-pg="600851">600851</button>
+              <button type="button" class="pg-chip" data-pg="9999991">9999991</button>
             </div>
 
             <div class="factorization-output-deck">
@@ -2101,7 +2047,7 @@
                 id="playground-bubbles-wrap"
                 class="factor-bubbles-wrap"
               ></div>
-              <div id="playground-verdict-tag" class="prime-verdict-tag">
+              <div id="playground-verdict-tag" class="prime-verdict-tag" role="status" aria-live="polite">
                 Pollard's Rho factorization ready
               </div>
             </div>
@@ -2117,6 +2063,9 @@
             src="https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Mathematical strategy blueprint"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>
@@ -2225,7 +2174,7 @@
             >
           </div>
 
-          <h2 class="v3-triumph-headline">THE EVOLUTION IS UNLEASHED</h2>
+          <h2 class="v3-triumph-headline">THE EVOLUTION <span class="v3-nowrap">IS UNLEASHED</span></h2>
 
           <p class="v3-triumph-subtext">
             The architectural staging for
@@ -2263,6 +2212,9 @@
             src="https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Serverless circuit technology"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>
@@ -2349,6 +2301,9 @@
             src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Podium gateway finish"
             loading="lazy"
+            decoding="async"
+            width="1200"
+            height="800"
           />
           <div class="section-bg-overlay"></div>
         </div>

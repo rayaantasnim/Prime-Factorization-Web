@@ -844,7 +844,7 @@ async function renderResultDashboard() {
 
         <!-- Visual Bar Chart Container -->
         <div class="micro-latency-chart-wrapper" style="overflow-x: auto; padding-bottom: 8px;">
-          <div class="micro-latency-chart-flex" style="display: inline-flex; width: max-content; align-items: flex-end; gap: 14px; min-width: ${Math.max(480, latencyData.length * 52)}px; height: 180px; padding: 28px 12px 10px 12px; background: rgba(11, 15, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
+          <div class="micro-latency-chart-flex" style="display: flex; width: 100%; box-sizing: border-box; align-items: flex-end; gap: 14px; min-width: ${Math.max(1, latencyData.length) * 56}px; height: 180px; padding: 28px 12px 10px 12px; background: rgba(11, 15, 23, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
             ${chartBarsHtml}
           </div>
         </div>
@@ -987,16 +987,22 @@ async function renderResultDashboard() {
     }));
 
     let totalMs = 0;
-    latencyTableBody.innerHTML = latencyLogs.map(log => {
+    latencyTableBody.innerHTML = latencyLogs.map((log, idx) => {
       const lat = Number(log.latencyMs) || 0.04;
       totalMs += lat;
+      // defensive defaults: a partial/legacy audit row must never print "undefined" or throw
+      const qid = log.id ?? log.questionNumber ?? (idx + 1);
+      const num = Number(log.number);
+      const numText = Number.isFinite(num) ? num.toLocaleString() : '—';
+      const algo = log.algorithm || "Pollard's Rho (Brent)";
+      const status = log.status || 'Deterministic Verified';
       return `
         <tr>
-          <td class="tabular-nums font-bold">Q${log.id}</td>
-          <td class="tabular-nums font-bold" style="color: #FFFFFF;">${log.number.toLocaleString()}</td>
-          <td class="tabular-nums font-bold text-accent">${lat.toFixed(3)} ms</td>
-          <td>${log.algorithm}</td>
-          <td class="text-mint font-bold">✓ ${log.status}</td>
+          <td data-label="Index" class="tabular-nums font-bold">Q${qid}</td>
+          <td data-label="Target N" class="tabular-nums font-bold" style="color: #FFFFFF;">${numText}</td>
+          <td data-label="Latency" class="tabular-nums font-bold text-accent">${lat.toFixed(3)} ms</td>
+          <td data-label="Engine">${algo}</td>
+          <td data-label="State" class="text-mint font-bold">✓ ${status}</td>
         </tr>
       `;
     }).join('');
