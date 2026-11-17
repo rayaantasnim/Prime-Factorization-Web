@@ -465,15 +465,23 @@
       class="fullscreen-nav-overlay"
       role="dialog"
       aria-modal="true"
+      aria-label="Navigation Topology"
     >
       <div class="overlay-header">
-        <h3 class="overlay-title">Navigation Topology</h3>
+        <div class="overlay-title-wrap">
+          <span class="overlay-eyebrow">Jump to section</span>
+          <h3 class="overlay-title">Navigation Topology</h3>
+        </div>
         <button
           id="close-nav-overlay-btn"
           class="overlay-close-btn"
           aria-label="Close Navigation Overlay"
+          type="button"
         >
-          ✕
+          <svg class="overlay-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true">
+            <line x1="5" y1="5" x2="19" y2="19"></line>
+            <line x1="19" y1="5" x2="5" y2="19"></line>
+          </svg>
         </button>
       </div>
       <div class="overlay-nav-grid">
@@ -2230,61 +2238,62 @@
             </p>
           </div>
 
-          <div class="settings-node-card">
-            <div class="auto-fit-grid-240" style="gap: 1rem">
-              <div class="counter-box">
+          <div class="settings-node-card ta-card">
+            <div class="ta-head">
+              <span class="ta-live"><i aria-hidden="true"></i>Integrity checks passing</span>
+              <span class="ta-stack-label">Technology stack</span>
+            </div>
+            <div class="auto-fit-grid-240 ta-grid" style="gap: 1rem">
+              <div class="counter-box ta-box">
+                <span class="ta-ico" aria-hidden="true">⚙️</span>
                 <div class="cb-label">Runtime Framework</div>
-                <div
-                  style="
-                    font-family: var(--font-heading);
-                    font-size: 1.15rem;
-                    font-weight: 700;
-                    color: var(--accent-primary);
-                  "
-                >
-                  Vanilla Browser ESM
-                </div>
+                <div class="ta-val">Vanilla Browser ESM</div>
+                <div class="ta-note">Zero-framework ES modules</div>
               </div>
-              <div class="counter-box">
+              <div class="counter-box ta-box">
+                <span class="ta-ico" aria-hidden="true">🧮</span>
                 <div class="cb-label">Integer Algorithm</div>
-                <div
-                  style="
-                    font-family: var(--font-heading);
-                    font-size: 1.15rem;
-                    font-weight: 700;
-                    color: var(--accent-primary);
-                  "
-                >
-                  Pollard's Rho + Miller-Rabin
-                </div>
+                <div class="ta-val">Pollard's Rho + Miller-Rabin</div>
+                <div class="ta-note">BigInt-safe factor engine</div>
               </div>
-              <div class="counter-box">
+              <div class="counter-box ta-box">
+                <span class="ta-ico" aria-hidden="true">☁️</span>
                 <div class="cb-label">Cloud Persistence</div>
-                <div
-                  style="
-                    font-family: var(--font-heading);
-                    font-size: 1.15rem;
-                    font-weight: 700;
-                    color: var(--accent-primary);
-                  "
-                >
-                  Cloud Firestore + Auth
-                </div>
+                <div class="ta-val">Cloud Firestore + Auth</div>
+                <div class="ta-note">Google sign-in, per-user documents</div>
               </div>
-              <div class="counter-box">
+              <div class="counter-box ta-box">
+                <span class="ta-ico" aria-hidden="true">🔊</span>
                 <div class="cb-label">Audio Engine</div>
-                <div
-                  style="
-                    font-family: var(--font-heading);
-                    font-size: 1.15rem;
-                    font-weight: 700;
-                    color: var(--accent-primary);
-                  "
-                >
-                  Native Web Audio API
-                </div>
+                <div class="ta-val">Native Web Audio API</div>
+                <div class="ta-note">Synthesised tones, no audio files</div>
+              </div>
+              <div class="counter-box ta-box">
+                <span class="ta-ico" aria-hidden="true">📦</span>
+                <div class="cb-label">Build Toolchain</div>
+                <div class="ta-val">Vite 8 · Multi-page</div>
+                <div class="ta-note">Tree-shaken, hashed assets</div>
+              </div>
+              <div class="counter-box ta-box">
+                <span class="ta-ico" aria-hidden="true">🧊</span>
+                <div class="cb-label">Render Layer</div>
+                <div class="ta-val">WebGL + Three.js r128</div>
+                <div class="ta-note">Live Ulam / sieve observatory</div>
+              </div>
+              <div class="counter-box ta-box">
+                <span class="ta-ico" aria-hidden="true">🎞️</span>
+                <div class="cb-label">Motion Engine</div>
+                <div class="ta-val">GSAP · ScrollTrigger · Motion</div>
+                <div class="ta-note">GPU-friendly transforms</div>
+              </div>
+              <div class="counter-box ta-box">
+                <span class="ta-ico" aria-hidden="true">🛡️</span>
+                <div class="cb-label">Data Security</div>
+                <div class="ta-val">Firestore Security Rules</div>
+                <div class="ta-note">Owner-only writes (uid-checked)</div>
               </div>
             </div>
+            <ul class="ta-chips" aria-label="Platform guarantees"><li><span aria-hidden="true">✓</span>Client-side math, zero round-trips</li><li><span aria-hidden="true">✓</span>Deterministic verification</li><li><span aria-hidden="true">✓</span>Google OAuth via Firebase</li><li><span aria-hidden="true">✓</span>Per-user document isolation</li><li><span aria-hidden="true">✓</span>Reduced-motion aware</li><li><span aria-hidden="true">✓</span>Responsive 320px → 4K</li><li><span aria-hidden="true">✓</span>Keyboard accessible</li><li><span aria-hidden="true">✓</span>Canvas-confetti rewards</li></ul>
           </div>
         </div>
       </section>

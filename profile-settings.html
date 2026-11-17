@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="./css/ux-core.css" />
     <link rel="stylesheet" href="./css/aurora-pro.css" />
     <link rel="stylesheet" href="./css/responsive-global.css" />
+    <link rel="stylesheet" href="./css/pf-pages.css" />
     <script type="module" src="./js/ux-core.js"></script>
   </head>
 <body class="profile-view">
@@ -205,12 +206,13 @@
   <!-- Main Content Container -->
   <main class="profile-content-container">
     <div class="settings-portal-card">
-      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem;">
-        <div>
-          <h2 style="font-size: 1.6rem; color: #FFFFFF; font-weight: 800; margin-bottom: 0.25rem;">Profile System Settings Portal</h2>
-          <p style="color: #94A3B8; font-size: 0.9rem; margin: 0;">Configure contestant credentials, audio synthetics &amp; local telemetry audits.</p>
+      <div class="ps-head">
+        <span class="ps-head-ico" aria-hidden="true">⚙️</span>
+        <div class="ps-head-text">
+          <h2 class="ps-title">Profile System Settings Portal</h2>
+          <p class="ps-sub">Configure contestant credentials, audio synthetics &amp; local telemetry audits.</p>
         </div>
-        <a href="./profile.html" class="btn-clipboard-neon" style="text-decoration: none;">
+        <a href="./profile.html" class="btn-clipboard-neon ps-back" style="text-decoration: none;">
           <span>← Back to Profile</span>
         </a>
       </div>
@@ -222,6 +224,7 @@
       </div>
 
       <div class="settings-group">
+        <div class="ps-group-title"><span aria-hidden="true">🔐</span>Account &amp; Rating</div>
         <div class="settings-row">
           <div class="settings-label-block">
             <h4>Cryptographic Token Handle</h4>
@@ -246,6 +249,7 @@
           </div>
         </div>
 
+        <div class="ps-group-title"><span aria-hidden="true">🪪</span>Public Identity</div>
         <div class="settings-row" style="flex-wrap: wrap;">
           <div class="settings-label-block">
             <h4>Unique Competitor Handle (<code style="color: #38BDF8;">@handle</code>)</h4>
@@ -278,6 +282,7 @@
         </div>
 
         <!-- 2. City Input Field -->
+        <div class="ps-group-title"><span aria-hidden="true">🎓</span>Training Profile</div>
         <div class="settings-row">
           <div class="settings-label-block">
             <h4>Training City</h4>
@@ -325,6 +330,7 @@
           </select>
         </div>
 
+        <div class="ps-group-title"><span aria-hidden="true">🎛️</span>Contest Preferences</div>
         <div class="settings-row">
           <div class="settings-label-block">
             <h4>Hermetic Web Audio Synthesizer</h4>
@@ -358,6 +364,7 @@
           </label>
         </div>
 
+        <div class="ps-group-title"><span aria-hidden="true">☁️</span>Cloud</div>
         <div class="settings-row" style="border-color: rgba(56, 189, 248, 0.25);">
           <div class="settings-label-block">
             <h4>Cloud Sync &amp; Firestore Re-Anchor</h4>
@@ -373,7 +380,7 @@
         ✔️ Profile Settings Saved Successfully!
       </div>
 
-      <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+      <div class="ps-actions">
         <button id="btn-save-settings" class="btn-clipboard-neon btn-save-inactive" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
           <span>Save Configuration</span>
         </button>

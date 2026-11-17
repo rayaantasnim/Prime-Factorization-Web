@@ -1345,11 +1345,128 @@
   to { transform: scaleX(0); }
 }
 
+/* ---- Toast: precise sizing on tablets / phones (laptop look above 640px is untouched) ---- */
 @media (max-width: 640px) {
   .primefactor-toast-container {
-    top: 0.75rem;
-    width: calc(100vw - 1.25rem);
+    top: max(0.5rem, env(safe-area-inset-top));
+    width: min(calc(100vw - 1rem), 26rem);
+    gap: 0.5rem;
   }
+
+  .primefactor-toast-banner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+    column-gap: 0.7rem;
+    padding: 0.75rem 0.7rem 0.9rem 0.85rem;
+    border-radius: 0.9rem;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), 0 0 16px rgba(6, 182, 212, 0.2);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(11, 18, 36, 0.98);
+  }
+
+  .toast-icon-node {
+    font-size: 1.3rem;
+    width: 2.1rem;
+    height: 2.1rem;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    border-radius: 0.65rem;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .toast-body {
+    gap: 0.2rem;
+  }
+
+  .toast-top-row {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.05rem 0.5rem;
+  }
+
+  .toast-title {
+    font-size: 0.95rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .toast-time-label {
+    font-size: 0.68rem;
+    opacity: 0.9;
+  }
+
+  .toast-preview-msg {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+    overflow-wrap: anywhere;
+  }
+
+  .toast-elo-shift-pill {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .toast-footer-bar {
+    margin-top: 0.25rem;
+    padding-top: 0.3rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .toast-committed-tag {
+    font-size: 0.68rem;
+    min-width: 0;
+  }
+
+  .toast-feed-link {
+    font-size: 0.74rem;
+    padding: 0.2rem 0;
+  }
+
+  /* 36px tap target without growing the toast */
+  .toast-dismiss-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: -0.3rem -0.1rem 0 0;
+    border-radius: 0.6rem;
+  }
+
+  /* only the two newest alerts stay visible on small screens */
+  .primefactor-toast-container > .primefactor-toast-banner:nth-child(n + 3) {
+    display: none;
+  }
+
+  @keyframes toastSlideDown {
+    from { opacity: 0; transform: translateY(-16px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+}
+
+@media (max-width: 360px) {
+  .primefactor-toast-banner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 0.7rem 0.6rem 0.85rem 0.75rem;
+  }
+  .toast-icon-node { display: none; }
+  .toast-committed-tag { display: none; }
+  .toast-footer-bar { justify-content: flex-end; }
+}
+
+@media (max-height: 480px) and (orientation: landscape) {
+  .primefactor-toast-container { width: min(calc(100vw - 1rem), 28rem); }
+  .toast-preview-msg { -webkit-line-clamp: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primefactor-toast-banner { animation: none; }
+  .toast-timer-bar { animation-duration: 5s; }
 }
 
 .toast-arrow {

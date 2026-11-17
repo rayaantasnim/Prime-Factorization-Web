@@ -82,7 +82,8 @@ input, select, textarea, button { max-width: 100%; font-family: inherit; }
   .obs-chips { gap: 0.3rem; }
   .pf-tape-track span { padding: 0.65rem 1.1rem; font-size: 0.74rem; }
   .overlay-nav-card { min-width: 0; }
-  .primefactor-toast-container { left: 0.5rem !important; right: 0.5rem !important; width: auto !important; max-width: none !important; }
+  /* toast: keep the base centring (left:50% + translateX(-50%)); the old left/right:.5rem override shifted it half a width off-screen */
+  .primefactor-toast-container { left: 50% !important; right: auto !important; width: min(calc(100vw - 1rem), 26rem) !important; max-width: none !important; }
 }
 
 /* ---- very small phones / split-screen ------------------------------------------------------ */

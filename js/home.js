@@ -93,6 +93,8 @@ function initFloatingMenu() {
     playSound('click');
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
+    overlay.scrollTop = 0;
+    if (closeBtn) setTimeout(() => closeBtn.focus({ preventScroll: true }), 50);
 
     if (window.gsap) {
       window.gsap.fromTo(
@@ -107,12 +109,26 @@ function initFloatingMenu() {
     playSound('click');
     overlay.classList.remove('active');
     document.body.style.overflow = '';
+    triggerBtn.focus({ preventScroll: true });
   }
+
+  // Esc closes the map; clicking the dark backdrop (not a card) closes it too
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closeMenu();
+  });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeMenu();
+  });
 
   triggerBtn.addEventListener('click', openMenu);
   if (closeBtn) closeBtn.addEventListener('click', closeMenu);
 
   navCards.forEach(card => {
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+    });
     card.addEventListener('click', () => {
       const targetId = card.getAttribute('data-target');
       if (targetId) {
