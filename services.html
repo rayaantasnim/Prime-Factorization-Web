@@ -1,762 +1,1117 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
-  <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
-  <link rel="dns-prefetch" href="https://apis.google.com" />
-  <link rel="preconnect" href="https://images.pexels.com" crossorigin />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Services &amp; Facilities — PrimeFactor.app</title>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="preconnect"
+      href="https://firestore.googleapis.com"
+      crossorigin
+    />
+    <link
+      rel="preconnect"
+      href="https://identitytoolkit.googleapis.com"
+      crossorigin
+    />
+    <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
+    <link rel="dns-prefetch" href="https://apis.google.com" />
+    <link rel="preconnect" href="https://images.pexels.com" crossorigin />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Services &amp; Facilities — PrimeFactor.app</title>
 
-  <meta name="description" content="Explore the 15 core mathematical facilities and telemetry engines built into PrimeFactor.app. Features zero-latency prime factorization tools, Cloud Firestore persistence, ELO ranking firewalls, and Olympiad milestone metrics.">
-  <meta name="keywords" content="prime factorization tools, math olympiad training facilities, primefactor app architecture, number theory speed lab, elo rating engines, cloud firestore, math decomposition sandbox, competitive math telemetry">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://rayaantasnim.github.io/Prime-Factorization-Web/services.html">
+    <meta
+      name="description"
+      content="Explore the 15 core mathematical facilities and telemetry engines built into PrimeFactor.app. Features zero-latency prime factorization tools, Cloud Firestore persistence, ELO ranking firewalls, and Olympiad milestone metrics."
+    />
+    <meta
+      name="keywords"
+      content="prime factorization tools, math olympiad training facilities, primefactor app architecture, number theory speed lab, elo rating engines, cloud firestore, math decomposition sandbox, competitive math telemetry"
+    />
+    <meta name="robots" content="index, follow" />
+    <link
+      rel="canonical"
+      href="https://rayaantasnim.github.io/Prime-Factorization-Web/services.html"
+    />
 
-  <meta property="og:title" content="Services &amp; Facilities — PrimeFactor.app" />
-  <meta property="og:description" content="Advanced mathematical facilities, Cloud Firestore telemetry, and Olympiad competition training suites." />
-  <meta property="author" content="Rayaan Tasnim" />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="og:title"
+      content="Services &amp; Facilities — PrimeFactor.app"
+    />
+    <meta
+      property="og:description"
+      content="Advanced mathematical facilities, Cloud Firestore telemetry, and Olympiad competition training suites."
+    />
+    <meta property="author" content="Rayaan Tasnim" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
-  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./css/notifications.css" />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" /></noscript>
-  <link rel="stylesheet" href="./css/services.css" />
-  <style>
-    .service-card-desc { text-align: justify !important; }
-    .service-facility-card img { opacity: 0.75 !important; }
-  </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./css/notifications.css" />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap"
+    /></noscript>
+    <link rel="stylesheet" href="./css/services.css" />
+    <style>
+      .service-card-desc {
+        text-align: justify !important;
+      }
+      .service-facility-card img {
+        opacity: 0.75 !important;
+      }
+    </style>
 
-  <!-- GSAP for spatial interactions and flushes -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- GSAP for spatial interactions and flushes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <link rel="stylesheet" href="./css/ux-core.css" />
     <link rel="stylesheet" href="./css/aurora-pro.css" />
     <link rel="stylesheet" href="./css/responsive-global.css" />
     <script type="module" src="./js/ux-core.js"></script>
   </head>
-<body>
-  <!-- Full-Viewport GSAP Flash Overlay -->
-  <div id="flash-overlay" aria-hidden="true"></div>
+  <body>
+    <!-- Full-Viewport GSAP Flash Overlay -->
+    <div id="flash-overlay" aria-hidden="true"></div>
 
-  <!-- Persistent Global Top Header with Dropdown Navigation -->
-  <header class="fixed-header">
-    <div class="header-container">
-      <!-- Left: Minimalist Logo + Brand Text -->
-      <a href="./index.html" class="brand-lockup">
-        <span class="brand-symbol">Π</span>
-        <span class="brand-text" style="color:white;">Prime Factor<span class="dot-app">.app</span></span>
-      </a>
+    <!-- Persistent Global Top Header with Dropdown Navigation -->
+    <header class="fixed-header">
+      <div class="header-container">
+        <!-- Left: Minimalist Logo + Brand Text -->
+        <a href="./index.html" class="brand-lockup">
+          <span class="brand-symbol">Π</span>
+          <span class="brand-text" style="color: white"
+            >Prime Factor<span class="dot-app">.app</span></span
+          >
+        </a>
 
-      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
-      <div style="position: relative;">
-        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
-          <div class="hamburger-bars">
-            <span class="hamburger-bar"></span>
-            <span class="hamburger-bar"></span>
-            <span class="hamburger-bar"></span>
+        <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+        <div style="position: relative">
+          <button
+            id="menu-toggle"
+            class="nav-hamburger-btn nav-dropdown-trigger"
+            aria-label="Toggle Navigation Menu"
+            aria-expanded="false"
+          >
+            <div class="hamburger-bars">
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+            </div>
+            <span>Navigation</span>
+          </button>
+
+          <!-- Dropdown Box (Frosted Glass with 6 links + mobile System link) -->
+          <nav
+            id="global-dropdown-menu"
+            class="nav-dropdown-glass-container global-nav-dropdown"
+            aria-label="Main Navigation"
+          >
+            <a href="./index.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                  ></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home Page</span>
+              </div>
+              <span class="dropdown-badge">Hub</span>
+            </a>
+
+            <a href="./rules.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  ></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Rules</span>
+              </div>
+              <span class="dropdown-badge">Policies</span>
+            </a>
+
+            <a href="./rating.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Rating</span>
+              </div>
+              <span class="dropdown-badge">Matrix</span>
+            </a>
+
+            <a href="./edu.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                  ></path>
+                  <path d="M6 6h10"></path>
+                  <path d="M6 10h10"></path>
+                </svg>
+                <span>Edu</span>
+              </div>
+              <span class="dropdown-badge">Training</span>
+            </a>
+
+            <a
+              href="./services.html"
+              class="dropdown-link-item active"
+              style="
+                background: rgba(14, 165, 233, 0.15);
+                border-left: 3px solid #38bdf8;
+              "
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                  ></path>
+                  <path d="M6 6h10"></path>
+                  <path d="M6 10h10"></path>
+                </svg>
+                <span>Services</span>
+              </div>
+              <span
+                class="dropdown-badge"
+                style="background: #0284c7; color: #ffffff"
+                >Facilities</span
+              >
+            </a>
+
+            <a
+              href="./contest.html"
+              id="dropdown-contest"
+              class="dropdown-link-item"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                  <path d="M4 22h16"></path>
+                  <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                  <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                </svg>
+                <span>Contest</span>
+              </div>
+              <span class="dropdown-badge">Arena</span>
+            </a>
+
+            <a
+              href="./profile.html"
+              id="dropdown-profile"
+              class="dropdown-link-item"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Profile</span>
+              </div>
+              <span class="dropdown-badge">Overview</span>
+            </a>
+
+            <a href="./faq.html" class="dropdown-link-item" id="dropdown-faq">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                  ></path>
+                  <path d="M6 6h10"></path>
+                  <circle cx="12" cy="14" r="1"></circle>
+                  <path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"></path>
+                </svg>
+                <span>FAQ</span>
+              </div>
+              <span class="dropdown-badge">Archive</span>
+            </a>
+
+            <!-- Desktop Settings Link -->
+            <a
+              href="./engine.html"
+              id="dropdown-open-settings"
+              class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  ></path>
+                </svg>
+                <span>Settings</span>
+              </div>
+              <span class="dropdown-badge">Options</span>
+            </a>
+
+            <!-- Mobile-only System link -->
+            <a
+              href="./engine.html"
+              id="dropdown-mobile-system"
+              class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger"
+              aria-label="System Configuration"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  ></path>
+                </svg>
+                <span>System</span>
+              </div>
+              <span class="dropdown-badge">Engine</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Right: Auth Slot & Standalone Settings Trigger -->
+        <div class="header-actions">
+          <!-- Managed by js/header.js (Google Sign-In button or User Avatar + Sign Out) -->
+          <div id="header-auth-slot" class="header-auth-slot"></div>
+
+          <button
+            id="settings-toggle-btn"
+            class="icon-btn"
+            aria-label="Global Engine Settings"
+          >
+            <svg
+              class="gear-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Global Settings Modal Slot -->
+    <div id="settings-modal-slot"></div>
+
+    <!-- Main Presentation Matrix -->
+    <main
+      class="main-wrapper"
+      style="padding-top: 5.5rem; padding-bottom: 4rem"
+    >
+      <div class="content-container">
+        <!-- Section Header -->
+        <div class="section-head" style="margin-bottom: 2rem">
+          <span class="section-kicker">Platform Ecosystem</span>
+          <h1 class="section-title">Services &amp; Architecture Facilities</h1>
+          <p class="section-desc">
+            PrimeFactor.app is a purpose-engineered Math Olympiad speed
+            laboratory. Explore our suite of 15 core mathematical facilities,
+            Cloud Firestore telemetry engines, and zero-latency training
+            instruments.
+          </p>
+        </div>
+
+        <!-- Interactive Controls Bar: Category Filter Tabs & Live Search -->
+        <section
+          class="services-controls-bar"
+          aria-label="Facility Filters and Search"
+        >
+          <!-- Tabs -->
+          <div class="services-filter-tabs" role="tablist">
+            <button
+              class="filter-tab-btn active"
+              data-filter="all"
+              role="tab"
+              aria-selected="true"
+            >
+              <span>All Facilities</span>
+              <span class="tab-count">15</span>
+            </button>
+            <button
+              class="filter-tab-btn"
+              data-filter="core"
+              role="tab"
+              aria-selected="false"
+            >
+              <span>Core Engines</span>
+              <span class="tab-count">5</span>
+            </button>
+            <button
+              class="filter-tab-btn"
+              data-filter="cloud"
+              role="tab"
+              aria-selected="false"
+            >
+              <span>Cloud &amp; Security</span>
+              <span class="tab-count">5</span>
+            </button>
+            <button
+              class="filter-tab-btn"
+              data-filter="progression"
+              role="tab"
+              aria-selected="false"
+            >
+              <span>Progression &amp; Medals</span>
+              <span class="tab-count">5</span>
+            </button>
           </div>
-          <span>Navigation</span>
-        </button>
 
-        <!-- Dropdown Box (Frosted Glass with 6 links + mobile System link) -->
-        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
-          <a href="./index.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-              <span>Home Page</span>
-            </div>
-            <span class="dropdown-badge">Hub</span>
-          </a>
+          <!-- Live Search -->
+          <div class="services-search-wrap">
+            <svg
+              class="services-search-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              id="services-search-input"
+              class="services-search-input"
+              placeholder="Search facilities, security, ELO..."
+              aria-label="Filter facilities by keyword"
+            />
+            <button
+              id="services-search-clear"
+              class="services-search-clear"
+              aria-label="Clear Search Input"
+            >
+              ✕
+            </button>
+          </div>
+        </section>
 
-          <a href="./rules.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-              <span>Rules</span>
-            </div>
-            <span class="dropdown-badge">Policies</span>
-          </a>
+        <!-- Active Counter Meta -->
+        <div class="services-stats-summary">
+          <span
+            >Displaying
+            <span id="services-active-count" class="services-active-count"
+              >15 of 15</span
+            >
+            active facilities</span
+          >
+          <span
+            style="
+              font-size: 0.75rem;
+              letter-spacing: 0.05em;
+              text-transform: uppercase;
+              color: #64748b;
+            "
+            >Architecture V3.4 &bull; Cloud Firestore</span
+          >
+        </div>
 
-          <a href="./rating.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="20" x2="18" y2="10"></line>
-                <line x1="12" y1="20" x2="12" y2="4"></line>
-                <line x1="6" y1="20" x2="6" y2="14"></line>
-              </svg>
-              <span>Rating</span>
+        <!-- Vertically-Oriented Cards Grid: 15 Facilities -->
+        <div class="services-facilities-grid" id="services-facilities-grid">
+          <!-- Facility 01: Cloud Onboarding Gate (Cloud & Security) -->
+          <article class="service-facility-card" data-category="cloud">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80"
+                alt="Cyber security authentication matrix"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 01</span>
+                <span class="service-status-pill status-cloud">
+                  <span class="status-dot"></span>
+                  <span>500 ELO Baseline</span>
+                </span>
+              </div>
             </div>
-            <span class="dropdown-badge">Matrix</span>
-          </a>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Cloud Onboarding Gate</span>
+              <h3 class="service-card-title">Verified Cloud Identity Gate</h3>
+              <p class="service-card-desc">
+                Signing in with Google OAuth 2.0 initializes a verified Cloud
+                Firestore profile document at a calibrated 500 ELO baseline,
+                synced instantaneously across all devices.
+              </p>
+              <ul class="service-card-features">
+                <li>Google OAuth 2.0 automated onboarding</li>
+                <li>Calibrated 500 ELO entry baseline rating</li>
+                <li>
+                  Cloud Firestore user document creation with zero guesswork
+                </li>
+              </ul>
+              <a href="./index.html" class="service-card-action">
+                <span>Initialize Cloud Profile</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
 
-          <a href="./edu.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                <path d="M6 6h10"></path>
-                <path d="M6 10h10"></path>
-              </svg>
-              <span>Edu</span>
+          <!-- Facility 02: Prime Decompositions Hub (Core Engines) -->
+          <article class="service-facility-card" data-category="core">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80"
+                alt="Neon cyan factorization bubble graphic"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 02</span>
+                <span class="service-status-pill status-core">
+                  <span class="status-dot"></span>
+                  <span>Web Worker Core</span>
+                </span>
+              </div>
             </div>
-            <span class="dropdown-badge">Training</span>
-          </a>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Core Factorization Lab</span>
+              <h3 class="service-card-title">Prime Decompositions Hub</h3>
+              <p class="service-card-desc">
+                The standard algorithmic arena engineered to break down complex
+                composites under extreme speed constraints with sub-millisecond
+                precision.
+              </p>
+              <ul class="service-card-features">
+                <li>High-velocity prime factorization engine</li>
+                <li>Real-time sub-second timer tracking</li>
+                <li>Optimized composite generation algorithms</li>
+              </ul>
+              <a href="./edu.html" class="service-card-action">
+                <span>Enter Factorization Lab</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
 
-          <a href="./services.html" class="dropdown-link-item active" style="background: rgba(14, 165, 233, 0.15); border-left: 3px solid #38BDF8;">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path> 
-                <path d="M6 6h10"></path>
-                <path d="M6 10h10"></path>
-              </svg>
-              <span>Services</span>
+          <!-- Facility 03: Omnipresent ELO Ceiling Firewall (Cloud & Security) -->
+          <article class="service-facility-card" data-category="cloud">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80"
+                alt="Neon red shield firewall barrier"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 03</span>
+                <span class="service-status-pill status-security">
+                  <span class="status-dot"></span>
+                  <span>Firewall Active</span>
+                </span>
+              </div>
             </div>
-            <span class="dropdown-badge" style="background: #0284C7; color: #FFFFFF;">Facilities</span>
-          </a>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Range Lockout Gatekeeper</span>
+              <h3 class="service-card-title">
+                Omnipresent ELO Ceiling Firewall
+              </h3>
+              <p class="service-card-desc">
+                Monitors competitor ELO levels dynamically to completely lock
+                out point-farming on easy ranges, ensuring rated matches reflect
+                genuine mastery.
+              </p>
+              <ul class="service-card-features">
+                <li>Dynamic ELO ceiling evaluation engine</li>
+                <li>Automatic lockout on low-tier arenas</li>
+                <li>Prevents rating inflation and point-farming</li>
+              </ul>
+              <a href="./rating.html" class="service-card-action">
+                <span>Inspect ELO Matrix</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
 
-          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                <path d="M4 22h16"></path>
-                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
-                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-              </svg>
-              <span>Contest</span>
+          <!-- Facility 04: Custom Parametric Architecture (Core Engines) -->
+          <article class="service-facility-card" data-category="core">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=800&q=80"
+                alt="Technical blueprint parametric map"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 04</span>
+                <span class="service-status-pill status-core">
+                  <span class="status-dot"></span>
+                  <span>Parametric Bounds</span>
+                </span>
+              </div>
             </div>
-            <span class="dropdown-badge">Arena</span>
-          </a>
+            <div class="service-card-body">
+              <span class="service-card-kicker"
+                >Sandbox Bounds Configuration</span
+              >
+              <h3 class="service-card-title">Custom Parametric Architecture</h3>
+              <p class="service-card-desc">
+                Fine-tune custom lower and upper boundaries (4 to 100,000) with
+                calibrated countdown timer limits and 3-strike challenge
+                parameters.
+              </p>
+              <ul class="service-card-features">
+                <li>Granular range selection (4 to 100,000)</li>
+                <li>Configurable timer limits and penalties</li>
+                <li>Enforced 3-strike disqualification mode</li>
+              </ul>
+              <a href="./custom.html" class="service-card-action">
+                <span>Configure Sandbox</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
 
-          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              <span>Profile</span>
+          <!-- Facility 05: Spin Wheel Audio-Physics (Core Engines) -->
+          <article class="service-facility-card" data-category="core">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+                alt="Glowing roulette wheel canvas"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 05</span>
+                <span class="service-status-pill status-core">
+                  <span class="status-dot"></span>
+                  <span>Web Audio Synth</span>
+                </span>
+              </div>
             </div>
-            <span class="dropdown-badge">Overview</span>
-          </a>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Sudden Death Randomizer</span>
+              <h3 class="service-card-title">Spin Wheel Audio-Physics</h3>
+              <p class="service-card-desc">
+                Immersive deceleration selector wheel driving mechanical ticking
+                sounds and automatic angle offsets to bypass locked or
+                disqualified slots.
+              </p>
+              <ul class="service-card-features">
+                <li>Physics-driven angular deceleration wheel</li>
+                <li>Procedural Web Audio ticking feedback</li>
+                <li>Automated slot-bypassing math collision</li>
+              </ul>
+              <a href="./contest.html" class="service-card-action">
+                <span>Launch Randomizer</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
 
-          <a href="./faq.html" class="dropdown-link-item" id="dropdown-faq">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                <path d="M6 6h10"></path>
-                <circle cx="12" cy="14" r="1"></circle>
-                <path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"></path>
-              </svg>
-              <span>FAQ</span>
+          <!-- Facility 06: Adaptive Paced Multi-Axis Contract (Core Engines) -->
+          <article class="service-facility-card" data-category="core">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80"
+                alt="Holographic contractual alignment console"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 06</span>
+                <span class="service-status-pill status-core">
+                  <span class="status-dot"></span>
+                  <span>Adaptive Telemetry</span>
+                </span>
+              </div>
             </div>
-            <span class="dropdown-badge">Archive</span>
-          </a>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Pre-Flight Gatekeeper</span>
+              <h3 class="service-card-title">
+                Adaptive Paced Multi-Axis Contract
+              </h3>
+              <p class="service-card-desc">
+                Dynamically calculates session targets (Time Consumed limits and
+                target chase scores) based on player verified Cloud ELO rating.
+              </p>
+              <ul class="service-card-features">
+                <li>Dynamic ELO-driven target calculations</li>
+                <li>Real-time time consumption thresholds</li>
+                <li>Custom pre-flight performance contracts</li>
+              </ul>
+              <a href="./rules.html" class="service-card-action">
+                <span>Review Contracts</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
 
-          <!-- Desktop Settings Link -->
-          <a href="./engine.html" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span>Settings</span>
+          <!-- Facility 07: Exam Arena Hidden Tracker (Core Engines) -->
+          <article class="service-facility-card" data-category="core">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80"
+                alt="Speed velocity glowing dashboard"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 07</span>
+                <span class="service-status-pill status-core">
+                  <span class="status-dot"></span>
+                  <span>Zero-Latency HUD</span>
+                </span>
+              </div>
             </div>
-            <span class="dropdown-badge">Options</span>
-          </a>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Target Velocity Tracker</span>
+              <h3 class="service-card-title">Exam Arena Hidden Tracker</h3>
+              <p class="service-card-desc">
+                Extracts calculation velocities in real-time while projecting a
+                single, clean dynamic chasing target onto the overhead capsule
+                HUD.
+              </p>
+              <ul class="service-card-features">
+                <li>Stealth computational speed extraction</li>
+                <li>Overhead dynamic target capsule projection</li>
+                <li>Zero-distraction arena telemetry UI</li>
+              </ul>
+              <a
+                href="./exam.html?min=1&max=200&title=Standard%20Exam"
+                class="service-card-action"
+              >
+                <span>Enter Arena</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
 
-          <!-- Mobile-only System link -->
-          <a href="./engine.html" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span>System</span>
+          <!-- Facility 08: Post-Match Verification Ledger (Cloud & Security) -->
+          <article class="service-facility-card" data-category="cloud">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80"
+                alt="Performance verification ledger sheet"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 08</span>
+                <span class="service-status-pill status-security">
+                  <span class="status-dot"></span>
+                  <span>Audited Grading</span>
+                </span>
+              </div>
             </div>
-            <span class="dropdown-badge">Engine</span>
-          </a>
-        </nav>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Score Output Matrix</span>
+              <h3 class="service-card-title">Post-Match Verification Ledger</h3>
+              <p class="service-card-desc">
+                Displays an audited breakdown showing checkmark status and
+                precise 10-point fractional metric ratings, persisted directly
+                to your Cloud Firestore ledger.
+              </p>
+              <ul class="service-card-features">
+                <li>Immutable audit grid with state icons</li>
+                <li>Fractional 10-point performance grading</li>
+                <li>Instant verification readout & cloud archival</li>
+              </ul>
+              <a href="./profile.html" class="service-card-action">
+                <span>View Verification Grid</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Facility 09: Olympiad Medals Vault (Progression & Medals) -->
+          <article class="service-facility-card" data-category="progression">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.pexels.com/photos/33782025/pexels-photo-33782025.jpeg"
+                alt="Geometric gold medal icon"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 09</span>
+                <span class="service-status-pill status-progression">
+                  <span class="status-dot"></span>
+                  <span>100 Milestones</span>
+                </span>
+              </div>
+            </div>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Range Milestone Grid</span>
+              <h3 class="service-card-title">Olympiad Medals Vault</h3>
+              <p class="service-card-desc">
+                Dedicated sub-page tracking 100 prestigious range achievements
+                backed by distinct vector badges and Cloud Firestore progress
+                synchronization.
+              </p>
+              <ul class="service-card-features">
+                <li>100 unique range milestone targets</li>
+                <li>High-contrast vector badge graphics</li>
+                <li>Sub-page tracking & progress telemetry</li>
+              </ul>
+              <a href="./profile.html#medals" class="service-card-action">
+                <span>Inspect Vault</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Facility 10: Tactical Insignia Badges (Progression & Medals) -->
+          <article class="service-facility-card" data-category="progression">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.pexels.com/photos/7468255/pexels-photo-7468255.jpeg"
+                alt="Cyberpunk military badge crest"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 10</span>
+                <span class="service-status-pill status-progression">
+                  <span class="status-dot"></span>
+                  <span>100 Badges</span>
+                </span>
+              </div>
+            </div>
+            <div class="service-card-body">
+              <span class="service-card-kicker"
+                >Cognitive Performance Insignias</span
+              >
+              <h3 class="service-card-title">Tactical Insignia Badges</h3>
+              <p class="service-card-desc">
+                Houses 100 separate performance badges mapping speed velocity
+                milestones, zero-mistake streaks, and lifeline efficiency
+                thresholds.
+              </p>
+              <ul class="service-card-features">
+                <li>100 discrete performance insignia nodes</li>
+                <li>Velocity & efficiency threshold tracking</li>
+                <li>Dynamic unlock feedback integration</li>
+              </ul>
+              <a href="./profile.html#badges" class="service-card-action">
+                <span>View Insignia Grid</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Facility 11: Fade-to-Inspire Interface (Progression & Medals) -->
+          <article class="service-facility-card" data-category="progression">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80"
+                alt="Dark frosted overlay layer lock"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 11</span>
+                <span class="service-status-pill status-progression">
+                  <span class="status-dot"></span>
+                  <span>Visual Motivation</span>
+                </span>
+              </div>
+            </div>
+            <div class="service-card-body">
+              <span class="service-card-kicker"
+                >Lockout Motivation Overlay</span
+              >
+              <h3 class="service-card-title">Fade-to-Inspire Interface</h3>
+              <p class="service-card-desc">
+                Locks unearned achievements behind a 25% opacity grayscale
+                filter, flashing interactive unlock prerequisites and criteria
+                on click.
+              </p>
+              <ul class="service-card-features">
+                <li>25% opacity grayscale visual lockout</li>
+                <li>Interactive on-click requirement prompts</li>
+                <li>Gamified unlock progression cues</li>
+              </ul>
+              <a href="./edu.html" class="service-card-action">
+                <span>Explore Milestones</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Facility 12: Recent Table Ledger Analytics (Progression & Medals) -->
+          <article class="service-facility-card" data-category="progression">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=800&q=80"
+                alt="Fluctuating neon ledger data trend line"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 12</span>
+                <span class="service-status-pill status-progression">
+                  <span class="status-dot"></span>
+                  <span>Live Feed</span>
+                </span>
+              </div>
+            </div>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Live Session History Logs</span>
+              <h3 class="service-card-title">Recent Table Ledger Analytics</h3>
+              <p class="service-card-desc">
+                Pulls authenticated match histories directly from Cloud
+                Firestore to display your actual last 10 session accuracies and
+                color-coded net rating gains.
+              </p>
+              <ul class="service-card-features">
+                <li>Clean last 10 session real-time feed</li>
+                <li>Color-coded delta rating indicators</li>
+                <li>Automated accuracy percentage trends</li>
+              </ul>
+              <a href="./profile.html#history" class="service-card-action">
+                <span>View Session Logs</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Facility 13: Cumulative Cloud Arrays (Progression & Medals) -->
+          <article class="service-facility-card" data-category="progression">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80"
+                alt="Milestone progress pillars"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 13</span>
+                <span class="service-status-pill status-cloud">
+                  <span class="status-dot"></span>
+                  <span>Cloud Synced</span>
+                </span>
+              </div>
+            </div>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Cumulative Cloud Arrays</span>
+              <h3 class="service-card-title">Career Overview Milestones</h3>
+              <p class="service-card-desc">
+                Keeps continuous real-time Cloud Firestore career totals for
+                Lifetime Peak Streaks and the total summation of all solved
+                composite numbers across devices.
+              </p>
+              <ul class="service-card-features">
+                <li>Lifetime Peak Streak counter tracking</li>
+                <li>Aggregate composite factor count</li>
+                <li>Persistent Cloud Firestore career telemetry</li>
+              </ul>
+              <a href="./profile.html" class="service-card-action">
+                <span>Inspect Career Totals</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Facility 14: Cloud Identity Portal (Cloud & Security) -->
+          <article class="service-facility-card" data-category="cloud">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
+                alt="Neon profile credential biometric card grid"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 14</span>
+                <span class="service-status-pill status-cloud">
+                  <span class="status-dot"></span>
+                  <span>OAuth 2.0 Synced</span>
+                </span>
+              </div>
+            </div>
+            <div class="service-card-body">
+              <span class="service-card-kicker">Cloud Identity Portal</span>
+              <h3 class="service-card-title">
+                Cloud Identity &amp; Avatar Portal
+              </h3>
+              <p class="service-card-desc">
+                Synchronizes verified Google user identity, avatar photos,
+                competitor handles, and training specialization nodes directly
+                to your encrypted Cloud Firestore record.
+              </p>
+              <ul class="service-card-features">
+                <li>Google OAuth 2.0 avatar and name integration</li>
+                <li>Smart math purpose & specialization selector</li>
+                <li>Instant cross-device Cloud Firestore sync</li>
+              </ul>
+              <a href="./profile.html#settings" class="service-card-action">
+                <span>Edit Competitor Identity</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Facility 15: Cloud Security & Anti-Tamper Shield (Cloud & Security) -->
+          <article class="service-facility-card" data-category="cloud">
+            <div class="service-card-img-wrap">
+              <img
+                class="service-card-img"
+                src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=800&q=80"
+                alt="Crimson security shield lock"
+                loading="lazy"
+              />
+              <div class="service-card-overlay"></div>
+              <div class="service-card-header-meta">
+                <span class="service-card-badge">Facility 15</span>
+                <span class="service-status-pill status-security">
+                  <span class="status-dot"></span>
+                  <span>Firestore Rules Enforced</span>
+                </span>
+              </div>
+            </div>
+            <div class="service-card-body">
+              <span class="service-card-kicker"
+                >Cloud Security &amp; Anti-Tamper Shield</span
+              >
+              <h3 class="service-card-title">
+                Firebase Auth &amp; Security Rules Shield
+              </h3>
+              <p class="service-card-desc">
+                Enforces server-side Firestore Security Rules (request.auth.uid
+                == userId) alongside arena focus-monitoring engines, strictly
+                preventing any client-side score manipulation.
+              </p>
+              <ul class="service-card-features">
+                <li>Server-enforced Firestore Security Rules</li>
+                <li>Google OAuth 2.0 authenticated token validation</li>
+                <li>Active arena focus-monitoring and tamper prevention</li>
+              </ul>
+              <a href="./rules.html#security" class="service-card-action">
+                <span>View Security Architecture</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Empty search results container -->
+          <div id="services-empty-state" class="services-empty-state">
+            <h3>No Matching Facilities Found</h3>
+            <p>
+              Try searching for keywords like "cloud", "elo", "timer",
+              "security", or reset your category filter.
+            </p>
+          </div>
+        </div>
       </div>
+    </main>
 
-      <!-- Right: Auth Slot & Standalone Settings Trigger -->
-      <div class="header-actions">
-        <!-- Managed by js/header.js (Google Sign-In button or User Avatar + Sign Out) -->
-        <div id="header-auth-slot" class="header-auth-slot"></div>
-
-        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
-          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
-            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Global Settings Modal Slot -->
-  <div id="settings-modal-slot"></div>
-
-  <!-- Main Presentation Matrix -->
-  <main class="main-wrapper" style="padding-top: 5.5rem; padding-bottom: 4rem;">
-    <div class="content-container">
-      
-      <!-- Section Header -->
-      <div class="section-head" style="margin-bottom: 2rem;">
-        <span class="section-kicker">Platform Ecosystem</span>
-        <h1 class="section-title">Services &amp; Architecture Facilities</h1>
-        <p class="section-desc">
-          PrimeFactor.app is a purpose-engineered Math Olympiad speed laboratory. Explore our suite of 15 core mathematical facilities, Cloud Firestore telemetry engines, and zero-latency training instruments.
+    <!-- Universal Footer Matrix -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">© Olympiad Edge</p>
+        <p class="footer-line footer-author">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line footer-line-muted">
+          PrimeFactor.app v3.4 · All rights reserved
         </p>
       </div>
+    </footer>
 
-      <!-- Interactive Controls Bar: Category Filter Tabs & Live Search -->
-      <section class="services-controls-bar" aria-label="Facility Filters and Search">
-        <!-- Tabs -->
-        <div class="services-filter-tabs" role="tablist">
-          <button class="filter-tab-btn active" data-filter="all" role="tab" aria-selected="true">
-            <span>All Facilities</span>
-            <span class="tab-count">15</span>
-          </button>
-          <button class="filter-tab-btn" data-filter="core" role="tab" aria-selected="false">
-            <span>Core Engines</span>
-            <span class="tab-count">5</span>
-          </button>
-          <button class="filter-tab-btn" data-filter="cloud" role="tab" aria-selected="false">
-            <span>Cloud &amp; Security</span>
-            <span class="tab-count">5</span>
-          </button>
-          <button class="filter-tab-btn" data-filter="progression" role="tab" aria-selected="false">
-            <span>Progression &amp; Medals</span>
-            <span class="tab-count">5</span>
-          </button>
-        </div>
-
-        <!-- Live Search -->
-        <div class="services-search-wrap">
-          <svg class="services-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input 
-            type="text" 
-            id="services-search-input" 
-            class="services-search-input" 
-            placeholder="Search facilities, security, ELO..." 
-            aria-label="Filter facilities by keyword"
-          />
-          <button id="services-search-clear" class="services-search-clear" aria-label="Clear Search Input">✕</button>
-        </div>
-      </section>
-
-      <!-- Active Counter Meta -->
-      <div class="services-stats-summary">
-        <span>Displaying <span id="services-active-count" class="services-active-count">15 of 15</span> active facilities</span>
-        <span style="font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: #64748B;">Architecture V3.4 &bull; Cloud Firestore</span>
-      </div>
-
-      <!-- Vertically-Oriented Cards Grid: 15 Facilities -->
-      <div class="services-facilities-grid" id="services-facilities-grid">
-
-        <!-- Facility 01: Cloud Onboarding Gate (Cloud & Security) -->
-        <article class="service-facility-card" data-category="cloud">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="Cyber security authentication matrix" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 01</span>
-              <span class="service-status-pill status-cloud">
-                <span class="status-dot"></span>
-                <span>500 ELO Baseline</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Cloud Onboarding Gate</span>
-            <h3 class="service-card-title">Verified Cloud Identity Gate</h3>
-            <p class="service-card-desc">
-              Signing in with Google OAuth 2.0 initializes a verified Cloud Firestore profile document at a calibrated 500 ELO baseline, synced instantaneously across all devices.
-            </p>
-            <ul class="service-card-features">
-              <li>Google OAuth 2.0 automated onboarding</li>
-              <li>Calibrated 500 ELO entry baseline rating</li>
-              <li>Cloud Firestore user document creation with zero guesswork</li>
-            </ul>
-            <a href="./index.html" class="service-card-action">
-              <span>Initialize Cloud Profile</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 02: Prime Decompositions Hub (Core Engines) -->
-        <article class="service-facility-card" data-category="core">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="Neon cyan factorization bubble graphic" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 02</span>
-              <span class="service-status-pill status-core">
-                <span class="status-dot"></span>
-                <span>Web Worker Core</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Core Factorization Lab</span>
-            <h3 class="service-card-title">Prime Decompositions Hub</h3>
-            <p class="service-card-desc">
-              The standard algorithmic arena engineered to break down complex composites under extreme speed constraints with sub-millisecond precision.
-            </p>
-            <ul class="service-card-features">
-              <li>High-velocity prime factorization engine</li>
-              <li>Real-time sub-second timer tracking</li>
-              <li>Optimized composite generation algorithms</li>
-            </ul>
-            <a href="./edu.html" class="service-card-action">
-              <span>Enter Factorization Lab</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 03: Omnipresent ELO Ceiling Firewall (Cloud & Security) -->
-        <article class="service-facility-card" data-category="cloud">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80" alt="Neon red shield firewall barrier" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 03</span>
-              <span class="service-status-pill status-security">
-                <span class="status-dot"></span>
-                <span>Firewall Active</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Range Lockout Gatekeeper</span>
-            <h3 class="service-card-title">Omnipresent ELO Ceiling Firewall</h3>
-            <p class="service-card-desc">
-              Monitors competitor ELO levels dynamically to completely lock out point-farming on easy ranges, ensuring rated matches reflect genuine mastery.
-            </p>
-            <ul class="service-card-features">
-              <li>Dynamic ELO ceiling evaluation engine</li>
-              <li>Automatic lockout on low-tier arenas</li>
-              <li>Prevents rating inflation and point-farming</li>
-            </ul>
-            <a href="./rating.html" class="service-card-action">
-              <span>Inspect ELO Matrix</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 04: Custom Parametric Architecture (Core Engines) -->
-        <article class="service-facility-card" data-category="core">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=800&q=80" alt="Technical blueprint parametric map" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 04</span>
-              <span class="service-status-pill status-core">
-                <span class="status-dot"></span>
-                <span>Parametric Bounds</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Sandbox Bounds Configuration</span>
-            <h3 class="service-card-title">Custom Parametric Architecture</h3>
-            <p class="service-card-desc">
-              Fine-tune custom lower and upper boundaries (4 to 100,000) with calibrated countdown timer limits and 3-strike challenge parameters.
-            </p>
-            <ul class="service-card-features">
-              <li>Granular range selection (4 to 100,000)</li>
-              <li>Configurable timer limits and penalties</li>
-              <li>Enforced 3-strike disqualification mode</li>
-            </ul>
-            <a href="./custom.html" class="service-card-action">
-              <span>Configure Sandbox</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 05: Spin Wheel Audio-Physics (Core Engines) -->
-        <article class="service-facility-card" data-category="core">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80" alt="Glowing roulette wheel canvas" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 05</span>
-              <span class="service-status-pill status-core">
-                <span class="status-dot"></span>
-                <span>Web Audio Synth</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Sudden Death Randomizer</span>
-            <h3 class="service-card-title">Spin Wheel Audio-Physics</h3>
-            <p class="service-card-desc">
-              Immersive deceleration selector wheel driving mechanical ticking sounds and automatic angle offsets to bypass locked or disqualified slots.
-            </p>
-            <ul class="service-card-features">
-              <li>Physics-driven angular deceleration wheel</li>
-              <li>Procedural Web Audio ticking feedback</li>
-              <li>Automated slot-bypassing math collision</li>
-            </ul>
-            <a href="./contest.html" class="service-card-action">
-              <span>Launch Randomizer</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 06: Adaptive Paced Multi-Axis Contract (Core Engines) -->
-        <article class="service-facility-card" data-category="core">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="Holographic contractual alignment console" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 06</span>
-              <span class="service-status-pill status-core">
-                <span class="status-dot"></span>
-                <span>Adaptive Telemetry</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Pre-Flight Gatekeeper</span>
-            <h3 class="service-card-title">Adaptive Paced Multi-Axis Contract</h3>
-            <p class="service-card-desc">
-              Dynamically calculates session targets (Time Consumed limits and target chase scores) based on player verified Cloud ELO rating.
-            </p>
-            <ul class="service-card-features">
-              <li>Dynamic ELO-driven target calculations</li>
-              <li>Real-time time consumption thresholds</li>
-              <li>Custom pre-flight performance contracts</li>
-            </ul>
-            <a href="./rules.html" class="service-card-action">
-              <span>Review Contracts</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 07: Exam Arena Hidden Tracker (Core Engines) -->
-        <article class="service-facility-card" data-category="core">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80" alt="Speed velocity glowing dashboard" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 07</span>
-              <span class="service-status-pill status-core">
-                <span class="status-dot"></span>
-                <span>Zero-Latency HUD</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Target Velocity Tracker</span>
-            <h3 class="service-card-title">Exam Arena Hidden Tracker</h3>
-            <p class="service-card-desc">
-              Extracts calculation velocities in real-time while projecting a single, clean dynamic chasing target onto the overhead capsule HUD.
-            </p>
-            <ul class="service-card-features">
-              <li>Stealth computational speed extraction</li>
-              <li>Overhead dynamic target capsule projection</li>
-              <li>Zero-distraction arena telemetry UI</li>
-            </ul>
-            <a href="./exam.html?min=1&max=200&title=Standard%20Exam" class="service-card-action">
-              <span>Enter Arena</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 08: Post-Match Verification Ledger (Cloud & Security) -->
-        <article class="service-facility-card" data-category="cloud">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Performance verification ledger sheet" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 08</span>
-              <span class="service-status-pill status-security">
-                <span class="status-dot"></span>
-                <span>Audited Grading</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Score Output Matrix</span>
-            <h3 class="service-card-title">Post-Match Verification Ledger</h3>
-            <p class="service-card-desc">
-              Displays an audited breakdown showing checkmark status and precise 10-point fractional metric ratings, persisted directly to your Cloud Firestore ledger.
-            </p>
-            <ul class="service-card-features">
-              <li>Immutable audit grid with state icons</li>
-              <li>Fractional 10-point performance grading</li>
-              <li>Instant verification readout & cloud archival</li>
-            </ul>
-            <a href="./profile.html" class="service-card-action">
-              <span>View Verification Grid</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 09: Olympiad Medals Vault (Progression & Medals) -->
-        <article class="service-facility-card" data-category="progression">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.pexels.com/photos/33782025/pexels-photo-33782025.jpeg" alt="Geometric gold medal icon" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 09</span>
-              <span class="service-status-pill status-progression">
-                <span class="status-dot"></span>
-                <span>100 Milestones</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Range Milestone Grid</span>
-            <h3 class="service-card-title">Olympiad Medals Vault</h3>
-            <p class="service-card-desc">
-              Dedicated sub-page tracking 100 prestigious range achievements backed by distinct vector badges and Cloud Firestore progress synchronization.
-            </p>
-            <ul class="service-card-features">
-              <li>100 unique range milestone targets</li>
-              <li>High-contrast vector badge graphics</li>
-              <li>Sub-page tracking & progress telemetry</li>
-            </ul>
-            <a href="./profile.html#medals" class="service-card-action">
-              <span>Inspect Vault</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 10: Tactical Insignia Badges (Progression & Medals) -->
-        <article class="service-facility-card" data-category="progression">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.pexels.com/photos/7468255/pexels-photo-7468255.jpeg" alt="Cyberpunk military badge crest" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 10</span>
-              <span class="service-status-pill status-progression">
-                <span class="status-dot"></span>
-                <span>100 Badges</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Cognitive Performance Insignias</span>
-            <h3 class="service-card-title">Tactical Insignia Badges</h3>
-            <p class="service-card-desc">
-              Houses 100 separate performance badges mapping speed velocity milestones, zero-mistake streaks, and lifeline efficiency thresholds.
-            </p>
-            <ul class="service-card-features">
-              <li>100 discrete performance insignia nodes</li>
-              <li>Velocity & efficiency threshold tracking</li>
-              <li>Dynamic unlock feedback integration</li>
-            </ul>
-            <a href="./profile.html#badges" class="service-card-action">
-              <span>View Insignia Grid</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 11: Fade-to-Inspire Interface (Progression & Medals) -->
-        <article class="service-facility-card" data-category="progression">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" alt="Dark frosted overlay layer lock" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 11</span>
-              <span class="service-status-pill status-progression">
-                <span class="status-dot"></span>
-                <span>Visual Motivation</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Lockout Motivation Overlay</span>
-            <h3 class="service-card-title">Fade-to-Inspire Interface</h3>
-            <p class="service-card-desc">
-              Locks unearned achievements behind a 25% opacity grayscale filter, flashing interactive unlock prerequisites and criteria on click.
-            </p>
-            <ul class="service-card-features">
-              <li>25% opacity grayscale visual lockout</li>
-              <li>Interactive on-click requirement prompts</li>
-              <li>Gamified unlock progression cues</li>
-            </ul>
-            <a href="./edu.html" class="service-card-action">
-              <span>Explore Milestones</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 12: Recent Table Ledger Analytics (Progression & Medals) -->
-        <article class="service-facility-card" data-category="progression">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=800&q=80" alt="Fluctuating neon ledger data trend line" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 12</span>
-              <span class="service-status-pill status-progression">
-                <span class="status-dot"></span>
-                <span>Live Feed</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Live Session History Logs</span>
-            <h3 class="service-card-title">Recent Table Ledger Analytics</h3>
-            <p class="service-card-desc">
-              Pulls authenticated match histories directly from Cloud Firestore to display your actual last 10 session accuracies and color-coded net rating gains.
-            </p>
-            <ul class="service-card-features">
-              <li>Clean last 10 session real-time feed</li>
-              <li>Color-coded delta rating indicators</li>
-              <li>Automated accuracy percentage trends</li>
-            </ul>
-            <a href="./profile.html#history" class="service-card-action">
-              <span>View Session Logs</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 13: Cumulative Cloud Arrays (Progression & Medals) -->
-        <article class="service-facility-card" data-category="progression">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80" alt="Milestone progress pillars" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 13</span>
-              <span class="service-status-pill status-cloud">
-                <span class="status-dot"></span>
-                <span>Cloud Synced</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Cumulative Cloud Arrays</span>
-            <h3 class="service-card-title">Career Overview Milestones</h3>
-            <p class="service-card-desc">
-              Keeps continuous real-time Cloud Firestore career totals for Lifetime Peak Streaks and the total summation of all solved composite numbers across devices.
-            </p>
-            <ul class="service-card-features">
-              <li>Lifetime Peak Streak counter tracking</li>
-              <li>Aggregate composite factor count</li>
-              <li>Persistent Cloud Firestore career telemetry</li>
-            </ul>
-            <a href="./profile.html" class="service-card-action">
-              <span>Inspect Career Totals</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 14: Cloud Identity Portal (Cloud & Security) -->
-        <article class="service-facility-card" data-category="cloud">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" alt="Neon profile credential biometric card grid" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 14</span>
-              <span class="service-status-pill status-cloud">
-                <span class="status-dot"></span>
-                <span>OAuth 2.0 Synced</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Cloud Identity Portal</span>
-            <h3 class="service-card-title">Cloud Identity &amp; Avatar Portal</h3>
-            <p class="service-card-desc">
-              Synchronizes verified Google user identity, avatar photos, competitor handles, and training specialization nodes directly to your encrypted Cloud Firestore record.
-            </p>
-            <ul class="service-card-features">
-              <li>Google OAuth 2.0 avatar and name integration</li>
-              <li>Smart math purpose & specialization selector</li>
-              <li>Instant cross-device Cloud Firestore sync</li>
-            </ul>
-            <a href="./profile.html#settings" class="service-card-action">
-              <span>Edit Competitor Identity</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Facility 15: Cloud Security & Anti-Tamper Shield (Cloud & Security) -->
-        <article class="service-facility-card" data-category="cloud">
-          <div class="service-card-img-wrap">
-            <img class="service-card-img" src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=800&q=80" alt="Crimson security shield lock" loading="lazy" />
-            <div class="service-card-overlay"></div>
-            <div class="service-card-header-meta">
-              <span class="service-card-badge">Facility 15</span>
-              <span class="service-status-pill status-security">
-                <span class="status-dot"></span>
-                <span>Firestore Rules Enforced</span>
-              </span>
-            </div>
-          </div>
-          <div class="service-card-body">
-            <span class="service-card-kicker">Cloud Security &amp; Anti-Tamper Shield</span>
-            <h3 class="service-card-title">Firebase Auth &amp; Security Rules Shield</h3>
-            <p class="service-card-desc">
-              Enforces server-side Firestore Security Rules (request.auth.uid == userId) alongside arena focus-monitoring engines, strictly preventing any client-side score manipulation.
-            </p>
-            <ul class="service-card-features">
-              <li>Server-enforced Firestore Security Rules</li>
-              <li>Google OAuth 2.0 authenticated token validation</li>
-              <li>Active arena focus-monitoring and tamper prevention</li>
-            </ul>
-            <a href="./rules.html#security" class="service-card-action">
-              <span>View Security Architecture</span>
-              <span>→</span>
-            </a>
-          </div>
-        </article>
-
-        <!-- Empty search results container -->
-        <div id="services-empty-state" class="services-empty-state">
-          <h3>No Matching Facilities Found</h3>
-          <p>Try searching for keywords like "cloud", "elo", "timer", "security", or reset your category filter.</p>
-        </div>
-
-      </div>
-    </div>
-  </main>
-
-  <!-- Universal Footer Matrix -->
-  <footer class="site-footer">
-    <div class="footer-container">
-      <p class="footer-line highlight">© Olympiad Edge</p>
-      <p class="footer-line footer-author">Authorized By Rayaan Tasnim</p>
-      <p class="footer-line footer-line-muted">PrimeFactor.app v3.4 · All rights reserved</p>
-    </div>
-  </footer>
-
-  <!-- Scripts -->
-  <script type="module" src="./js/services.js"></script>
-</body>
+    <!-- Scripts -->
+    <script type="module" src="./js/services.js"></script>
+  </body>
 </html>

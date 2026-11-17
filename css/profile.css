@@ -840,22 +840,6 @@ body.profile-view {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ==========================================
    CONTAINER: ডিফল্ট ফ্লেক্স লেআউট
    ========================================== */
@@ -876,13 +860,17 @@ body.profile-view {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  
+
   /* ড্যাশবোর্ডের সাথে ম্যাচিং পারফেক্ট সাইজ ও প্যাডিং */
   padding: 0 24px;
   height: 44px;
   min-width: 185px;
-  
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 13.5px;
   font-weight: 600;
   letter-spacing: 0.3px;
@@ -891,7 +879,7 @@ body.profile-view {
   outline: none;
   overflow: hidden;
   user-select: none;
-  
+
   /* প্রিমিয়াম ডার্ক গ্লাস ব্যাকগ্রাউন্ড */
   background: rgba(15, 23, 42, 0.75) !important;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -913,16 +901,18 @@ body.profile-view {
 .btn-export-neon {
   color: #38bdf8; /* ড্যাশবোর্ড সায়ান */
   border: 1.5px solid rgba(56, 189, 248, 0.4) !important;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.1),
-              inset 0 0 8px rgba(56, 189, 248, 0.05);
+  box-shadow:
+    0 0 10px rgba(56, 189, 248, 0.1),
+    inset 0 0 8px rgba(56, 189, 248, 0.05);
 }
 
 /* ২. Import Button Style */
 .btn-import-neon {
   color: #00f2fe; /* আল্ট্রা ব্রাইট সায়ান */
   border: 1.5px solid rgba(0, 242, 254, 0.5) !important;
-  box-shadow: 0 0 12px rgba(0, 242, 254, 0.1),
-              inset 0 0 8px rgba(0, 242, 254, 0.05);
+  box-shadow:
+    0 0 12px rgba(0, 242, 254, 0.1),
+    inset 0 0 8px rgba(0, 242, 254, 0.05);
 }
 
 /* ==========================================
@@ -932,8 +922,9 @@ body.profile-view {
   color: #ffffff;
   border-color: #38bdf8 !important;
   background: rgba(56, 189, 248, 0.15) !important;
-  box-shadow: 0 0 18px rgba(56, 189, 248, 0.5),
-              inset 0 0 10px rgba(56, 189, 248, 0.2);
+  box-shadow:
+    0 0 18px rgba(56, 189, 248, 0.5),
+    inset 0 0 10px rgba(56, 189, 248, 0.2);
   transform: translateY(-2px);
 }
 
@@ -941,8 +932,9 @@ body.profile-view {
   color: #ffffff;
   border-color: #00f2fe !important;
   background: rgba(0, 242, 254, 0.15) !important;
-  box-shadow: 0 0 20px rgba(0, 242, 254, 0.55),
-              inset 0 0 10px rgba(0, 242, 254, 0.2);
+  box-shadow:
+    0 0 20px rgba(0, 242, 254, 0.55),
+    inset 0 0 10px rgba(0, 242, 254, 0.2);
   transform: translateY(-2px);
 }
 
@@ -958,7 +950,7 @@ body.profile-view {
    ========================================== */
 .btn-export-neon::before,
 .btn-import-neon::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -150%;
@@ -988,7 +980,7 @@ body.profile-view {
     display: block; /* ফ্লেক্স ডিজেবল */
     text-align: center;
   }
-  
+
   .btn-export-neon,
   .btn-import-neon {
     display: inline-block;

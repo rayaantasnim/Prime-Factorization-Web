@@ -5,7 +5,10 @@
       "description": "Authenticated Math Olympiad candidate private profile storing identity, unique handle, friends, ELO ratings, match histories, medals, and career progression.",
       "type": "object",
       "properties": {
-        "uid": { "type": "string", "description": "Firebase Authentication User UID" },
+        "uid": {
+          "type": "string",
+          "description": "Firebase Authentication User UID"
+        },
         "handle": {
           "type": "string",
           "minLength": 3,
@@ -13,28 +16,101 @@
           "pattern": "^[a-z0-9_]+$",
           "description": "Globally unique lowercase competitor handle"
         },
-        "displayName": { "type": "string", "maxLength": 60, "description": "Candidate display name" },
-        "email": { "type": "string", "description": "Private candidate email address" },
-        "photoURL": { "type": "string", "maxLength": 512, "description": "Candidate avatar photo URL" },
-        "elo": { "type": "number", "description": "Current live competitive ELO rating (initialized at 500)" },
-        "peak_elo": { "type": "number", "description": "Highest career ELO rating achieved" },
-        "total_solved": { "type": "number", "description": "Total prime factors / composite numbers cleared" },
-        "total_matches": { "type": "number", "description": "Total completed competitive exam matches" },
-        "current_win_streak": { "type": "number", "description": "Current consecutive flawless match streak" },
-        "best_streak": { "type": "number", "description": "Lifetime peak consecutive flawless match streak" },
-        "high_score": { "type": "number", "description": "Single-match high score" },
-        "grand_master_count": { "type": "number", "description": "Count of unassisted perfect 10/10 matches" },
-        "medals": { "type": "array", "description": "Unlocked medal and badge IDs list" },
-        "match_logs": { "type": "array", "description": "Recent match audit history records" },
-        "friends": { "type": "array", "description": "Private list of friend competitor UIDs" },
-        "realName": { "type": "string", "maxLength": 80, "description": "Optional candidate real name" },
-        "city": { "type": "string", "maxLength": 80, "description": "Optional candidate city" },
-        "country": { "type": "string", "maxLength": 80, "description": "Optional candidate country" },
-        "organization": { "type": "string", "maxLength": 80, "description": "Optional candidate school or club" },
-        "enrollCause": { "type": "string", "maxLength": 80, "description": "Olympiad training track or enrollment cause" },
-        "settings": { "type": "object", "description": "User UI and arena preferences" },
-        "createdAt": { "type": "string", "description": "Document creation timestamp" },
-        "updatedAt": { "type": "string", "description": "Document last modification timestamp" }
+        "displayName": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Candidate display name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Private candidate email address"
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "Candidate avatar photo URL"
+        },
+        "elo": {
+          "type": "number",
+          "description": "Current live competitive ELO rating (initialized at 500)"
+        },
+        "peak_elo": {
+          "type": "number",
+          "description": "Highest career ELO rating achieved"
+        },
+        "total_solved": {
+          "type": "number",
+          "description": "Total prime factors / composite numbers cleared"
+        },
+        "total_matches": {
+          "type": "number",
+          "description": "Total completed competitive exam matches"
+        },
+        "current_win_streak": {
+          "type": "number",
+          "description": "Current consecutive flawless match streak"
+        },
+        "best_streak": {
+          "type": "number",
+          "description": "Lifetime peak consecutive flawless match streak"
+        },
+        "high_score": {
+          "type": "number",
+          "description": "Single-match high score"
+        },
+        "grand_master_count": {
+          "type": "number",
+          "description": "Count of unassisted perfect 10/10 matches"
+        },
+        "medals": {
+          "type": "array",
+          "description": "Unlocked medal and badge IDs list"
+        },
+        "match_logs": {
+          "type": "array",
+          "description": "Recent match audit history records"
+        },
+        "friends": {
+          "type": "array",
+          "description": "Private list of friend competitor UIDs"
+        },
+        "realName": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Optional candidate real name"
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Optional candidate city"
+        },
+        "country": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Optional candidate country"
+        },
+        "organization": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Optional candidate school or club"
+        },
+        "enrollCause": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Olympiad training track or enrollment cause"
+        },
+        "settings": {
+          "type": "object",
+          "description": "User UI and arena preferences"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Document creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Document last modification timestamp"
+        }
       },
       "required": ["uid", "handle", "elo", "peak_elo"]
     },
@@ -51,27 +127,75 @@
           "pattern": "^[a-z0-9_]+$",
           "description": "Globally unique lowercase competitor handle"
         },
-        "displayName": { "type": "string", "maxLength": 60, "description": "Public display name" },
-        "photoURL": { "type": "string", "maxLength": 512, "description": "Public HTTPS avatar URL" },
+        "displayName": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Public display name"
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "Public HTTPS avatar URL"
+        },
         "elo": { "type": "number", "description": "Current live ELO rating" },
-        "peak_elo": { "type": "number", "description": "Career peak ELO rating" },
-        "total_solved": { "type": "number", "description": "Total solved composites" },
-        "total_matches": { "type": "number", "description": "Total completed matches" },
-        "best_streak": { "type": "number", "description": "Best consecutive win streak" },
-        "country": { "type": "string", "maxLength": 80, "description": "Competitor country" },
-        "organization": { "type": "string", "maxLength": 80, "description": "Competitor school or team" },
-        "last_match_at": { "type": "number", "description": "Epoch milliseconds of last completed rated match" },
-        "recent_matches": { "type": "array", "description": "Up to 10 recent match summaries for public viewing" },
+        "peak_elo": {
+          "type": "number",
+          "description": "Career peak ELO rating"
+        },
+        "total_solved": {
+          "type": "number",
+          "description": "Total solved composites"
+        },
+        "total_matches": {
+          "type": "number",
+          "description": "Total completed matches"
+        },
+        "best_streak": {
+          "type": "number",
+          "description": "Best consecutive win streak"
+        },
+        "country": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Competitor country"
+        },
+        "organization": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Competitor school or team"
+        },
+        "last_match_at": {
+          "type": "number",
+          "description": "Epoch milliseconds of last completed rated match"
+        },
+        "recent_matches": {
+          "type": "array",
+          "description": "Up to 10 recent match summaries for public viewing"
+        },
         "updatedAt": { "type": "string", "description": "Last sync timestamp" }
       },
-      "required": ["uid", "handle", "displayName", "elo", "peak_elo", "total_solved", "total_matches", "best_streak", "last_match_at", "recent_matches"]
+      "required": [
+        "uid",
+        "handle",
+        "displayName",
+        "elo",
+        "peak_elo",
+        "total_solved",
+        "total_matches",
+        "best_streak",
+        "last_match_at",
+        "recent_matches"
+      ]
     },
     "HandleClaim": {
       "title": "HandleClaim",
       "description": "Atomic unique handle reservation document mapping a lowercase handle to an owning UID.",
       "type": "object",
       "properties": {
-        "uid": { "type": "string", "description": "Owning Firebase Authentication UID" },
+        "uid": {
+          "type": "string",
+          "description": "Owning Firebase Authentication UID"
+        },
         "handle": {
           "type": "string",
           "minLength": 3,

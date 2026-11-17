@@ -1,475 +1,892 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
-  <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
-  <link rel="dns-prefetch" href="https://apis.google.com" />
-  <link rel="preconnect" href="https://images.pexels.com" crossorigin />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Competition Range Matrix — PrimeFactor.app</title>
-  <meta name="description" content="Select from 10 competitive Math Olympiad prime factorization tiers, custom bounds, or the boundless Omega range." />
-  <meta property="og:title" content="Competition Range Matrix — PrimeFactor.app" />
-  <meta property="og:description" content="Choose your Olympiad prime factorization tier from 1-200 up to the infinite Omega manifold." />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="preconnect"
+      href="https://firestore.googleapis.com"
+      crossorigin
+    />
+    <link
+      rel="preconnect"
+      href="https://identitytoolkit.googleapis.com"
+      crossorigin
+    />
+    <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
+    <link rel="dns-prefetch" href="https://apis.google.com" />
+    <link rel="preconnect" href="https://images.pexels.com" crossorigin />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Competition Range Matrix — PrimeFactor.app</title>
+    <meta
+      name="description"
+      content="Select from 10 competitive Math Olympiad prime factorization tiers, custom bounds, or the boundless Omega range."
+    />
+    <meta
+      property="og:title"
+      content="Competition Range Matrix — PrimeFactor.app"
+    />
+    <meta
+      property="og:description"
+      content="Choose your Olympiad prime factorization tier from 1-200 up to the infinite Omega manifold."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
-  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./css/notifications.css" />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" /></noscript>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./css/notifications.css" />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap"
+    /></noscript>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <link rel="stylesheet" href="./css/ux-core.css" />
     <link rel="stylesheet" href="./css/aurora-pro.css" />
     <link rel="stylesheet" href="./css/responsive-global.css" />
     <link rel="stylesheet" href="./css/ranges-3d.css" />
     <script type="module" src="./js/ux-core.js"></script>
   </head>
-<body>
-  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
-  <div id="flash-overlay" aria-hidden="true"></div>
+  <body>
+    <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+    <div id="flash-overlay" aria-hidden="true"></div>
 
-  <!-- Persistent Global Header with Dropdown Navigation (Hardcoded for local file:// support) -->
-  <header class="fixed-header">
-    <div class="header-container">
-      <!-- Left: Minimalist Logo + Brand Text -->
-      <a href="./index.html" class="brand-lockup">
-        <span class="brand-symbol">Π</span>
-        <span class="brand-text" style="color:white;">Prime Factor<span class="dot-app">.app</span></span>
-      </a>
+    <!-- Persistent Global Header with Dropdown Navigation (Hardcoded for local file:// support) -->
+    <header class="fixed-header">
+      <div class="header-container">
+        <!-- Left: Minimalist Logo + Brand Text -->
+        <a href="./index.html" class="brand-lockup">
+          <span class="brand-symbol">Π</span>
+          <span class="brand-text" style="color: white"
+            >Prime Factor<span class="dot-app">.app</span></span
+          >
+        </a>
 
-      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
-      <div style="position: relative;">
-        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
-          <div class="hamburger-bars">
-            <span class="hamburger-bar"></span>
-            <span class="hamburger-bar"></span>
-            <span class="hamburger-bar"></span>
+        <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+        <div style="position: relative">
+          <button
+            id="menu-toggle"
+            class="nav-hamburger-btn nav-dropdown-trigger"
+            aria-label="Toggle Navigation Menu"
+            aria-expanded="false"
+          >
+            <div class="hamburger-bars">
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+            </div>
+            <span>Navigation</span>
+          </button>
+
+          <!-- Dropdown Box (Frosted Glass with 5 links + mobile System link) -->
+          <nav
+            id="global-dropdown-menu"
+            class="nav-dropdown-glass-container global-nav-dropdown"
+            aria-label="Main Navigation"
+          >
+            <a href="./index.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                  ></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home Page</span>
+              </div>
+              <span class="dropdown-badge">Hub</span>
+            </a>
+
+            <a href="./rules.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  ></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Rules</span>
+              </div>
+              <span class="dropdown-badge">Policies</span>
+            </a>
+
+            <a href="./rating.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Rating</span>
+              </div>
+              <span class="dropdown-badge">Matrix</span>
+            </a>
+
+            <a href="./edu.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                  ></path>
+                  <path d="M6 6h10"></path>
+                  <path d="M6 10h10"></path>
+                </svg>
+                <span>Edu</span>
+              </div>
+              <span class="dropdown-badge">Training</span>
+            </a>
+
+            <a href="./services.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <span>Services</span>
+              </div>
+              <span class="dropdown-badge">Facilities</span>
+            </a>
+
+            <a
+              href="./contest.html"
+              id="dropdown-contest"
+              class="dropdown-link-item"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                  <path d="M4 22h16"></path>
+                  <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                  <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                </svg>
+                <span>Contest</span>
+              </div>
+              <span class="dropdown-badge">Arena</span>
+            </a>
+
+            <a
+              href="./profile.html"
+              id="dropdown-profile"
+              class="dropdown-link-item"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Profile</span>
+              </div>
+              <span class="dropdown-badge">Overview</span>
+            </a>
+
+            <a href="./faq.html" class="dropdown-link-item" id="dropdown-faq">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                  ></path>
+                  <path d="M6 6h10"></path>
+                  <circle cx="12" cy="14" r="1"></circle>
+                  <path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"></path>
+                </svg>
+                <span>FAQ</span>
+              </div>
+              <span class="dropdown-badge">Archive</span>
+            </a>
+
+            <!-- Desktop Settings Link -->
+            <a
+              href="./engine.html"
+              id="dropdown-open-settings"
+              class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  ></path>
+                </svg>
+                <span>Settings</span>
+              </div>
+              <span class="dropdown-badge">Options</span>
+            </a>
+
+            <!-- Mobile-only System link -->
+            <a
+              href="./engine.html"
+              id="dropdown-mobile-system"
+              class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger"
+              aria-label="System Configuration"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  ></path>
+                </svg>
+                <span>System</span>
+              </div>
+              <span class="dropdown-badge">Engine</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Right: Standalone Settings Gear Icon -->
+        <div class="header-actions">
+          <button
+            id="settings-toggle-btn"
+            class="icon-btn"
+            aria-label="Global Engine Settings"
+          >
+            <svg
+              class="gear-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Global Settings Modal Slot -->
+    <div id="settings-modal-slot"></div>
+
+    <main class="main-wrapper">
+      <div class="content-container">
+        <section
+          class="section-head hero-split spotlight-hero ranges-hero"
+          data-spotlight
+        >
+          <div class="hero-copy">
+            <span class="section-kicker">Competitive Divisions</span>
+            <h1 class="section-title" data-split-reveal>
+              Range Selection Matrix
+            </h1>
+            <p class="section-desc">
+              Choose your competitive zone. Each 10-question exam dynamically
+              synthesizes composite targets within your designated boundaries.
+            </p>
+            <ul class="swiss-meta" aria-label="Matrix at a glance">
+              <li><b data-ticker="10">10</b><span>Divisions</span></li>
+              <li><b data-ticker="10">10</b><span>Questions / run</span></li>
+              <li><b data-ticker="50000">50,000</b><span>Max integer</span></li>
+            </ul>
+            <div class="hero-cta">
+              <a class="shimmer-btn" href="#ranges-grid"
+                >Pick a division <span aria-hidden="true">↓</span></a
+              >
+              <a class="vx-btn ghost" href="./rules.html">Read the rules</a>
+            </div>
           </div>
-          <span>Navigation</span>
-        </button>
-
-        <!-- Dropdown Box (Frosted Glass with 5 links + mobile System link) -->
-        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
-          <a href="./index.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-              <span>Home Page</span>
+          <div class="hero-ui" aria-label="Interactive factorization preview">
+            <div class="nb-card" id="bento-preview">
+              <span class="nb-label">Live problem preview</span>
+              <div class="nb-big" id="bento-preview-n" aria-live="polite">
+                360
+              </div>
+              <div class="nb-answer font-math" id="bento-preview-a">
+                = 2<sup>3</sup> × 3<sup>2</sup> × 5
+              </div>
+              <button
+                type="button"
+                id="bento-preview-next"
+                class="vx-btn"
+                style="margin-top: 0.9rem"
+              >
+                New composite ↻
+              </button>
             </div>
-            <span class="dropdown-badge">Hub</span>
+            <div class="wireframe-wrap">
+              <svg
+                data-wireframe
+                viewBox="0 0 300 232"
+                role="img"
+                aria-label="Factor tree wireframe: 360 = 2 × 2 × 2 × 3 × 3 × 5"
+              >
+                <line x1="70" y1="39" x2="26" y2="47" />
+                <line x1="80" y1="35" x2="100" y2="51" />
+                <line x1="110" y1="77" x2="66" y2="85" />
+                <line x1="120" y1="73" x2="140" y2="89" />
+                <line x1="150" y1="115" x2="106" y2="123" />
+                <line x1="160" y1="111" x2="180" y2="127" />
+                <line x1="190" y1="153" x2="146" y2="161" />
+                <line x1="200" y1="149" x2="220" y2="165" />
+                <line x1="230" y1="191" x2="186" y2="199" />
+                <line x1="240" y1="187" x2="261" y2="203" />
+                <circle class="wf-fill" cx="70" cy="24" r="15" />
+                <circle class="wf-prime wf-pulse" cx="26" cy="62" r="13" />
+                <circle class="wf-fill" cx="110" cy="62" r="15" />
+                <circle class="wf-prime wf-pulse" cx="66" cy="100" r="13" />
+                <circle class="wf-fill" cx="150" cy="100" r="15" />
+                <circle class="wf-prime wf-pulse" cx="106" cy="138" r="13" />
+                <circle class="wf-fill" cx="190" cy="138" r="15" />
+                <circle class="wf-prime wf-pulse" cx="146" cy="176" r="13" />
+                <circle class="wf-fill" cx="230" cy="176" r="15" />
+                <circle class="wf-prime wf-pulse" cx="186" cy="214" r="13" />
+                <circle class="wf-prime wf-pulse" cx="270" cy="214" r="13" />
+                <text x="70" y="24">360</text>
+                <text x="26" y="62">2</text>
+                <text x="110" y="62">180</text>
+                <text x="66" y="100">2</text>
+                <text x="150" y="100">90</text>
+                <text x="106" y="138">2</text>
+                <text x="190" y="138">45</text>
+                <text x="146" y="176">3</text>
+                <text x="230" y="176">15</text>
+                <text x="186" y="214">3</text>
+                <text x="270" y="214">5</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section class="bento" aria-label="Live statistics">
+          <div class="bento-cell ux-glass-card" data-spotlight>
+            <div class="bento-k">Your rating</div>
+            <div class="bento-v" id="bento-elo-val">500</div>
+            <div class="bento-s bento-live" id="bento-elo-state">
+              Guest baseline
+            </div>
+          </div>
+          <div class="bento-cell ux-glass-card" data-spotlight>
+            <div class="bento-k">Current league</div>
+            <div class="bento-v sm" id="bento-tier-name">
+              🧩 Composite Apprentice
+            </div>
+            <div class="bento-s">
+              Divisions above your ELO ceiling run as practice.
+            </div>
+          </div>
+          <div class="bento-cell ux-glass-card" data-spotlight>
+            <div class="bento-k">Divisions</div>
+            <div class="bento-v" id="bento-range-count">10</div>
+            <div class="bento-s">1 – 200 up to the Omega manifold</div>
+            <div
+              class="orbit"
+              style="
+                position: absolute;
+                right: -0.6rem;
+                top: 50%;
+                translate: 0 -50%;
+                width: 5.2rem;
+                opacity: 0.9;
+              "
+              aria-hidden="true"
+            >
+              <span class="orbit-core" style="font-size: 1rem">∏</span>
+              <i
+                class="orbit-dot"
+                style="--r: 2.1rem; --t: 6s; --c: #38bdf8"
+              ></i
+              ><i
+                class="orbit-dot"
+                style="--r: 1.3rem; --t: 4s; --d: -1s; --c: #34d399"
+              ></i>
+            </div>
+          </div>
+          <div class="bento-cell ux-glass-card" data-spotlight>
+            <div class="bento-k">Time budget</div>
+            <div class="bento-v">
+              <span data-ticker="60" data-ticker-suffix=" min">60 min</span>
+            </div>
+            <div class="bento-s">From 3 minutes (Tier 1) to the Omega hour</div>
+          </div>
+        </section>
+
+        <div class="ranges-matrix-grid" id="ranges-grid">
+          <!-- Tier 1 -->
+          <a
+            href="./contract.html?min=1&max=200&title=Tier%201%3A%201%20-%20200&time=180"
+            class="range-tilt-card"
+            data-min="1"
+            data-max="200"
+            data-tier="Tier 1: 1 - 200"
+            data-time="180"
+          >
+            <div class="range-card-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="eager"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+                fetchpriority="high"
+              />
+            </div>
+            <div class="range-card-body">
+              <div class="range-tier-label">Tier 1 · Foundations</div>
+              <div class="range-bounds-text">1 — 200</div>
+              <div class="range-time-limit">3 minutes</div>
+              <p class="range-desc-text">
+                Elementary primes {2, 3, 5, 7, 11, 13}. Ideal for cadence
+                calibration and mental warming.
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold" style="color: #ffffff"
+                >Launch Division</span
+              >
+              <span style="color: #ffffff; font-weight: 700">→</span>
+            </div>
           </a>
 
-          <a href="./rules.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-              <span>Rules</span>
+          <!-- Tier 2 -->
+          <a
+            href="./contract.html?min=201&max=500&title=Tier%202%3A%20201%20-%20500&time=300"
+            class="range-tilt-card"
+            data-min="201"
+            data-max="500"
+            data-tier="Tier 2: 201 - 500"
+            data-time="300"
+          >
+            <div class="range-card-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/7422160/pexels-photo-7422160.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="eager"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+                fetchpriority="high"
+              />
             </div>
-            <span class="dropdown-badge">Policies</span>
+            <div class="range-card-body">
+              <div class="range-tier-label">Tier 2 · Intermediate</div>
+              <div class="range-bounds-text">201 — 500</div>
+              <div class="range-time-limit">5 minutes</div>
+              <p class="range-desc-text">
+                Tests multi-prime mixtures including squares and cubes up to
+                19².
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold" style="color: #ffffff"
+                >Launch Division</span
+              >
+              <span style="color: #ffffff; font-weight: 700">→</span>
+            </div>
           </a>
 
-          <a href="./rating.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="20" x2="18" y2="10"></line>
-                <line x1="12" y1="20" x2="12" y2="4"></line>
-                <line x1="6" y1="20" x2="6" y2="14"></line>
-              </svg>
-              <span>Rating</span>
+          <!-- Tier 3 -->
+          <a
+            href="./contract.html?min=501&max=1000&title=Tier%203%3A%20501%20-%201%2C000&time=480"
+            class="range-tilt-card"
+            data-min="501"
+            data-max="1000"
+            data-tier="Tier 3: 501 - 1,000"
+            data-time="480"
+          >
+            <div class="range-card-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/355938/pexels-photo-355938.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="eager"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+              />
             </div>
-            <span class="dropdown-badge">Matrix</span>
+            <div class="range-card-body">
+              <div class="range-tier-label">Tier 3 · Olympiad Standard</div>
+              <div class="range-bounds-text">501 — 1,000</div>
+              <div class="range-time-limit">8 minutes</div>
+              <p class="range-desc-text">
+                Standard national qualifier division. Involves primes up to 31.
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold" style="color: #ffffff"
+                >Launch Division</span
+              >
+              <span style="color: #ffffff; font-weight: 700">→</span>
+            </div>
           </a>
 
-          <a href="./edu.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                <path d="M6 6h10"></path>
-                <path d="M6 10h10"></path>
-              </svg>
-              <span>Edu</span>
+          <!-- Tier 4 -->
+          <a
+            href="./contract.html?min=1001&max=2000&title=Tier%204%3A%201%2C001%20-%202%2C000&time=720"
+            class="range-tilt-card"
+            data-min="1001"
+            data-max="2000"
+            data-tier="Tier 4: 1,001 - 2,000"
+            data-time="720"
+          >
+            <div class="range-card-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/247791/pexels-photo-247791.png?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="eager"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+              />
             </div>
-            <span class="dropdown-badge">Training</span>
+            <div class="range-card-body">
+              <div class="range-tier-label">Tier 4 · Advanced</div>
+              <div class="range-bounds-text">1,001 — 2,000</div>
+              <div class="range-time-limit">12 minutes</div>
+              <p class="range-desc-text">
+                4-digit entry range. Demands rapid divisibility shortcuts for 7,
+                11, and 13.
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold" style="color: #ffffff"
+                >Launch Division</span
+              >
+              <span style="color: #ffffff; font-weight: 700">→</span>
+            </div>
           </a>
 
-          <a href="./services.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-              </svg>
-              <span>Services</span>
+          <!-- Tier 5 -->
+          <a
+            href="./contract.html?min=2001&max=5000&title=Tier%205%3A%202%2C001%20-%205%2C000&time=1080"
+            class="range-tilt-card"
+            data-min="2001"
+            data-max="5000"
+            data-tier="Tier 5: 2,001 - 5,000"
+            data-time="1080"
+          >
+            <div class="range-card-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="eager"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+              />
             </div>
-            <span class="dropdown-badge">Facilities</span>
+            <div class="range-card-body">
+              <div class="range-tier-label">Tier 5 · Senior League</div>
+              <div class="range-bounds-text">2,001 — 5,000</div>
+              <div class="range-time-limit">18 minutes</div>
+              <p class="range-desc-text">
+                High composite complexity requiring multi-step tree
+                decomposition.
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold" style="color: #ffffff"
+                >Launch Division</span
+              >
+              <span style="color: #ffffff; font-weight: 700">→</span>
+            </div>
           </a>
 
-          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                <path d="M4 22h16"></path>
-                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
-                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-              </svg>
-              <span>Contest</span>
+          <!-- Tier 6 -->
+          <a
+            href="./contract.html?min=5001&max=10000&title=Tier%206%3A%205%2C001%20-%2010%2C000&time=1500"
+            class="range-tilt-card"
+            data-min="5001"
+            data-max="10000"
+            data-tier="Tier 6: 5,001 - 10,000"
+            data-time="1500"
+          >
+            <div class="range-card-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/6238048/pexels-photo-6238048.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+              />
             </div>
-            <span class="dropdown-badge">Arena</span>
+            <div class="range-card-body">
+              <div class="range-tier-label">Tier 6 · Invitational</div>
+              <div class="range-bounds-text">5,001 — 10,000</div>
+              <div class="range-time-limit">25 minutes</div>
+              <p class="range-desc-text">
+                Primes up to 97. High-stress mental calculations under timer
+                pressure.
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold" style="color: #ffffff"
+                >Launch Division</span
+              >
+              <span style="color: #ffffff; font-weight: 700">→</span>
+            </div>
           </a>
 
-          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              <span>Profile</span>
+          <!-- Tier 7 -->
+          <a
+            href="./contract.html?min=10001&max=20000&title=Tier%207%3A%2010%2C001%20-%2020%2C000&time=2100"
+            class="range-tilt-card"
+            data-min="10001"
+            data-max="20000"
+            data-tier="Tier 7: 10,001 - 20,000"
+            data-time="2100"
+          >
+            <div class="range-card-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/414860/pexels-photo-414860.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+              />
             </div>
-            <span class="dropdown-badge">Overview</span>
+            <div class="range-card-body">
+              <div class="range-tier-label">Tier 7 · Grandmaster</div>
+              <div class="range-bounds-text">10,001 — 20,000</div>
+              <div class="range-time-limit">35 minutes</div>
+              <p class="range-desc-text">
+                5-digit composite scale. Tests deep algebraic number theory
+                intuition.
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold" style="color: #ffffff"
+                >Launch Division</span
+              >
+              <span style="color: #ffffff; font-weight: 700">→</span>
+            </div>
           </a>
 
-                    <a href="./faq.html" class="dropdown-link-item" id="dropdown-faq">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                <path d="M6 6h10"></path>
-                <circle cx="12" cy="14" r="1"></circle>
-                <path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"></path>
-              </svg>
-              <span>FAQ</span>
+          <!-- Tier 8 (20,000+ capped at 35,000) -->
+          <a
+            href="./contract.html?min=20001&max=35000&title=Tier%208%3A%2020%2C000%2B%20(Elite)&time=2700"
+            class="range-tilt-card"
+            data-min="20001"
+            data-max="35000"
+            data-tier="Tier 8: 20,000+ (Elite)"
+            data-time="2700"
+          >
+            <div class="range-card-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/3779409/pexels-photo-3779409.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+              />
             </div>
-            <span class="dropdown-badge">Archive</span>
+            <div class="range-card-body">
+              <div class="range-tier-label">Tier 8 · Elite Cap</div>
+              <div class="range-bounds-text">20,000+</div>
+              <div class="range-time-limit">45 minutes</div>
+              <p class="range-desc-text">
+                Programmatically capped at 35,000 for competitive balance and
+                response precision.
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold" style="color: #ffffff"
+                >Launch Division</span
+              >
+              <span style="color: #ffffff; font-weight: 700">→</span>
+            </div>
           </a>
 
-          <!-- Desktop Settings Link -->
-          <a href="./engine.html" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span>Settings</span>
+          <!-- Tier 9: Custom Range Portal (Mechanical Engineering Blueprint) -->
+          <a
+            href="./custom.html"
+            class="range-tilt-card tier-9-blueprint-card"
+            data-is-custom="true"
+            id="tier-9-custom-card"
+          >
+            <div class="range-card-img-wrap blueprint-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+              />
             </div>
-            <span class="dropdown-badge">Options</span>
+            <div class="range-card-body">
+              <div class="range-tier-label tier-9-label">
+                Tier 9 · Parameterized
+              </div>
+              <div class="range-bounds-text">Custom Bounds</div>
+              <div class="range-time-limit">User-defined (3 – 180 min)</div>
+              <p class="range-desc-text">
+                Define tailored minimum and maximum integers with customized
+                lifeline rules.
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold">Configure Range</span>
+              <span class="footer-arrow">→</span>
+            </div>
           </a>
 
-          <!-- Mobile-only System link -->
-          <a href="./engine.html" id="dropdown-mobile-system" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" aria-label="System Configuration">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span>System</span>
+          <!-- Tier 10: 1 to Infinity (Olympian Infinite Cosmic Manifold) -->
+          <a
+            href="./contract.html?min=1&max=50000&title=Omega%3A%201%20to%20Infinity&time=3600"
+            class="range-tilt-card tier-10-cosmic-card card-neon-loop"
+            data-min="1"
+            data-max="50000"
+            data-tier="Omega: 1 to Infinity"
+            data-time="3600"
+            id="tier-10-omega-card"
+          >
+            <div class="range-card-img-wrap cosmic-img-wrap">
+              <img
+                class="range-card-img"
+                src="https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                width="600"
+                height="400"
+                referrerpolicy="no-referrer"
+              />
             </div>
-            <span class="dropdown-badge">Engine</span>
+            <div class="range-card-body">
+              <div class="range-tier-label tier-10-label">
+                Tier 10 · Cosmic Manifold
+              </div>
+              <div class="range-bounds-text">
+                1 to <span class="infinity-symbol">∞</span> (50,000)
+              </div>
+              <div class="range-time-limit">60 minutes</div>
+              <p class="range-desc-text">
+                The ultimate unbounded trial. Random composites spanning the
+                full spectrum of integers.
+              </p>
+            </div>
+            <div class="range-card-footer">
+              <span class="font-bold">Enter the Manifold</span>
+              <span class="footer-arrow">→</span>
+            </div>
           </a>
-        </nav>
+        </div>
       </div>
+    </main>
 
-      <!-- Right: Standalone Settings Gear Icon -->
-      <div class="header-actions">
-        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
-          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
-            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Global Settings Modal Slot -->
-  <div id="settings-modal-slot"></div>
-
-  <main class="main-wrapper">
-    <div class="content-container">
-      <section class="section-head hero-split spotlight-hero ranges-hero" data-spotlight>
-        <div class="hero-copy">
-          <span class="section-kicker">Competitive Divisions</span>
-          <h1 class="section-title" data-split-reveal>Range Selection Matrix</h1>
-          <p class="section-desc">
-            Choose your competitive zone. Each 10-question exam dynamically synthesizes composite targets within your designated boundaries.
+    <div id="site-footer-slot">
+      <footer class="site-footer">
+        <div class="footer-container">
+          <p class="footer-line highlight">© Olympiad Edge</p>
+          <p class="footer-line footer-author">Authorized By Rayaan Tasnim</p>
+          <p class="footer-line footer-line-muted">
+            PrimeFactor.app v3.4 · All rights reserved
           </p>
-          <ul class="swiss-meta" aria-label="Matrix at a glance">
-            <li><b data-ticker="10">10</b><span>Divisions</span></li>
-            <li><b data-ticker="10">10</b><span>Questions / run</span></li>
-            <li><b data-ticker="50000">50,000</b><span>Max integer</span></li>
-          </ul>
-          <div class="hero-cta">
-            <a class="shimmer-btn" href="#ranges-grid">Pick a division <span aria-hidden="true">↓</span></a>
-            <a class="vx-btn ghost" href="./rules.html">Read the rules</a>
-          </div>
         </div>
-        <div class="hero-ui" aria-label="Interactive factorization preview">
-          <div class="nb-card" id="bento-preview">
-            <span class="nb-label">Live problem preview</span>
-            <div class="nb-big" id="bento-preview-n" aria-live="polite">360</div>
-            <div class="nb-answer font-math" id="bento-preview-a">= 2<sup>3</sup> × 3<sup>2</sup> × 5</div>
-            <button type="button" id="bento-preview-next" class="vx-btn" style="margin-top:0.9rem">New composite ↻</button>
-          </div>
-          <div class="wireframe-wrap"><svg data-wireframe viewBox="0 0 300 232" role="img" aria-label="Factor tree wireframe: 360 = 2 × 2 × 2 × 3 × 3 × 5"><line x1="70" y1="39" x2="26" y2="47"/><line x1="80" y1="35" x2="100" y2="51"/><line x1="110" y1="77" x2="66" y2="85"/><line x1="120" y1="73" x2="140" y2="89"/><line x1="150" y1="115" x2="106" y2="123"/><line x1="160" y1="111" x2="180" y2="127"/><line x1="190" y1="153" x2="146" y2="161"/><line x1="200" y1="149" x2="220" y2="165"/><line x1="230" y1="191" x2="186" y2="199"/><line x1="240" y1="187" x2="261" y2="203"/><circle class="wf-fill" cx="70" cy="24" r="15"/><circle class="wf-prime wf-pulse" cx="26" cy="62" r="13"/><circle class="wf-fill" cx="110" cy="62" r="15"/><circle class="wf-prime wf-pulse" cx="66" cy="100" r="13"/><circle class="wf-fill" cx="150" cy="100" r="15"/><circle class="wf-prime wf-pulse" cx="106" cy="138" r="13"/><circle class="wf-fill" cx="190" cy="138" r="15"/><circle class="wf-prime wf-pulse" cx="146" cy="176" r="13"/><circle class="wf-fill" cx="230" cy="176" r="15"/><circle class="wf-prime wf-pulse" cx="186" cy="214" r="13"/><circle class="wf-prime wf-pulse" cx="270" cy="214" r="13"/><text x="70" y="24">360</text><text x="26" y="62">2</text><text x="110" y="62">180</text><text x="66" y="100">2</text><text x="150" y="100">90</text><text x="106" y="138">2</text><text x="190" y="138">45</text><text x="146" y="176">3</text><text x="230" y="176">15</text><text x="186" y="214">3</text><text x="270" y="214">5</text></svg></div>
-        </div>
-      </section>
-
-      <section class="bento" aria-label="Live statistics">
-        <div class="bento-cell ux-glass-card" data-spotlight>
-          <div class="bento-k">Your rating</div>
-          <div class="bento-v" id="bento-elo-val">500</div>
-          <div class="bento-s bento-live" id="bento-elo-state">Guest baseline</div>
-        </div>
-        <div class="bento-cell ux-glass-card" data-spotlight>
-          <div class="bento-k">Current league</div>
-          <div class="bento-v sm" id="bento-tier-name">🧩 Composite Apprentice</div>
-          <div class="bento-s">Divisions above your ELO ceiling run as practice.</div>
-        </div>
-        <div class="bento-cell ux-glass-card" data-spotlight>
-          <div class="bento-k">Divisions</div>
-          <div class="bento-v" id="bento-range-count">10</div>
-          <div class="bento-s">1 – 200 up to the Omega manifold</div>
-          <div class="orbit" style="position:absolute;right:-0.6rem;top:50%;translate:0 -50%;width:5.2rem;opacity:.9" aria-hidden="true">
-            <span class="orbit-core" style="font-size:1rem">∏</span>
-            <i class="orbit-dot" style="--r:2.1rem;--t:6s;--c:#38bdf8"></i><i class="orbit-dot" style="--r:1.3rem;--t:4s;--d:-1s;--c:#34d399"></i>
-          </div>
-        </div>
-        <div class="bento-cell ux-glass-card" data-spotlight>
-          <div class="bento-k">Time budget</div>
-          <div class="bento-v"><span data-ticker="60" data-ticker-suffix=" min">60 min</span></div>
-          <div class="bento-s">From 3 minutes (Tier 1) to the Omega hour</div>
-        </div>
-      </section>
-
-      <div class="ranges-matrix-grid" id="ranges-grid">
-        <!-- Tier 1 -->
-        <a href="./contract.html?min=1&max=200&title=Tier%201%3A%201%20-%20200&time=180" class="range-tilt-card" data-min="1" data-max="200" data-tier="Tier 1: 1 - 200" data-time="180">
-          <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" fetchpriority="high" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label">Tier 1 · Foundations</div>
-            <div class="range-bounds-text">1 — 200</div>
-            <div class="range-time-limit">3 minutes</div>
-            <p class="range-desc-text">
-              Elementary primes {2, 3, 5, 7, 11, 13}. Ideal for cadence calibration and mental warming.
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
-            <span style="color: #FFFFFF; font-weight: 700;">→</span>
-          </div>
-        </a>
-
-        <!-- Tier 2 -->
-        <a href="./contract.html?min=201&max=500&title=Tier%202%3A%20201%20-%20500&time=300" class="range-tilt-card" data-min="201" data-max="500" data-tier="Tier 2: 201 - 500" data-time="300">
-          <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/7422160/pexels-photo-7422160.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" fetchpriority="high" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label">Tier 2 · Intermediate</div>
-            <div class="range-bounds-text">201 — 500</div>
-            <div class="range-time-limit">5 minutes</div>
-            <p class="range-desc-text">
-              Tests multi-prime mixtures including squares and cubes up to 19².
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
-            <span style="color: #FFFFFF; font-weight: 700;">→</span>
-          </div>
-        </a>
-
-        <!-- Tier 3 -->
-        <a href="./contract.html?min=501&max=1000&title=Tier%203%3A%20501%20-%201%2C000&time=480" class="range-tilt-card" data-min="501" data-max="1000" data-tier="Tier 3: 501 - 1,000" data-time="480">
-          <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/355938/pexels-photo-355938.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label">Tier 3 · Olympiad Standard</div>
-            <div class="range-bounds-text">501 — 1,000</div>
-            <div class="range-time-limit">8 minutes</div>
-            <p class="range-desc-text">
-              Standard national qualifier division. Involves primes up to 31.
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
-            <span style="color: #FFFFFF; font-weight: 700;">→</span>
-          </div>
-        </a>
-
-        <!-- Tier 4 -->
-        <a href="./contract.html?min=1001&max=2000&title=Tier%204%3A%201%2C001%20-%202%2C000&time=720" class="range-tilt-card" data-min="1001" data-max="2000" data-tier="Tier 4: 1,001 - 2,000" data-time="720">
-          <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/247791/pexels-photo-247791.png?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label">Tier 4 · Advanced</div>
-            <div class="range-bounds-text">1,001 — 2,000</div>
-            <div class="range-time-limit">12 minutes</div>
-            <p class="range-desc-text">
-              4-digit entry range. Demands rapid divisibility shortcuts for 7, 11, and 13.
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
-            <span style="color: #FFFFFF; font-weight: 700;">→</span>
-          </div>
-        </a>
-
-        <!-- Tier 5 -->
-        <a href="./contract.html?min=2001&max=5000&title=Tier%205%3A%202%2C001%20-%205%2C000&time=1080" class="range-tilt-card" data-min="2001" data-max="5000" data-tier="Tier 5: 2,001 - 5,000" data-time="1080">
-          <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label">Tier 5 · Senior League</div>
-            <div class="range-bounds-text">2,001 — 5,000</div>
-            <div class="range-time-limit">18 minutes</div>
-            <p class="range-desc-text">
-              High composite complexity requiring multi-step tree decomposition.
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
-            <span style="color: #FFFFFF; font-weight: 700;">→</span>
-          </div>
-        </a>
-
-        <!-- Tier 6 -->
-        <a href="./contract.html?min=5001&max=10000&title=Tier%206%3A%205%2C001%20-%2010%2C000&time=1500" class="range-tilt-card" data-min="5001" data-max="10000" data-tier="Tier 6: 5,001 - 10,000" data-time="1500">
-          <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/6238048/pexels-photo-6238048.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label">Tier 6 · Invitational</div>
-            <div class="range-bounds-text">5,001 — 10,000</div>
-            <div class="range-time-limit">25 minutes</div>
-            <p class="range-desc-text">
-              Primes up to 97. High-stress mental calculations under timer pressure.
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
-            <span style="color: #FFFFFF; font-weight: 700;">→</span>
-          </div>
-        </a>
-
-        <!-- Tier 7 -->
-        <a href="./contract.html?min=10001&max=20000&title=Tier%207%3A%2010%2C001%20-%2020%2C000&time=2100" class="range-tilt-card" data-min="10001" data-max="20000" data-tier="Tier 7: 10,001 - 20,000" data-time="2100">
-          <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/414860/pexels-photo-414860.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label">Tier 7 · Grandmaster</div>
-            <div class="range-bounds-text">10,001 — 20,000</div>
-            <div class="range-time-limit">35 minutes</div>
-            <p class="range-desc-text">
-              5-digit composite scale. Tests deep algebraic number theory intuition.
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
-            <span style="color: #FFFFFF; font-weight: 700;">→</span>
-          </div>
-        </a>
-
-        <!-- Tier 8 (20,000+ capped at 35,000) -->
-        <a href="./contract.html?min=20001&max=35000&title=Tier%208%3A%2020%2C000%2B%20(Elite)&time=2700" class="range-tilt-card" data-min="20001" data-max="35000" data-tier="Tier 8: 20,000+ (Elite)" data-time="2700">
-          <div class="range-card-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/3779409/pexels-photo-3779409.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label">Tier 8 · Elite Cap</div>
-            <div class="range-bounds-text">20,000+</div>
-            <div class="range-time-limit">45 minutes</div>
-            <p class="range-desc-text">
-              Programmatically capped at 35,000 for competitive balance and response precision.
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold" style="color: #FFFFFF;">Launch Division</span>
-            <span style="color: #FFFFFF; font-weight: 700;">→</span>
-          </div>
-        </a>
-
-        <!-- Tier 9: Custom Range Portal (Mechanical Engineering Blueprint) -->
-        <a href="./custom.html" class="range-tilt-card tier-9-blueprint-card" data-is-custom="true" id="tier-9-custom-card">
-          <div class="range-card-img-wrap blueprint-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label tier-9-label">Tier 9 · Parameterized</div>
-            <div class="range-bounds-text">Custom Bounds</div>
-            <div class="range-time-limit">User-defined (3 – 180 min)</div>
-            <p class="range-desc-text">
-              Define tailored minimum and maximum integers with customized lifeline rules.
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold">Configure Range</span>
-            <span class="footer-arrow">→</span>
-          </div>
-        </a>
-
-        <!-- Tier 10: 1 to Infinity (Olympian Infinite Cosmic Manifold) -->
-        <a href="./contract.html?min=1&max=50000&title=Omega%3A%201%20to%20Infinity&time=3600" class="range-tilt-card tier-10-cosmic-card card-neon-loop" data-min="1" data-max="50000" data-tier="Omega: 1 to Infinity" data-time="3600" id="tier-10-omega-card">
-          <div class="range-card-img-wrap cosmic-img-wrap">
-            <img class="range-card-img" src="https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="lazy" decoding="async" width="600" height="400" referrerpolicy="no-referrer" />
-          </div>
-          <div class="range-card-body">
-            <div class="range-tier-label tier-10-label">Tier 10 · Cosmic Manifold</div>
-            <div class="range-bounds-text">1 to <span class="infinity-symbol">∞</span> (50,000)</div>
-            <div class="range-time-limit">60 minutes</div>
-            <p class="range-desc-text">
-              The ultimate unbounded trial. Random composites spanning the full spectrum of integers.
-            </p>
-            
-          </div>
-          <div class="range-card-footer">
-            <span class="font-bold">Enter the Manifold</span>
-            <span class="footer-arrow">→</span>
-          </div>
-        </a>
-      </div>
+      </footer>
     </div>
-  </main>
 
-  <div id="site-footer-slot">
-    <footer class="site-footer">
-      <div class="footer-container">
-        <p class="footer-line highlight">© Olympiad Edge</p>
-        <p class="footer-line footer-author">Authorized By Rayaan Tasnim</p>
-        <p class="footer-line footer-line-muted">PrimeFactor.app v3.4 · All rights reserved</p>
-      </div>
-    </footer>
-  </div>
+    <!-- Hardcoded Navbar Toggle Script Block -->
 
-  <!-- Hardcoded Navbar Toggle Script Block -->
-
-  <script type="module" src="./js/ranges.js"></script>
-</body>
+    <script type="module" src="./js/ranges.js"></script>
+  </body>
 </html>

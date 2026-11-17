@@ -4,21 +4,21 @@
 
 /* 1. Diagnostic Title Val -> Isolated Fix */
 #diagnostic-title-val {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 /* 2. Diagnostic Text Val -> Isolated Fix */
 #diagnostic-text-val {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 /* 3. Verdict Badge Val -> Isolated Fix */
-#verdict-badge-val, 
+#verdict-badge-val,
 .verdict-badge-val {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 /* 4. Master Ring Card -> Isolated Fix */
@@ -33,5 +33,5 @@ tbody#compiler-latency-tbody tr td,
 tbody#compiler-latency-tbody tr td:nth-child(2),
 .ring-score-center .ring-score-num,
 .ring-score-center .ring-score-sub {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }

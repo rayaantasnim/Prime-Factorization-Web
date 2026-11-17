@@ -2,11 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
-  <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
-  <link rel="dns-prefetch" href="https://apis.google.com" />
-  <link rel="preconnect" href="https://images.pexels.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://firestore.googleapis.com"
+      crossorigin
+    />
+    <link
+      rel="preconnect"
+      href="https://identitytoolkit.googleapis.com"
+      crossorigin
+    />
+    <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
+    <link rel="dns-prefetch" href="https://apis.google.com" />
+    <link rel="preconnect" href="https://images.pexels.com" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
       PrimeFactor.app — Olympiad Prime Factorization Speed Laboratory
@@ -21,7 +29,10 @@
       content="free open source prime factor web-app, math olympiad candidates, prime factorization decomposition, prime factorization practice, math olympiad rating system, number theory decomposition training"
     />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://rayaantasnim.github.io/Prime-Factorization-Web/" />
+    <link
+      rel="canonical"
+      href="https://rayaantasnim.github.io/Prime-Factorization-Web/"
+    />
 
     <meta
       property="og:title"
@@ -52,27 +63,44 @@
       rel="preload"
       as="style"
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
     />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap" /></noscript>
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap"
+    /></noscript>
 
     <!-- Number-curtain intro: once per session, skipped for reduced motion; hard 3.4s safety net -->
     <script>
       (function () {
-        var r = document.documentElement, on = false;
+        var r = document.documentElement,
+          on = false;
         try {
-          on = !sessionStorage.getItem('pf-curtain') &&
-            !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+          on =
+            !sessionStorage.getItem("pf-curtain") &&
+            !(
+              window.matchMedia &&
+              window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            );
         } catch (e) {}
-        window.__pfIntroGate = new Promise(function (res) { window.__pfOpenGate = res; });
+        window.__pfIntroGate = new Promise(function (res) {
+          window.__pfOpenGate = res;
+        });
         if (on) {
-          r.classList.add('pf-curtain-on');
+          r.classList.add("pf-curtain-on");
           setTimeout(function () {
-            r.classList.remove('pf-curtain-on');
-            var c = document.getElementById('pf-curtain'); if (c) c.remove();
+            r.classList.remove("pf-curtain-on");
+            var c = document.getElementById("pf-curtain");
+            if (c) c.remove();
             window.__pfOpenGate();
           }, 1800);
-        } else { window.__pfOpenGate(); }
+        } else {
+          window.__pfOpenGate();
+        }
       })();
     </script>
 
@@ -80,18 +108,32 @@
     <script>
       (function () {
         try {
-          document.documentElement.classList.add('fx-pending');
-          setTimeout(function () { document.documentElement.classList.remove('fx-pending'); }, 1800);
+          document.documentElement.classList.add("fx-pending");
+          setTimeout(function () {
+            document.documentElement.classList.remove("fx-pending");
+          }, 1800);
         } catch (e) {}
       })();
     </script>
 
     <!-- GSAP with ScrollToPlugin for smooth spatial animations -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+    ></script>
     <!-- Three.js (WebGL) for the hero constellation; hero-fx.js falls back to raw WebGL without it -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+    ></script>
     <link rel="stylesheet" href="./css/ux-core.css" />
     <link rel="stylesheet" href="./css/aurora-pro.css" />
     <link rel="stylesheet" href="./css/math-ui.css" />
@@ -478,7 +520,17 @@
           aria-label="Close Navigation Overlay"
           type="button"
         >
-          <svg class="overlay-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true">
+          <svg
+            class="overlay-x"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.6"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
             <line x1="5" y1="5" x2="19" y2="19"></line>
             <line x1="19" y1="5" x2="5" y2="19"></line>
           </svg>
@@ -606,23 +658,40 @@
     <!-- Main Presentation Matrix -->
     <main class="main-wrapper">
       <!-- 1. IMPACTFUL HERO SECTION AT THE TOP (Item 2) -->
-      <section id="sec-hero" class="home-section hero-gateway spotlight-hero" data-spotlight>
+      <section
+        id="sec-hero"
+        class="home-section hero-gateway spotlight-hero"
+        data-spotlight
+      >
         <div class="section-bg-image-wrap">
           <img
             class="section-bg-image"
             src="https://images.pexels.com/photos/39191009/pexels-photo-39191009.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Geometric abstract architecture"
-            width="1200" height="800" decoding="async"
+            width="1200"
+            height="800"
+            decoding="async"
             style="opacity: 0.85"
           />
           <div class="section-bg-overlay"></div>
         </div>
         <span class="hero-scroll-cue" aria-hidden="true"></span>
         <div class="pf-hero-hud" aria-hidden="true">
-          <i class="pf-corner tl"></i><i class="pf-corner tr"></i><i class="pf-corner bl"></i><i class="pf-corner br"></i>
-          <span class="pf-hud-tag pf-hud-bl"><b>TIMES-TABLE ORRERY</b> <span id="hero-k-readout">×2.00 mod 210 · Cardioid · 1 cusp</span></span>
-          <span class="pf-hud-tag pf-hud-br">ζ(s) = ∏ (1 − p<sup>−s</sup>)<sup>−1</sup></span>
-          <span class="pf-eq pf-eq-1">n = p₁<sup>a₁</sup>·p₂<sup>a₂</sup>⋯p<sub>k</sub><sup>a<sub>k</sub></sup></span>
+          <i class="pf-corner tl"></i><i class="pf-corner tr"></i
+          ><i class="pf-corner bl"></i><i class="pf-corner br"></i>
+          <span class="pf-hud-tag pf-hud-bl"
+            ><b>TIMES-TABLE ORRERY</b>
+            <span id="hero-k-readout"
+              >×2.00 mod 210 · Cardioid · 1 cusp</span
+            ></span
+          >
+          <span class="pf-hud-tag pf-hud-br"
+            >ζ(s) = ∏ (1 − p<sup>−s</sup>)<sup>−1</sup></span
+          >
+          <span class="pf-eq pf-eq-1"
+            >n = p₁<sup>a₁</sup>·p₂<sup>a₂</sup>⋯p<sub>k</sub
+            ><sup>a<sub>k</sub></sup></span
+          >
           <span class="pf-eq pf-eq-2">a<sup>p−1</sup> ≡ 1 (mod p)</span>
           <span class="pf-eq pf-eq-3">φ(n) = n∏(1 − 1/p)</span>
           <span class="pf-eq pf-eq-4">π(x) ~ x / ln x</span>
@@ -653,8 +722,20 @@
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
               "
-              >at Olympiad Speed.<svg class="pf-underline" viewBox="0 0 400 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9 C 70 2, 140 13, 205 7 S 330 3, 397 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span
-            >
+              >at Olympiad Speed.<svg
+                class="pf-underline"
+                viewBox="0 0 400 14"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 9 C 70 2, 140 13, 205 7 S 330 3, 397 8"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                /></svg
+            ></span>
           </h1>
 
           <p class="hero-subtitle">
@@ -811,18 +892,40 @@
         </div>
       </section>
 
-
       <!-- STATS BAND + NUMBER TAPE -->
       <div class="pf-band" aria-label="Platform at a glance">
         <ul class="pf-stats">
-          <li class="pf-stat" style="--i:0"><b data-count="12">12</b><span>ELO tiers</span><em>Foundry Initiate → Prime Singularity</em></li>
-          <li class="pf-stat" style="--i:1"><b data-count="100" data-suffix="+">100+</b><span>Olympiad medals</span><em>Certified in Cloud Firestore</em></li>
-          <li class="pf-stat" style="--i:2"><b data-count="10">10</b><span>Problems / match</span><em>Ten progressive bounds</em></li>
-          <li class="pf-stat" style="--i:3"><b data-count="50000" data-suffix="+">50,000+</b><span>Cosmic ceiling</span><em>Factor numbers up to 1–50,000+</em></li>
+          <li class="pf-stat" style="--i: 0">
+            <b data-count="12">12</b><span>ELO tiers</span
+            ><em>Foundry Initiate → Prime Singularity</em>
+          </li>
+          <li class="pf-stat" style="--i: 1">
+            <b data-count="100" data-suffix="+">100+</b
+            ><span>Olympiad medals</span><em>Certified in Cloud Firestore</em>
+          </li>
+          <li class="pf-stat" style="--i: 2">
+            <b data-count="10">10</b><span>Problems / match</span
+            ><em>Ten progressive bounds</em>
+          </li>
+          <li class="pf-stat" style="--i: 3">
+            <b data-count="50000" data-suffix="+">50,000+</b
+            ><span>Cosmic ceiling</span><em>Factor numbers up to 1–50,000+</em>
+          </li>
         </ul>
         <div class="pf-tape" aria-hidden="true">
           <div class="pf-tape-track">
-            <span>360 = 2³ · 3² · 5</span><span>1260 = 2² · 3² · 5 · 7</span><span>7919 is prime</span><span>1024 = 2¹⁰</span><span>2520 = 2³ · 3² · 5 · 7</span><span>9973 is prime</span><span>8128 = 2⁶ · 127</span><span>30030 = 2 · 3 · 5 · 7 · 11 · 13</span><span>5040 = 2⁴ · 3² · 5 · 7</span><span>50000 = 2⁴ · 5⁵</span><span>360 = 2³ · 3² · 5</span><span>1260 = 2² · 3² · 5 · 7</span><span>7919 is prime</span><span>1024 = 2¹⁰</span><span>2520 = 2³ · 3² · 5 · 7</span><span>9973 is prime</span><span>8128 = 2⁶ · 127</span><span>30030 = 2 · 3 · 5 · 7 · 11 · 13</span><span>5040 = 2⁴ · 3² · 5 · 7</span><span>50000 = 2⁴ · 5⁵</span>
+            <span>360 = 2³ · 3² · 5</span><span>1260 = 2² · 3² · 5 · 7</span
+            ><span>7919 is prime</span><span>1024 = 2¹⁰</span
+            ><span>2520 = 2³ · 3² · 5 · 7</span><span>9973 is prime</span
+            ><span>8128 = 2⁶ · 127</span
+            ><span>30030 = 2 · 3 · 5 · 7 · 11 · 13</span
+            ><span>5040 = 2⁴ · 3² · 5 · 7</span><span>50000 = 2⁴ · 5⁵</span
+            ><span>360 = 2³ · 3² · 5</span><span>1260 = 2² · 3² · 5 · 7</span
+            ><span>7919 is prime</span><span>1024 = 2¹⁰</span
+            ><span>2520 = 2³ · 3² · 5 · 7</span><span>9973 is prime</span
+            ><span>8128 = 2⁶ · 127</span
+            ><span>30030 = 2 · 3 · 5 · 7 · 11 · 13</span
+            ><span>5040 = 2⁴ · 3² · 5 · 7</span><span>50000 = 2⁴ · 5⁵</span>
           </div>
         </div>
       </div>
@@ -929,7 +1032,6 @@
         </div>
       </section>
 
-
       <!-- NUMBER THEORY OBSERVATORY (WebGL) -->
       <section id="sec-observatory" class="home-section pf-obs">
         <div class="content-container">
@@ -937,62 +1039,162 @@
             <span class="section-kicker">Number Theory Observatory</span>
             <h2 class="section-title">See the Primes Move</h2>
             <p class="section-desc">
-              Three live GPU instruments. Spiral through the integers, braid modular
-              multiplication into cardioids, and watch Eratosthenes sieve the first hundred
-              numbers. Tap any cell to factorise it.
+              Three live GPU instruments. Spiral through the integers, braid
+              modular multiplication into cardioids, and watch Eratosthenes
+              sieve the first hundred numbers. Tap any cell to factorise it.
             </p>
           </div>
 
           <div class="obs-shell">
             <div class="obs-stage-col">
               <div class="obs-stage" id="obs-stage" data-mode="ulam">
-                <canvas id="obs-canvas" tabindex="0" role="img" aria-label="Ulam prime spiral"></canvas>
-                <i class="pf-corner tl"></i><i class="pf-corner tr"></i><i class="pf-corner bl"></i><i class="pf-corner br"></i>
-                <span class="obs-hud obs-hud-tl" id="obs-hud-tl" aria-hidden="true"></span>
-                <span class="obs-hud obs-hud-br" id="obs-hud-br" aria-hidden="true"></span>
-                <div class="obs-legend" data-obs-panel="ulam" aria-hidden="true">
-                  <span><i style="--c:#ffc744"></i>p ≡ 1 (mod 4)</span>
-                  <span><i style="--c:#43dbff"></i>p ≡ 3 (mod 4)</span>
-                  <span><i style="--c:#4a5d8c"></i>composite</span>
+                <canvas
+                  id="obs-canvas"
+                  tabindex="0"
+                  role="img"
+                  aria-label="Ulam prime spiral"
+                ></canvas>
+                <i class="pf-corner tl"></i><i class="pf-corner tr"></i
+                ><i class="pf-corner bl"></i><i class="pf-corner br"></i>
+                <span
+                  class="obs-hud obs-hud-tl"
+                  id="obs-hud-tl"
+                  aria-hidden="true"
+                ></span>
+                <span
+                  class="obs-hud obs-hud-br"
+                  id="obs-hud-br"
+                  aria-hidden="true"
+                ></span>
+                <div
+                  class="obs-legend"
+                  data-obs-panel="ulam"
+                  aria-hidden="true"
+                >
+                  <span><i style="--c: #ffc744"></i>p ≡ 1 (mod 4)</span>
+                  <span><i style="--c: #43dbff"></i>p ≡ 3 (mod 4)</span>
+                  <span><i style="--c: #4a5d8c"></i>composite</span>
                 </div>
                 <div class="obs-toolbar" data-obs-panel="ulam">
-                  <button type="button" class="obs-btn obs-icon" id="obs-zoom-out" aria-label="Zoom out">−</button>
-                  <button type="button" class="obs-btn obs-icon" id="obs-zoom-in" aria-label="Zoom in">+</button>
-                  <button type="button" class="obs-btn" id="obs-reset">Reset</button>
+                  <button
+                    type="button"
+                    class="obs-btn obs-icon"
+                    id="obs-zoom-out"
+                    aria-label="Zoom out"
+                  >
+                    −
+                  </button>
+                  <button
+                    type="button"
+                    class="obs-btn obs-icon"
+                    id="obs-zoom-in"
+                    aria-label="Zoom in"
+                  >
+                    +
+                  </button>
+                  <button type="button" class="obs-btn" id="obs-reset">
+                    Reset
+                  </button>
                 </div>
                 <div class="obs-fallback" role="note">
                   <b>WebGL isn't available in this browser.</b>
-                  <span>The inspector on the right still works — type any integer.</span>
+                  <span
+                    >The inspector on the right still works — type any
+                    integer.</span
+                  >
                 </div>
               </div>
               <p class="obs-hint" id="obs-hint"></p>
-              <button type="button" class="obs-btn obs-engage" id="obs-engage" aria-pressed="false">Explore · drag freely</button>
+              <button
+                type="button"
+                class="obs-btn obs-engage"
+                id="obs-engage"
+                aria-pressed="false"
+              >
+                Explore · drag freely
+              </button>
             </div>
 
             <div class="obs-panel">
               <div class="obs-tabs" role="tablist" aria-label="Instrument">
-                <span class="obs-tab-ind" id="obs-tab-ind" aria-hidden="true"></span>
-                <button type="button" role="tab" data-obs-mode="ulam" aria-selected="true">Ulam spiral</button>
-                <button type="button" role="tab" data-obs-mode="times" aria-selected="false">Times table</button>
-                <button type="button" role="tab" data-obs-mode="sieve" aria-selected="false">Sieve</button>
+                <span
+                  class="obs-tab-ind"
+                  id="obs-tab-ind"
+                  aria-hidden="true"
+                ></span>
+                <button
+                  type="button"
+                  role="tab"
+                  data-obs-mode="ulam"
+                  aria-selected="true"
+                >
+                  Ulam spiral
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  data-obs-mode="times"
+                  aria-selected="false"
+                >
+                  Times table
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  data-obs-mode="sieve"
+                  aria-selected="false"
+                >
+                  Sieve
+                </button>
               </div>
 
               <div class="obs-controls" data-obs-panel="ulam">
-                <p class="obs-note">Integers wind outward from 1. Primes refuse to hide: they line up on diagonals, tracing quadratics such as n² + n + 41.</p>
+                <p class="obs-note">
+                  Integers wind outward from 1. Primes refuse to hide: they line
+                  up on diagonals, tracing quadratics such as n² + n + 41.
+                </p>
                 <div class="obs-chips">
                   <span class="obs-chip-label">Try</span>
-                  <button type="button" class="obs-chip" data-obs-try="41">41</button>
-                  <button type="button" class="obs-chip" data-obs-try="1763">1763</button>
-                  <button type="button" class="obs-chip" data-obs-try="7919">7919</button>
-                  <button type="button" class="obs-chip" data-obs-try="65537">65537</button>
+                  <button type="button" class="obs-chip" data-obs-try="41">
+                    41
+                  </button>
+                  <button type="button" class="obs-chip" data-obs-try="1763">
+                    1763
+                  </button>
+                  <button type="button" class="obs-chip" data-obs-try="7919">
+                    7919
+                  </button>
+                  <button type="button" class="obs-chip" data-obs-try="65537">
+                    65537
+                  </button>
                 </div>
               </div>
 
               <div class="obs-controls" data-obs-panel="times" hidden>
-                <label class="obs-slider"><span>Multiplier <b>k</b></span><output id="obs-k-val">2.00</output>
-                  <input type="range" id="obs-k-range" min="2" max="100" step="0.01" value="2" aria-label="Multiplier k" /></label>
-                <label class="obs-slider"><span>Modulus <b>n</b></span><output id="obs-n-val">200</output>
-                  <input type="range" id="obs-n-range" min="24" max="400" step="1" value="200" aria-label="Modulus n" /></label>
+                <label class="obs-slider"
+                  ><span>Multiplier <b>k</b></span
+                  ><output id="obs-k-val">2.00</output>
+                  <input
+                    type="range"
+                    id="obs-k-range"
+                    min="2"
+                    max="100"
+                    step="0.01"
+                    value="2"
+                    aria-label="Multiplier k"
+                /></label>
+                <label class="obs-slider"
+                  ><span>Modulus <b>n</b></span
+                  ><output id="obs-n-val">200</output>
+                  <input
+                    type="range"
+                    id="obs-n-range"
+                    min="24"
+                    max="400"
+                    step="1"
+                    value="200"
+                    aria-label="Modulus n"
+                /></label>
                 <div class="obs-chips">
                   <span class="obs-chip-label">Presets</span>
                   <button type="button" class="obs-chip" data-k="2">×2</button>
@@ -1000,36 +1202,92 @@
                   <button type="button" class="obs-chip" data-k="4">×4</button>
                   <button type="button" class="obs-chip" data-k="5">×5</button>
                   <button type="button" class="obs-chip" data-k="6">×6</button>
-                  <button type="button" class="obs-chip" data-k="34">×34</button>
-                  <button type="button" class="obs-btn obs-chip-wide" id="obs-tt-play" aria-pressed="false">Morph k</button>
+                  <button type="button" class="obs-chip" data-k="34">
+                    ×34
+                  </button>
+                  <button
+                    type="button"
+                    class="obs-btn obs-chip-wide"
+                    id="obs-tt-play"
+                    aria-pressed="false"
+                  >
+                    Morph k
+                  </button>
                 </div>
               </div>
 
               <div class="obs-controls" data-obs-panel="sieve" hidden>
                 <p class="obs-note" id="obs-sv-status">Press play.</p>
                 <div class="obs-chips">
-                  <button type="button" class="obs-btn" id="obs-sv-play" aria-pressed="false">Play</button>
-                  <button type="button" class="obs-btn" id="obs-sv-step">Step</button>
-                  <button type="button" class="obs-btn" id="obs-sv-reset">Reset</button>
+                  <button
+                    type="button"
+                    class="obs-btn"
+                    id="obs-sv-play"
+                    aria-pressed="false"
+                  >
+                    Play
+                  </button>
+                  <button type="button" class="obs-btn" id="obs-sv-step">
+                    Step
+                  </button>
+                  <button type="button" class="obs-btn" id="obs-sv-reset">
+                    Reset
+                  </button>
                 </div>
-                <label class="obs-slider"><span>Speed</span><output>×</output>
-                  <input type="range" id="obs-sv-speed" min="0.4" max="3" step="0.1" value="1" aria-label="Sieve speed" /></label>
+                <label class="obs-slider"
+                  ><span>Speed</span><output>×</output>
+                  <input
+                    type="range"
+                    id="obs-sv-speed"
+                    min="0.4"
+                    max="3"
+                    step="0.1"
+                    value="1"
+                    aria-label="Sieve speed"
+                /></label>
               </div>
 
               <div class="obs-inspector" aria-live="off">
-                <div class="obs-ins-head"><span>Inspector</span><span class="obs-ins-sub">n =</span></div>
+                <div class="obs-ins-head">
+                  <span>Inspector</span><span class="obs-ins-sub">n =</span>
+                </div>
                 <div class="obs-ins-n" id="obs-n">41</div>
                 <div class="obs-ins-fact" id="obs-fact"></div>
                 <div class="obs-badges" id="obs-badges"></div>
                 <dl class="obs-stats">
-                  <div><dt>τ(n)</dt><dd id="obs-stat-tau">—</dd><small>divisors</small></div>
-                  <div><dt>σ(n)</dt><dd id="obs-stat-sigma">—</dd><small>sum of divisors</small></div>
-                  <div><dt>φ(n)</dt><dd id="obs-stat-phi">—</dd><small>totient</small></div>
-                  <div><dt>π(n)</dt><dd id="obs-stat-pi">—</dd><small>primes ≤ n</small></div>
+                  <div>
+                    <dt>τ(n)</dt>
+                    <dd id="obs-stat-tau">—</dd>
+                    <small>divisors</small>
+                  </div>
+                  <div>
+                    <dt>σ(n)</dt>
+                    <dd id="obs-stat-sigma">—</dd>
+                    <small>sum of divisors</small>
+                  </div>
+                  <div>
+                    <dt>φ(n)</dt>
+                    <dd id="obs-stat-phi">—</dd>
+                    <small>totient</small>
+                  </div>
+                  <div>
+                    <dt>π(n)</dt>
+                    <dd id="obs-stat-pi">—</dd>
+                    <small>primes ≤ n</small>
+                  </div>
                 </dl>
                 <form id="obs-inspect-form" class="obs-form" autocomplete="off">
-                  <label for="obs-inspect-input" class="visually-hidden">Integer to inspect</label>
-                  <input id="obs-inspect-input" type="number" inputmode="numeric" min="1" max="2000000000" placeholder="Inspect any integer…" />
+                  <label for="obs-inspect-input" class="visually-hidden"
+                    >Integer to inspect</label
+                  >
+                  <input
+                    id="obs-inspect-input"
+                    type="number"
+                    inputmode="numeric"
+                    min="1"
+                    max="2000000000"
+                    placeholder="Inspect any integer…"
+                  />
                   <button type="submit" class="obs-btn obs-go">Go</button>
                 </form>
               </div>
@@ -1268,23 +1526,29 @@
         <div class="content-container">
           <div class="section-head">
             <span class="section-kicker">Competitive Ladder</span>
-            <h2 class="section-title">The 12‑Tier Competitive Hierarchy Matrix</h2>
+            <h2 class="section-title">
+              The 12‑Tier Competitive Hierarchy Matrix
+            </h2>
             <p class="section-desc">
-              Governs automated matchmaking limits, profile standings, and the Asymmetric
-              Tier‑Banning Firewall across all rated contests. Initialized at 500 ELO upon first
-              sign-in.
+              Governs automated matchmaking limits, profile standings, and the
+              Asymmetric Tier‑Banning Firewall across all rated contests.
+              Initialized at 500 ELO upon first sign-in.
             </p>
           </div>
 
           <div class="pf-ladder-console">
             <div class="pf-lr">
               <div class="pf-lr-elo">
-                <span class="pf-lr-tag" id="pf-lr-tag">Preview · drag to explore</span>
+                <span class="pf-lr-tag" id="pf-lr-tag"
+                  >Preview · drag to explore</span
+                >
                 <output id="pf-elo-val" class="pf-lr-val">500</output>
                 <span class="pf-lr-unit">ELO</span>
               </div>
               <div class="pf-lr-tier">
-                <span class="pf-lr-num" id="pf-lr-tier-num" aria-hidden="true">11</span>
+                <span class="pf-lr-num" id="pf-lr-tier-num" aria-hidden="true"
+                  >11</span
+                >
                 <div>
                   <strong id="pf-lr-tier-name">Composite Apprentice</strong>
                   <small id="pf-lr-next"></small>
@@ -1295,98 +1559,393 @@
 
             <div class="pf-gauge-wrap">
               <div class="pf-gauge" id="pf-gauge">
-                <div class="pf-gauge-track"><span class="pf-seg" style="--c:#e5e7eb" data-tier="12"><b>12</b></span><span class="pf-seg" style="--c:#8aa4c8" data-tier="11"><b>11</b></span><span class="pf-seg" style="--c:#cd7f32" data-tier="10"><b>10</b></span><span class="pf-seg" style="--c:#9ca3af" data-tier="9"><b>9</b></span><span class="pf-seg" style="--c:#84cc16" data-tier="8"><b>8</b></span><span class="pf-seg" style="--c:#10b981" data-tier="7"><b>7</b></span><span class="pf-seg" style="--c:#3b82f6" data-tier="6"><b>6</b></span><span class="pf-seg" style="--c:#f59e0b" data-tier="5"><b>5</b></span><span class="pf-seg" style="--c:#8b5cf6" data-tier="4"><b>4</b></span><span class="pf-seg" style="--c:#06b6d4" data-tier="3"><b>3</b></span><span class="pf-seg" style="--c:#dc2626" data-tier="2"><b>2</b></span><span class="pf-seg" style="--c:#ec4899" data-tier="1"><b>1</b></span></div>
-                <div class="pf-gauge-marker" id="pf-gauge-marker" aria-hidden="true"><i></i></div>
+                <div class="pf-gauge-track">
+                  <span class="pf-seg" style="--c: #e5e7eb" data-tier="12"
+                    ><b>12</b></span
+                  ><span class="pf-seg" style="--c: #8aa4c8" data-tier="11"
+                    ><b>11</b></span
+                  ><span class="pf-seg" style="--c: #cd7f32" data-tier="10"
+                    ><b>10</b></span
+                  ><span class="pf-seg" style="--c: #9ca3af" data-tier="9"
+                    ><b>9</b></span
+                  ><span class="pf-seg" style="--c: #84cc16" data-tier="8"
+                    ><b>8</b></span
+                  ><span class="pf-seg" style="--c: #10b981" data-tier="7"
+                    ><b>7</b></span
+                  ><span class="pf-seg" style="--c: #3b82f6" data-tier="6"
+                    ><b>6</b></span
+                  ><span class="pf-seg" style="--c: #f59e0b" data-tier="5"
+                    ><b>5</b></span
+                  ><span class="pf-seg" style="--c: #8b5cf6" data-tier="4"
+                    ><b>4</b></span
+                  ><span class="pf-seg" style="--c: #06b6d4" data-tier="3"
+                    ><b>3</b></span
+                  ><span class="pf-seg" style="--c: #dc2626" data-tier="2"
+                    ><b>2</b></span
+                  ><span class="pf-seg" style="--c: #ec4899" data-tier="1"
+                    ><b>1</b></span
+                  >
+                </div>
+                <div
+                  class="pf-gauge-marker"
+                  id="pf-gauge-marker"
+                  aria-hidden="true"
+                >
+                  <i></i>
+                </div>
               </div>
-              <div class="pf-ticks" aria-hidden="true"><span>0</span><span>500</span><span>900</span><span>1,200</span><span>1,400</span><span>1,600</span><span>1,800</span><span>2,000</span><span>2,200</span><span>2,400</span><span>2,700</span><span>3,000</span></div>
-              <input id="pf-elo-range" class="pf-range" type="range" min="0" max="1000" step="1" value="125" aria-label="ELO rating preview" />
+              <div class="pf-ticks" aria-hidden="true">
+                <span>0</span><span>500</span><span>900</span><span>1,200</span
+                ><span>1,400</span><span>1,600</span><span>1,800</span
+                ><span>2,000</span><span>2,200</span><span>2,400</span
+                ><span>2,700</span><span>3,000</span>
+              </div>
+              <input
+                id="pf-elo-range"
+                class="pf-range"
+                type="range"
+                min="0"
+                max="1000"
+                step="1"
+                value="125"
+                aria-label="ELO rating preview"
+              />
             </div>
           </div>
 
           <div class="pf-tier-grid">
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#ec4899" data-tier="1" data-lo="3000" data-hi="3400" data-title="Prime Singularity" data-color="#ec4899" data-note="Constraint: Tiers 1–6 locked from Rated play. Strict 95%+ Accuracy required." aria-label="Tier 1, Prime Singularity, 3000+ ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #ec4899"
+              data-tier="1"
+              data-lo="3000"
+              data-hi="3400"
+              data-title="Prime Singularity"
+              data-color="#ec4899"
+              data-note="Constraint: Tiers 1–6 locked from Rated play. Strict 95%+ Accuracy required."
+              aria-label="Tier 1, Prime Singularity, 3000+ ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">01</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">3000+ ELO</span><span class="pf-tier-swatch"><i></i>Nebula Pink</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">3000+ ELO</span
+                ><span class="pf-tier-swatch"><i></i>Nebula Pink</span>
+              </div>
               <h3 class="pf-tier-title">Prime Singularity</h3>
-              <p class="pf-tier-rule">Constraint: Tiers 1–6 locked from Rated play. Strict 95%+ Accuracy required.</p>
-              <p class="pf-tier-quote">Absolute apex. Only Unrated practice allowed below this ceiling to prevent point‑farming.</p>
+              <p class="pf-tier-rule">
+                Constraint: Tiers 1–6 locked from Rated play. Strict 95%+
+                Accuracy required.
+              </p>
+              <p class="pf-tier-quote">
+                Absolute apex. Only Unrated practice allowed below this ceiling
+                to prevent point‑farming.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#dc2626" data-tier="2" data-lo="2700" data-hi="2999" data-title="Riemann Transcendentalist" data-color="#dc2626" data-note="Constraint: Tiers 1–5 locked from Rated play. Matches forced into Unrated simulation." aria-label="Tier 2, Riemann Transcendentalist, 2700–2999 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #dc2626"
+              data-tier="2"
+              data-lo="2700"
+              data-hi="2999"
+              data-title="Riemann Transcendentalist"
+              data-color="#dc2626"
+              data-note="Constraint: Tiers 1–5 locked from Rated play. Matches forced into Unrated simulation."
+              aria-label="Tier 2, Riemann Transcendentalist, 2700–2999 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">02</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">2700–2999 ELO</span><span class="pf-tier-swatch"><i></i>Crimson Scarlet</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">2700–2999 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Crimson Scarlet</span>
+              </div>
               <h3 class="pf-tier-title">Riemann Transcendentalist</h3>
-              <p class="pf-tier-rule">Constraint: Tiers 1–5 locked from Rated play. Matches forced into Unrated simulation.</p>
-              <p class="pf-tier-quote">Transcendental mastery. Rated play restricted to higher strata only.</p>
+              <p class="pf-tier-rule">
+                Constraint: Tiers 1–5 locked from Rated play. Matches forced
+                into Unrated simulation.
+              </p>
+              <p class="pf-tier-quote">
+                Transcendental mastery. Rated play restricted to higher strata
+                only.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#06b6d4" data-tier="3" data-lo="2400" data-hi="2699" data-title="Canonical Analyst" data-color="#06b6d4" data-note="Condition: High-tier analytical precision, solving advanced problems with minimal lifeline reliance." aria-label="Tier 3, Canonical Analyst, 2400–2699 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #06b6d4"
+              data-tier="3"
+              data-lo="2400"
+              data-hi="2699"
+              data-title="Canonical Analyst"
+              data-color="#06b6d4"
+              data-note="Condition: High-tier analytical precision, solving advanced problems with minimal lifeline reliance."
+              aria-label="Tier 3, Canonical Analyst, 2400–2699 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">03</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">2400–2699 ELO</span><span class="pf-tier-swatch"><i></i>Electric Cyan</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">2400–2699 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Electric Cyan</span>
+              </div>
               <h3 class="pf-tier-title">Canonical Analyst</h3>
-              <p class="pf-tier-rule">Condition: High-tier analytical precision, solving advanced problems with minimal lifeline reliance.</p>
-              <p class="pf-tier-quote">Canonical insight. Mastery of structural decomposition under accelerated timers.</p>
+              <p class="pf-tier-rule">
+                Condition: High-tier analytical precision, solving advanced
+                problems with minimal lifeline reliance.
+              </p>
+              <p class="pf-tier-quote">
+                Canonical insight. Mastery of structural decomposition under
+                accelerated timers.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#8b5cf6" data-tier="4" data-lo="2200" data-hi="2399" data-title="Gaussian Cryptographer" data-color="#8b5cf6" data-note="Condition: Complex encrypted problem sets requiring layered reasoning and zero-distraction focus." aria-label="Tier 4, Gaussian Cryptographer, 2200–2399 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #8b5cf6"
+              data-tier="4"
+              data-lo="2200"
+              data-hi="2399"
+              data-title="Gaussian Cryptographer"
+              data-color="#8b5cf6"
+              data-note="Condition: Complex encrypted problem sets requiring layered reasoning and zero-distraction focus."
+              aria-label="Tier 4, Gaussian Cryptographer, 2200–2399 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">04</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">2200–2399 ELO</span><span class="pf-tier-swatch"><i></i>Vibrant Violet</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">2200–2399 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Vibrant Violet</span>
+              </div>
               <h3 class="pf-tier-title">Gaussian Cryptographer</h3>
-              <p class="pf-tier-rule">Condition: Complex encrypted problem sets requiring layered reasoning and zero-distraction focus.</p>
-              <p class="pf-tier-quote">Cryptographic resilience. Decodes numerical complexity under pressure.</p>
+              <p class="pf-tier-rule">
+                Condition: Complex encrypted problem sets requiring layered
+                reasoning and zero-distraction focus.
+              </p>
+              <p class="pf-tier-quote">
+                Cryptographic resilience. Decodes numerical complexity under
+                pressure.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#f59e0b" data-tier="5" data-lo="2000" data-hi="2199" data-title="Eulerian Sentinel" data-color="#f59e0b" data-note="Condition: High accuracy across mid-high ranges, balancing speed with modular awareness." aria-label="Tier 5, Eulerian Sentinel, 2000–2199 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #f59e0b"
+              data-tier="5"
+              data-lo="2000"
+              data-hi="2199"
+              data-title="Eulerian Sentinel"
+              data-color="#f59e0b"
+              data-note="Condition: High accuracy across mid-high ranges, balancing speed with modular awareness."
+              aria-label="Tier 5, Eulerian Sentinel, 2000–2199 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">05</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">2000–2199 ELO</span><span class="pf-tier-swatch"><i></i>Laser Amber</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">2000–2199 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Laser Amber</span>
+              </div>
               <h3 class="pf-tier-title">Eulerian Sentinel</h3>
-              <p class="pf-tier-rule">Condition: High accuracy across mid-high ranges, balancing speed with modular awareness.</p>
-              <p class="pf-tier-quote">Eulerian precision with disciplined calculation over every numeric pathway.</p>
+              <p class="pf-tier-rule">
+                Condition: High accuracy across mid-high ranges, balancing speed
+                with modular awareness.
+              </p>
+              <p class="pf-tier-quote">
+                Eulerian precision with disciplined calculation over every
+                numeric pathway.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#3b82f6" data-tier="6" data-lo="1800" data-hi="1999" data-title="Logarithmic Vector" data-color="#3b82f6" data-note="Core Trigger: Expectation Deficit Penalties activate if accuracy drops below rating curve." aria-label="Tier 6, Logarithmic Vector, 1800–1999 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #3b82f6"
+              data-tier="6"
+              data-lo="1800"
+              data-hi="1999"
+              data-title="Logarithmic Vector"
+              data-color="#3b82f6"
+              data-note="Core Trigger: Expectation Deficit Penalties activate if accuracy drops below rating curve."
+              aria-label="Tier 6, Logarithmic Vector, 1800–1999 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">06</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">1800–1999 ELO</span><span class="pf-tier-swatch"><i></i>Cobalt Blue</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">1800–1999 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Cobalt Blue</span>
+              </div>
               <h3 class="pf-tier-title">Logarithmic Vector</h3>
-              <p class="pf-tier-rule">Core Trigger: Expectation Deficit Penalties activate if accuracy drops below rating curve.</p>
-              <p class="pf-tier-quote">Logarithmic curve enforces balance, rewarding steady cognitive cadence.</p>
+              <p class="pf-tier-rule">
+                Core Trigger: Expectation Deficit Penalties activate if accuracy
+                drops below rating curve.
+              </p>
+              <p class="pf-tier-quote">
+                Logarithmic curve enforces balance, rewarding steady cognitive
+                cadence.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#10b981" data-tier="7" data-lo="1600" data-hi="1799" data-title="Prime Strategist" data-color="#10b981" data-note="Condition: Tactical foresight, lifeline resource management, and adaptive pacing." aria-label="Tier 7, Prime Strategist, 1600–1799 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #10b981"
+              data-tier="7"
+              data-lo="1600"
+              data-hi="1799"
+              data-title="Prime Strategist"
+              data-color="#10b981"
+              data-note="Condition: Tactical foresight, lifeline resource management, and adaptive pacing."
+              aria-label="Tier 7, Prime Strategist, 1600–1799 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">07</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">1600–1799 ELO</span><span class="pf-tier-swatch"><i></i>Deep Jade</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">1600–1799 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Deep Jade</span>
+              </div>
               <h3 class="pf-tier-title">Prime Strategist</h3>
-              <p class="pf-tier-rule">Condition: Tactical foresight, lifeline resource management, and adaptive pacing.</p>
-              <p class="pf-tier-quote">Strategic depth anchors this tier with calculated risk-taking.</p>
+              <p class="pf-tier-rule">
+                Condition: Tactical foresight, lifeline resource management, and
+                adaptive pacing.
+              </p>
+              <p class="pf-tier-quote">
+                Strategic depth anchors this tier with calculated risk-taking.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#84cc16" data-tier="8" data-lo="1400" data-hi="1599" data-title="Modular Operator" data-color="#84cc16" data-note="Condition: Solves standard bounds with growing fluency and confidence." aria-label="Tier 8, Modular Operator, 1400–1599 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #84cc16"
+              data-tier="8"
+              data-lo="1400"
+              data-hi="1599"
+              data-title="Modular Operator"
+              data-color="#84cc16"
+              data-note="Condition: Solves standard bounds with growing fluency and confidence."
+              aria-label="Tier 8, Modular Operator, 1400–1599 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">08</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">1400–1599 ELO</span><span class="pf-tier-swatch"><i></i>Mint Green</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">1400–1599 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Mint Green</span>
+              </div>
               <h3 class="pf-tier-title">Modular Operator</h3>
-              <p class="pf-tier-rule">Condition: Solves standard bounds with growing fluency and confidence.</p>
-              <p class="pf-tier-quote">Modular adaptability. Mastering flexible factorization approaches.</p>
+              <p class="pf-tier-rule">
+                Condition: Solves standard bounds with growing fluency and
+                confidence.
+              </p>
+              <p class="pf-tier-quote">
+                Modular adaptability. Mastering flexible factorization
+                approaches.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#9ca3af" data-tier="9" data-lo="1200" data-hi="1399" data-title="Radix Scholar" data-color="#9ca3af" data-note="Condition: Foundational mastery of divisibility rules and prime factor heuristics." aria-label="Tier 9, Radix Scholar, 1200–1399 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #9ca3af"
+              data-tier="9"
+              data-lo="1200"
+              data-hi="1399"
+              data-title="Radix Scholar"
+              data-color="#9ca3af"
+              data-note="Condition: Foundational mastery of divisibility rules and prime factor heuristics."
+              aria-label="Tier 9, Radix Scholar, 1200–1399 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">09</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">1200–1399 ELO</span><span class="pf-tier-swatch"><i></i>Muted Platinum</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">1200–1399 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Muted Platinum</span>
+              </div>
               <h3 class="pf-tier-title">Radix Scholar</h3>
-              <p class="pf-tier-rule">Condition: Foundational mastery of divisibility rules and prime factor heuristics.</p>
-              <p class="pf-tier-quote">Consolidating theoretical roots while sharpening execution speed.</p>
+              <p class="pf-tier-rule">
+                Condition: Foundational mastery of divisibility rules and prime
+                factor heuristics.
+              </p>
+              <p class="pf-tier-quote">
+                Consolidating theoretical roots while sharpening execution
+                speed.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#cd7f32" data-tier="10" data-lo="900" data-hi="1199" data-title="Sieve Calibrator" data-color="#cd7f32" data-note="Condition: Refines sieve-based divisibility checks with focus on zero-mistake consistency." aria-label="Tier 10, Sieve Calibrator, 900–1199 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #cd7f32"
+              data-tier="10"
+              data-lo="900"
+              data-hi="1199"
+              data-title="Sieve Calibrator"
+              data-color="#cd7f32"
+              data-note="Condition: Refines sieve-based divisibility checks with focus on zero-mistake consistency."
+              aria-label="Tier 10, Sieve Calibrator, 900–1199 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">10</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">900–1199 ELO</span><span class="pf-tier-swatch"><i></i>Polished Bronze</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">900–1199 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Polished Bronze</span>
+              </div>
               <h3 class="pf-tier-title">Sieve Calibrator</h3>
-              <p class="pf-tier-rule">Condition: Refines sieve-based divisibility checks with focus on zero-mistake consistency.</p>
-              <p class="pf-tier-quote">Stabilizing fundamentals for ascending into higher analytical strata.</p>
+              <p class="pf-tier-rule">
+                Condition: Refines sieve-based divisibility checks with focus on
+                zero-mistake consistency.
+              </p>
+              <p class="pf-tier-quote">
+                Stabilizing fundamentals for ascending into higher analytical
+                strata.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#8aa4c8" data-tier="11" data-lo="500" data-hi="899" data-title="Composite Apprentice" data-color="#8aa4c8" data-note="Onboarding Baseline: Every new authenticated user begins at 500 ELO." aria-label="Tier 11, Composite Apprentice, 500–899 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #8aa4c8"
+              data-tier="11"
+              data-lo="500"
+              data-hi="899"
+              data-title="Composite Apprentice"
+              data-color="#8aa4c8"
+              data-note="Onboarding Baseline: Every new authenticated user begins at 500 ELO."
+              aria-label="Tier 11, Composite Apprentice, 500–899 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">11</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">500–899 ELO</span><span class="pf-tier-swatch"><i></i>Slate Blue</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">500–899 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Slate Blue</span>
+              </div>
               <h3 class="pf-tier-title">Composite Apprentice</h3>
-              <p class="pf-tier-rule">Onboarding Baseline: Every new authenticated user begins at 500 ELO.</p>
-              <p class="pf-tier-quote">Apprentice tier. The official launch floor for all newly registered competitors.</p>
+              <p class="pf-tier-rule">
+                Onboarding Baseline: Every new authenticated user begins at 500
+                ELO.
+              </p>
+              <p class="pf-tier-quote">
+                Apprentice tier. The official launch floor for all newly
+                registered competitors.
+              </p>
             </article>
-            <article class="pf-tier-card" role="button" tabindex="0" style="--c:#e5e7eb" data-tier="12" data-lo="0" data-hi="499" data-title="Foundry Initiate" data-color="#e5e7eb" data-note="Buffer floor for cold losing streaks. Practice mode recommended." aria-label="Tier 12, Foundry Initiate, 0–499 ELO. Preview on the gauge.">
+            <article
+              class="pf-tier-card"
+              role="button"
+              tabindex="0"
+              style="--c: #e5e7eb"
+              data-tier="12"
+              data-lo="0"
+              data-hi="499"
+              data-title="Foundry Initiate"
+              data-color="#e5e7eb"
+              data-note="Buffer floor for cold losing streaks. Practice mode recommended."
+              aria-label="Tier 12, Foundry Initiate, 0–499 ELO. Preview on the gauge."
+            >
               <span class="pf-tier-num" aria-hidden="true">12</span>
-              <div class="pf-tier-top"><span class="pf-tier-elo">0–499 ELO</span><span class="pf-tier-swatch"><i></i>Chalk White</span></div>
+              <div class="pf-tier-top">
+                <span class="pf-tier-elo">0–499 ELO</span
+                ><span class="pf-tier-swatch"><i></i>Chalk White</span>
+              </div>
               <h3 class="pf-tier-title">Foundry Initiate</h3>
-              <p class="pf-tier-rule">Buffer floor for cold losing streaks. Practice mode recommended.</p>
-              <p class="pf-tier-quote">Foundry tier. Serves as the stabilizing recovery floor.</p>
+              <p class="pf-tier-rule">
+                Buffer floor for cold losing streaks. Practice mode recommended.
+              </p>
+              <p class="pf-tier-quote">
+                Foundry tier. Serves as the stabilizing recovery floor.
+              </p>
             </article>
           </div>
         </div>
@@ -1584,13 +2143,16 @@
           >
             <span class="rz-orb rz-orb-a" aria-hidden="true"></span>
             <span class="rz-orb rz-orb-b" aria-hidden="true"></span>
-            <span class="rz-glyphs" aria-hidden="true"><i>2</i><i>3</i><i>5</i><i>7</i><i>11</i><i>13</i><i>17</i></span>
-            <span class="rz-kicker"
-              >Click to Trigger Random Deployment</span
+            <span class="rz-glyphs" aria-hidden="true"
+              ><i>2</i><i>3</i><i>5</i><i>7</i><i>11</i><i>13</i><i>17</i></span
             >
+            <span class="rz-kicker">Click to Trigger Random Deployment</span>
             <div class="randomizer-slot-box rz-slot">
               <span class="rz-reel-edge" aria-hidden="true"></span>
-              <span id="slot-machine-target" class="slot-machine-text" aria-live="polite"
+              <span
+                id="slot-machine-target"
+                class="slot-machine-text"
+                aria-live="polite"
                 >ROLL ARENA</span
               >
             </div>
@@ -1598,7 +2160,9 @@
               Pulls randomly across all 9 competition tiers and applies global
               session rules automatically.
             </p>
-            <span class="rz-cta" aria-hidden="true">▶ Tap, press Enter or Space to spin</span>
+            <span class="rz-cta" aria-hidden="true"
+              >▶ Tap, press Enter or Space to spin</span
+            >
           </div>
         </div>
       </section>
@@ -1633,7 +2197,7 @@
               href="./exam.html?min=1&max=200&title=Tier%201%3A%201%20-%20200"
               class="range-tilt-card rp-card"
               data-tier="1"
-              style="--t:1"
+              style="--t: 1"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 1</div>
@@ -1650,7 +2214,7 @@
               href="./exam.html?min=201&max=500&title=Tier%202%3A%20201%20-%20500"
               class="range-tilt-card rp-card"
               data-tier="2"
-              style="--t:2"
+              style="--t: 2"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 2</div>
@@ -1667,7 +2231,7 @@
               href="./exam.html?min=501&max=1000&title=Tier%203%3A%20501%20-%201%2C000"
               class="range-tilt-card rp-card"
               data-tier="3"
-              style="--t:3"
+              style="--t: 3"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 3</div>
@@ -1684,7 +2248,7 @@
               href="./exam.html?min=1001&max=2000&title=Tier%204%3A%201%2C001%20-%202%2C000"
               class="range-tilt-card rp-card"
               data-tier="4"
-              style="--t:4"
+              style="--t: 4"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 4</div>
@@ -1701,7 +2265,7 @@
               href="./exam.html?min=2001&max=5000&title=Tier%205%3A%202%2C001%20-%205%2C000"
               class="range-tilt-card rp-card"
               data-tier="5"
-              style="--t:5"
+              style="--t: 5"
             >
               <div class="range-card-body">
                 <div class="range-tier-label">Tier 5</div>
@@ -1714,16 +2278,15 @@
               </div>
             </a>
 
-            <a href="./ranges.html" class="range-tilt-card rp-card rp-all" data-tier="6" style="--t:6">
+            <a
+              href="./ranges.html"
+              class="range-tilt-card rp-card rp-all"
+              data-tier="6"
+              style="--t: 6"
+            >
               <div class="range-card-body rp-all-body">
-                <div class="range-tier-label">
-                  Complete Matrix
-                </div>
-                <div
-                  class="range-bounds-text"
-                >
-                  All 10 Tiers
-                </div>
+                <div class="range-tier-label">Complete Matrix</div>
+                <div class="range-bounds-text">All 10 Tiers</div>
                 <p class="range-desc-text">
                   Browse from Tier 1 up to Omega 50,000+
                 </p>
@@ -1765,40 +2328,56 @@
 
           <div class="cps-panel">
             <div class="cps-grid">
-              <label class="cps-toggle" style="--i:0">
+              <label class="cps-toggle" style="--i: 0">
                 <span class="cps-ico" aria-hidden="true">🔊</span>
                 <span class="cps-text">
                   <span class="cps-title">Synthesizer Audio</span>
                   <span class="cps-sub">Mechanical ticks &amp; chimes</span>
                 </span>
-                <input type="checkbox" id="local-toggle-audio" class="cps-input" />
+                <input
+                  type="checkbox"
+                  id="local-toggle-audio"
+                  class="cps-input"
+                />
                 <span class="cps-switch" aria-hidden="true"></span>
               </label>
-              <label class="cps-toggle" style="--i:1">
+              <label class="cps-toggle" style="--i: 1">
                 <span class="cps-ico" aria-hidden="true">🔁</span>
                 <span class="cps-text">
                   <span class="cps-title">Second Chance Overtime</span>
                   <span class="cps-sub">Redemption retry loop</span>
                 </span>
-                <input type="checkbox" id="local-toggle-second-attempt" class="cps-input" />
+                <input
+                  type="checkbox"
+                  id="local-toggle-second-attempt"
+                  class="cps-input"
+                />
                 <span class="cps-switch" aria-hidden="true"></span>
               </label>
-              <label class="cps-toggle" style="--i:2">
+              <label class="cps-toggle" style="--i: 2">
                 <span class="cps-ico" aria-hidden="true">⏸️</span>
                 <span class="cps-text">
                   <span class="cps-title">Timer Pauses</span>
                   <span class="cps-sub">5s tactical freeze (-2 pts)</span>
                 </span>
-                <input type="checkbox" id="local-toggle-pauses" class="cps-input" />
+                <input
+                  type="checkbox"
+                  id="local-toggle-pauses"
+                  class="cps-input"
+                />
                 <span class="cps-switch" aria-hidden="true"></span>
               </label>
-              <label class="cps-toggle" style="--i:3">
+              <label class="cps-toggle" style="--i: 3">
                 <span class="cps-ico" aria-hidden="true">💡</span>
                 <span class="cps-text">
                   <span class="cps-title">Conceptual Hints</span>
                   <span class="cps-sub">Smallest factor guidance</span>
                 </span>
-                <input type="checkbox" id="local-toggle-hints" class="cps-input" />
+                <input
+                  type="checkbox"
+                  id="local-toggle-hints"
+                  class="cps-input"
+                />
                 <span class="cps-switch" aria-hidden="true"></span>
               </label>
             </div>
@@ -2041,10 +2620,18 @@
               <span class="pg-chips-label">Try:</span>
               <button type="button" class="pg-chip" data-pg="360">360</button>
               <button type="button" class="pg-chip" data-pg="7919">7919</button>
-              <button type="button" class="pg-chip" data-pg="30030">30030</button>
-              <button type="button" class="pg-chip" data-pg="65536">65536</button>
-              <button type="button" class="pg-chip" data-pg="600851">600851</button>
-              <button type="button" class="pg-chip" data-pg="9999991">9999991</button>
+              <button type="button" class="pg-chip" data-pg="30030">
+                30030
+              </button>
+              <button type="button" class="pg-chip" data-pg="65536">
+                65536
+              </button>
+              <button type="button" class="pg-chip" data-pg="600851">
+                600851
+              </button>
+              <button type="button" class="pg-chip" data-pg="9999991">
+                9999991
+              </button>
             </div>
 
             <div class="factorization-output-deck">
@@ -2055,7 +2642,12 @@
                 id="playground-bubbles-wrap"
                 class="factor-bubbles-wrap"
               ></div>
-              <div id="playground-verdict-tag" class="prime-verdict-tag" role="status" aria-live="polite">
+              <div
+                id="playground-verdict-tag"
+                class="prime-verdict-tag"
+                role="status"
+                aria-live="polite"
+              >
                 Pollard's Rho factorization ready
               </div>
             </div>
@@ -2182,7 +2774,9 @@
             >
           </div>
 
-          <h2 class="v3-triumph-headline">THE EVOLUTION <span class="v3-nowrap">IS UNLEASHED</span></h2>
+          <h2 class="v3-triumph-headline">
+            THE EVOLUTION <span class="v3-nowrap">IS UNLEASHED</span>
+          </h2>
 
           <p class="v3-triumph-subtext">
             The architectural staging for
@@ -2240,7 +2834,9 @@
 
           <div class="settings-node-card ta-card">
             <div class="ta-head">
-              <span class="ta-live"><i aria-hidden="true"></i>Integrity checks passing</span>
+              <span class="ta-live"
+                ><i aria-hidden="true"></i>Integrity checks passing</span
+              >
               <span class="ta-stack-label">Technology stack</span>
             </div>
             <div class="auto-fit-grid-240 ta-grid" style="gap: 1rem">
@@ -2293,7 +2889,25 @@
                 <div class="ta-note">Owner-only writes (uid-checked)</div>
               </div>
             </div>
-            <ul class="ta-chips" aria-label="Platform guarantees"><li><span aria-hidden="true">✓</span>Client-side math, zero round-trips</li><li><span aria-hidden="true">✓</span>Deterministic verification</li><li><span aria-hidden="true">✓</span>Google OAuth via Firebase</li><li><span aria-hidden="true">✓</span>Per-user document isolation</li><li><span aria-hidden="true">✓</span>Reduced-motion aware</li><li><span aria-hidden="true">✓</span>Responsive 320px → 4K</li><li><span aria-hidden="true">✓</span>Keyboard accessible</li><li><span aria-hidden="true">✓</span>Canvas-confetti rewards</li></ul>
+            <ul class="ta-chips" aria-label="Platform guarantees">
+              <li>
+                <span aria-hidden="true">✓</span>Client-side math, zero
+                round-trips
+              </li>
+              <li>
+                <span aria-hidden="true">✓</span>Deterministic verification
+              </li>
+              <li>
+                <span aria-hidden="true">✓</span>Google OAuth via Firebase
+              </li>
+              <li>
+                <span aria-hidden="true">✓</span>Per-user document isolation
+              </li>
+              <li><span aria-hidden="true">✓</span>Reduced-motion aware</li>
+              <li><span aria-hidden="true">✓</span>Responsive 320px → 4K</li>
+              <li><span aria-hidden="true">✓</span>Keyboard accessible</li>
+              <li><span aria-hidden="true">✓</span>Canvas-confetti rewards</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -2365,21 +2979,23 @@
         <div class="footer-container">
           <p class="footer-line highlight">© Olympiad Edge</p>
           <p class="footer-line footer-author">Authorized By Rayaan Tasnim</p>
-          <p class="footer-line footer-line-muted">PrimeFactor.app v3.4 · All rights reserved</p>
+          <p class="footer-line footer-line-muted">
+            PrimeFactor.app v3.4 · All rights reserved
+          </p>
         </div>
       </footer>
     </div>
 
     <!-- Page Module Logic -->
     <script type="module">
-      import { initGlobalHeader, renderFooter } from './js/header.js';
+      import { initGlobalHeader, renderFooter } from "./js/header.js";
       import {
         waitForAuthReady,
         onAuthChange,
         getCurrentUser,
-        getCurrentProfile
-      } from './js/firebase.js';
-      import { initHomeStaticModules, syncHomeAuthUI } from './js/home.js';
+        getCurrentProfile,
+      } from "./js/firebase.js";
+      import { initHomeStaticModules, syncHomeAuthUI } from "./js/home.js";
 
       async function bootstrapHome() {
         if (window.__pfHomeBootstrapped) return;
@@ -2400,20 +3016,20 @@
 
         if (!window.__pfHomeAuthEventsBound) {
           window.__pfHomeAuthEventsBound = true;
-          window.addEventListener('primefactor_auth_changed', (e) => {
+          window.addEventListener("primefactor_auth_changed", (e) => {
             syncHomeAuthUI(e.detail);
           });
-          window.addEventListener('primefactor_profile_updated', (e) => {
+          window.addEventListener("primefactor_profile_updated", (e) => {
             syncHomeAuthUI({
               user: getCurrentUser(),
-              profile: e.detail?.profile ?? getCurrentProfile()
+              profile: e.detail?.profile ?? getCurrentProfile(),
             });
           });
         }
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', bootstrapHome);
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", bootstrapHome);
       } else {
         bootstrapHome();
       }

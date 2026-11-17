@@ -1,267 +1,217 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
-  <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
-  <link rel="dns-prefetch" href="https://apis.google.com" />
-  <link rel="preconnect" href="https://images.pexels.com" crossorigin />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contest Hub — PrimeFactor.app Competitive Arena</title>
-  <meta name="description" content="Competitive Math Olympiad contest arena with Sudden Death Lightning Roll spin wheel, algorithmic High-ELO lockout filter, and live tournament routing." />
-  <meta property="og:title" content="Contest Hub — PrimeFactor.app Competitive Arena" />
-  <meta property="og:description" content="Competitive Math Olympiad contest arena with Sudden Death Lightning Roll spin wheel, algorithmic High-ELO lockout filter, and live tournament routing." />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="preconnect"
+      href="https://firestore.googleapis.com"
+      crossorigin
+    />
+    <link
+      rel="preconnect"
+      href="https://identitytoolkit.googleapis.com"
+      crossorigin
+    />
+    <link rel="dns-prefetch" href="https://securetoken.googleapis.com" />
+    <link rel="dns-prefetch" href="https://apis.google.com" />
+    <link rel="preconnect" href="https://images.pexels.com" crossorigin />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contest Hub — PrimeFactor.app Competitive Arena</title>
+    <meta
+      name="description"
+      content="Competitive Math Olympiad contest arena with Sudden Death Lightning Roll spin wheel, algorithmic High-ELO lockout filter, and live tournament routing."
+    />
+    <meta
+      property="og:title"
+      content="Contest Hub — PrimeFactor.app Competitive Arena"
+    />
+    <meta
+      property="og:description"
+      content="Competitive Math Olympiad contest arena with Sudden Death Lightning Roll spin wheel, algorithmic High-ELO lockout filter, and live tournament routing."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="icon" type="image/x-icon" href="./favicon.ico">
-  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./css/notifications.css" />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" /></noscript>
-  <link rel="stylesheet" href="css/contest.css"/>
-  <link rel="stylesheet" href="css/contest-special.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./css/notifications.css" />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap"
+    /></noscript>
+    <link rel="stylesheet" href="css/contest.css" />
+    <link rel="stylesheet" href="css/contest-special.css" />
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <link rel="stylesheet" href="./css/ux-core.css" />
     <link rel="stylesheet" href="./css/aurora-pro.css" />
     <link rel="stylesheet" href="./css/responsive-global.css" />
     <script type="module" src="./js/ux-core.js"></script>
   </head>
-<body style="min-height: 100vh; display: flex; flex-direction: column;">
-  <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
-  <div id="flash-overlay" aria-hidden="true"></div>
+  <body style="min-height: 100vh; display: flex; flex-direction: column">
+    <!-- Full-Viewport Hardware Accelerated GSAP Flash Overlay -->
+    <div id="flash-overlay" aria-hidden="true"></div>
 
-  <!-- Persistent Global Top Header with Dropdown Navigation & Engine Settings Gear Icon -->
-  <header class="fixed-header">
-    <div class="header-container">
-      <!-- Left: Minimalist Logo + Brand Text -->
-      <a href="./index.html" class="brand-lockup">
-        <span class="brand-symbol">Π</span>
-        <span class="brand-text"  style="color:white;">Prime Factor<span class="dot-app">.app</span></span>
-      </a>
+    <!-- Persistent Global Top Header with Dropdown Navigation & Engine Settings Gear Icon -->
+    <header class="fixed-header">
+      <div class="header-container">
+        <!-- Left: Minimalist Logo + Brand Text -->
+        <a href="./index.html" class="brand-lockup">
+          <span class="brand-symbol">Π</span>
+          <span class="brand-text" style="color: white"
+            >Prime Factor<span class="dot-app">.app</span></span
+          >
+        </a>
 
-      <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
-      <div style="position: relative;">
-        <button id="menu-toggle" class="nav-hamburger-btn nav-dropdown-trigger" aria-label="Toggle Navigation Menu" aria-expanded="false">
-          <div class="hamburger-bars">
-            <span class="hamburger-bar"></span>
-            <span class="hamburger-bar"></span>
-            <span class="hamburger-bar"></span>
-          </div>
-          <span>Navigation</span>
-        </button>
-
-        <!-- Dropdown Box (Frosted Glass with links) -->
-        <nav id="global-dropdown-menu" class="nav-dropdown-glass-container global-nav-dropdown" aria-label="Main Navigation">
-          <a href="./index.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-              <span>Home Page</span>
+        <!-- Center: Hamburger Dropdown Trigger & Floating Frosted Glass Menu -->
+        <div style="position: relative">
+          <button
+            id="menu-toggle"
+            class="nav-hamburger-btn nav-dropdown-trigger"
+            aria-label="Toggle Navigation Menu"
+            aria-expanded="false"
+          >
+            <div class="hamburger-bars">
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
+              <span class="hamburger-bar"></span>
             </div>
-            <span class="dropdown-badge">Hub</span>
-          </a>
-
-          <a href="./rules.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-              <span>Rules</span>
-            </div>
-            <span class="dropdown-badge">Policies</span>
-          </a>
-
-          <a href="./rating.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="20" x2="18" y2="10"></line>
-                <line x1="12" y1="20" x2="12" y2="4"></line>
-                <line x1="6" y1="20" x2="6" y2="14"></line>
-              </svg>
-              <span>Rating</span>
-            </div>
-            <span class="dropdown-badge">Matrix</span>
-          </a>
-
-          <a href="./edu.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                <path d="M6 6h10"></path>
-                <path d="M6 10h10"></path>
-              </svg>
-              <span>Edu</span>
-            </div>
-            <span class="dropdown-badge">Training</span>
-          </a>
-
-          <a href="./services.html" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-              </svg>
-              <span>Services</span>
-            </div>
-            <span class="dropdown-badge">Facilities</span>
-          </a>
-
-          <a href="./contest.html" id="dropdown-contest" class="dropdown-link-item" style="background: rgba(14, 165, 233, 0.15); border-left: 3px solid #38BDF8;">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                <path d="M4 22h16"></path>
-                <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
-                <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-              </svg>
-              <span>Contest</span>
-            </div>
-            <span class="dropdown-badge" style="background: #0284C7; color: #FFFFFF;">Arena</span>
-          </a>
-
-          <a href="./profile.html" id="dropdown-profile" class="dropdown-link-item">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              <span>Profile</span>
-            </div>
-            <span class="dropdown-badge">Overview</span>
-          </a>
-
-                    <a href="./faq.html" class="dropdown-link-item" id="dropdown-faq">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                <path d="M6 6h10"></path>
-                <circle cx="12" cy="14" r="1"></circle>
-                <path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"></path>
-              </svg>
-              <span>FAQ</span>
-            </div>
-            <span class="dropdown-badge">Archive</span>
-          </a>
-
-          <!-- Desktop Settings Link -->
-          <a href="./engine.html" id="dropdown-open-settings" class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span>Settings</span>
-            </div>
-            <span class="dropdown-badge">Options</span>
-          </a>
-
-          <!-- Mobile-only System link -->
-          <a href="./engine.html" class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger" id="dropdown-mobile-system" aria-label="System Configuration">
-            <div class="dropdown-link-content">
-              <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-              <span>System</span>
-            </div>
-            <span class="dropdown-badge">Engine</span>
-          </a>
-        </nav>
-      </div>
-
-      <!-- Right: Standalone Settings Gear Icon -->
-      <div class="header-actions">
-        <button id="settings-toggle-btn" class="icon-btn" aria-label="Global Engine Settings">
-          <svg class="gear-icon" width="18" height="18" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
-            <path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Global Settings Modal Slot -->
-  <div id="settings-modal-slot"></div>
-
-  <!-- Main Content Wrapper -->
-  <main class="main-wrapper" style="flex: 1 0 auto; padding-top: 5.5rem; padding-bottom: 3.5rem;">
-    <div class="contest-hero-wrapper">
-      
-      <!-- Section Header -->
-      <div class="section-head" style="text-align: center; margin-bottom: 1rem;">
-        <span class="section-kicker">Olympiad Edge Tournament Circuit</span>
-        <h1 class="section-title">Contest Hub</h1>
-        <p class="section-desc" style="max-width: 44rem; margin: 0.5rem auto 0;">
-          Sudden Death Lightning Roll arena with real-time physics spin, algorithmic high-ELO lockout prevention, and official tournament routing.
-        </p>
-      </div>
-
-      <!-- User ELO Rating & Lockout Status Badge -->
-      <div class="user-elo-badge" id="user-elo-badge-node" style="background-color:black;">
-        <span>Competitor Rating: <span class="user-elo-val" id="competitor-elo-val">1200</span> ELO</span>
-        <span style="color: #64748B;">•</span>
-        <span id="elo-lockout-summary" style="color: #38BDF8; font-weight: 700;">9 / 9 Divisions Unlocked</span>
-      </div>
-
-      <!-- Division Slots Visual Lockdown Status Strip -->
-      <div class="division-slots-strip" id="division-slots-strip" aria-label="Division Slots Capability Status">
-        <!-- Rendered and updated dynamically by js/contest.js -->
-      </div>
-
-      <!-- Sudden Death Lightning Roll Real-Time Spin Wheel Stage -->
-      <div class="contest-wheel-stage">
-        <div class="wheel-container-frame" id="wheel-frame">
-          
-          <!-- Floating Pointer Pin (Indicator) at 12 o'clock -->
-          <div class="wheel-pointer-pin" id="wheel-pointer" aria-hidden="true">
-            <svg viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 42L0 12C0 5.37258 7.16344 0 16 0C24.8366 0 32 5.37258 32 12L16 42Z" fill="#DC2626"/>
-              <path d="M16 36L4 12C4 7 9.5 3 16 3C22.5 3 28 7 28 12L16 36Z" fill="#EF4444"/>
-              <circle cx="16" cy="11" r="4" fill="#FFFFFF"/>
-            </svg>
-          </div>
-
-          <!-- Circular Spin Wheel Canvas (9 Segments) -->
-          <canvas id="wheel-canvas" width="600" height="600"></canvas>
-
-          <!-- Centered Activation Trigger Hub ("ROLL ARENA INSTANT") -->
-          <button type="button" class="wheel-center-core" id="roll-arena-btn" aria-label="ROLL ARENA INSTANT">
-            <span class="roll-btn-label">ROLL<br/>ARENA</span>
-            <span class="roll-btn-sub">Instant</span>
+            <span>Navigation</span>
           </button>
-        </div>
 
-        <!-- Real-Time Roll Status / Winner Banner -->
-        <div class="roll-status-banner" id="roll-status-banner">
-          <span id="roll-status-icon">⚡</span>
-          <span id="roll-status-text">Click "ROLL ARENA" to spin the Sudden Death selector wheel.</span>
-        </div>
-      </div>
+          <!-- Dropdown Box (Frosted Glass with links) -->
+          <nav
+            id="global-dropdown-menu"
+            class="nav-dropdown-glass-container global-nav-dropdown"
+            aria-label="Main Navigation"
+          >
+            <a href="./index.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                  ></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home Page</span>
+              </div>
+              <span class="dropdown-badge">Hub</span>
+            </a>
 
-      <!-- Modular Navigation Junctions (3 Distinct Actions) -->
-      <div class="junctions-grid">
-        
-        <!-- Junction 1: Rated Contests -->
-        <a href="./ranges.html" class="junction-card" id="junction-rated">
-          <div>
-            <div class="junction-card-header">
-              <div class="junction-icon-wrap">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <a href="./rules.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  ></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Rules</span>
+              </div>
+              <span class="dropdown-badge">Policies</span>
+            </a>
+
+            <a href="./rating.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Rating</span>
+              </div>
+              <span class="dropdown-badge">Matrix</span>
+            </a>
+
+            <a href="./edu.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                  ></path>
+                  <path d="M6 6h10"></path>
+                  <path d="M6 10h10"></path>
+                </svg>
+                <span>Edu</span>
+              </div>
+              <span class="dropdown-badge">Training</span>
+            </a>
+
+            <a href="./services.html" class="dropdown-link-item">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <span>Services</span>
+              </div>
+              <span class="dropdown-badge">Facilities</span>
+            </a>
+
+            <a
+              href="./contest.html"
+              id="dropdown-contest"
+              class="dropdown-link-item"
+              style="
+                background: rgba(14, 165, 233, 0.15);
+                border-left: 3px solid #38bdf8;
+              "
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
                   <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
                   <path d="M4 22h16"></path>
@@ -269,80 +219,394 @@
                   <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
                   <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
                 </svg>
+                <span>Contest</span>
               </div>
-              <span class="junction-badge">Official ELO</span>
-            </div>
-            <h3 class="junction-title">Rated Contests</h3>
-            <p class="junction-desc">
-              Select directly from the 10 standardized competitive tiers ranging from Foundations (1-200) to the Olympian Cosmic Manifold.
-            </p>
-          </div>
-          <div class="junction-action">
-            <span>Explore 10 Tier Matrix</span>
-            <span>→</span>
-          </div>
-        </a>
+              <span
+                class="dropdown-badge"
+                style="background: #0284c7; color: #ffffff"
+                >Arena</span
+              >
+            </a>
 
-        <!-- Junction 2: Virtual Unrated Contests -->
-        <a href="./custom.html?unrated=true" class="junction-card" id="junction-unrated">
-          <div>
-            <div class="junction-card-header">
-              <div class="junction-icon-wrap" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #10B981;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                  <circle cx="12" cy="11" r="3"></circle>
+            <a
+              href="./profile.html"
+              id="dropdown-profile"
+              class="dropdown-link-item"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
                 </svg>
+                <span>Profile</span>
               </div>
-              <span class="junction-badge" style="background: rgba(16, 185, 129, 0.12); color: #10B981; border-color: rgba(16, 185, 129, 0.3);">Practice Sandbox</span>
-            </div>
-            <h3 class="junction-title">Virtual Unrated Contests</h3>
-            <p class="junction-desc">
-              Practice under personalized duration bounds up to 180 minutes and zero rating penalty risk. Calibrate mental heuristics freely.
-            </p>
-          </div>
-          <div class="junction-action" style="color: #10B981;">
-            <span>Configure Practice Arena</span>
-            <span>→</span>
-          </div>
-        </a>
+              <span class="dropdown-badge">Overview</span>
+            </a>
 
-        <!-- Junction 3: Previous Contests -->
-        <a href="profile.html" class="junction-card" id="junction-previous">
-          <div>
-            <div class="junction-card-header">
-              <div class="junction-icon-wrap" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #F59E0B;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
+            <a href="./faq.html" class="dropdown-link-item" id="dropdown-faq">
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+                  ></path>
+                  <path d="M6 6h10"></path>
+                  <circle cx="12" cy="14" r="1"></circle>
+                  <path d="M12 10a2 2 0 0 1 2 2c0 1-2 2-2 2"></path>
                 </svg>
+                <span>FAQ</span>
               </div>
-              <span class="junction-badge" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B; border-color: rgba(245, 158, 11, 0.3);">Audit Records</span>
-            </div>
-            <h3 class="junction-title">Previous Contests</h3>
-            <p class="junction-desc">
-              Jump directly to your personal performance matrix hub to audit historical trials, grandmaster flawless solves, and cumulative accuracy.
-            </p>
-          </div>
-          <div class="junction-action" style="color: #F59E0B;">
-            <span>See your past performance</span>
-            <span>→</span>
-          </div>
-        </a>
+              <span class="dropdown-badge">Archive</span>
+            </a>
 
+            <!-- Desktop Settings Link -->
+            <a
+              href="./engine.html"
+              id="dropdown-open-settings"
+              class="dropdown-link-item desktop-only-settings-link dropdown-open-settings-trigger"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  ></path>
+                </svg>
+                <span>Settings</span>
+              </div>
+              <span class="dropdown-badge">Options</span>
+            </a>
+
+            <!-- Mobile-only System link -->
+            <a
+              href="./engine.html"
+              class="dropdown-link-item mobile-only-system-link dropdown-open-settings-trigger"
+              id="dropdown-mobile-system"
+              aria-label="System Configuration"
+            >
+              <div class="dropdown-link-content">
+                <svg
+                  class="link-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  ></path>
+                </svg>
+                <span>System</span>
+              </div>
+              <span class="dropdown-badge">Engine</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Right: Standalone Settings Gear Icon -->
+        <div class="header-actions">
+          <button
+            id="settings-toggle-btn"
+            class="icon-btn"
+            aria-label="Global Engine Settings"
+          >
+            <svg
+              class="gear-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8-74.9-8-111.6 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L86.1 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L64.6 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8 74.9 8 111.6 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
+    </header>
 
-    </div>
-  </main>
+    <!-- Global Settings Modal Slot -->
+    <div id="settings-modal-slot"></div>
 
-  <!-- Persistent Global Site Footer -->
-  <footer class="site-footer">
-    <div class="footer-container">
-      <p class="footer-line highlight">© Olympiad Edge</p>
-      <p class="footer-line footer-author">Authorized By Rayaan Tasnim</p>
-      <p class="footer-line footer-line-muted">PrimeFactor.app v3.4 · All rights reserved</p>
-    </div>
-  </footer>
+    <!-- Main Content Wrapper -->
+    <main
+      class="main-wrapper"
+      style="flex: 1 0 auto; padding-top: 5.5rem; padding-bottom: 3.5rem"
+    >
+      <div class="contest-hero-wrapper">
+        <!-- Section Header -->
+        <div
+          class="section-head"
+          style="text-align: center; margin-bottom: 1rem"
+        >
+          <span class="section-kicker">Olympiad Edge Tournament Circuit</span>
+          <h1 class="section-title">Contest Hub</h1>
+          <p
+            class="section-desc"
+            style="max-width: 44rem; margin: 0.5rem auto 0"
+          >
+            Sudden Death Lightning Roll arena with real-time physics spin,
+            algorithmic high-ELO lockout prevention, and official tournament
+            routing.
+          </p>
+        </div>
 
-  <script type="module" src="./js/contest.js"></script>
-</body>
+        <!-- User ELO Rating & Lockout Status Badge -->
+        <div
+          class="user-elo-badge"
+          id="user-elo-badge-node"
+          style="background-color: black"
+        >
+          <span
+            >Competitor Rating:
+            <span class="user-elo-val" id="competitor-elo-val">1200</span>
+            ELO</span
+          >
+          <span style="color: #64748b">•</span>
+          <span
+            id="elo-lockout-summary"
+            style="color: #38bdf8; font-weight: 700"
+            >9 / 9 Divisions Unlocked</span
+          >
+        </div>
+
+        <!-- Division Slots Visual Lockdown Status Strip -->
+        <div
+          class="division-slots-strip"
+          id="division-slots-strip"
+          aria-label="Division Slots Capability Status"
+        >
+          <!-- Rendered and updated dynamically by js/contest.js -->
+        </div>
+
+        <!-- Sudden Death Lightning Roll Real-Time Spin Wheel Stage -->
+        <div class="contest-wheel-stage">
+          <div class="wheel-container-frame" id="wheel-frame">
+            <!-- Floating Pointer Pin (Indicator) at 12 o'clock -->
+            <div
+              class="wheel-pointer-pin"
+              id="wheel-pointer"
+              aria-hidden="true"
+            >
+              <svg
+                viewBox="0 0 32 42"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16 42L0 12C0 5.37258 7.16344 0 16 0C24.8366 0 32 5.37258 32 12L16 42Z"
+                  fill="#DC2626"
+                />
+                <path
+                  d="M16 36L4 12C4 7 9.5 3 16 3C22.5 3 28 7 28 12L16 36Z"
+                  fill="#EF4444"
+                />
+                <circle cx="16" cy="11" r="4" fill="#FFFFFF" />
+              </svg>
+            </div>
+
+            <!-- Circular Spin Wheel Canvas (9 Segments) -->
+            <canvas id="wheel-canvas" width="600" height="600"></canvas>
+
+            <!-- Centered Activation Trigger Hub ("ROLL ARENA INSTANT") -->
+            <button
+              type="button"
+              class="wheel-center-core"
+              id="roll-arena-btn"
+              aria-label="ROLL ARENA INSTANT"
+            >
+              <span class="roll-btn-label">ROLL<br />ARENA</span>
+              <span class="roll-btn-sub">Instant</span>
+            </button>
+          </div>
+
+          <!-- Real-Time Roll Status / Winner Banner -->
+          <div class="roll-status-banner" id="roll-status-banner">
+            <span id="roll-status-icon">⚡</span>
+            <span id="roll-status-text"
+              >Click "ROLL ARENA" to spin the Sudden Death selector wheel.</span
+            >
+          </div>
+        </div>
+
+        <!-- Modular Navigation Junctions (3 Distinct Actions) -->
+        <div class="junctions-grid">
+          <!-- Junction 1: Rated Contests -->
+          <a href="./ranges.html" class="junction-card" id="junction-rated">
+            <div>
+              <div class="junction-card-header">
+                <div class="junction-icon-wrap">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                    <path d="M4 22h16"></path>
+                    <path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path>
+                    <path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                  </svg>
+                </div>
+                <span class="junction-badge">Official ELO</span>
+              </div>
+              <h3 class="junction-title">Rated Contests</h3>
+              <p class="junction-desc">
+                Select directly from the 10 standardized competitive tiers
+                ranging from Foundations (1-200) to the Olympian Cosmic
+                Manifold.
+              </p>
+            </div>
+            <div class="junction-action">
+              <span>Explore 10 Tier Matrix</span>
+              <span>→</span>
+            </div>
+          </a>
+
+          <!-- Junction 2: Virtual Unrated Contests -->
+          <a
+            href="./custom.html?unrated=true"
+            class="junction-card"
+            id="junction-unrated"
+          >
+            <div>
+              <div class="junction-card-header">
+                <div
+                  class="junction-icon-wrap"
+                  style="
+                    background: rgba(16, 185, 129, 0.15);
+                    border-color: rgba(16, 185, 129, 0.4);
+                    color: #10b981;
+                  "
+                >
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                    ></path>
+                    <circle cx="12" cy="11" r="3"></circle>
+                  </svg>
+                </div>
+                <span
+                  class="junction-badge"
+                  style="
+                    background: rgba(16, 185, 129, 0.12);
+                    color: #10b981;
+                    border-color: rgba(16, 185, 129, 0.3);
+                  "
+                  >Practice Sandbox</span
+                >
+              </div>
+              <h3 class="junction-title">Virtual Unrated Contests</h3>
+              <p class="junction-desc">
+                Practice under personalized duration bounds up to 180 minutes
+                and zero rating penalty risk. Calibrate mental heuristics
+                freely.
+              </p>
+            </div>
+            <div class="junction-action" style="color: #10b981">
+              <span>Configure Practice Arena</span>
+              <span>→</span>
+            </div>
+          </a>
+
+          <!-- Junction 3: Previous Contests -->
+          <a href="profile.html" class="junction-card" id="junction-previous">
+            <div>
+              <div class="junction-card-header">
+                <div
+                  class="junction-icon-wrap"
+                  style="
+                    background: rgba(245, 158, 11, 0.15);
+                    border-color: rgba(245, 158, 11, 0.4);
+                    color: #f59e0b;
+                  "
+                >
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <span
+                  class="junction-badge"
+                  style="
+                    background: rgba(245, 158, 11, 0.12);
+                    color: #f59e0b;
+                    border-color: rgba(245, 158, 11, 0.3);
+                  "
+                  >Audit Records</span
+                >
+              </div>
+              <h3 class="junction-title">Previous Contests</h3>
+              <p class="junction-desc">
+                Jump directly to your personal performance matrix hub to audit
+                historical trials, grandmaster flawless solves, and cumulative
+                accuracy.
+              </p>
+            </div>
+            <div class="junction-action" style="color: #f59e0b">
+              <span>See your past performance</span>
+              <span>→</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- Persistent Global Site Footer -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p class="footer-line highlight">© Olympiad Edge</p>
+        <p class="footer-line footer-author">Authorized By Rayaan Tasnim</p>
+        <p class="footer-line footer-line-muted">
+          PrimeFactor.app v3.4 · All rights reserved
+        </p>
+      </div>
+    </footer>
+
+    <script type="module" src="./js/contest.js"></script>
+  </body>
 </html>

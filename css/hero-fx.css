@@ -9,14 +9,25 @@
   z-index: 1;
   pointer-events: none;
 }
-.hero-gateway .section-bg-overlay { z-index: 2; }
+.hero-gateway .section-bg-overlay {
+  z-index: 2;
+}
 
 /* the stock photo is only a poster/fallback once WebGL is running */
-html.hero-fx-on .hero-gateway .section-bg-image { opacity: 0.12 !important; }
-html.hero-fx-on .hero-gateway .section-bg-overlay {
-  background: radial-gradient(ellipse at 30% 40%, rgba(2, 6, 23, 0.55) 0%, rgba(2, 6, 23, 0.15) 70%) !important;
+html.hero-fx-on .hero-gateway .section-bg-image {
+  opacity: 0.12 !important;
 }
-.hero-gateway .hero-content { position: relative; z-index: 3; }
+html.hero-fx-on .hero-gateway .section-bg-overlay {
+  background: radial-gradient(
+    ellipse at 30% 40%,
+    rgba(2, 6, 23, 0.55) 0%,
+    rgba(2, 6, 23, 0.15) 70%
+  ) !important;
+}
+.hero-gateway .hero-content {
+  position: relative;
+  z-index: 3;
+}
 
 /* avoid a flash of final content before the GSAP intro takes over */
 html.fx-pending .hero-badge-meta,
@@ -24,14 +35,27 @@ html.fx-pending .hero-title,
 html.fx-pending .hero-subtitle,
 html.fx-pending .hero-actions > *,
 html.fx-pending .hero-gateway .mini-challenge-card,
-html.fx-pending .hero-scroll-cue { opacity: 0 !important; }
+html.fx-pending .hero-scroll-cue {
+  opacity: 0 !important;
+}
 
-.hero-title .fx-word { display: inline-block; will-change: transform; }
-.hero-title .highlight { display: inline-block; }
-.hero-title { perspective: 800px; text-shadow: 0 6px 40px rgba(2, 6, 23, 0.55); }
+.hero-title .fx-word {
+  display: inline-block;
+  will-change: transform;
+}
+.hero-title .highlight {
+  display: inline-block;
+}
+.hero-title {
+  perspective: 800px;
+  text-shadow: 0 6px 40px rgba(2, 6, 23, 0.55);
+}
 
 /* magnetic buttons compose via the individual `translate` property (GSAP/Motion use `transform`) */
-.hero-btn-primary, .hero-btn-secondary { translate: var(--mx, 0px) var(--my, 0px); }
+.hero-btn-primary,
+.hero-btn-secondary {
+  translate: var(--mx, 0px) var(--my, 0px);
+}
 
 .hero-scroll-cue {
   position: absolute;
@@ -46,7 +70,7 @@ html.fx-pending .hero-scroll-cue { opacity: 0 !important; }
   pointer-events: none;
 }
 .hero-scroll-cue::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   top: 7px;
@@ -58,9 +82,17 @@ html.fx-pending .hero-scroll-cue { opacity: 0 !important; }
   animation: fx-cue 1.8s ease-in-out infinite;
 }
 @keyframes fx-cue {
-  0% { opacity: 0; transform: translateY(0); }
-  30% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(12px); }
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
 }
 
 #fx-scroll-progress {
@@ -78,25 +110,38 @@ html.fx-pending .hero-scroll-cue { opacity: 0 !important; }
 }
 
 @media (max-width: 640px) {
-  .hero-scroll-cue { display: none; }
+  .hero-scroll-cue {
+    display: none;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-scroll-cue::after { animation: none; }
+  .hero-scroll-cue::after {
+    animation: none;
+  }
   html.fx-pending .hero-badge-meta,
   html.fx-pending .hero-title,
   html.fx-pending .hero-subtitle,
   html.fx-pending .hero-actions > *,
   html.fx-pending .hero-gateway .mini-challenge-card,
-  html.fx-pending .hero-scroll-cue { opacity: 1 !important; }
+  html.fx-pending .hero-scroll-cue {
+    opacity: 1 !important;
+  }
 }
 
 /* soft scrim behind the copy: guarantees contrast whatever the shader is doing */
 .hero-gateway .hero-content::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -2.5rem -1.5rem;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 42%, rgba(3, 8, 20, 0.7) 0%, rgba(3, 8, 20, 0.45) 45%, rgba(3, 8, 20, 0) 75%);
+  background: radial-gradient(
+    ellipse at 50% 42%,
+    rgba(3, 8, 20, 0.7) 0%,
+    rgba(3, 8, 20, 0.45) 45%,
+    rgba(3, 8, 20, 0) 75%
+  );
 }
-.hero-gateway .hero-subtitle { color: #b6c3d6 !important; }
+.hero-gateway .hero-subtitle {
+  color: #b6c3d6 !important;
+}
